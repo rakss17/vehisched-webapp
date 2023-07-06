@@ -1,0 +1,183 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    position: fixed;
+    gap: 20%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, #FDB316 , #060E57 60%);
+  }
+  .appname {
+    display: flex;
+    flex-direction: column;
+    width: 28rem;
+    height: 28rem;
+  }
+  
+  .appname p{
+    font-family: cursive;
+    font-size: 5rem;
+  }
+  .appname span{
+    font-family: cursive;
+    font-size: 1.2rem;
+  }
+
+
+  .form{
+    background-color: #FFFFFF;
+    width: 28rem;
+    height: 28rem;
+    border-radius: 20px;
+    
+  }
+  .form p{
+    margin-top: 3rem;
+    color: black;
+    font-size: 1.5rem;
+    font-family: cursive;
+  }
+  .inputfield {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .inputusername{
+    position: relative;
+  }
+.inputfield input{
+    background-color: #FDFDFD;
+    color: black;
+    border: 1px solid #CCCCCC;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    width: 18rem;
+    height: 2rem;
+    border-radius: 5px;
+    padding: 0.5rem 2.5rem 0.5rem;
+}
+
+.password-container {
+    position: relative;
+  }
+  
+  .eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: black
+  }
+.inputusername{
+    display: flex;
+    flex-direction: row;
+}
+  .icon-container {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  
+  .input-icon {
+    color: black
+  }
+  .buttoncontainer{
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 23%
+  }
+  .buttoncontainer button {
+    border: none;
+    width: 8rem;
+    height: 2.5rem;
+    background: linear-gradient(120deg, #FDB316 , #060E57 60%);
+  }
+  .rememberme{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 2rem;
+  }
+  .rememberme input[type="checkbox"] {
+    /* Change the box color here */
+    background-color: red;
+  }
+  .rememberme span{
+    margin-left: 4px;
+    margin-top: 5px;
+    font-size: 1rem;
+    font-family: Arial;
+    color: black;
+  }
+  .line {
+    margin-top: 4rem;
+    width: 28rem;
+    height: 0.5rem;
+    background: linear-gradient(120deg, #FDB316 , #060E57 60%);
+  }
+  .forgottext{
+    color: blue;
+    margin-left: 12rem;
+  }
+  .forgottext:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+
+  @media screen and (max-width: 768px)  {
+    .container{
+        display: flex;
+        flex-direction: column;
+        gap:0%;
+    }
+    .form {
+        width: 20rem;
+        height: 25rem;
+        margin-bottom: 10rem;
+    }
+    .form p {
+        margin-top: 1rem;
+        font-size: 1rem;
+    }
+    .inputfield input {
+        width: 10rem;
+    }
+    .forgottext {
+        font-size: 1rem;
+        margin-left: 7rem;
+    }
+    .appname p{
+        font-family: cursive;
+        font-size: 3rem;
+      }
+      .appname span{
+        font-family: cursive;
+        font-size: 1rem;
+      }
+      .buttoncontainer{
+        gap: 10%;
+      }
+      .buttoncontainer button {
+        border: none;
+        width: 6rem;
+        height: 2.5rem;
+        background: linear-gradient(120deg, #FDB316 , #060E57 60%);
+      }
+      .line {
+        margin-bottom: 2rem;
+        width: 20rem;
+        height: 0.5rem;
+      }
+    
+  }

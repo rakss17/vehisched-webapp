@@ -16,7 +16,7 @@
 .containerHeader p {
   margin-left: 5rem;
   font-size: 2rem;
-  font-family: cursive;
+  font-family: Arial;
   font-weight: bold;
 }
 .dropdown {
@@ -74,4 +74,20 @@
 
 .dropdown-menu li svg {
   margin-right: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .containerHeader p {
+    font-size: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 20rem;
+    margin-left: 4rem;
+  }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    width: 20rem;
+    margin-left: 1rem;
+  }
 }

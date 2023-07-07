@@ -1,5 +1,5 @@
 import "./header.css";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
@@ -32,7 +32,7 @@ export default function Header() {
           <div className="dropdown-toggle" onClick={handleMenuToggle}>
             <span style={{ display: "flex", alignItems: "center" }}>
               <FontAwesomeIcon icon={faUser} style={{ marginRight: "6px" }} />
-              Ambulo, Bohari S
+              Romeo, Michael Ray V.
             </span>
             <span>▼</span>
           </div>

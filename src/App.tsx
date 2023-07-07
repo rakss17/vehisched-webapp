@@ -1,17 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Landing from './pages/Landing/landing'
+import { useState } from "react";
+import Landing from "./pages/Landing/landing";
+import DashboardOS from "./pages/OfficeStaff/DashboardOS/dashboardOS";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <Landing/>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/DashboardOS" element={<DashboardOS />} />
+        </Routes>
+      </HashRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

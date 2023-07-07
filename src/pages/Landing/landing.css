@@ -29,11 +29,15 @@
 
 
   .form{
+    display: flex;
+    
+    align-items: center;
+    flex-direction: column;
     background-color: #FFFFFF;
     width: 28rem;
     height: 28rem;
     border-radius: 20px;
-    
+  
   }
   .form p{
     margin-top: 3rem;
@@ -94,11 +98,13 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 23%
+    gap: 20%;
+    width: 23rem;
+    
   }
   .buttoncontainer button {
     border: none;
-    width: 8rem;
+    width: 10rem;
     height: 2.5rem;
     background: linear-gradient(120deg, #FDB316 , #060E57 60%);
   }
@@ -108,9 +114,9 @@
     justify-content: center;
     height: 2rem;
   }
-  .rememberme input[type="checkbox"] {
-    /* Change the box color here */
-    background-color: red;
+  .rememberme input{
+   
+    background: none;
   }
   .rememberme span{
     margin-left: 4px;
@@ -151,11 +157,16 @@
         font-size: 1rem;
     }
     .inputfield input {
-        width: 10rem;
+        width: 12rem;
     }
     .forgottext {
         font-size: 1rem;
         margin-left: 7rem;
+    }
+    .appname {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .appname p{
         font-family: cursive;

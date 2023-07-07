@@ -6,14 +6,19 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 import "./landing.css";
 
 export default function Landing() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const handleToggleVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleSignin = () => {
+    navigate("/DashboardOS");
+  };
   return (
     <>
       <div className="container">
@@ -54,7 +59,7 @@ export default function Landing() {
               <input type="checkbox" />
               <span>Remember me</span>
             </div>
-            <button>Signin</button>
+            <button onClick={handleSignin}>Signin</button>
           </div>
 
           <div className="line"></div>

@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -12,7 +18,10 @@
     background: linear-gradient(120deg, #FDB316 , #060E57 60%);
   }
   .appname {
+   
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
     width: 28rem;
     height: 28rem;
@@ -30,7 +39,6 @@
 
   .form{
     display: flex;
-    
     align-items: center;
     flex-direction: column;
     background-color: #FFFFFF;
@@ -46,6 +54,7 @@
     font-family: cursive;
   }
   .inputfield {
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,8 +69,8 @@
     border: 1px solid #CCCCCC;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     font-size: 1rem;
-    width: 18rem;
-    height: 2rem;
+    width: 22rem;
+    height: 3rem;
     border-radius: 5px;
     padding: 0.5rem 2.5rem 0.5rem;
 }
@@ -98,7 +107,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 20%;
+    gap: 16%;
     width: 23rem;
     
   }
@@ -154,10 +163,10 @@
     }
     .form p {
         margin-top: 1rem;
-        font-size: 1rem;
+        font-size: 1.3rem;
     }
     .inputfield input {
-        width: 12rem;
+        width: 16rem;
     }
     .forgottext {
         font-size: 1rem;
@@ -175,6 +184,10 @@
       .appname span{
         font-family: cursive;
         font-size: 1rem;
+      }
+      .rememberme span{
+        margin-top: 7px;
+        font-size: 0.8rem;
       }
       .buttoncontainer{
         gap: 10%;

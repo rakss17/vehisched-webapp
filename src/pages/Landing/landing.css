@@ -29,10 +29,12 @@
 .appname p {
   font-family: Arial;
   font-size: 5rem;
+  color: white;
 }
 .appname span {
   font-family: Arial;
   font-size: 1.2rem;
+  color: white;
 }
 
 .form {
@@ -112,6 +114,7 @@
   width: 10rem;
   height: 2.5rem;
   background: linear-gradient(120deg, #fdb316, #060e57 60%);
+  color: white;
 }
 .rememberme {
   display: flex;

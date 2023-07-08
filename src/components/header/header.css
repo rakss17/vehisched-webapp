@@ -54,7 +54,7 @@
   white-space: nowrap;
   overflow: hidden;
 }
-.dropdown-toggle span {
+.dropdown-toggle {
   color: white;
 }
 .dropdown-toggle:hover {

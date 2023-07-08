@@ -42,6 +42,7 @@ export default function Sidebar() {
           </div>
         </div>
       </div>
+      {isSidebarOpen && <div className="blur-overlay" />}
     </>
   );
 }

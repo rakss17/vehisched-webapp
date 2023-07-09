@@ -7,11 +7,73 @@
 .containerOS {
   display: flex;
   flex-direction: column;
-  position: fixed;
-  gap: 20%;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
   background-color: #fbfbfb;
+}
+.dashboard-container {
+  margin-top: 1rem;
+  margin-left: 6rem;
+  display: flex;
+  flex-direction: row;
+  gap: 15%;
+  width: 90vw;
+  height: 60vh;
+  background-color: #fbfbfb;
+}
+.containerOS h1 {
+  color: #060e57;
+  margin-left: 10rem;
+  margin-top: 2rem;
+}
+.today-trip {
+  border-radius: 20px;
+  margin-top: 2.5rem;
+  margin-left: 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30vw;
+  height: 50vh;
+  background-color: #d9d9d9;
+}
+.today-trip p {
+  color: #060e57;
+  font-size: 2.5rem;
+}
+.today-trip h2 {
+  color: #060e57;
+  font-size: 12rem;
+}
+
+@media screen and (max-width: 768px) {
+  .containerOS {
+    height: 100%;
+  }
+  .dashboard-container {
+    margin-left: 1rem;
+    flex-direction: column;
+    width: 85vw;
+    height: 100vh;
+    gap: 2%;
+  }
+  .containerOS h1 {
+    margin-left: 1rem;
+    margin-top: 10rem;
+    font-size: 2rem;
+  }
+  .today-trip {
+    margin-top: 1rem;
+    margin-left: 1.3rem;
+    width: 80vw;
+    height: 40vh;
+  }
+  .today-trip p {
+    font-size: 1.5rem;
+  }
+  .today-trip h2 {
+    font-size: 6rem;
+  }
 }

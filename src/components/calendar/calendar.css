@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.calendar-container {
+  background-color: #d9d9d9;
+  color: black;
+  width: 30vw;
+  height: 60vh;
+  margin-left: 0rem;
+  display: flex;
+  border-radius: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .calendar-container {
+    width: 90vw;
+    height: 50vh;
+    margin-left: 0.2rem;
+  }
+}

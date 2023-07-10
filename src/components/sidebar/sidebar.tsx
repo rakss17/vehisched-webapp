@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,20 +9,44 @@ import {
   faCalendarAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const sidebarData = [
-  { icon: faColumns, text: "Dashboard" },
-  { icon: faClipboardList, text: "Requests" },
-  { icon: faCar, text: "Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules" },
-  { icon: faUser, text: "Drivers" },
+type SidebarItem = {
+  icon: any;
+  text: string;
+  path: string;
+};
+
+const sidebarData: SidebarItem[] = [
+  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+  { icon: faClipboardList, text: "Requests", path: "/Requests" },
+  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+  { icon: faUser, text: "Drivers", path: "/Drivers" },
 ];
 
 export default function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeButton, setActiveButton] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const activePath = sidebarData.find(
+      (item) => item.path === location.pathname
+    );
+    if (activePath) {
+      setActiveButton(activePath.text);
+    }
+  }, [location.pathname]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleButtonClick = (item: SidebarItem) => {
+    setActiveButton(item.text);
+    navigate(item.path);
   };
 
   return (
@@ -34,7 +58,13 @@ export default function Sidebar() {
           </button>
           <div className="sidebar-buttons">
             {sidebarData.map((item, index) => (
-              <button className="sidebar-button" key={index}>
+              <button
+                className={`sidebar-button ${
+                  item.text === activeButton ? "active" : ""
+                }`}
+                key={index}
+                onClick={() => handleButtonClick(item)}
+              >
                 <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
                 <span className="sidebar-text">{item.text}</span>
               </button>

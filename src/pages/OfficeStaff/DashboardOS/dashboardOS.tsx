@@ -2,15 +2,15 @@ import "./dashboardOS.css";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import CalendarSchedule from "../../../components/calendar/calendar";
+import Container from "../../../components/container/container";
 
 export default function DashboardOS() {
   return (
     <>
       <Header />
       <Sidebar />
-
-      <div className="containerOS">
-        <h1>Dashboard</h1>
+      <Container>
+        <h1 className="label">Dashboard</h1>
         <div className="dashboard-container">
           <div className="today-trip">
             <p>Today's Trip</p>
@@ -18,7 +18,7 @@ export default function DashboardOS() {
           </div>
           <CalendarSchedule />
         </div>
-      </div>
+      </Container>
     </>
   );
 }

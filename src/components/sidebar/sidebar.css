@@ -69,6 +69,13 @@
   color: #060e57;
   cursor: pointer;
 }
+.sidebar-button.active {
+  background-color: #fdb316;
+}
+.containerSB.open .sidebar-button.active {
+  background-color: #fdb316;
+}
+
 .containerSB.open .sidebar-button {
   background-color: #d9d9d9;
   width: 10rem;
@@ -126,7 +133,9 @@
   .sidebar-icon {
     display: none;
   }
-
+  .sidebar-button.active {
+    background-color: transparent;
+  }
   .sidebar-buttons {
     margin-left: 0;
   }

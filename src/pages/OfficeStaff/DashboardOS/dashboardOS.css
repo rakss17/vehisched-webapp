@@ -57,15 +57,15 @@
     flex-direction: column;
     width: 85vw;
     height: 100vh;
-    gap: 2%;
+    gap: 10%;
   }
   .containerOS h1 {
-    margin-left: 1rem;
-    margin-top: 10rem;
+    margin-left: 5rem;
+    margin-top: 6rem;
     font-size: 2rem;
   }
   .today-trip {
-    margin-top: 1rem;
+    margin-top: 3rem;
     margin-left: 1.3rem;
     width: 80vw;
     height: 40vh;

@@ -104,24 +104,31 @@ export default function Requests() {
     setSearchTerm(term);
   };
 
-  const filteredRequestList =
-    selectedCategory === "Request Logs"
-      ? requestList
-      : requestList.filter((request) => {
-          const isCategoryMatch =
-            selectedCategory === null || request.status === selectedCategory;
+  const filteredRequestList = requestList.filter((request) => {
+    const isCategoryMatch =
+      selectedCategory === null ||
+      selectedCategory === "Request Logs" ||
+      request.status === selectedCategory;
 
-          const isSearchMatch =
-            searchTerm === "" ||
-            request.requested_by
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            request.request_number
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
+    const isSearchMatch =
+      searchTerm === "" ||
+      request.requested_by.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.request_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (selectedCategory === "Request Logs" &&
+        (request.requested_by
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+          request.request_number
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()))) ||
+      (selectedCategory !== "Request Logs" &&
+        request.requested_by.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        request.request_number
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()));
 
-          return isCategoryMatch && isSearchMatch;
-        });
+    return isCategoryMatch && isSearchMatch;
+  });
 
   const handleCategoryChange = (status: string) => {
     setSelectedCategory(status === "All" ? null : status);

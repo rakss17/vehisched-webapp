@@ -1,15 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./dropdown.css";
 
 type DropdownProps = {
-  first: string;
-  second: string;
-  third: string;
-  fourth: string;
+  status: string[];
+  onCategoryChange: (category: string) => void;
 };
 
 export default function Dropdown(props: DropdownProps) {
-  const [selectedOption, setSelectedOption] = useState(props.first);
+  const [selectedOption, setSelectedOption] = useState(props.status[0]);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleMenuToggle = () => {
@@ -19,6 +17,7 @@ export default function Dropdown(props: DropdownProps) {
   const handleMenuOptionClick = (option: string) => {
     setSelectedOption(option);
     setIsOpen(false);
+    props.onCategoryChange(option);
   };
 
   return (
@@ -29,18 +28,11 @@ export default function Dropdown(props: DropdownProps) {
       </div>
       {isOpen && (
         <ul className="dropdown-menu">
-          <li onClick={() => handleMenuOptionClick(props.first)}>
-            {props.first}
-          </li>
-          <li onClick={() => handleMenuOptionClick(props.second)}>
-            {props.second}
-          </li>
-          <li onClick={() => handleMenuOptionClick(props.third)}>
-            {props.third}
-          </li>
-          <li onClick={() => handleMenuOptionClick(props.fourth)}>
-            {props.fourth}
-          </li>
+          {props.status.map((option, index) => (
+            <li key={index} onClick={() => handleMenuOptionClick(option)}>
+              {option}
+            </li>
+          ))}
         </ul>
       )}
     </div>

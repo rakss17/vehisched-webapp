@@ -1,4 +1,13 @@
-p {
-  color: black;
-  font-size: 5rem;
+.request-container {
+  display: flex;
+  flex-direction: column;
+  width: 85rem;
+  height: 30rem;
+  margin-left: 10rem;
+  margin-top: 0rem;
+}
+
+.request-row {
+  margin-top: 2rem;
+  margin-left: 1rem;
 }

@@ -12,11 +12,12 @@
   height: 3rem;
   border-radius: 5px;
   padding: 0.5rem 2.5rem 0.5rem;
+  margin-left: 4rem;
 }
 
-.icon-container {
+.icon-container-search {
   position: absolute;
-  left: 15px;
+  left: 78px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;

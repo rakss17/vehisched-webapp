@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     <>
       <form onSubmit={handleFormSubmit}>
         <div className="inputsearch">
-          <div className="icon-container">
+          <div className="icon-container-search">
             <FontAwesomeIcon icon={faSearch} className="input-icon" />
           </div>
 

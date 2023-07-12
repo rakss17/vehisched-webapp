@@ -31,8 +31,8 @@ export default function Header() {
         <img src={logo} alt="logo" />
         <div className="container-appname-dropdown">
           <p>Vehi-Sched</p>
-          <div className="dropdown">
-            <div className="dropdown-toggle" onClick={handleMenuToggle}>
+          <div className="dropdown-header">
+            <div className="dropdown-toggle-header" onClick={handleMenuToggle}>
               <FontAwesomeIcon
                 icon={faUser}
                 style={{ marginRight: "0px", marginTop: "3px" }}
@@ -41,7 +41,7 @@ export default function Header() {
               <span>▼</span>
             </div>
             {isOpen && (
-              <ul className="dropdown-menu">
+              <ul className="dropdown-menu-header">
                 <li onClick={() => handleMenuOptionClick("profile")}>
                   <FontAwesomeIcon icon={faUser} />
                   Profile

@@ -138,6 +138,13 @@
   .sidebar-button.active {
     background-color: transparent;
   }
+  .sidebar-button:hover {
+    background: none;
+    cursor: unset;
+  }
+  .containerSB.open .sidebar-button:hover {
+    cursor: pointer;
+  }
   .sidebar-buttons {
     margin-left: 0;
   }

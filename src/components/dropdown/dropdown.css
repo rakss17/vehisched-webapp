@@ -63,3 +63,26 @@
 .dropdown-menu li svg {
   margin-right: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .dropdown {
+    position: unset;
+    width: 8.5rem;
+    margin-left: 1.5rem;
+  }
+  .downarrow {
+    margin-left: 6.5rem;
+  }
+  .dropdown-menu {
+    position: unset;
+    top: 100%;
+    left: 0%;
+    width: 200px;
+    padding: 10px;
+    background-color: #d9d9d9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    list-style: none;
+    color: black;
+  }
+}

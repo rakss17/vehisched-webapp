@@ -25,3 +25,19 @@
 .input-icon {
   color: black;
 }
+
+@media screen and (max-width: 768px) {
+  .search-bar {
+    width: 10rem;
+    height: 3rem;
+    border-radius: 5px;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    margin-left: 1rem;
+  }
+  .inputsearch {
+    position: unset;
+  }
+  .icon-container-search {
+    display: none;
+  }
+}

@@ -71,9 +71,11 @@
 }
 .sidebar-button.active {
   background-color: #fdb316;
+  color: white;
 }
 .containerSB.open .sidebar-button.active {
   background-color: #fdb316;
+  color: white;
 }
 
 .containerSB.open .sidebar-button {

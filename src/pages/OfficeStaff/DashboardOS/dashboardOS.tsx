@@ -3,6 +3,7 @@ import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import CalendarSchedule from "../../../components/calendar/calendar";
 import Container from "../../../components/container/container";
+import Label from "../../../components/label/label";
 
 export default function DashboardOS() {
   return (
@@ -10,7 +11,7 @@ export default function DashboardOS() {
       <Header />
       <Sidebar />
       <Container>
-        <h1 className="label">Dashboard</h1>
+        <Label label="Dashboard" />
         <div className="dashboard-container">
           <div className="today-trip">
             <p>Today's Trip</p>

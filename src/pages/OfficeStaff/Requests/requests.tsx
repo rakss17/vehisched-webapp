@@ -17,100 +17,100 @@ export default function Requests() {
     travel_date: string;
     status: string;
   }
-  // const fetchRequestList = () => {
-  //   const fetchedRequests = [
-  //     {
-  //       id: 1,
-  //       request_number: "001",
-  //       requested_by: "Bohari S Ambulo",
-  //       travel_date: "2023-07-18",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 2,
-  //       request_number: "002",
-  //       requested_by: "Mark Dave M Lorejo",
-  //       travel_date: "2023-07-19",
-  //       status: "Pending",
-  //     },
-  //     {
-  //       id: 3,
-  //       request_number: "003",
-  //       requested_by: "Michael Ray V Romeo",
-  //       travel_date: "2023-07-20",
-  //       status: "Rejected",
-  //     },
-  //     {
-  //       id: 4,
-  //       request_number: "004",
-  //       requested_by: "Tristan C Araquil",
-  //       travel_date: "2023-07-25",
-  //       status: "Pending",
-  //     },
-  //     {
-  //       id: 5,
-  //       request_number: "005",
-  //       requested_by: "Mike Emmanuel Ibahay",
-  //       travel_date: "2023-07-30",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 6,
-  //       request_number: "006",
-  //       requested_by: "Anton Joseph Gabut",
-  //       travel_date: "2023-07-31",
-  //       status: "Rejected",
-  //     },
-  //     {
-  //       id: 6,
-  //       request_number: "006",
-  //       requested_by: "Mike Emmanuel Ibahay",
-  //       travel_date: "2023-07-30",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 1,
-  //       request_number: "001",
-  //       requested_by: "Bohari S Ambulo",
-  //       travel_date: "2023-07-18",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 1,
-  //       request_number: "001",
-  //       requested_by: "Bohari S Ambulo",
-  //       travel_date: "2023-07-18",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 1,
-  //       request_number: "001",
-  //       requested_by: "Bohari S Ambulo",
-  //       travel_date: "2023-07-18",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 1,
-  //       request_number: "001",
-  //       requested_by: "Bohari S Ambulo",
-  //       travel_date: "2023-07-18",
-  //       status: "Approved",
-  //     },
-  //     {
-  //       id: 1,
-  //       request_number: "001",
-  //       requested_by: "Bohari S Ambulo",
-  //       travel_date: "2023-07-18",
-  //       status: "Approved",
-  //     },
-  //   ];
+  const fetchRequestList = () => {
+    const fetchedRequests = [
+      {
+        id: 1,
+        request_number: "001",
+        requested_by: "Bohari S Ambulo",
+        travel_date: "2023-07-18",
+        status: "Approved",
+      },
+      {
+        id: 2,
+        request_number: "002",
+        requested_by: "Mark Dave M Lorejo",
+        travel_date: "2023-07-19",
+        status: "Pending",
+      },
+      {
+        id: 3,
+        request_number: "003",
+        requested_by: "Michael Ray V Romeo",
+        travel_date: "2023-07-20",
+        status: "Rejected",
+      },
+      {
+        id: 4,
+        request_number: "004",
+        requested_by: "Tristan C Araquil",
+        travel_date: "2023-07-25",
+        status: "Pending",
+      },
+      {
+        id: 5,
+        request_number: "005",
+        requested_by: "Mike Emmanuel Ibahay",
+        travel_date: "2023-07-30",
+        status: "Approved",
+      },
+      {
+        id: 6,
+        request_number: "006",
+        requested_by: "Anton Joseph Gabut",
+        travel_date: "2023-07-31",
+        status: "Rejected",
+      },
+      {
+        id: 6,
+        request_number: "006",
+        requested_by: "Mike Emmanuel Ibahay",
+        travel_date: "2023-07-30",
+        status: "Approved",
+      },
+      {
+        id: 1,
+        request_number: "001",
+        requested_by: "Bohari S Ambulo",
+        travel_date: "2023-07-18",
+        status: "Approved",
+      },
+      {
+        id: 1,
+        request_number: "001",
+        requested_by: "Bohari S Ambulo",
+        travel_date: "2023-07-18",
+        status: "Approved",
+      },
+      {
+        id: 1,
+        request_number: "001",
+        requested_by: "Bohari S Ambulo",
+        travel_date: "2023-07-18",
+        status: "Approved",
+      },
+      {
+        id: 1,
+        request_number: "001",
+        requested_by: "Bohari S Ambulo",
+        travel_date: "2023-07-18",
+        status: "Approved",
+      },
+      {
+        id: 1,
+        request_number: "001",
+        requested_by: "Bohari S Ambulo",
+        travel_date: "2023-07-18",
+        status: "Approved",
+      },
+    ];
 
-  //   setRequestList(fetchedRequests);
-  // };
+    setRequestList(fetchedRequests);
+  };
 
-  // useEffect(() => {
-  //   fetchRequestList();
-  // }, []);
+  useEffect(() => {
+    fetchRequestList();
+  }, []);
 
   const handleRequestListClick = () => {};
 

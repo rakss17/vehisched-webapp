@@ -15,7 +15,9 @@ export default function Requests() {
       <Header />
       <Sidebar />
       <Container>
-        <Label label="Request" />
+        <div className="margin-top">
+          <Label label="Request" />
+        </div>
         <div className="request-container">
           <div className="request-row">
             <SearchBar onSearch={handleSearch} />
@@ -25,6 +27,15 @@ export default function Requests() {
               third="Rejected"
               fourth="Request Logs"
             />
+          </div>
+          <div className="request-lists">
+            <div className="request-lists-header">
+              <p>Request No.</p>
+              <p>Requested by</p>
+              <p>Travel Date</p>
+              <p>Status</p>
+            </div>
+            <div className="request-lists-content"></div>
           </div>
         </div>
       </Container>

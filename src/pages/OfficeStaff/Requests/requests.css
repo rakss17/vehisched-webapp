@@ -2,15 +2,38 @@
   display: flex;
   flex-direction: column;
   width: 85rem;
-  height: 30rem;
+  height: 40rem;
   margin-left: 10rem;
   margin-top: 0rem;
 }
 
 .request-row {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   margin-left: 1rem;
   display: flex;
   flex-direction: row;
   gap: 30%;
+}
+
+.margin-top {
+  margin-top: 5rem;
+}
+
+.request-lists {
+  margin-top: 0.5rem;
+  height: 32rem;
+  width: 85rem;
+  background-color: #d9d9d9;
+  padding: 1rem;
+}
+.request-lists-header {
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.request-lists-header p {
+  font-size: 1.5rem;
+  color: #060e57;
+  font-weight: bold;
 }

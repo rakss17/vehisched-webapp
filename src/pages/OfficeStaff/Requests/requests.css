@@ -5,6 +5,7 @@
   height: 40rem;
   margin-left: 10rem;
   margin-top: 0rem;
+  overflow: hidden;
 }
 
 .request-row {
@@ -25,9 +26,12 @@
   width: 85rem;
   background-color: #d9d9d9;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
 }
 .request-lists-header {
-  margin-right: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -36,4 +40,30 @@
   font-size: 1.5rem;
   color: #060e57;
   font-weight: bold;
+}
+.request-list {
+  width: 83rem;
+  height: 3rem;
+  justify-content: space-around;
+  margin-left: 8rem;
+  display: flex;
+  flex-direction: row;
+  color: black;
+  flex-wrap: wrap;
+}
+
+.request-lists-content td {
+  font-size: 1.5rem;
+  color: #060e57;
+  flex-basis: 25%;
+}
+
+.request-lists-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

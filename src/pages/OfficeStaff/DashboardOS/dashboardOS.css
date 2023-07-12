@@ -22,7 +22,7 @@
   height: 60vh;
   background-color: #fbfbfb;
 }
-.containerOS h1 {
+.label {
   color: #060e57;
   margin-left: 10rem;
   margin-top: 2rem;
@@ -47,25 +47,25 @@
   color: #060e57;
   font-size: 12rem;
 }
+.sidebar-button.open {
+  background-color: #fdb316;
+}
 
 @media screen and (max-width: 768px) {
-  .containerOS {
-    height: 100%;
-  }
   .dashboard-container {
     margin-left: 1rem;
     flex-direction: column;
     width: 85vw;
     height: 100vh;
-    gap: 2%;
+    gap: 10%;
   }
-  .containerOS h1 {
-    margin-left: 1rem;
-    margin-top: 10rem;
+  .label {
+    margin-left: 5rem;
+    margin-top: 6rem;
     font-size: 2rem;
   }
   .today-trip {
-    margin-top: 1rem;
+    margin-top: 3rem;
     margin-left: 1.3rem;
     width: 80vw;
     height: 40vh;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
@@ -7,18 +7,20 @@ import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
 
+interface Request {
+  id: number;
+  request_number: string;
+  requested_by: string;
+  travel_date: string;
+  status: string;
+}
+
 export default function Requests() {
   const [requestList, setRequestList] = useState<Request[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  interface Request {
-    id: number;
-    request_number: string;
-    requested_by: string;
-    travel_date: string;
-    status: string;
-  }
   const fetchRequestList = () => {
-    const fetchedRequests = [
+    const fetchedRequests: Request[] = [
       {
         id: 1,
         request_number: "001",
@@ -61,48 +63,6 @@ export default function Requests() {
         travel_date: "2023-07-31",
         status: "Rejected",
       },
-      {
-        id: 6,
-        request_number: "006",
-        requested_by: "Mike Emmanuel Ibahay",
-        travel_date: "2023-07-30",
-        status: "Approved",
-      },
-      {
-        id: 1,
-        request_number: "001",
-        requested_by: "Bohari S Ambulo",
-        travel_date: "2023-07-18",
-        status: "Approved",
-      },
-      {
-        id: 1,
-        request_number: "001",
-        requested_by: "Bohari S Ambulo",
-        travel_date: "2023-07-18",
-        status: "Approved",
-      },
-      {
-        id: 1,
-        request_number: "001",
-        requested_by: "Bohari S Ambulo",
-        travel_date: "2023-07-18",
-        status: "Approved",
-      },
-      {
-        id: 1,
-        request_number: "001",
-        requested_by: "Bohari S Ambulo",
-        travel_date: "2023-07-18",
-        status: "Approved",
-      },
-      {
-        id: 1,
-        request_number: "001",
-        requested_by: "Bohari S Ambulo",
-        travel_date: "2023-07-18",
-        status: "Approved",
-      },
     ];
 
     setRequestList(fetchedRequests);
@@ -114,9 +74,17 @@ export default function Requests() {
 
   const handleRequestListClick = () => {};
 
-  const handleSearch = (query: string) => {
-    console.log("Search query:", query);
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
   };
+
+  const filteredRequestList = requestList.filter(
+    (request) =>
+      searchTerm === "" ||
+      request.requested_by.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.request_number.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <Header />
@@ -127,7 +95,7 @@ export default function Requests() {
         </div>
         <div className="request-container">
           <div className="request-row">
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar onSearchChange={handleSearchChange} />
             <Dropdown
               first="Pending"
               second="Approved"
@@ -145,10 +113,12 @@ export default function Requests() {
               </tr>
             </thead>
             <tbody className="request-lists-content">
-              {requestList.length === 0 ? (
-                <td>No request available</td>
+              {filteredRequestList.length === 0 ? (
+                <tr>
+                  <td colSpan={4}>No request available</td>
+                </tr>
               ) : (
-                requestList.map((request) => (
+                filteredRequestList.map((request) => (
                   <tr
                     className="request-list"
                     key={request.id}

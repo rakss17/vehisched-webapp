@@ -1,45 +1,36 @@
-import "./searchbar.css";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, ChangeEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import React, { useState } from "react";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import "./searchbar.css";
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  onSearchChange: (term: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+const SearchBar: React.FC<SearchBarProps> = (props) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    onSearch(searchQuery);
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const term: string = event.target.value;
+    setSearchTerm(term);
+    props.onSearchChange(term);
   };
 
   return (
-    <>
-      <form onSubmit={handleFormSubmit}>
-        <div className="inputsearch">
-          <div className="icon-container-search">
-            <FontAwesomeIcon icon={faSearch} className="input-icon" />
-          </div>
-
-          <input
-            className="search-bar"
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={handleInputChange}
-          />
+    <form>
+      <div className="inputsearch">
+        <div className="icon-container-search">
+          <FontAwesomeIcon icon={faSearch} className="input-icon" />
         </div>
-
-        {/* <button type="submit">Search</button> */}
-      </form>
-    </>
+        <input
+          className="search-bar"
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </div>
+    </form>
   );
 };
 

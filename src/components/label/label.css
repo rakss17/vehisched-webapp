@@ -1,0 +1,13 @@
+.label {
+  color: #060e57;
+  margin-left: 10rem;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .label {
+    margin-left: 5rem;
+    margin-top: 6rem;
+    font-size: 2rem;
+  }
+}

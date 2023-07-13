@@ -1,0 +1,112 @@
+.ellipsis {
+  position: relative;
+  display: flex;
+  width: 0vw;
+
+  background-color: black;
+}
+
+.ellipsis-toggle {
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  display: flex;
+  gap: 10%;
+  flex-direction: row;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.username {
+  margin-left: 0px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ellipsis-toggle {
+  color: white;
+}
+
+.ellipsis-toggle:hover {
+  cursor: pointer;
+}
+
+.ellipsis-dots {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ellipsis-dots .dot {
+  width: 5px;
+  height: 5px;
+  background-color: black;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 2px 0px;
+}
+
+.downarrow {
+  position: absolute;
+  margin-left: 9vw;
+}
+
+.ellipsis-menu {
+  position: absolute;
+  top: 20%;
+  right: 0%;
+  width: 200px;
+  padding: 10px;
+  background-color: #d9d9d9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  list-style: none;
+  color: black;
+}
+
+.ellipsis-menu li {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.ellipsis-menu li.Settings {
+  border-bottom: 1px solid black;
+}
+
+.ellipsis-menu li:hover {
+  background-color: #e0e0e0;
+}
+
+.ellipsis-menu li svg {
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .ellipsis {
+    position: relative;
+  }
+  .downarrow {
+    margin-left: 6.5rem;
+  }
+  .ellipsis-dots .dot {
+    width: 4px;
+    height: 4px;
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 2px 0px;
+  }
+  .ellipsis-menu {
+    top: 100%;
+    right: 10%;
+    width: 100px;
+    padding: 10px;
+    background-color: #d9d9d9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    list-style: none;
+    color: black;
+  }
+}

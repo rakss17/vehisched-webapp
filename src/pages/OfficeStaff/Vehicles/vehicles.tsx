@@ -7,6 +7,7 @@ import Label from "../../../components/label/label";
 import Dropdown from "../../../components/dropdown/dropdown";
 import SearchBar from "../../../components/searchbar/searchbar";
 import ToyotaHilux from "../../../components/images/toyota-hilux.jpg";
+import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 
 export default function Vehicles() {
   const [vehicles, setVehicles] = useState([1, 2, 2, 3, 2, 2, 3, 3]);
@@ -40,6 +41,7 @@ export default function Vehicles() {
                     <p className="vehicle-status">On trip</p>
                   </div>
                   <img className="vehicle-image" src={ToyotaHilux} />
+                  <Ellipsis status={["Set Status", "Unavailable"]} />
                 </div>
               </a>
             ))

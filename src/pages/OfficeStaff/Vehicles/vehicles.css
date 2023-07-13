@@ -37,23 +37,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 2rem;
+  margin-left: 3rem;
   color: white;
   cursor: pointer;
 }
 .vehicle-row {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  margin-top: 2rem;
   justify-content: center;
   width: 35vw;
   height: 25vh;
-  gap: 10%;
+  gap: 5%;
 }
 .vehicle-column {
   display: flex;
   flex-direction: column;
-  gap: 10%;
+  gap: 2%;
 }
 .vehicle-image {
   width: 20vw;

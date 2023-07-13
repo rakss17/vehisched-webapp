@@ -109,7 +109,7 @@ export default function Vehicles() {
       <Header />
       <Sidebar />
       <Container>
-        <div className="margin-top">
+        <div className="margin-top-vehicles">
           <Label label="Vehicles" />
         </div>
         <div className="vehicles-row">

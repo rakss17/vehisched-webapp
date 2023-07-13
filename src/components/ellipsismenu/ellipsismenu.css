@@ -85,18 +85,23 @@
 
 @media screen and (max-width: 768px) {
   .ellipsis {
-    position: unset;
-    width: 8.5rem;
-    margin-left: 1.5rem;
+    position: relative;
   }
   .downarrow {
     margin-left: 6.5rem;
   }
+  .ellipsis-dots .dot {
+    width: 4px;
+    height: 4px;
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 2px 0px;
+  }
   .ellipsis-menu {
-    position: unset;
     top: 100%;
-    left: 0%;
-    width: 200px;
+    right: 10%;
+    width: 100px;
     padding: 10px;
     background-color: #d9d9d9;
     border: 1px solid #ccc;

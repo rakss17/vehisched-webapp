@@ -1,4 +1,78 @@
-p {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.vehicles-row {
+  margin-top: 1.5rem;
+  margin-left: 9rem;
+  display: flex;
+  flex-direction: row;
+  gap: 30%;
+}
+.vehicles-container {
+  display: flex;
+  flex-direction: row;
+  background-color: transparent;
+  height: 100vh;
+  width: 88vw;
+  margin-left: 8rem;
+  gap: 5%;
+  overflow-y: auto;
+  flex-wrap: wrap;
+  max-height: 70vh;
+  padding: 3rem;
+}
+.vehicles-null {
+  font-size: 1.5rem;
+  color: #060e57;
+  font-weight: bold;
+}
+
+.vehicle-card {
+  background-color: #d9d9d9;
+  width: 35vw;
+  height: 25vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 2rem;
+  color: white;
+  cursor: pointer;
+}
+.vehicle-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 35vw;
+  height: 25vh;
+  gap: 10%;
+}
+.vehicle-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10%;
+}
+.vehicle-image {
+  width: 20vw;
+  height: 20vh;
+}
+.vehicle-name {
+  font-size: 1.5rem;
   color: black;
-  font-size: 5rem;
+  font-weight: bold;
+  text-align: center;
+}
+.vehicle-detail {
+  font-size: 1rem;
+  color: black;
+  text-align: center;
+}
+.vehicle-status {
+  font-size: 1rem;
+  color: black;
+  text-align: center;
+  font-weight: bold;
 }

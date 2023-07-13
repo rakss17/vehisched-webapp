@@ -90,7 +90,7 @@ export default function Requests() {
   const [requestList, setRequestList] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const currentDate = new Date(); // Current date object
+  const currentDate = new Date();
 
   const fetchRequestList = () => {
     setRequestList(fetchedRequests);

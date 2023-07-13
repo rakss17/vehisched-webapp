@@ -6,7 +6,7 @@
 
 .vehicles-row {
   margin-top: 1.5rem;
-  margin-left: 9rem;
+  margin-left: 9vh;
   display: flex;
   flex-direction: row;
   gap: 30%;
@@ -37,7 +37,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 3rem;
+  margin-left: 3vh;
   color: white;
   cursor: pointer;
 }

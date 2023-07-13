@@ -137,7 +137,9 @@ export default function Vehicles() {
                     <p className="vehicle-status">{vehicle.status}</p>
                   </div>
                   <img className="vehicle-image" src={vehicle.vehicle_image} />
-                  <Ellipsis status={["Set Status", "Unavailable"]} />
+                  <div className="ellipsis-container">
+                    <Ellipsis status={["Set Status", "Unavailable"]} />
+                  </div>
                 </div>
               </a>
             ))

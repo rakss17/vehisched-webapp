@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./schedules.css";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -35,6 +35,102 @@ export default function Schedules() {
     {
       label: "Upcoming",
       content: [
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john dawdawdawd dawdawdaw",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
+        {
+          "Request No.": "2",
+          "Requested by": "john",
+          Time: "2:00pm",
+          Date: "2023-07-15",
+        },
+        {
+          "Request No.": "3",
+          "Requested by": "jane",
+          Time: "3:00pm",
+          Date: "2023-07-16",
+        },
         {
           "Request No.": "2",
           "Requested by": "john",
@@ -102,10 +198,10 @@ export default function Schedules() {
                     <tr className="schedule-list" key={index}>
                       <td>{schedule["Request No."]}</td>
                       <td>{schedule["Requested by"]}</td>
+                      <td>{schedule["Time"]}</td>
                       {activeButton === "Upcoming" && (
                         <td>{schedule["Date"]}</td>
                       )}
-                      <td>{schedule["Time"]}</td>
                     </tr>
                   ))}
                 </tbody>

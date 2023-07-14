@@ -46,6 +46,7 @@
 }
 .table-container {
   background-color: #d9d9d9;
+  overflow-y: auto;
   height: 65vh;
   padding-top: 1px;
   margin-top: -2px;
@@ -62,7 +63,7 @@
 
 .data-table tr.schedule-list {
   padding: 1rem 0rem 0rem 5rem;
-  height: 5vh;
+  height: 10vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -98,4 +99,40 @@
   color: #060e57;
   font-weight: bold;
   margin: 1rem 0rem 0rem 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .schedules-container {
+    width: 99vw;
+    height: 80vh;
+    margin-left: 0rem;
+    margin-top: 2rem;
+  }
+  .button-container button {
+    width: 18vw;
+  }
+  .button-container {
+    width: 15vw;
+    background-color: black;
+  }
+  .schedules-margin-top {
+    margin-top: 0rem;
+  }
+  .table-container {
+    background-color: #d9d9d9;
+    height: 65vh;
+
+    margin-left: 0rem;
+  }
+  .data-table tr.data-header {
+    font-size: 1rem;
+    justify-content: space-between;
+  }
+  .data-table td {
+    font-size: 1rem;
+  }
+  .data-table tr.schedule-list {
+    padding: 1rem 0rem 0rem 0rem;
+    justify-content: space-between;
+  }
 }

@@ -109,7 +109,15 @@
     margin-top: 2rem;
   }
   .button-container button {
-    width: 18vw;
+    width: 30vw;
+  }
+  .button-container button.active {
+    border: none;
+  }
+  .button-container.active {
+    border: none;
+    border-image: none;
+    border-image-slice: 0;
   }
   .button-container {
     width: 15vw;
@@ -121,18 +129,20 @@
   .table-container {
     background-color: #d9d9d9;
     height: 65vh;
-
     margin-left: 0rem;
   }
   .data-table tr.data-header {
     font-size: 1rem;
-    justify-content: space-between;
+    justify-content: unset;
+    gap: 8%;
+    margin-left: 0rem;
   }
   .data-table td {
     font-size: 1rem;
   }
   .data-table tr.schedule-list {
     padding: 1rem 0rem 0rem 0rem;
-    justify-content: space-between;
+
+    margin-left: 2rem;
   }
 }

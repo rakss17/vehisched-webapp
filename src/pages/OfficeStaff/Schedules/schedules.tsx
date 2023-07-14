@@ -70,7 +70,7 @@ export default function Schedules() {
                 </button>
               ))}
             </div>
-            <div>
+            <div className="searchbar-container">
               <SearchBar />
             </div>
           </div>

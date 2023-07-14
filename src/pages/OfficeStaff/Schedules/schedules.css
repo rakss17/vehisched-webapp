@@ -25,7 +25,6 @@
 }
 
 .button-container button.active {
-  border-radius: 10px 10px 0px 0px;
   border-right: 2px solid #060e57;
   border-top: 2px solid #060e57;
   border-left: 2px solid #060e57;
@@ -92,4 +91,11 @@
 
 .data-table tr.active {
   background-color: #eaeaea;
+}
+
+.schedules-null {
+  font-size: 1.5rem;
+  color: #060e57;
+  font-weight: bold;
+  margin: 1rem 0rem 0rem 2rem;
 }

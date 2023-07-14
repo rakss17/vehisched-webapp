@@ -14,9 +14,14 @@ interface TableData {
 
 export default function Schedules() {
   const [activeButton, setActiveButton] = useState<string>("Today");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleButtonClick = (label: string) => {
     setActiveButton(label);
+  };
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
   };
 
   const tableData: TableData[] = [
@@ -49,6 +54,13 @@ export default function Schedules() {
 
   const activeTableData = tableData.find((data) => data.label === activeButton);
 
+  const filteredContent = activeTableData?.content.filter((schedule) =>
+    Object.values(schedule)
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <Header />
@@ -71,23 +83,22 @@ export default function Schedules() {
               ))}
             </div>
             <div className="searchbar-container">
-              <SearchBar />
+              <SearchBar onSearchChange={handleSearchChange} />
             </div>
           </div>
 
           <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr className="data-header">
-                  {activeTableData &&
-                    activeTableData.columns.map((column, index) => (
+            {filteredContent && filteredContent.length > 0 ? (
+              <table className="data-table">
+                <thead>
+                  <tr className="data-header">
+                    {activeTableData?.columns.map((column, index) => (
                       <th key={index}>{column}</th>
                     ))}
-                </tr>
-              </thead>
-              <tbody>
-                {activeTableData &&
-                  activeTableData.content.map((schedule, index) => (
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredContent.map((schedule, index) => (
                     <tr className="schedule-list" key={index}>
                       <td>{schedule["Request No."]}</td>
                       <td>{schedule["Requested by"]}</td>
@@ -97,8 +108,11 @@ export default function Schedules() {
                       <td>{schedule["Time"]}</td>
                     </tr>
                   ))}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            ) : (
+              <p className="schedules-null">No schedules available</p>
+            )}
           </div>
         </div>
       </Container>

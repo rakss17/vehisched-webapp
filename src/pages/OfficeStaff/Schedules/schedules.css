@@ -1,4 +1,74 @@
-p {
+.schedules-container {
+  width: 90vw;
+  height: 80vh;
+  margin-left: 8rem;
+  margin-top: 2rem;
+}
+
+.button-container {
+  display: flex;
+  gap: 0px;
+  margin-bottom: 0px;
+  background-color: #d9d9d9;
+}
+
+.button-container button {
+  padding: 10px;
+  border: none;
+  border-radius: 10px 10px 10px 10px;
+  background-color: #d9d9d9;
+  color: #333;
+  border-bottom: 1px solid #fdb316;
+}
+
+.button-container button.active {
+  border-bottom: 0px solid #fdb316;
+}
+.schedules-margin-top {
+  margin-top: 5rem;
+}
+.schedules-row {
+  display: flex;
+}
+.table-container {
+  background-color: #d9d9d9;
+  height: 65vh;
+}
+.data-table {
+  border-collapse: collapse;
+  width: 90vw;
+  background-color: #d9d9d9;
+}
+
+.data-table tr.schedule-list {
+  padding: 1rem 0rem 0rem 5rem;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
   color: black;
-  font-size: 5rem;
+}
+
+.data-table tr.data-header {
+  padding: 1rem 0rem 0rem 0rem;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  color: #060e57;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.data-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.5rem;
+}
+
+.data-table tr.active {
+  background-color: #eaeaea;
 }

@@ -159,7 +159,7 @@
     top: 31.6rem;
     left: 0rem;
   }
-  body.containerSB-open {
+  body.containerSB.open {
     overflow: hidden;
   }
 }

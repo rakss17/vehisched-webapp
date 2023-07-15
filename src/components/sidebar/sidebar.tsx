@@ -53,6 +53,8 @@ export default function Sidebar() {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
       }
     };
 
@@ -70,22 +72,25 @@ export default function Sidebar() {
           <button className="toggle-button" onClick={toggleSidebar}>
             <FontAwesomeIcon icon={faBars} className="icon-bar" />
           </button>
-          {isSidebarOpen && (
-            <div className="sidebar-buttons">
-              {sidebarData.map((item, index) => (
-                <button
-                  className={`sidebar-button ${
-                    item.text === activeButton ? "active" : ""
-                  }`}
-                  key={index}
-                  onClick={() => handleButtonClick(item)}
-                >
-                  <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
-                  <span className="sidebar-text">{item.text}</span>
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="sidebar-buttons">
+            {isSidebarOpen || window.innerWidth > 768
+              ? sidebarData.map((item, index) => (
+                  <button
+                    className={`sidebar-button ${
+                      item.text === activeButton ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => handleButtonClick(item)}
+                  >
+                    <FontAwesomeIcon
+                      icon={item.icon}
+                      className="sidebar-icon"
+                    />
+                    <span className="sidebar-text">{item.text}</span>
+                  </button>
+                ))
+              : null}
+          </div>
         </div>
       </div>
       {isSidebarOpen && <div className="blur-overlay" />}

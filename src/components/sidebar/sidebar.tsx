@@ -49,6 +49,22 @@ export default function Sidebar() {
     navigate(item.path);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <div className={`containerSB ${isSidebarOpen ? "open" : ""}`}>
@@ -57,18 +73,23 @@ export default function Sidebar() {
             <FontAwesomeIcon icon={faBars} className="icon-bar" />
           </button>
           <div className="sidebar-buttons">
-            {sidebarData.map((item, index) => (
-              <button
-                className={`sidebar-button ${
-                  item.text === activeButton ? "active" : ""
-                }`}
-                key={index}
-                onClick={() => handleButtonClick(item)}
-              >
-                <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
-                <span className="sidebar-text">{item.text}</span>
-              </button>
-            ))}
+            {isSidebarOpen || window.innerWidth > 768
+              ? sidebarData.map((item, index) => (
+                  <button
+                    className={`sidebar-button ${
+                      item.text === activeButton ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => handleButtonClick(item)}
+                  >
+                    <FontAwesomeIcon
+                      icon={item.icon}
+                      className="sidebar-icon"
+                    />
+                    <span className="sidebar-text">{item.text}</span>
+                  </button>
+                ))
+              : null}
           </div>
         </div>
       </div>

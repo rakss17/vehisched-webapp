@@ -134,6 +134,7 @@
   }
   .sidebar-icon {
     display: none;
+    pointer-events: none;
   }
   .sidebar-button.active {
     background-color: transparent;
@@ -142,6 +143,10 @@
     background: none;
     cursor: unset;
   }
+  .sidebar-icon.disabled {
+    pointer-events: none;
+  }
+
   .containerSB.open .sidebar-button:hover {
     cursor: pointer;
   }
@@ -154,7 +159,7 @@
     top: 31.6rem;
     left: 0rem;
   }
-  body.containerSB-open {
+  body.containerSB.open {
     overflow: hidden;
   }
 }

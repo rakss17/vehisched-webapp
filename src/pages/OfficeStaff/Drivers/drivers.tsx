@@ -12,15 +12,24 @@ interface Driver {
   driver_name: string;
   capacity: number;
   vehicle_type: string;
-  vehicle_image: string;
+
   status: string;
 }
+const fetchedDrivers: Driver[] = [
+  {
+    id: 1,
+    driver_name: "KDA 1368 Toyota Hilux",
+    capacity: 5,
+    vehicle_type: "Pickup Truck",
+    status: "On Trip",
+  },
+];
 export default function Drivers() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const fetchedDriverList = () => {
-    // setDrivers(fetchedDrivers);
+    setDrivers(fetchedDrivers);
   };
 
   useEffect(() => {
@@ -61,6 +70,20 @@ export default function Drivers() {
             status={["All", "Available", "On Trip", "Unavailable"]}
             onCategoryChange={handleCategoryChange}
           />
+        </div>
+        <div className="drivers-container">
+          {filteredDriverList.length === 0 ? (
+            <p className="drivers-null">No drivers available</p>
+          ) : (
+            filteredDriverList.map((driver) => (
+              <a className="driver-card">
+                <div className="driver-card-column">
+                  <p className="driver-name">{driver.driver_name}</p>
+                  <p className="driver-status">{driver.status}</p>
+                </div>
+              </a>
+            ))
+          )}
         </div>
       </Container>
     </>

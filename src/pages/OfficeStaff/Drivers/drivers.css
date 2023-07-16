@@ -15,3 +15,33 @@
   flex-direction: row;
   gap: 30%;
 }
+
+.drivers-container {
+  display: flex;
+  flex-direction: row;
+  background-color: transparent;
+  height: 100vh;
+  width: 88vw;
+  margin-left: 15vh;
+  gap: 5%;
+  overflow-y: auto;
+  flex-wrap: wrap;
+  max-height: 70vh;
+  padding: 3rem;
+}
+.drivers-null {
+  font-size: 1.5rem;
+  color: #060e57;
+  font-weight: bold;
+}
+.driver-card {
+  background-color: #d9d9d9;
+  width: 15vw;
+  height: 25vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 3vh;
+  color: white;
+  cursor: pointer;
+}

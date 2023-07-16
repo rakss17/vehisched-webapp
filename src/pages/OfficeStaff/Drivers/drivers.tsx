@@ -10,18 +10,68 @@ import Dropdown from "../../../components/dropdown/dropdown";
 interface Driver {
   id: number;
   driver_name: string;
-  capacity: number;
-  vehicle_type: string;
-
   status: string;
 }
 const fetchedDrivers: Driver[] = [
   {
     id: 1,
-    driver_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
+    driver_name: "Ambulo, Bohari S.",
     status: "On Trip",
+  },
+  {
+    id: 2,
+    driver_name: "Araquil, Tristan C.",
+    status: "Available",
+  },
+  {
+    id: 3,
+    driver_name: "Lorejo, Mark Dave M.",
+    status: "Unavailable",
+  },
+  {
+    id: 4,
+    driver_name: "Romeo, Michael Ray V.",
+    status: "On Trip",
+  },
+  {
+    id: 5,
+    driver_name: "Ibahay, Mike Emmanuel ",
+    status: "Unavailable",
+  },
+  {
+    id: 6,
+    driver_name: "Gabut, Anton Joseph C. ",
+    status: "Available",
+  },
+  {
+    id: 7,
+    driver_name: "Abragan, Juren Roy R. ",
+    status: "On Trip",
+  },
+  {
+    id: 8,
+    driver_name: "Ednilan, Jonathan B. ",
+    status: "Unavailable",
+  },
+  {
+    id: 9,
+    driver_name: "Genson, Edmar J. ",
+    status: "On Trip",
+  },
+  {
+    id: 10,
+    driver_name: "Iligan, CJ Andrey B.",
+    status: "Available",
+  },
+  {
+    id: 11,
+    driver_name: "Engracia, Jayde Mike",
+    status: "Available",
+  },
+  {
+    id: 12,
+    driver_name: "Magdugo, Bon C.",
+    status: "Unavailable",
   },
 ];
 export default function Drivers() {

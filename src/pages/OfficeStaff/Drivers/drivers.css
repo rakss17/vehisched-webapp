@@ -1,4 +1,17 @@
-p {
-  color: black;
-  font-size: 5rem;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.margin-top-drivers {
+  margin-top: 5rem;
+}
+
+.drivers-row {
+  margin-top: 1.5rem;
+  margin-left: 19vh;
+  display: flex;
+  flex-direction: row;
+  gap: 30%;
 }

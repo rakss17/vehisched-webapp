@@ -10,7 +10,7 @@ type SidebarItem = {
 };
 
 const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+  { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
   { icon: faClipboardList, text: "Requests", path: "/Requests" },
 ];
 export default function DashboardR() {

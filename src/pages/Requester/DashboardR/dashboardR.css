@@ -1,0 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.requester-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.requester-row p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #060e57;
+}

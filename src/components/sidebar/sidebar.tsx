@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import "./sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faColumns,
-  faClipboardList,
-  faCar,
-  faCalendarAlt,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
 type SidebarItem = {
@@ -17,15 +10,11 @@ type SidebarItem = {
   path: string;
 };
 
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
+interface SidebarProps {
+  sidebarData: SidebarItem[];
+}
 
-export default function Sidebar() {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeButton, setActiveButton] = useState("");
   const navigate = useNavigate();
@@ -38,7 +27,7 @@ export default function Sidebar() {
     if (activePath) {
       setActiveButton(activePath.text);
     }
-  }, [location.pathname]);
+  }, [location.pathname, sidebarData]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -96,4 +85,6 @@ export default function Sidebar() {
       {isSidebarOpen && <div className="blur-overlay" />}
     </>
   );
-}
+};
+
+export default Sidebar;

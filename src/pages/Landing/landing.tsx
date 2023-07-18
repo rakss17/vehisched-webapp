@@ -11,13 +11,21 @@ import "./landing.css";
 
 export default function Landing() {
   const [showPassword, setShowPassword] = useState(false);
+  const [userData, setUserData] = useState({
+    username: "",
+    password: "",
+  });
   const navigate = useNavigate();
   const handleToggleVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleSignin = () => {
-    navigate("/DashboardOS");
+    if (userData.username === "officestaff") {
+      navigate("/DashboardOS");
+    } else if (userData.username === "requester") {
+      navigate("/DashboardR");
+    }
   };
   return (
     <>
@@ -33,7 +41,13 @@ export default function Landing() {
               <div className="icon-container">
                 <FontAwesomeIcon icon={faUser} className="input-icon" />
               </div>
-              <input placeholder="Username"></input>
+              <input
+                value={userData.username}
+                placeholder="Username"
+                onChange={(event) => {
+                  setUserData({ ...userData, username: event.target.value });
+                }}
+              ></input>
             </div>
 
             <div className="password-container">
@@ -41,8 +55,12 @@ export default function Landing() {
                 <FontAwesomeIcon icon={faLock} className="input-icon" />
               </div>
               <input
+                value={userData.password}
                 placeholder="Password"
                 type={showPassword ? "text" : "password"}
+                onChange={(event) => {
+                  setUserData({ ...userData, password: event.target.value });
+                }}
               />
               <FontAwesomeIcon
                 icon={showPassword ? faEyeSlash : faEye}

@@ -48,22 +48,52 @@
 .modal-set-trip {
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   flex-direction: column;
   background-color: #d9d9d9;
   width: 30vw;
-  height: 50vh;
-  margin-top: 13vw;
+  height: 55vh;
+  margin-top: 11vw;
   margin-left: 70vh;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
+
 .modal-set-trip-body h1 {
+  margin-top: 1vw;
   color: #060e57;
   font-size: 1.5rem;
   text-align: center;
 }
+.modal-button-container {
+  margin-top: 2vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.modal-button-container button:nth-child(1) {
+  background-color: transparent;
+  font-weight: bold;
+  font-size: 1rem;
+  color: black;
+  border: 2px solid #060e57;
+}
+.modal-button-container button:nth-child(1):hover {
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cccccc;
+}
+
+.modal-button-container button:nth-child(2) {
+  background-color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.modal-button-container button:nth-child(2):hover {
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cccccc;
+}
 .date-from {
+  margin-top: 1vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -76,6 +106,46 @@
   font-size: 1rem;
   font-weight: bold;
 }
+.date-to {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 2vw;
+
+  width: 25vw;
+  height: 10vh;
+}
+.date-to p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 3vh;
+}
 .separate-time {
   margin-top: 1vw;
+}
+
+.number-of-pass {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 2vw;
+}
+.number-of-pass p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 0vh;
+}
+.number-of-pass input {
+  background-color: white;
+  color: black;
+  border: none;
+  width: 5vw;
+  height: 5vh;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 0.5rem;
+  text-align: center;
 }

@@ -98,6 +98,17 @@ export default function DashboardR() {
     setIsSetTripOpen(true);
   };
 
+  const handleCancelTripModal = () => {
+    setIsSetTripOpen(false);
+  };
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const key = event.key;
+
+    if (key !== "Backspace" && isNaN(Number(key))) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <>
       <Header />
@@ -144,6 +155,25 @@ export default function DashboardR() {
                 <TimeInput />
               </div>
             </div>
+          </div>
+          <div className="date-to">
+            <p>To: </p>
+            <div>
+              <CalendarInput />
+              <div className="separate-time">
+                <TimeInput />
+              </div>
+            </div>
+          </div>
+          <div className="number-of-pass">
+            <p>
+              Number of Passenger{"("}s{"):"}
+            </p>
+            <input type="number" onKeyDown={handleKeyDown}></input>
+          </div>
+          <div className="modal-button-container">
+            <button onClick={handleCancelTripModal}>Cancel</button>
+            <button onClick={handleSetTripModal}>Set Trip</button>
           </div>
         </div>
       </Modal>

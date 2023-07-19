@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.calendar-input {
+  background-color: white;
+  color: #000000;
+  font-size: 1.3rem;
+  border: none;
+  text-align: center;
+  width: 15vw;
+  height: 4vh;
+  border-radius: 5px;
+}
+.calendar-container {
+  position: relative;
+  width: 15vw;
+  height: 4vh;
+}
+.calendar-input-icon {
+  color: #060e57;
+
+  height: 3vh;
+}
+.calendar-icon-container {
+  position: absolute;
+  left: 85%;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}

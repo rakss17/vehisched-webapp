@@ -64,6 +64,9 @@
   text-align: center;
 }
 .date-from {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   background-color: aquamarine;
   width: 25vw;
   height: 10vh;
@@ -72,4 +75,6 @@
   color: #060e57;
   font-size: 1rem;
   font-weight: bold;
+}
+.date-from div {
 }

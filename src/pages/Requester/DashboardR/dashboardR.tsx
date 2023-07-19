@@ -10,6 +10,7 @@ import ToyotaHilux from "../../../components/images/toyota-hilux.jpg";
 import MitsubishiMontero from "../../../components/images/mitsubishi-montero.jpg";
 import Fortuner from "../../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../../components/images/toyota-hiace.png";
+import CalendarInput from "../../../components/calendarinput/calendarinput";
 
 type SidebarItem = {
   icon: any;
@@ -136,7 +137,9 @@ export default function DashboardR() {
           <h1>Set Trip</h1>
           <div className="date-from">
             <p>From: </p>
-            <div></div>
+            <div>
+              <CalendarInput />
+            </div>
           </div>
         </div>
       </Modal>

@@ -11,6 +11,7 @@ import MitsubishiMontero from "../../../components/images/mitsubishi-montero.jpg
 import Fortuner from "../../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../../components/images/toyota-hiace.png";
 import CalendarInput from "../../../components/calendarinput/calendarinput";
+import TimeInput from "../../../components/timeinput/timeinput";
 
 type SidebarItem = {
   icon: any;
@@ -139,6 +140,9 @@ export default function DashboardR() {
             <p>From: </p>
             <div>
               <CalendarInput />
+              <div className="separate-time">
+                <TimeInput />
+              </div>
             </div>
           </div>
         </div>

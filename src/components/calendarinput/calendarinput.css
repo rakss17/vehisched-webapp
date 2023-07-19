@@ -27,7 +27,7 @@
 .calendar-icon-container {
   position: absolute;
   left: 85%;
-  top: 50%;
+  top: 70%;
   transform: translateY(-50%);
   pointer-events: none;
 }

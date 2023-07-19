@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Modal from "react-modal";
 import Container from "../../../components/container/container";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -81,6 +82,7 @@ const fetchedVehicles: Vehicle[] = [
 ];
 export default function DashboardR() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [isSetTripOpen, setIsSetTripOpen] = useState(false);
 
   const fetchedVehicleList = () => {
     setVehicles(fetchedVehicles);
@@ -89,6 +91,10 @@ export default function DashboardR() {
   useEffect(() => {
     fetchedVehicleList();
   }, []);
+
+  const handleSetTripModal = () => {
+    setIsSetTripOpen(true);
+  };
 
   return (
     <>
@@ -100,7 +106,7 @@ export default function DashboardR() {
         </div>
         <div className="requester-row">
           <p>Available Vehicles</p>
-          <button>Set Trip</button>
+          <button onClick={handleSetTripModal}>Set Trip</button>
         </div>
         <div className="requester-dashboard-container">
           {vehicles.length === 0 ? (
@@ -125,6 +131,15 @@ export default function DashboardR() {
           )}
         </div>
       </Container>
+      <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
+        <div className="modal-set-trip-body">
+          <h1>Set Trip</h1>
+          <div className="date-from">
+            <p>From: </p>
+            <div></div>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

@@ -32,20 +32,17 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
   const handleButtonClick = (item: SidebarItem) => {
     setActiveButton(item.text);
     navigate(item.path);
   };
-
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
-      }
+      setIsSidebarOpen(window.innerWidth <= 768);
     };
+
+    // Set initial state based on window size during initial render
+    setIsSidebarOpen(window.innerWidth <= 768);
 
     window.addEventListener("resize", handleResize);
 
@@ -62,23 +59,20 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
             <FontAwesomeIcon icon={faBars} className="icon-bar" />
           </button>
           <div className="sidebar-buttons">
-            {isSidebarOpen || window.innerWidth > 768
-              ? sidebarData.map((item, index) => (
-                  <button
-                    className={`sidebar-button ${
-                      item.text === activeButton ? "active" : ""
-                    }`}
-                    key={index}
-                    onClick={() => handleButtonClick(item)}
-                  >
-                    <FontAwesomeIcon
-                      icon={item.icon}
-                      className="sidebar-icon"
-                    />
-                    <span className="sidebar-text">{item.text}</span>
-                  </button>
-                ))
-              : null}
+            {sidebarData.map((item, index) =>
+              isSidebarOpen || window.innerWidth > 768 ? (
+                <button
+                  className={`sidebar-button ${
+                    item.text === activeButton ? "active" : ""
+                  }`}
+                  key={index}
+                  onClick={() => handleButtonClick(item)}
+                >
+                  <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
+                  <span className="sidebar-text">{item.text}</span>
+                </button>
+              ) : null
+            )}
           </div>
         </div>
       </div>

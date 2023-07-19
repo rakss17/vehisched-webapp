@@ -31,7 +31,7 @@ const eventStyleGetter = (event: Event) => {
 };
 
 const CalendarSchedule: React.FC = () => (
-  <div className="calendar-container">
+  <div className="calendar-container-main">
     <Calendar
       localizer={localizer}
       events={events}

@@ -174,17 +174,37 @@
     margin-top: 5vh;
   }
   .date-from {
+    margin-top: 3vw;
     width: 75vw;
     justify-content: center;
     gap: 20%;
   }
   .date-from p {
-    margin-left: -8vh;
+    margin-left: 0vh;
   }
   .date-to {
+    margin-top: 3vw;
     width: 75vw;
+    justify-content: center;
+    gap: 20%;
+  }
+  .date-from p {
+    margin-left: 0vh;
   }
   .separate-time {
     margin-top: 3vw;
+  }
+
+  .number-of-pass p {
+    font-size: 0.9rem;
+  }
+  .number-of-pass input {
+    width: 15vw;
+    padding: 0.1rem;
+  }
+  .number-of-pass {
+    margin-top: 3vw;
+    justify-content: center;
+    gap: 7%;
   }
 }

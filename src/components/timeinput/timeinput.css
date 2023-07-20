@@ -181,3 +181,21 @@
 .react-time-picker__clock--closed {
   display: none;
 }
+
+@media screen and (max-width: 768px) {
+  .react-time-picker {
+    font-size: 1rem;
+    padding-left: 1vh;
+    padding-top: 1vw;
+    width: 30vw;
+    height: 5vh;
+  }
+  .am-pm-container {
+    left: 55%;
+    top: 40%;
+    font-size: 1rem;
+  }
+  .time-input-wrapper {
+    left: 3%;
+  }
+}

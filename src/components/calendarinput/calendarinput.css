@@ -31,3 +31,19 @@
   transform: translateY(-50%);
   pointer-events: none;
 }
+
+@media screen and (max-width: 768px) {
+  .calendar-input {
+    width: 30vw;
+    font-size: 1rem;
+    text-align: start;
+    padding-left: 1rem;
+  }
+  .calendar-input-icon {
+    height: 2vh;
+  }
+  .calendar-icon-container {
+    top: 58%;
+    left: 160%;
+  }
+}

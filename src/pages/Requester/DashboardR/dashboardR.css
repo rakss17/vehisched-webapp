@@ -149,3 +149,42 @@
   padding: 0.5rem;
   text-align: center;
 }
+
+@media screen and (max-width: 768px) {
+  .margin-top-dashboard {
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+  }
+  .requester-row {
+    gap: 10%;
+  }
+  .requester-row p {
+    font-size: 1.5rem;
+  }
+  .requester-dashboard-container {
+    margin-left: 3vh;
+  }
+  .modal-set-trip {
+    width: 75vw;
+    height: 55vh;
+    margin-top: 25vh;
+    margin-left: 13vw;
+  }
+  .modal-set-trip-body {
+    margin-top: 5vh;
+  }
+  .date-from {
+    width: 75vw;
+    justify-content: center;
+    gap: 20%;
+  }
+  .date-from p {
+    margin-left: -8vh;
+  }
+  .date-to {
+    width: 75vw;
+  }
+  .separate-time {
+    margin-top: 3vw;
+  }
+}

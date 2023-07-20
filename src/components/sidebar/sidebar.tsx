@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
           </div>
         </div>
       </div>
-      {isSidebarOpen && <div className="blur-overlay" />}
+      {/* {isSidebarOpen && <div className="blur-overlay" />} */}
     </>
   );
 };

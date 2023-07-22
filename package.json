@@ -12,6 +12,8 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@geoapify/geocoder-autocomplete": "^1.5.1",
+    "@geoapify/react-geocoder-autocomplete": "^1.5.0",
     "@mui/material": "^5.13.7",
     "date-fns": "^2.30.0",
     "react": "^18.2.0",

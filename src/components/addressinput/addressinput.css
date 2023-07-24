@@ -3,15 +3,18 @@
 
 .geoapify-autocomplete-input {
   padding: 0 31px 0 7px;
-  width: calc(100% - 40px);
+  width: 15vw;
 
   color: black;
   outline: none;
-  background-color: white;
+  background-color: transparent;
   line-height: 36px;
   height: 6vh;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  color: black;
+  border-color: black;
   font-size: 14px;
 }
 

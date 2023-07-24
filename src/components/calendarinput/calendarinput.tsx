@@ -5,7 +5,11 @@ import "./calendarinput.css";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CalendarInput: React.FC = () => {
+interface CalendarInputProps {
+  className?: string; // className prop for customization
+}
+
+const CalendarInput: React.FC<CalendarInputProps> = ({ className }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   useEffect(() => {
     setSelectedDate(new Date());
@@ -17,15 +21,15 @@ const CalendarInput: React.FC = () => {
 
   return (
     <>
-      <div className="calendar-container">
+      <div className={`calendar-container ${className}`}>
         <DatePicker
-          className="calendar-input"
+          className={`calendar-input ${className}`}
           selected={selectedDate}
           onChange={handleDateChange}
         />
         <div className="calendar-icon-container">
           <FontAwesomeIcon
-            className="calendar-input-icon"
+            className={`calendar-input-icon ${className}`}
             icon={faCalendarAlt}
           />
         </div>

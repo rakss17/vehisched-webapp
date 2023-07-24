@@ -1,0 +1,49 @@
+.inputfieldd {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-label {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  pointer-events: none;
+  transition: 0.2s ease-out;
+  color: #808080;
+  font-size: 1rem;
+  margin-bottom: 50px;
+}
+
+.input-focused {
+  top: 15px;
+  left: 0;
+  font-size: 1rem;
+  color: #381d04;
+}
+
+.inputfield {
+  width: 15vw;
+  height: 7vh;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  color: black;
+  border-color: black;
+  font-size: 15px;
+  padding-left: 30px;
+  padding-bottom: 0px;
+  background: transparent;
+}
+
+.inputfield:focus {
+  outline: none;
+  border-color: #381d04;
+}
+
+.inputfield::placeholder {
+  color: transparent;
+}
+
+.icon {
+  margin-right: 10px;
+}

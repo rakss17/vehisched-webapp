@@ -5,6 +5,7 @@ import Vehicles from "./pages/OfficeStaff/Vehicles/vehicles";
 import Schedules from "./pages/OfficeStaff/Schedules/schedules";
 import Drivers from "./pages/OfficeStaff/Drivers/drivers";
 import DashboardR from "./pages/Requester/DashboardR/dashboardR";
+import RequestForm from "./components/form/requestform";
 import { HashRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/Schedules" element={<Schedules />} />
           <Route path="/Drivers" element={<Drivers />} />
           <Route path="/DashboardR" element={<DashboardR />} />
+          <Route path="/RequestForm" element={<RequestForm />} />
         </Routes>
       </HashRouter>
     </>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import Container from "../../../components/container/container";
 import Header from "../../../components/header/header";
@@ -85,6 +86,7 @@ const fetchedVehicles: Vehicle[] = [
 export default function DashboardR() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
+  const navigate = useNavigate();
 
   const fetchedVehicleList = () => {
     setVehicles(fetchedVehicles);
@@ -108,6 +110,9 @@ export default function DashboardR() {
       event.preventDefault();
     }
   };
+  const openRequestForm = () => {
+    navigate("/RequestForm");
+  };
 
   return (
     <>
@@ -126,7 +131,7 @@ export default function DashboardR() {
             <p className="vehicles-null">No vehicles available</p>
           ) : (
             vehicles.map((vehicle) => (
-              <a className="vehicle-card">
+              <a onClick={openRequestForm} className="vehicle-card">
                 <div className="vehicle-row">
                   <div className="vehicle-column">
                     <p className="vehicle-name">{vehicle.vehicle_name}</p>

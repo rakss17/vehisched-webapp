@@ -139,7 +139,7 @@
   background: linear-gradient(120deg, #fdb316, #060e57 60%);
 }
 .forgotpassword {
-  margin-top: -1rem;
+  margin-top: 0rem;
 }
 .forgottext {
   color: blue;

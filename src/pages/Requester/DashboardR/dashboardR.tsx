@@ -22,7 +22,7 @@ type SidebarItem = {
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
+  { icon: faClipboardList, text: "Request", path: "/Request" },
 ];
 
 interface Vehicle {

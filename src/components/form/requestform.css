@@ -43,7 +43,7 @@
 }
 .first-row {
   display: flex;
-
+  margin-top: 2vw;
   flex-direction: row;
   justify-content: space-around;
 }
@@ -154,6 +154,7 @@
 }
 .purpose-row {
   display: flex;
+  margin-top: 1vw;
 }
 .purpose-width {
   width: 60vw;

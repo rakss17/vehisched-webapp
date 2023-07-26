@@ -52,7 +52,7 @@
   font-size: 1.5rem;
   font-family: Arial;
 }
-.inputfieldd {
+.inputfielddd {
   margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -62,7 +62,7 @@
 .inputusername {
   position: relative;
 }
-.inputfieldd input {
+.inputfielddd input {
   background-color: #fdfdfd;
   color: black;
   border: 1px solid #cccccc;
@@ -165,7 +165,7 @@
     margin-top: 1rem;
     font-size: 1.3rem;
   }
-  .inputfield input {
+  .inputfielddd input {
     width: 16rem;
   }
   .forgottext {

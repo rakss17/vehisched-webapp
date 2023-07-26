@@ -36,7 +36,7 @@ export default function Landing() {
         </div>
         <div className="form">
           <p>Signin to your account</p>
-          <div className="inputfieldd">
+          <div className="inputfielddd">
             <div className="inputusername">
               <div className="icon-container">
                 <FontAwesomeIcon icon={faUser} className="input-icon" />

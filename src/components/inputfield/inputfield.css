@@ -5,7 +5,7 @@
 
 .input-label {
   position: absolute;
-  top: 40px;
+  top: 20px;
   left: 10px;
   pointer-events: none;
   transition: 0.2s ease-out;
@@ -15,7 +15,7 @@
 }
 
 .input-focused {
-  top: 15px;
+  top: -10px;
   left: 0;
   font-size: 1rem;
   color: #381d04;

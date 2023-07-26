@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.nav-button-row {
+  margin-top: 10vw;
+  display: flex;
+  justify-content: space-evenly;
+}
+.nav-button-row button {
+  padding-bottom: 10px;
+  background-color: transparent;
+  color: #060e57;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  border: none;
+}
+.nav-button-row button:focus {
+  border-bottom: 5px solid #060e57;
+  border-radius: 0px;
+}
+.nav-button-row button:hover {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 5px solid #060e57;
+  border-radius: 0px;
+}

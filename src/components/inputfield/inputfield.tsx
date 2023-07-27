@@ -30,9 +30,7 @@ const InputField: FC<InputFieldProps> = ({
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    onChange?.(event); // check if onChange exists before using it
-
-    // directly control placeholder display, also check if placeholder exists
+    onChange?.(event);
     event.target.placeholder = value ? "" : placeholder || "";
   };
 

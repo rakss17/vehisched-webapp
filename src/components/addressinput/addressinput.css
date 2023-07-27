@@ -1,4 +1,7 @@
 * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .geoapify-autocomplete-input {
@@ -13,7 +16,7 @@
   border-top: none;
   border-left: none;
   border-right: none;
-  color: black;
+
   border-color: black;
   font-size: 14px;
 }
@@ -94,4 +97,22 @@
   margin-left: 10px;
   font-size: small;
   color: #060e57;
+}
+
+@media screen and (max-width: 768px) {
+  .geoapify-autocomplete-input {
+    width: 30vw;
+
+    background-color: transparent;
+
+    font-size: 10px;
+  }
+  .geoapify-autocomplete-items {
+    font-size: 10px;
+    width: 50vw;
+  }
+  .geoapify-autocomplete-item .icon {
+    width: 40px;
+    height: 24px;
+  }
 }

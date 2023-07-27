@@ -47,3 +47,20 @@
 .icon {
   margin-right: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .inputfield {
+    width: 30vw;
+    height: 7vh;
+    font-size: 15px;
+    padding-left: 0px;
+  }
+  .input-label {
+    font-size: 0.7rem;
+
+    left: 0px;
+  }
+  .input-focused {
+    top: 0px;
+  }
+}

@@ -62,8 +62,8 @@ export default function RequestForm() {
           value={data.passenger_names[i]}
           key={i}
           icon={faUser}
-          label={`Passenger ${i + 1}'s name`}
-          placeholder={`Passenger ${i + 1}'s name`}
+          label={`Passenger ${i + 1}`}
+          placeholder={`Passenger ${i + 1}`}
           onChange={(event) => {
             const newPassengerNames = [...data.passenger_names];
             newPassengerNames[i] = event.target.value;

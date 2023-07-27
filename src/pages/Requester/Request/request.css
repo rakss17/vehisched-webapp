@@ -53,6 +53,7 @@
   height: 50vh;
   gap: 2%;
   overflow-y: auto;
+  text-align: center;
 }
 .requests-table-header {
   font-size: 1.3rem;
@@ -75,6 +76,7 @@
   gap: 25%;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 .requests-list td {
   font-size: 1.2rem;
@@ -82,4 +84,44 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .label-margin {
+    margin-top: 0vw;
+  }
+
+  .nav-button-row {
+    margin-top: 10vw;
+  }
+  .nav-button-row button {
+    width: 18vw;
+    height: 5vh;
+    font-size: 1rem;
+  }
+  .requests-container {
+    margin-top: 5vw;
+    margin-left: 3vh;
+    width: 90vw;
+    height: 80vh;
+  }
+  .requests-table-header {
+    font-size: 1rem;
+    width: 80vw;
+    gap: 25%;
+    text-align: center;
+  }
+  .requests-container table tbody {
+    height: 55vh;
+  }
+  .requests-list {
+    margin-left: 0vh;
+    width: 85vw;
+  }
+  .requests-list td {
+    font-size: 70%;
+    height: 6vh;
+    text-align: center;
+  }
 }

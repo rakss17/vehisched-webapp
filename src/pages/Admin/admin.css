@@ -23,9 +23,13 @@
   width: 50vw;
   border: none;
 }
+
 .nav-button-row-admin button.active {
   background-color: #060e57;
   color: #d9d9d9;
+}
+.nav-button-row-admin button:focus {
+  border: none;
 }
 .nav-button-row-admin button:hover {
   background-color: #060e57;
@@ -77,11 +81,14 @@
 .accounts-data-container {
   display: flex;
   justify-content: center;
-  overflow: scroll;
+  overflow-x: auto;
 }
+
 .accounts-data-container table {
   width: 90vw;
+  table-layout: fixed;
 }
+
 .accounts-data-container table thead {
   color: black;
   font-size: 1.3rem;
@@ -96,5 +103,5 @@
   height: 7vh;
 }
 .accounts-data-container table tbody td {
-  border-radius: 10px;
+  border-radius: 0px;
 }

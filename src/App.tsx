@@ -7,6 +7,7 @@ import Drivers from "./pages/OfficeStaff/Drivers/drivers";
 import DashboardR from "./pages/Requester/DashboardR/dashboardR";
 import RequestForm from "./components/form/requestform";
 import Request from "./pages/Requester/Request/request";
+import Admin from "./pages/Admin/admin";
 import { HashRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/DashboardR" element={<DashboardR />} />
           <Route path="/RequestForm" element={<RequestForm />} />
           <Route path="/Request" element={<Request />} />
+          <Route path="/Admin" element={<Admin />} />
         </Routes>
       </HashRouter>
     </>

@@ -25,6 +25,8 @@ export default function Landing() {
       navigate("/DashboardOS");
     } else if (userData.username === "requester") {
       navigate("/DashboardR");
+    } else if (userData.username === "admin") {
+      navigate("/Admin");
     }
   };
   return (

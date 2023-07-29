@@ -83,12 +83,7 @@ export default function Admin() {
     useState<string>("Accounts");
   const [selectedAccountNavigation, setSelectedAccountNavigation] =
     useState<string>("Requester");
-  const [displayRequesters, setDisplayRequesters] = useState(true);
-  const [displayVIP, setDisplayVIP] = useState(false);
-  const [displayDriver, setDisplayDriver] = useState(false);
-  const [displayGateGuard, setDisplayGateGuard] = useState(false);
-  const [displayOfficeStaff, setDisplayOfficeStaff] = useState(false);
-  const [displayUnitHead, setDisplayUnitHead] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleButtonClick = (nav: string) => {
@@ -115,15 +110,15 @@ export default function Admin() {
     switch (nav) {
       case "Requester":
         setAccountsData(fetchedRequesterData);
-        setDisplayRequesters(true);
+
         break;
       case "VIP":
         setAccountsData(fetchedVIPData);
-        setDisplayRequesters(false);
+
         break;
       case "Driver":
         setAccountsData(fetchedDriverData);
-        setDisplayRequesters(false);
+
         break;
       default:
         setAccountsData([]);

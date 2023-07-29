@@ -89,6 +89,7 @@ export default function Admin() {
   const [displayGateGuard, setDisplayGateGuard] = useState(false);
   const [displayOfficeStaff, setDisplayOfficeStaff] = useState(false);
   const [displayUnitHead, setDisplayUnitHead] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleButtonClick = (nav: string) => {
     switch (nav) {
@@ -133,6 +134,20 @@ export default function Admin() {
   useEffect(() => {
     handleButton2Click("Requester");
   }, []);
+  const filteredAccountsData = accountsData.filter((account) => {
+    const isSearchMatch =
+      searchTerm === "" ||
+      account.id_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      account.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      account.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      account.contact_number.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return isSearchMatch;
+  });
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+  };
   return (
     <>
       <Header />
@@ -157,7 +172,7 @@ export default function Admin() {
         {displayAccounts && (
           <div className="display-accounts-container">
             <div className="accounts-row">
-              <SearchBar />
+              <SearchBar onSearchChange={handleSearchChange} />
               <button>Add User {""}+</button>
             </div>
             <div className="usertype-button-row">
@@ -225,11 +240,11 @@ export default function Admin() {
                     <th style={{ fontWeight: "normal" }}>Contact No.</th>
                   </tr>
                 </thead>
-                {accountsData.length === 0 ? (
+                {filteredAccountsData.length === 0 ? (
                   <p>No users available</p>
                 ) : (
                   <tbody>
-                    {accountsData.map((account) => (
+                    {filteredAccountsData.map((account) => (
                       <tr key={account.index} onClick={() => alert("clicked")}>
                         <td>{account.id_number}</td>
                         <td>{account.last_name}</td>

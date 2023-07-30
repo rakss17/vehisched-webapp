@@ -152,50 +152,58 @@ export default function Request() {
         <div className="label-margin">
           <Label label="Request" />
         </div>
-
-        <div className="nav-button-row">
-          <button
-            onClick={() => handleButtonClick("Pending")}
-            className={selectedStatus === "Pending" ? "active" : ""}
-          >
-            Pending
-          </button>
-          <button
-            onClick={() => handleButtonClick("Approved")}
-            className={selectedStatus === "Approved" ? "active" : ""}
-          >
-            Approved
-          </button>
-          <button
-            onClick={() => handleButtonClick("Canceled")}
-            className={selectedStatus === "Canceled" ? "active" : ""}
-          >
-            Canceled
-          </button>
-          <button
-            onClick={() => handleButtonClick("Declined")}
-            className={selectedStatus === "Declined" ? "active" : ""}
-          >
-            Declined
-          </button>
-        </div>
-        <div className="requests-container">
-          <table>
-            <thead className="requests-table-header">
-              <p>Request No.</p>
-              <p>Travel Date</p>
-              <p>Vehicle</p>
-            </thead>
-            <tbody>
-              {requestData.map((request, index) => (
-                <tr className="requests-list" key={index}>
-                  <td>{request.request_number}</td>
-                  <td>{request.travel_date}</td>
-                  <td>{request.vehicle}</td>
+        <div className="request-child-container">
+          <div className="nav-button-row">
+            <button
+              onClick={() => handleButtonClick("Pending")}
+              className={selectedStatus === "Pending" ? "active" : ""}
+            >
+              Pending
+            </button>
+            <button
+              onClick={() => handleButtonClick("Approved")}
+              className={selectedStatus === "Approved" ? "active" : ""}
+            >
+              Approved
+            </button>
+            <button
+              onClick={() => handleButtonClick("Canceled")}
+              className={selectedStatus === "Canceled" ? "active" : ""}
+            >
+              Canceled
+            </button>
+            <button
+              onClick={() => handleButtonClick("Declined")}
+              className={selectedStatus === "Declined" ? "active" : ""}
+            >
+              Declined
+            </button>
+          </div>
+          <div className="requests-container">
+            <table
+              style={{
+                borderCollapse: "separate",
+                borderSpacing: "0 20px",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ fontWeight: "normal" }}>Request No.</th>
+                  <th style={{ fontWeight: "normal" }}>Travel Date</th>
+                  <th style={{ fontWeight: "normal" }}>Vehicle</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {requestData.map((request, index) => (
+                  <tr key={index}>
+                    <td>{request.request_number}</td>
+                    <td>{request.travel_date}</td>
+                    <td>{request.vehicle}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </Container>
     </>

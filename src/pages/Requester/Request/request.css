@@ -4,10 +4,18 @@
   box-sizing: border-box;
 }
 .label-margin {
-  margin-top: 5vw;
+  margin-top: 3vw;
+}
+.request-child-container {
+  display: flex;
+
+  flex-direction: column;
+
+  height: 75vh;
+  width: 100vw;
 }
 .nav-button-row {
-  margin-top: 3vw;
+  margin-top: 2vw;
   display: flex;
   justify-content: space-evenly;
 }
@@ -33,58 +41,37 @@
   border-bottom: 5px solid #060e57;
   border-radius: 0px;
 }
+
 .requests-container {
   margin-top: 1vw;
   display: flex;
-  flex-direction: column;
-  margin-left: 20vh;
+  margin-left: 15vh;
   color: black;
-  width: 85vw;
-  height: 60vh;
-  padding: 10px;
+  justify-content: center;
+
+  width: 90vw;
+  overflow: auto;
+
+  padding: 0px;
   border-top: 8px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
 }
-.requests-container table tbody {
-  margin-top: 1vw;
-  display: flex;
-  flex-direction: column;
-  height: 50vh;
-  gap: 2%;
-  overflow-y: auto;
+.requests-container table {
+  width: 80vw;
+
+  table-layout: fixed;
+}
+.requests-container table tbody tr {
   text-align: center;
-}
-.requests-table-header {
-  font-size: 1.3rem;
-  font-weight: bold;
-  width: 78vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 25%;
-}
-.requests-list {
-  margin-left: 5vh;
-  display: flex;
   background-color: #d9d9d9;
-  border-radius: 5px;
-  width: 78vw;
-  cursor: pointer;
   height: 6vh;
-  flex-direction: row;
-  gap: 25%;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.requests-list td {
   font-size: 1.2rem;
-  height: 6vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  cursor: pointer;
+}
+
+.requests-container table thead {
+  font-size: 1.3rem;
 }
 
 @media screen and (max-width: 768px) {

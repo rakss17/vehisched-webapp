@@ -48,10 +48,8 @@
   margin-left: 15vh;
   color: black;
   justify-content: center;
-
   width: 90vw;
   overflow: auto;
-
   padding: 0px;
   border-top: 8px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
@@ -59,7 +57,6 @@
 }
 .requests-container table {
   width: 80vw;
-
   table-layout: fixed;
 }
 .requests-container table tbody tr {

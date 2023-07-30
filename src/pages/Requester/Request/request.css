@@ -76,7 +76,7 @@
 
 @media screen and (max-width: 768px) {
   .label-margin {
-    margin-top: 0vw;
+    margin-top: -1vw;
   }
 
   .nav-button-row {
@@ -87,11 +87,14 @@
     height: 5vh;
     font-size: 1rem;
   }
+  .request-child-container {
+    background-color: transparent;
+    height: 90vh;
+  }
   .requests-container {
     margin-top: 5vw;
     margin-left: 3vh;
     width: 90vw;
-    height: 80vh;
   }
   .requests-table-header {
     font-size: 1rem;
@@ -99,16 +102,11 @@
     gap: 25%;
     text-align: center;
   }
-  .requests-container table tbody {
-    height: 55vh;
-  }
-  .requests-list {
-    margin-left: 0vh;
-    width: 85vw;
-  }
-  .requests-list td {
-    font-size: 70%;
-    height: 6vh;
+
+  .requests-container table tbody tr {
     text-align: center;
+    background-color: #d9d9d9;
+    height: 6vh;
+    font-size: 1rem;
   }
 }

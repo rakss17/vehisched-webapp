@@ -172,37 +172,36 @@ export default function Requests() {
         <div className="margin-top">
           <Label label="Request" />
         </div>
+        <div className="request-row">
+          <SearchBar onSearchChange={handleSearchChange} />
+          <Dropdown
+            status={["All", "Pending", "Approved", "Rejected", "Request Logs"]}
+            onCategoryChange={handleCategoryChange}
+          />
+        </div>
         <div className="request-container">
-          <div className="request-row">
-            <SearchBar onSearchChange={handleSearchChange} />
-            <Dropdown
-              status={[
-                "All",
-                "Pending",
-                "Approved",
-                "Rejected",
-                "Request Logs",
-              ]}
-              onCategoryChange={handleCategoryChange}
-            />
-          </div>
-          <table className="request-lists">
+          <table
+            style={{
+              borderCollapse: "separate",
+              borderSpacing: "0 20px",
+            }}
+          >
             <thead>
-              <tr className="request-lists-header">
-                <p>Request No.</p>
-                <p>Requested by</p>
-                <p>Travel Date</p>
-                <p>Status</p>
+              <tr>
+                <th>Request No.</th>
+                <th>Requested by</th>
+                <th>Travel Date</th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody className="request-lists-content">
+            <tbody>
               {filteredRequestList.length === 0 ? (
                 <tr>
                   <td colSpan={4}>No request available</td>
                 </tr>
               ) : (
                 filteredRequestList.map((request) => (
-                  <tr className="request-list" key={request.id}>
+                  <tr key={request.id}>
                     <td>{request.request_number}</td>
                     <td>{request.requested_by}</td>
                     <td>{request.travel_date}</td>

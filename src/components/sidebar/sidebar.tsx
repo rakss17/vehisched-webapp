@@ -32,24 +32,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
   const handleButtonClick = (item: SidebarItem) => {
     setActiveButton(item.text);
     navigate(item.path);
   };
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSidebarOpen(window.innerWidth <= 768);
-    };
-
-    // Set initial state based on window size during initial render
-    setIsSidebarOpen(window.innerWidth <= 768);
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   return (
     <>

@@ -240,6 +240,13 @@ export default function Admin() {
   const handleSearchVehicle = (term: string) => {
     setSearchVehicleTerm(term);
   };
+  const handleEllipsisMenu = (category: string) => {
+    if (category === "Edit") {
+      alert("clicked edit");
+    } else if (category === "Delete") {
+      alert("clicked Delete");
+    }
+  };
   return (
     <>
       <Header />
@@ -379,7 +386,10 @@ export default function Admin() {
                         src={vehicle.vehicle_image}
                       />
                       <div className="ellipsis-container">
-                        <Ellipsis status={["Edit", "Delete"]} />
+                        <Ellipsis
+                          onCategoryChange={handleEllipsisMenu}
+                          status={["Edit", "Delete"]}
+                        />
                       </div>
                     </div>
                   </a>

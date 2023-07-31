@@ -124,7 +124,11 @@ export default function Vehicles() {
   const handleCategoryChange = (status: string) => {
     setSelectedCategory(status === "All" ? null : status);
   };
-
+  const handleEllipsisMenu = (category: string) => {
+    if (category === "Unavailable") {
+      alert("clicked unavailable");
+    }
+  };
   return (
     <>
       <Header />
@@ -159,7 +163,10 @@ export default function Vehicles() {
                   </div>
                   <img className="vehicle-image" src={vehicle.vehicle_image} />
                   <div className="ellipsis-container">
-                    <Ellipsis status={["Set Status", "Unavailable"]} />
+                    <Ellipsis
+                      onCategoryChange={handleEllipsisMenu}
+                      status={["Set Status", "Unavailable"]}
+                    />
                   </div>
                 </div>
               </a>

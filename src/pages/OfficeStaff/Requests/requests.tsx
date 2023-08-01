@@ -13,6 +13,7 @@ import "./requests.css";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
+import Modal from "react-modal";
 
 type SidebarItem = {
   icon: any;
@@ -111,6 +112,7 @@ export default function Requests() {
   const [requestList, setRequestList] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const currentDate = new Date();
 
   const fetchRequestList = () => {
@@ -164,6 +166,10 @@ export default function Requests() {
     }
   };
 
+  const handleOpenRequestForm = () => {
+    setIsRequestFormOpen(true);
+  };
+
   return (
     <>
       <Header />
@@ -201,7 +207,7 @@ export default function Requests() {
                 </tr>
               ) : (
                 filteredRequestList.map((request) => (
-                  <tr key={request.id}>
+                  <tr key={request.id} onClick={handleOpenRequestForm}>
                     <td>{request.request_number}</td>
                     <td>{request.requested_by}</td>
                     <td>{request.travel_date}</td>
@@ -213,6 +219,11 @@ export default function Requests() {
           </table>
         </div>
       </Container>
+      <Modal isOpen={isRequestFormOpen}>
+        <>
+          <p>hehe</p>
+        </>
+      </Modal>
     </>
   );
 }

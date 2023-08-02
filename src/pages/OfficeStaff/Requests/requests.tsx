@@ -219,10 +219,208 @@ export default function Requests() {
           </table>
         </div>
       </Container>
-      <Modal isOpen={isRequestFormOpen}>
-        <>
-          <p>hehe</p>
-        </>
+      <Modal className="modal-request-form" isOpen={isRequestFormOpen}>
+        <div>
+          <h1>Vehicle Request Form</h1>
+          <div>
+            <table
+              style={{
+                borderCollapse: "separate",
+                borderSpacing: "0 20px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <tbody
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: "0%",
+                }}
+              >
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "25px",
+                      whiteSpace: "nowrap",
+                      paddingLeft: "1.3em",
+                    }}
+                  >
+                    Requester's Name:
+                  </th>
+                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
+                </tr>
+                <tr>
+                  <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
+                  <td style={{ width: "5vw" }}>CEATSDA</td>
+                </tr>
+              </tbody>
+              <tbody
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "40px",
+                      verticalAlign: "top",
+                      paddingLeft: "4%",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Passenger's Name:
+                  </th>
+                  <td>
+                    Bohari S. Ambulo, Michael Ray V. romeo, Mark Dave M Lorejo,
+                    Tristan C. Araquil, Michael Ray V. romeo, Mark Dave M
+                    Lorejo, Tristan C. Araquil
+                  </td>
+                </tr>
+              </tbody>
+              <tbody
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: "0%",
+                }}
+              >
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "90px",
+                      paddingLeft: "2em",
+                      verticalAlign: "top",
+                    }}
+                  >
+                    Vehicle:
+                  </th>
+                  <td style={{ width: "20vw" }}>
+                    Toyotaaaadwadddawdawd Hiluxdawdawdadawdawdawdada
+                  </td>
+                </tr>
+
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "10px",
+                      verticalAlign: "top",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    No. of Passengers:{" "}
+                  </th>
+                  <td
+                    style={{
+                      paddingRight: "65px",
+                    }}
+                  >
+                    99
+                  </td>
+                </tr>
+              </tbody>
+              <tbody
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: "0%",
+                }}
+              >
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "60px",
+                      verticalAlign: "top",
+                      paddingLeft: "30px",
+                    }}
+                  >
+                    Destination:
+                  </th>
+                  <td
+                    style={{
+                      width: "20vw",
+
+                      height: "10vh",
+                      verticalAlign: "top",
+                    }}
+                  >
+                    Cogon Public Market dawdawdawdaw dawdawdawdawd adaw dawd
+                    awdaw ldjaw jdpawj dopawj dpaw dawjpdojawdjawdpoawjdpawjdawj
+                    d2312312312
+                  </td>
+                </tr>
+                <tr>
+                  <th style={{ paddingRight: "10px", paddingLeft: "45px" }}>
+                    Kilometer/s:
+                  </th>
+                  <td
+                    style={{
+                      paddingRight: "0px",
+
+                      width: "5vw",
+                    }}
+                  >
+                    1500000
+                  </td>
+                </tr>
+              </tbody>
+              <tbody
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: "0%",
+                }}
+              >
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "25px",
+                      whiteSpace: "nowrap",
+                      paddingLeft: "1.3em",
+                    }}
+                  >
+                    Requester's Name:
+                  </th>
+                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
+                </tr>
+                <tr>
+                  <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
+                  <td style={{ width: "5vw" }}>CEATSDA</td>
+                </tr>
+              </tbody>
+              <tbody
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  gap: "0%",
+                }}
+              >
+                <tr>
+                  <th
+                    style={{
+                      paddingRight: "25px",
+                      whiteSpace: "nowrap",
+                      paddingLeft: "1.3em",
+                    }}
+                  >
+                    Requester's Name:
+                  </th>
+                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
+                </tr>
+                <tr>
+                  <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
+                  <td style={{ width: "5vw" }}>CEATSDA</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </Modal>
     </>
   );

@@ -15,6 +15,7 @@ import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
 
 import RequestFormDetails from "../../../components/form/requestformdetails";
+import Confirmation from "../../../components/confirmation/confirmation";
 
 type SidebarItem = {
   icon: any;
@@ -115,6 +116,7 @@ export default function Requests() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const currentDate = new Date();
 
@@ -170,19 +172,32 @@ export default function Requests() {
   };
 
   const handleOpenRequestForm = (request: Request) => {
+    setSelectedRequest(request);
+
     if (request.status === "Pending") {
-      setSelectedRequest(request);
       setIsRequestFormOpen(true);
-    } else {
-      setSelectedRequest(request);
-      setIsRequestFormOpen(true);
+      setIsConfirmationOpen(false);
     }
   };
 
   const handleCloseRequestForm = () => {
     setIsRequestFormOpen(false);
   };
+  const handleConfirmationApprove = () => {
+    setIsRequestFormOpen(false);
+    setIsConfirmationOpen(true);
+    // Update the status of the selected request to "Approved"
+    const updatedRequestList = requestList.map((request) =>
+      request.id === selectedRequest?.id
+        ? { ...request, status: "Approved" }
+        : request
+    );
+    setRequestList(updatedRequestList);
 
+    setTimeout(() => {
+      setIsConfirmationOpen(false);
+    }, 3000);
+  };
   return (
     <>
       <Header />
@@ -237,12 +252,19 @@ export default function Requests() {
           </table>
         </div>
       </Container>
-      <RequestFormDetails
-        isOpen={isRequestFormOpen}
-        onRequestClose={handleCloseRequestForm}
-        selectedRequest={selectedRequest}
-        showButtons={selectedRequest?.status === "Pending"}
-      />
+      {isRequestFormOpen && (
+        <RequestFormDetails
+          isOpen={isRequestFormOpen}
+          onRequestClose={handleCloseRequestForm}
+          selectedRequest={selectedRequest}
+          showButtons={selectedRequest?.status === "Pending"}
+          onApprove={handleConfirmationApprove}
+        />
+      )}
+
+      {isConfirmationOpen && (
+        <Confirmation isOpen={isConfirmationOpen} content="Request Approved!" />
+      )}
     </>
   );
 }

@@ -25,6 +25,8 @@ export default function Landing() {
       navigate("/DashboardOS");
     } else if (userData.username === "requester") {
       navigate("/DashboardR");
+    } else if (userData.username === "admin") {
+      navigate("/Admin");
     }
   };
   return (
@@ -36,7 +38,7 @@ export default function Landing() {
         </div>
         <div className="form">
           <p>Signin to your account</p>
-          <div className="inputfield">
+          <div className="inputfielddd">
             <div className="inputusername">
               <div className="icon-container">
                 <FontAwesomeIcon icon={faUser} className="input-icon" />

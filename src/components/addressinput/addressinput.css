@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.geoapify-autocomplete-input {
+  padding: 0 31px 0 7px;
+  width: 15vw;
+
+  color: black;
+  outline: none;
+  background-color: transparent;
+  line-height: 36px;
+  height: 6vh;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+
+  border-color: black;
+  font-size: 14px;
+}
+
+.geoapify-autocomplete-items {
+  position: absolute;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-top: none;
+  background-color: #fff;
+
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.geoapify-autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  color: #060e57;
+}
+
+.geoapify-autocomplete-items div:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.geoapify-autocomplete-items .active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.geoapify-autocomplete-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.geoapify-autocomplete-item .icon {
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+  color: #060e57;
+}
+
+.geoapify-autocomplete-item .icon.emoji {
+  color: #060e57;
+  font-size: 20px;
+  opacity: 0.9;
+}
+
+.geoapify-close-button {
+  position: absolute;
+  right: 5px;
+  top: 0;
+
+  height: 100%;
+  display: none;
+  align-items: center;
+}
+
+.geoapify-close-button.visible {
+  display: flex;
+}
+
+.geoapify-close-button {
+  color: #060e57;
+  cursor: pointer;
+}
+
+.geoapify-close-button:hover {
+  color: #060e57;
+}
+
+.geoapify-autocomplete-items .main-part .non-verified {
+  color: #ff4848;
+}
+
+.geoapify-autocomplete-items .secondary-part {
+  margin-left: 10px;
+  font-size: small;
+  color: #060e57;
+}
+
+@media screen and (max-width: 768px) {
+  .geoapify-autocomplete-input {
+    width: 30vw;
+
+    background-color: transparent;
+
+    font-size: 10px;
+  }
+  .geoapify-autocomplete-items {
+    font-size: 10px;
+    width: 50vw;
+  }
+  .geoapify-autocomplete-item .icon {
+    width: 40px;
+    height: 24px;
+  }
+}

@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+import {
+  faColumns,
+  faClipboardList,
+  faCar,
+  faCalendarAlt,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import "./vehicles.css";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -11,6 +18,20 @@ import MitsubishiMontero from "../../../components/images/mitsubishi-montero.jpg
 import Fortuner from "../../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../../components/images/toyota-hiace.png";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
+
+type SidebarItem = {
+  icon: any;
+  text: string;
+  path: string;
+};
+
+const sidebarData: SidebarItem[] = [
+  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+  { icon: faClipboardList, text: "Requests", path: "/Requests" },
+  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+  { icon: faUser, text: "Drivers", path: "/Drivers" },
+];
 
 interface Vehicle {
   id: number;
@@ -103,11 +124,15 @@ export default function Vehicles() {
   const handleCategoryChange = (status: string) => {
     setSelectedCategory(status === "All" ? null : status);
   };
-
+  const handleEllipsisMenu = (category: string) => {
+    if (category === "Unavailable") {
+      alert("clicked unavailable");
+    }
+  };
   return (
     <>
       <Header />
-      <Sidebar />
+      <Sidebar sidebarData={sidebarData} />
       <Container>
         <div className="margin-top-vehicles">
           <Label label="Vehicles" />
@@ -138,7 +163,10 @@ export default function Vehicles() {
                   </div>
                   <img className="vehicle-image" src={vehicle.vehicle_image} />
                   <div className="ellipsis-container">
-                    <Ellipsis status={["Set Status", "Unavailable"]} />
+                    <Ellipsis
+                      onCategoryChange={handleEllipsisMenu}
+                      status={["Set Status", "Unavailable"]}
+                    />
                   </div>
                 </div>
               </a>

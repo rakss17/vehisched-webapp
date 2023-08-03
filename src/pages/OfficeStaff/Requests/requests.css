@@ -7,81 +7,61 @@
 .request-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 90vw;
   height: 80vh;
-  margin-left: 8vw;
-  margin-top: 0rem;
-  overflow: hidden;
+  margin-left: 15vh;
+  margin-top: 2vw;
+  overflow: auto;
+  background-color: #d9d9d9;
+  border-radius: 10px;
 }
 
 .request-row {
-  margin-top: 1.5rem;
-  margin-left: 1rem;
+  margin-top: 2vw;
+  margin-left: 0vh;
   display: flex;
+
   flex-direction: row;
+  justify-content: center;
   gap: 30%;
 }
 
 .margin-top {
   margin-top: 5rem;
 }
-
-.request-lists {
-  margin-top: 1rem;
-  height: 100vh;
-  width: 88vw;
-  background-color: #d9d9d9;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  overflow: hidden;
+.request-container table {
+  width: 80vw;
+  overflow: auto;
+  table-layout: fixed;
 }
-.request-lists-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-}
-.request-lists-header p {
+.request-container table thead {
   font-size: 1.5rem;
   color: #060e57;
-  font-weight: bold;
+  text-align: center;
 }
-.request-list {
-  width: 83vw;
-  height: 10vh;
-  justify-content: space-around;
-  margin-left: 8rem;
-  display: flex;
-  flex-direction: row;
+.request-container table tbody tr {
+  width: 10vw;
+  height: 8vh;
+  font-size: 1.3rem;
   color: black;
-  flex-wrap: wrap;
+  text-align: center;
+  cursor: pointer;
 }
-
-.request-lists-content td {
-  font-size: 1.5rem;
-  color: #060e57;
-  flex-basis: 25%;
-}
-
-.request-lists-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  overflow-y: auto;
-  overflow-x: hidden;
+.request-container table tbody tr:hover {
+  background-color: #060e57;
+  color: white;
 }
 
 @media screen and (max-width: 768px) {
   .request-container {
     display: flex;
     flex-direction: column;
+
     width: 100vw;
-    height: 100vh;
-    margin-left: 0rem;
-    margin-top: 0rem;
+    height: 70vh;
+    margin-left: 0vh;
+    margin-top: 5vw;
   }
   .request-row {
     margin-top: 1.5rem;
@@ -92,27 +72,11 @@
   .margin-top {
     margin-top: 0rem;
   }
-  .request-lists {
-    margin-top: 2rem;
-    margin-left: 0rem;
-    height: 32rem;
-    width: 100vw;
-    padding: 1rem;
+
+  .request-container table thead {
+    font-size: 1.2rem;
   }
-  .request-lists-header p {
+  .request-container table tbody tr {
     font-size: 1rem;
-  }
-  .request-lists-content td {
-    font-size: 0.8rem;
-  }
-  .request-list {
-    width: 100vw;
-    height: 5rem;
-    margin-left: 1rem;
-  }
-  .request-lists-content {
-    gap: 20px;
-    border: none;
-    padding: 0px;
   }
 }

@@ -1,4 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  faColumns,
+  faClipboardList,
+  faCar,
+  faCalendarAlt,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import "./schedules.css";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -6,99 +13,200 @@ import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 
+type SidebarItem = {
+  icon: any;
+  text: string;
+  path: string;
+};
+
+const sidebarData: SidebarItem[] = [
+  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+  { icon: faClipboardList, text: "Requests", path: "/Requests" },
+  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+  { icon: faUser, text: "Drivers", path: "/Drivers" },
+];
+
 interface TableData {
   label: string;
   content: { [key: string]: string }[];
   columns: string[];
 }
 
-export default function Schedules() {
-  const [activeButton, setActiveButton] = useState<string>("Today");
-  const [searchTerm, setSearchTerm] = useState("");
+const fetchedTodayData = [
+  {
+    request_number: "1",
+    requester_name: "Bohari S. Ambulo",
+    time: "10:00 am",
+  },
+  {
+    request_number: "2",
+    requester_name: "Jane Doe",
+    time: "11:30 am",
+  },
+  {
+    request_number: "3",
+    requester_name: "John Smith",
+    time: "2:15 pm",
+  },
+  {
+    request_number: "4",
+    requester_name: "Alice Johnson",
+    time: "3:45 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+  },
+];
 
-  const handleButtonClick = (label: string) => {
-    setActiveButton(label);
-  };
+const fetchedUpcomingData = [
+  {
+    request_number: "1",
+    requester_name: "Bohari S. Ambulo",
+    time: "10:00 am",
+    date: "2023-07-30",
+  },
+  {
+    request_number: "2",
+    requester_name: "Jane Doe",
+    time: "11:30 am",
+    date: "2023-07-30",
+  },
+  {
+    request_number: "3",
+    requester_name: "John Smith",
+    time: "2:15 pm",
+    date: "2023-07-30",
+  },
+  {
+    request_number: "4",
+    requester_name: "Alice Johnson",
+    time: "3:45 pm",
+    date: "2023-07-31",
+  },
+  {
+    request_number: "5",
+    requester_name: "Michael Lee",
+    time: "4:30 pm",
+    date: "2023-07-31",
+  },
+  {
+    request_number: "6",
+    requester_name: "Sarah Williams",
+    time: "5:00 pm",
+    date: "2023-07-31",
+  },
+  {
+    request_number: "7",
+    requester_name: "David Clark",
+    time: "6:15 pm",
+    date: "2023-08-01",
+  },
+  {
+    request_number: "8",
+    requester_name: "Emily Adams",
+    time: "9:30 am",
+    date: "2023-08-01",
+  },
+  {
+    request_number: "9",
+    requester_name: "Robert Turner",
+    time: "1:00 pm",
+    date: "2023-08-02",
+  },
+  {
+    request_number: "10",
+    requester_name: "Sophia Martinez",
+    time: "7:45 pm",
+    date: "2023-08-02",
+  },
+];
+
+export default function Schedules() {
+  const [schedulesData, setSchedulesData] = useState<any[]>([]);
+  const [selectedSched, setSelectedSched] = useState<string>("Today");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
 
-  const tableData: TableData[] = [
-    {
-      label: "Today",
-      content: [
-        {
-          "Request No.": "1",
-          "Requested by": "Bohari S. Ambulo",
-          Time: "1:00pm",
-        },
-      ],
-      columns: ["Request No.", "Requested by", "Time"],
-    },
-    {
-      label: "Upcoming",
-      content: [
-        {
-          "Request No.": "2",
-          "Requested by": "Michael Ray V Romeo",
-          Time: "2:00pm",
-          Date: "2023-07-15",
-        },
-        {
-          "Request No.": "3",
-          "Requested by": "Tristan C Araquil",
-          Time: "3:00pm",
-          Date: "2023-07-16",
-        },
-        {
-          "Request No.": "2",
-          "Requested by": "Mark Dave M Lorejo",
-          Time: "2:00pm",
-          Date: "2023-07-15",
-        },
-        {
-          "Request No.": "3",
-          "Requested by": "Mike Emmanuel Ibahay",
-          Time: "3:00pm",
-          Date: "2023-07-16",
-        },
-        {
-          "Request No.": "2",
-          "Requested by": "Anton Joseph Gabut",
-          Time: "2:00pm",
-          Date: "2023-07-15",
-        },
-        {
-          "Request No.": "3",
-          "Requested by": "Juren Roy Abragan",
-          Time: "3:00pm",
-          Date: "2023-07-16",
-        },
-        {
-          "Request No.": "3",
-          "Requested by": "Jayde Mike Engracia",
-          Time: "3:00pm",
-          Date: "2023-07-16",
-        },
-      ],
-      columns: ["Request No.", "Requested by", "Time", "Date"],
-    },
-  ];
+  const handleButtonClick = (sched: string) => {
+    switch (sched) {
+      case "Today":
+        setSchedulesData(fetchedTodayData);
+        break;
+      case "Upcoming":
+        setSchedulesData(fetchedUpcomingData);
+        break;
 
-  const activeTableData = tableData.find((data) => data.label === activeButton);
+      default:
+        setSchedulesData([]);
+        break;
+    }
+    setSelectedSched(sched);
+  };
+  useEffect(() => {
+    handleButtonClick("Today");
+  }, []);
+  const filteredSchedulesData = schedulesData.filter((schedule) => {
+    const isSearchMatch =
+      searchTerm === "" ||
+      schedule.request_number
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      schedule.requester_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      schedule.time.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const filteredContent = activeTableData?.content.filter((schedule) =>
-    Object.values(schedule)
-      .join(" ")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+    if (selectedSched === "Today") {
+      return isSearchMatch;
+    } else if (selectedSched === "Upcoming") {
+      return (
+        isSearchMatch ||
+        schedule.date.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    return false;
+  });
 
   return (
     <>
       <Header />
-      <Sidebar />
+      <Sidebar sidebarData={sidebarData} />
       <Container>
         <div className="schedules-margin-top">
           <Label label="Schedules" />
@@ -106,15 +214,18 @@ export default function Schedules() {
         <div className="schedules-container">
           <div className="schedules-row">
             <div className="button-container">
-              {tableData.map((data) => (
-                <button
-                  key={data.label}
-                  className={activeButton === data.label ? "active" : ""}
-                  onClick={() => handleButtonClick(data.label)}
-                >
-                  {data.label}
-                </button>
-              ))}
+              <button
+                onClick={() => handleButtonClick("Today")}
+                className={selectedSched === "Today" ? "active" : ""}
+              >
+                Today
+              </button>
+              <button
+                onClick={() => handleButtonClick("Upcoming")}
+                className={selectedSched === "Upcoming" ? "active" : ""}
+              >
+                Upcoming
+              </button>
             </div>
             <div className="searchbar-container">
               <SearchBar onSearchChange={handleSearchChange} />
@@ -122,31 +233,35 @@ export default function Schedules() {
           </div>
 
           <div className="table-container">
-            {filteredContent && filteredContent.length > 0 ? (
-              <table className="data-table">
-                <thead>
-                  <tr className="data-header">
-                    {activeTableData?.columns.map((column, index) => (
-                      <th key={index}>{column}</th>
-                    ))}
-                  </tr>
-                </thead>
+            <table
+              style={{
+                borderCollapse: "separate",
+                borderSpacing: "0 20px",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>Request No.</th>
+                  <th>Requested by</th>
+                  <th>Time</th>
+                  {selectedSched === "Upcoming" && <th>Date</th>}
+                </tr>
+              </thead>
+              {filteredSchedulesData.length === 0 ? (
+                <p className="schedules-null">No schedules available</p>
+              ) : (
                 <tbody>
-                  {filteredContent.map((schedule, index) => (
-                    <tr className="schedule-list" key={index}>
-                      <td>{schedule["Request No."]}</td>
-                      <td>{schedule["Requested by"]}</td>
-                      <td>{schedule["Time"]}</td>
-                      {activeButton === "Upcoming" && (
-                        <td>{schedule["Date"]}</td>
-                      )}
+                  {filteredSchedulesData.map((schedule, index) => (
+                    <tr key={index}>
+                      <td>{schedule.request_number}</td>
+                      <td>{schedule.requester_name}</td>
+                      <td>{schedule.time}</td>
+                      {selectedSched === "Upcoming" && <td>{schedule.date}</td>}
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            ) : (
-              <p className="schedules-null">No schedules available</p>
-            )}
+              )}
+            </table>
           </div>
         </div>
       </Container>

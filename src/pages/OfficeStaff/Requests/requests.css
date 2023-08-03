@@ -52,32 +52,6 @@
   background-color: #060e57;
   color: white;
 }
-.modal-request-form {
-  display: flex;
-  color: black;
-  align-items: center;
-  flex-direction: column;
-  margin: 8vw 0 0 50vh;
-  background-color: white;
-  width: 50vw;
-  height: 70vh;
-  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-  border: 1px solid #cccccc;
-  overflow: auto;
-}
-.modal-request-form div {
-  width: 45vw;
-  height: 65vh;
-  display: flex;
-  flex-direction: column;
-}
-.modal-request-form div h1 {
-  text-align: center;
-  color: black;
-  font-size: 1.3rem;
-  margin-top: 0vw;
-  margin-top: 2vw;
-}
 
 @media screen and (max-width: 768px) {
   .request-container {

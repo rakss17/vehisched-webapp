@@ -13,7 +13,8 @@ import "./requests.css";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
-import Modal from "react-modal";
+
+import RequestFormDetails from "../../../components/form/requestformdetails";
 
 type SidebarItem = {
   icon: any;
@@ -29,13 +30,13 @@ const sidebarData: SidebarItem[] = [
   { icon: faUser, text: "Drivers", path: "/Drivers" },
 ];
 
-interface Request {
+export type Request = {
   id: number;
   request_number: string;
   requested_by: string;
   travel_date: string;
   status: string;
-}
+};
 const fetchedRequests: Request[] = [
   {
     id: 1,
@@ -113,6 +114,8 @@ export default function Requests() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+
   const currentDate = new Date();
 
   const fetchRequestList = () => {
@@ -166,8 +169,18 @@ export default function Requests() {
     }
   };
 
-  const handleOpenRequestForm = () => {
-    setIsRequestFormOpen(true);
+  const handleOpenRequestForm = (request: Request) => {
+    if (request.status === "Pending") {
+      setSelectedRequest(request);
+      setIsRequestFormOpen(true);
+    } else {
+      setSelectedRequest(request);
+      setIsRequestFormOpen(true);
+    }
+  };
+
+  const handleCloseRequestForm = () => {
+    setIsRequestFormOpen(false);
   };
 
   return (
@@ -207,221 +220,29 @@ export default function Requests() {
                 </tr>
               ) : (
                 filteredRequestList.map((request) => (
-                  <tr key={request.id} onClick={handleOpenRequestForm}>
-                    <td>{request.request_number}</td>
-                    <td>{request.requested_by}</td>
-                    <td>{request.travel_date}</td>
-                    <td>{request.status}</td>
-                  </tr>
+                  <>
+                    <tr
+                      key={request.id}
+                      onClick={() => handleOpenRequestForm(request)}
+                    >
+                      <td>{request.request_number}</td>
+                      <td>{request.requested_by}</td>
+                      <td>{request.travel_date}</td>
+                      <td>{request.status}</td>
+                    </tr>
+                  </>
                 ))
               )}
             </tbody>
           </table>
         </div>
       </Container>
-      <Modal className="modal-request-form" isOpen={isRequestFormOpen}>
-        <div>
-          <h1>Vehicle Request Form</h1>
-          <div>
-            <table
-              style={{
-                borderCollapse: "separate",
-                borderSpacing: "0 20px",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <tbody
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  gap: "0%",
-                }}
-              >
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "25px",
-                      whiteSpace: "nowrap",
-                      paddingLeft: "1.3em",
-                    }}
-                  >
-                    Requester's Name:
-                  </th>
-                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
-                </tr>
-                <tr>
-                  <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
-                  <td style={{ width: "5vw" }}>CEATSDA</td>
-                </tr>
-              </tbody>
-              <tbody
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "40px",
-                      verticalAlign: "top",
-                      paddingLeft: "4%",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    Passenger's Name:
-                  </th>
-                  <td>
-                    Bohari S. Ambulo, Michael Ray V. romeo, Mark Dave M Lorejo,
-                    Tristan C. Araquil, Michael Ray V. romeo, Mark Dave M
-                    Lorejo, Tristan C. Araquil
-                  </td>
-                </tr>
-              </tbody>
-              <tbody
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  gap: "0%",
-                }}
-              >
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "90px",
-                      paddingLeft: "2em",
-                      verticalAlign: "top",
-                    }}
-                  >
-                    Vehicle:
-                  </th>
-                  <td style={{ width: "20vw" }}>
-                    Toyotaaaadwadddawdawd Hiluxdawdawdadawdawdawdada
-                  </td>
-                </tr>
-
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "10px",
-                      verticalAlign: "top",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    No. of Passengers:{" "}
-                  </th>
-                  <td
-                    style={{
-                      paddingRight: "65px",
-                    }}
-                  >
-                    99
-                  </td>
-                </tr>
-              </tbody>
-              <tbody
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  gap: "0%",
-                }}
-              >
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "60px",
-                      verticalAlign: "top",
-                      paddingLeft: "30px",
-                    }}
-                  >
-                    Destination:
-                  </th>
-                  <td
-                    style={{
-                      width: "20vw",
-
-                      height: "10vh",
-                      verticalAlign: "top",
-                    }}
-                  >
-                    Cogon Public Market dawdawdawdaw dawdawdawdawd adaw dawd
-                    awdaw ldjaw jdpawj dopawj dpaw dawjpdojawdjawdpoawjdpawjdawj
-                    d2312312312
-                  </td>
-                </tr>
-                <tr>
-                  <th style={{ paddingRight: "10px", paddingLeft: "45px" }}>
-                    Kilometer/s:
-                  </th>
-                  <td
-                    style={{
-                      paddingRight: "0px",
-
-                      width: "5vw",
-                    }}
-                  >
-                    1500000
-                  </td>
-                </tr>
-              </tbody>
-              <tbody
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  gap: "0%",
-                }}
-              >
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "25px",
-                      whiteSpace: "nowrap",
-                      paddingLeft: "1.3em",
-                    }}
-                  >
-                    Requester's Name:
-                  </th>
-                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
-                </tr>
-                <tr>
-                  <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
-                  <td style={{ width: "5vw" }}>CEATSDA</td>
-                </tr>
-              </tbody>
-              <tbody
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  gap: "0%",
-                }}
-              >
-                <tr>
-                  <th
-                    style={{
-                      paddingRight: "25px",
-                      whiteSpace: "nowrap",
-                      paddingLeft: "1.3em",
-                    }}
-                  >
-                    Requester's Name:
-                  </th>
-                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
-                </tr>
-                <tr>
-                  <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
-                  <td style={{ width: "5vw" }}>CEATSDA</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </Modal>
+      <RequestFormDetails
+        isOpen={isRequestFormOpen}
+        onRequestClose={handleCloseRequestForm}
+        selectedRequest={selectedRequest}
+        showButtons={selectedRequest?.status === "Pending"}
+      />
     </>
   );
 }

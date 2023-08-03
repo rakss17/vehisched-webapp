@@ -135,21 +135,21 @@ export default function Requests() {
   const filteredRequestList = requestList.filter((request) => {
     const isCategoryMatch =
       selectedCategory === null ||
-      selectedCategory === "Request Logs" ||
+      selectedCategory === "Logs" ||
       request.status === selectedCategory;
 
     const isSearchMatch =
       searchTerm === "" ||
       request.requested_by.toLowerCase().includes(searchTerm.toLowerCase()) ||
       request.request_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (selectedCategory === "Request Logs" &&
+      (selectedCategory === "Logs" &&
         (request.requested_by
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
           request.request_number
             .toLowerCase()
             .includes(searchTerm.toLowerCase()))) ||
-      (selectedCategory !== "Request Logs" &&
+      (selectedCategory !== "Logs" &&
         request.requested_by.toLowerCase().includes(searchTerm.toLowerCase()) &&
         request.request_number
           .toLowerCase()
@@ -161,7 +161,7 @@ export default function Requests() {
   const handleCategoryChange = (status: string) => {
     setSelectedCategory(status === "All" ? null : status);
 
-    if (status === "Request Logs") {
+    if (status === "Logs") {
       const filteredList = fetchedRequests.filter(
         (request) => new Date(request.travel_date) < currentDate
       );
@@ -175,6 +175,9 @@ export default function Requests() {
     setSelectedRequest(request);
 
     if (request.status === "Pending") {
+      setIsRequestFormOpen(true);
+      setIsConfirmationOpen(false);
+    } else {
       setIsRequestFormOpen(true);
       setIsConfirmationOpen(false);
     }
@@ -209,7 +212,7 @@ export default function Requests() {
         <div className="request-row">
           <SearchBar onSearchChange={handleSearchChange} />
           <Dropdown
-            status={["All", "Pending", "Approved", "Rejected", "Request Logs"]}
+            status={["All", "Pending", "Approved", "Rejected", "Logs"]}
             onCategoryChange={handleCategoryChange}
           />
         </div>

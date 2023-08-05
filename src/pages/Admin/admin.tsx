@@ -9,6 +9,7 @@ import MitsubishiMontero from "../../components/images/mitsubishi-montero.jpg";
 import Fortuner from "../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../components/images/toyota-hiace.png";
 import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
+import AddEdit from "../../components/admin/user/addedit";
 
 interface Vehicle {
   id: number;
@@ -150,6 +151,7 @@ export default function Admin() {
     useState<string>("Requester");
   const [searchAccountTerm, setSearchAccountTerm] = useState("");
   const [searchVehicleTerm, setSearchVehicleTerm] = useState("");
+  const [isAddEditOpen, setIsAddEditOpen] = useState(false);
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -247,6 +249,12 @@ export default function Admin() {
       alert("clicked Delete");
     }
   };
+  const handleAddUser = () => {
+    setIsAddEditOpen(true);
+  };
+  const handleCancel = () => {
+    setIsAddEditOpen(false);
+  };
   return (
     <>
       <Header />
@@ -272,7 +280,7 @@ export default function Admin() {
           <div className="display-accounts-container">
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchAccount} />
-              <button>Add User {""}+</button>
+              <button onClick={handleAddUser}>Add User {""}+</button>
             </div>
             <div className="usertype-button-row">
               <button
@@ -399,6 +407,12 @@ export default function Admin() {
           </>
         )}
       </Container>
+      <AddEdit
+        isOpen={isAddEditOpen}
+        onRequestClose={handleCancel}
+        header="Add User"
+        buttonText="Add User +"
+      />
     </>
   );
 }

@@ -5,6 +5,7 @@ import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import "./request.css";
+import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 
 type SidebarItem = {
   icon: any;
@@ -199,6 +200,9 @@ export default function Request() {
                     <td>{request.request_number}</td>
                     <td>{request.travel_date}</td>
                     <td>{request.vehicle}</td>
+                    <td className="ellipsis-cell">
+                      <Ellipsis status={["Cancel Request"]} />
+                    </td>
                   </tr>
                 ))}
               </tbody>

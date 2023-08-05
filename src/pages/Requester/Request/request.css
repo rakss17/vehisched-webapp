@@ -50,14 +50,13 @@
   justify-content: center;
   width: 90vw;
   overflow: auto;
-  padding: 0px;
+  padding: 0rem 0rem 2rem 0rem;
   border-top: 8px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
 }
 .requests-container table {
   width: 80vw;
-  table-layout: fixed;
 }
 .requests-container table tbody tr {
   text-align: center;
@@ -69,6 +68,11 @@
 
 .requests-container table thead {
   font-size: 1.3rem;
+}
+
+.ellipsis-cell {
+  width: 3vw;
+  overflow: visible;
 }
 
 @media screen and (max-width: 768px) {

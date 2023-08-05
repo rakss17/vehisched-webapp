@@ -151,7 +151,8 @@ export default function Admin() {
     useState<string>("Requester");
   const [searchAccountTerm, setSearchAccountTerm] = useState("");
   const [searchVehicleTerm, setSearchVehicleTerm] = useState("");
-  const [isAddEditOpen, setIsAddEditOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -244,16 +245,17 @@ export default function Admin() {
   };
   const handleEllipsisMenu = (category: string) => {
     if (category === "Edit") {
-      alert("clicked edit");
+      setIsEditOpen(true);
     } else if (category === "Delete") {
       alert("clicked Delete");
     }
   };
   const handleAddUser = () => {
-    setIsAddEditOpen(true);
+    setIsAddOpen(true);
   };
   const handleCancel = () => {
-    setIsAddEditOpen(false);
+    setIsAddOpen(false);
+    setIsEditOpen(false);
   };
   return (
     <>
@@ -352,12 +354,18 @@ export default function Admin() {
                 ) : (
                   <tbody>
                     {filteredAccountsData.map((account) => (
-                      <tr key={account.index} onClick={() => alert("clicked")}>
+                      <tr key={account.index}>
                         <td>{account.id_number}</td>
                         <td>{account.last_name}</td>
                         <td>{account.first_name}</td>
                         <td>{account.middle_initial}</td>
                         <td>{account.contact_number}</td>
+                        <div>
+                          <Ellipsis
+                            onCategoryChange={handleEllipsisMenu}
+                            status={["Edit", "Delete"]}
+                          />
+                        </div>
                       </tr>
                     ))}
                   </tbody>
@@ -408,10 +416,16 @@ export default function Admin() {
         )}
       </Container>
       <AddEdit
-        isOpen={isAddEditOpen}
+        isOpen={isAddOpen}
         onRequestClose={handleCancel}
         header="Add User"
         buttonText="Add User +"
+      />
+      <AddEdit
+        isOpen={isEditOpen}
+        onRequestClose={handleCancel}
+        header="Edit User"
+        buttonText="Edit User +"
       />
     </>
   );

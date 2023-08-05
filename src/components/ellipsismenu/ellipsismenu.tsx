@@ -9,7 +9,7 @@ type EllipsisProps = {
 export default function Ellipsis(props: EllipsisProps) {
   const [selectedOption, setSelectedOption] = useState(props.status[0]);
   const [isOpen, setIsOpen] = useState(false);
-  const ellipsisRef = useRef<HTMLDivElement>(null); // Explicitly specify the type
+  const ellipsisRef = useRef<HTMLDivElement>(null);
 
   const handleMenuToggle = () => {
     setIsOpen(!isOpen);

@@ -55,6 +55,9 @@
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
 }
+.requests-container p {
+  font-size: 1.3rem;
+}
 .requests-container table {
   width: 80vw;
 }

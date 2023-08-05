@@ -4,13 +4,22 @@ import "./confirmation.css";
 
 interface ConfirmationProps {
   isOpen: boolean;
-  content: string;
+  header?: string;
+  content?: string;
+  footer?: string;
 }
 
-const Confirmation: React.FC<ConfirmationProps> = ({ isOpen, content }) => {
+const Confirmation: React.FC<ConfirmationProps> = ({
+  isOpen,
+  header,
+  content,
+  footer,
+}) => {
   return (
     <Modal className="modal-confirmation" isOpen={isOpen}>
-      <p>{content}</p>
+      {header && <p>{header}</p>}
+      {content && <p>{content}</p>}
+      {footer && <p>{footer}</p>}
     </Modal>
   );
 };

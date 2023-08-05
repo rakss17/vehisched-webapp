@@ -9,11 +9,24 @@
   margin-top: 20vw;
   margin-left: 80vh;
   width: 20vw;
-  height: 20vh;
+  height: 25vh;
   color: #060e57;
-  font-weight: bold;
-  justify-content: center;
+  padding: 1rem;
+  justify-content: space-around;
   align-items: center;
+  flex-direction: column;
   display: flex;
+}
+.modal-confirmation p:nth-child(1) {
+  font-weight: bold;
   font-size: 1.5rem;
+}
+.modal-confirmation p:nth-child(2) {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+.modal-confirmation p:nth-child(3) {
+  font-weight: bold;
+  font-size: 1.2rem;
 }

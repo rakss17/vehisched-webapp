@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect, useRef } from "react";
+import { useState, ChangeEvent, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "../container/container";
 import Header from "../header/header";
@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddressInput from "../addressinput/addressinput";
 import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
+import Confirmation from "../confirmation/confirmation";
 
 export default function RequestForm() {
   const [data, setData] = useState<{
@@ -32,6 +33,7 @@ export default function RequestForm() {
   });
   const [urgentRequest, setUrgentRequest] = useState(false);
   const [numPassengers, setNumPassengers] = useState(0);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -109,6 +111,13 @@ export default function RequestForm() {
     navigate("/DashboardR");
   };
 
+  const handleSubmit = () => {
+    setIsConfirmationOpen(true);
+    setTimeout(() => {
+      setIsConfirmationOpen(false);
+      navigate("/DashboardR");
+    }, 3000);
+  };
   return (
     <>
       <Header />
@@ -241,13 +250,19 @@ export default function RequestForm() {
                     </button>
                   </label>
                   <button onClick={handleGoBack}>Go back</button>
-                  <button>Submit</button>
+                  <button onClick={handleSubmit}>Submit</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </Container>
+      <Confirmation
+        isOpen={isConfirmationOpen}
+        header="Request Submitted!"
+        content="We will send you a notification about your request ASAP."
+        footer="Thank you!"
+      />
     </>
   );
 }

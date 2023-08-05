@@ -189,7 +189,7 @@ export default function Requests() {
   const handleConfirmationApprove = () => {
     setIsRequestFormOpen(false);
     setIsConfirmationOpen(true);
-    // Update the status of the selected request to "Approved"
+
     const updatedRequestList = requestList.map((request) =>
       request.id === selectedRequest?.id
         ? { ...request, status: "Approved" }
@@ -266,7 +266,7 @@ export default function Requests() {
       )}
 
       {isConfirmationOpen && (
-        <Confirmation isOpen={isConfirmationOpen} content="Request Approved!" />
+        <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />
       )}
     </>
   );

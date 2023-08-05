@@ -10,6 +10,7 @@ import Fortuner from "../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../components/images/toyota-hiace.png";
 import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
 import AddEdit from "../../components/admin/user/addedit";
+import AddEditVehicle from "../../components/admin/vehicle/addedit";
 
 interface Vehicle {
   id: number;
@@ -153,6 +154,8 @@ export default function Admin() {
   const [searchVehicleTerm, setSearchVehicleTerm] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
+  const [isEditVehicleOpen, setIsEditVehicleOpen] = useState(false);
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -256,6 +259,11 @@ export default function Admin() {
   const handleCancel = () => {
     setIsAddOpen(false);
     setIsEditOpen(false);
+    setIsAddVehicleOpen(false);
+    setIsEditVehicleOpen(false);
+  };
+  const handleAddVehicle = () => {
+    setIsAddVehicleOpen(true);
   };
   return (
     <>
@@ -378,7 +386,7 @@ export default function Admin() {
           <>
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchVehicle} />
-              <button>Add Vehicle {""}+</button>
+              <button onClick={handleAddVehicle}>Add Vehicle {""}+</button>
             </div>
             <div className="vehicles-container">
               {filteredVehicleList.length === 0 ? (
@@ -423,6 +431,18 @@ export default function Admin() {
       />
       <AddEdit
         isOpen={isEditOpen}
+        onRequestClose={handleCancel}
+        header="Edit User"
+        buttonText="Edit User +"
+      />
+      <AddEditVehicle
+        isOpen={isAddVehicleOpen}
+        onRequestClose={handleCancel}
+        header="Add Vehicle"
+        buttonText="Add Vehicle +"
+      />
+      <AddEditVehicle
+        isOpen={isEditVehicleOpen}
         onRequestClose={handleCancel}
         header="Edit User"
         buttonText="Edit User +"

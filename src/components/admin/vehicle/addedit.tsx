@@ -9,15 +9,12 @@ interface AddEditProps {
   header: string;
   buttonText: string;
 }
-const AddEdit: React.FC<AddEditProps> = ({
+const AddEditVehicle: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
   header,
   buttonText,
 }) => {
-  const handleDropdownChange = (selectedOption: string) => {
-    console.log("Selected option:", selectedOption);
-  };
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
@@ -31,24 +28,24 @@ const AddEdit: React.FC<AddEditProps> = ({
       <h1>{header}</h1>
       <div>
         <div>
-          <label>Last Name: </label>
+          <label>Plate No.: </label>
           <input></input>
         </div>
         <div>
-          <label>First Name: </label>
+          <label>Model: </label>
           <input></input>
         </div>
         <div>
-          <label>MI: </label>
-          <input></input>
-        </div>
-        <div>
-          <label>Contact Number: </label>
+          <label>Seating Capacity: </label>
           <input type="number" onKeyDown={handleKeyDown}></input>
         </div>
         <div>
-          <label>Role: </label>
-          <DropdownMenu onChange={handleDropdownChange} />
+          <label>Type: </label>
+          <input></input>
+        </div>
+        <div>
+          <label>VIP: </label>
+          <input type="checkbox"></input>
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>
@@ -58,4 +55,4 @@ const AddEdit: React.FC<AddEditProps> = ({
     </Modal>
   );
 };
-export default AddEdit;
+export default AddEditVehicle;

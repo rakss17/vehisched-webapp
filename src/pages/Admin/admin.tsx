@@ -253,6 +253,13 @@ export default function Admin() {
       alert("clicked Delete");
     }
   };
+  const handleEllipsisMenuVehicle = (category: string) => {
+    if (category === "Edit") {
+      setIsEditVehicleOpen(true);
+    } else if (category === "Delete") {
+      alert("clicked Delete");
+    }
+  };
   const handleAddUser = () => {
     setIsAddOpen(true);
   };
@@ -411,7 +418,7 @@ export default function Admin() {
                       />
                       <div className="ellipsis-container">
                         <Ellipsis
-                          onCategoryChange={handleEllipsisMenu}
+                          onCategoryChange={handleEllipsisMenuVehicle}
                           status={["Edit", "Delete"]}
                         />
                       </div>
@@ -444,8 +451,8 @@ export default function Admin() {
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
         onRequestClose={handleCancel}
-        header="Edit User"
-        buttonText="Edit User +"
+        header="Edit Vehicle"
+        buttonText="Update Vehicle +"
       />
     </>
   );

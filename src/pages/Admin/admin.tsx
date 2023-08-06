@@ -11,6 +11,7 @@ import ToyotaHiace from "../../components/images/toyota-hiace.png";
 import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
 import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
+import PromptDialog from "../../components/promptdialog/prompdialog";
 
 interface Vehicle {
   id: number;
@@ -159,6 +160,7 @@ export default function Admin() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
   const [isEditVehicleOpen, setIsEditVehicleOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -253,7 +255,7 @@ export default function Admin() {
     if (category === "Edit") {
       setIsEditOpen(true);
     } else if (category === "Delete") {
-      alert("clicked Delete");
+      setIsDeleteOpen(true);
     }
   };
   const handleEllipsisMenuVehicle = (category: string) => {
@@ -274,6 +276,9 @@ export default function Admin() {
   };
   const handleAddVehicle = () => {
     setIsAddVehicleOpen(true);
+  };
+  const handleClose = () => {
+    setIsDeleteOpen(false);
   };
   return (
     <>
@@ -458,6 +463,13 @@ export default function Admin() {
         onRequestClose={handleCancel}
         header="Edit Vehicle"
         buttonText="Update Vehicle +"
+      />
+      <PromptDialog
+        isOpen={isDeleteOpen}
+        content="Are you sure you want to delete this user?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
       />
     </>
   );

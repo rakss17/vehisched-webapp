@@ -8,12 +8,14 @@ interface AddEditProps {
   onRequestClose: () => void;
   header: string;
   buttonText: string;
+  onRequestAddEdit: () => void;
 }
 const AddEditVehicle: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
   header,
   buttonText,
+  onRequestAddEdit,
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -49,7 +51,7 @@ const AddEditVehicle: React.FC<AddEditProps> = ({
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>
-          <button>{buttonText}</button>
+          <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>
       </div>
     </Modal>

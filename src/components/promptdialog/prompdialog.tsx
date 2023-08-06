@@ -8,6 +8,7 @@ interface PromptDialogProps {
   buttonText1: string;
   buttonText2: string;
   onRequestClose: () => void;
+  onRequestDelete: () => void;
 }
 
 const PromptDialog: React.FC<PromptDialogProps> = ({
@@ -16,12 +17,13 @@ const PromptDialog: React.FC<PromptDialogProps> = ({
   buttonText1,
   buttonText2,
   onRequestClose,
+  onRequestDelete,
 }) => {
   return (
     <Modal className="modal-prompt-dialog" isOpen={isOpen}>
       <h1>{content}</h1>
       <div>
-        <button>{buttonText1}</button>
+        <button onClick={onRequestDelete}>{buttonText1}</button>
         <button onClick={onRequestClose}>{buttonText2}</button>
       </div>
     </Modal>

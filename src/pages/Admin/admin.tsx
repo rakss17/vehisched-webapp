@@ -12,6 +12,7 @@ import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
 import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
+import Confirmation from "../../components/confirmation/confirmation";
 
 interface Vehicle {
   id: number;
@@ -161,6 +162,17 @@ export default function Admin() {
   const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
   const [isEditVehicleOpen, setIsEditVehicleOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleteVehicleOpen, setIsDeleteVehicleOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationOpenEdit, setIsConfirmationOpenEdit] = useState(false);
+  const [isConfirmationOpenVehicle, setIsConfirmationOpenVehicle] =
+    useState(false);
+  const [isConfirmationOpenVehicleEdit, setIsConfirmationOpenVehicleEdit] =
+    useState(false);
+  const [isConfirmationOpenDelete, setIsConfirmationOpenDelete] =
+    useState(false);
+  const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
+    useState(false);
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -262,11 +274,59 @@ export default function Admin() {
     if (category === "Edit") {
       setIsEditVehicleOpen(true);
     } else if (category === "Delete") {
-      alert("clicked Delete");
+      setIsDeleteVehicleOpen(true);
     }
   };
   const handleAddUser = () => {
     setIsAddOpen(true);
+  };
+  const handleAddUserButton = () => {
+    setIsAddOpen(false);
+    setIsConfirmationOpen(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpen(false);
+    }, 3000);
+  };
+  const handleEditUserButton = () => {
+    setIsEditOpen(false);
+    setIsConfirmationOpenEdit(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenEdit(false);
+    }, 3000);
+  };
+  const handleAddVehicleButton = () => {
+    setIsAddVehicleOpen(false);
+    setIsConfirmationOpenVehicle(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicle(false);
+    }, 3000);
+  };
+  const handleEditVehicleButton = () => {
+    setIsEditVehicleOpen(false);
+    setIsConfirmationOpenVehicleEdit(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicleEdit(false);
+    }, 3000);
+  };
+  const handleDeleteUserButton = () => {
+    setIsDeleteOpen(false);
+    setIsConfirmationOpenDelete(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenDelete(false);
+    }, 3000);
+  };
+  const handleDeleteVehicleButton = () => {
+    setIsDeleteVehicleOpen(false);
+    setIsConfirmationOpenVehicleDelete(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicleDelete(false);
+    }, 3000);
   };
   const handleCancel = () => {
     setIsAddOpen(false);
@@ -277,8 +337,10 @@ export default function Admin() {
   const handleAddVehicle = () => {
     setIsAddVehicleOpen(true);
   };
+
   const handleClose = () => {
     setIsDeleteOpen(false);
+    setIsDeleteVehicleOpen(false);
   };
   return (
     <>
@@ -445,24 +507,28 @@ export default function Admin() {
         onRequestClose={handleCancel}
         header="Add User"
         buttonText="Add User +"
+        onRequestAddEdit={handleAddUserButton}
       />
       <AddEdit
         isOpen={isEditOpen}
         onRequestClose={handleCancel}
         header="Edit User"
-        buttonText="Edit User +"
+        buttonText="Update User +"
+        onRequestAddEdit={handleEditUserButton}
       />
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
         onRequestClose={handleCancel}
         header="Add Vehicle"
         buttonText="Add Vehicle +"
+        onRequestAddEdit={handleAddVehicleButton}
       />
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
         onRequestClose={handleCancel}
         header="Edit Vehicle"
         buttonText="Update Vehicle +"
+        onRequestAddEdit={handleEditVehicleButton}
       />
       <PromptDialog
         isOpen={isDeleteOpen}
@@ -470,6 +536,30 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
+        onRequestDelete={handleDeleteUserButton}
+      />
+      <PromptDialog
+        isOpen={isDeleteVehicleOpen}
+        content="Are you sure you want to delete this vehicle?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleDeleteVehicleButton}
+      />
+      <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
+      <Confirmation isOpen={isConfirmationOpenEdit} header="User Updated!" />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicle}
+        header="Vehicle Added!"
+      />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicleEdit}
+        header="Vehicle Updated!"
+      />
+      <Confirmation isOpen={isConfirmationOpenDelete} header="User Deleted!" />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicleDelete}
+        header="Vehicle Deleted!"
       />
     </>
   );

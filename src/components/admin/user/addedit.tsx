@@ -8,12 +8,14 @@ interface AddEditProps {
   onRequestClose: () => void;
   header: string;
   buttonText: string;
+  onRequestAddEdit: () => void;
 }
 const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
   header,
   buttonText,
+  onRequestAddEdit,
 }) => {
   const handleDropdownChange = (selectedOption: string) => {
     console.log("Selected option:", selectedOption);
@@ -52,7 +54,7 @@ const AddEdit: React.FC<AddEditProps> = ({
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>
-          <button>{buttonText}</button>
+          <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>
       </div>
     </Modal>

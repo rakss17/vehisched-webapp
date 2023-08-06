@@ -74,69 +74,72 @@ const fetchedVehicles: Vehicle[] = [
 const fetchedRequesterData = [
   {
     id_number: "2020300100",
+    email: "bohari.ambulo@example.com",
     last_name: "Ambulo",
     first_name: "Bohari",
-    middle_initial: "S.",
+    middle_name: "Samuel",
     contact_number: "09123456789",
   },
 ];
+
 const fetchedVIPData = [
   {
     id_number: "VIP20230001",
+    email: "alice.smith@example.com",
     last_name: "Smith",
     first_name: "Alice",
-    middle_initial: "M.",
+    middle_name: "Marie",
     contact_number: "09111223344",
   },
   {
     id_number: "VIP20230002",
+    email: "robert.johnson@example.com",
     last_name: "Johnson",
     first_name: "Robert",
-    middle_initial: "L.",
+    middle_name: "Lewis",
     contact_number: "09222334455",
   },
   {
     id_number: "VIP20230003",
+    email: "sophia.garcia@example.com",
     last_name: "Garcia",
     first_name: "Sophia",
-    middle_initial: "N.",
+    middle_name: "Natalie",
     contact_number: "09333445566",
   },
   {
     id_number: "VIP20230004",
+    email: "michael.lee@example.com",
     last_name: "Lee",
     first_name: "Michael",
-    middle_initial: "J.",
+    middle_name: "James",
     contact_number: "09444556677",
   },
   {
     id_number: "VIP20230005",
+    email: "lily.wang@example.com",
     last_name: "Wang",
     first_name: "Lily",
-    middle_initial: "K.",
+    middle_name: "Katherine",
     contact_number: "09555667788",
   },
   {
-    id_number: "VIP20230005",
-    last_name: "Wang",
-    first_name: "Lily",
-    middle_initial: "K.",
-    contact_number: "09555667788",
-  },
-  {
-    id_number: "VIP20230005",
-    last_name: "Wang",
-    first_name: "Lily",
-    middle_initial: "K.",
-    contact_number: "09555667788",
+    id_number: "VIP20230006",
+    email: "emma.johnson@example.com",
+    last_name: "Johnson",
+    first_name: "Emma",
+    middle_name: "Anne",
+    contact_number: "09666778899",
   },
 ];
+
 const fetchedDriverData = [
   {
     id_number: "20230005",
+    email: "lilyy.wange@example.com",
     last_name: "Wange",
     first_name: "Lilyy",
-    middle_initial: "A.",
+    middle_name: "Alex",
     contact_number: "0955566773",
   },
 ];
@@ -358,9 +361,10 @@ export default function Admin() {
                 <thead>
                   <tr>
                     <th style={{ fontWeight: "normal" }}>ID</th>
+                    <th style={{ fontWeight: "normal" }}>Email</th>
                     <th style={{ fontWeight: "normal" }}>Last Name</th>
                     <th style={{ fontWeight: "normal" }}>First Name</th>
-                    <th style={{ fontWeight: "normal" }}>MI.</th>
+                    <th style={{ fontWeight: "normal" }}>Middle Name</th>
                     <th style={{ fontWeight: "normal" }}>Contact No.</th>
                   </tr>
                 </thead>
@@ -371,9 +375,10 @@ export default function Admin() {
                     {filteredAccountsData.map((account) => (
                       <tr key={account.index}>
                         <td>{account.id_number}</td>
+                        <td>{account.email}</td>
                         <td>{account.last_name}</td>
                         <td>{account.first_name}</td>
-                        <td>{account.middle_initial}</td>
+                        <td>{account.middle_name}</td>
                         <td>{account.contact_number}</td>
                         <div>
                           <Ellipsis

@@ -1,13 +1,12 @@
-.dropdown {
+.ellipsis {
   position: relative;
-  display: inline-block;
-  width: 12vw;
-  margin-left: 5rem;
-  background-color: #060e57;
-  border-radius: 5px;
+  display: flex;
+  width: 0vw;
+
+  background-color: black;
 }
 
-.dropdown-toggle {
+.ellipsis-toggle {
   cursor: pointer;
   padding: 10px;
   background: none;
@@ -17,26 +16,45 @@
   border-radius: 4px;
   font-size: 1rem;
 }
+
 .username {
   margin-left: 0px;
   white-space: nowrap;
   overflow: hidden;
 }
-.dropdown-toggle {
+
+.ellipsis-toggle {
   color: white;
 }
-.dropdown-toggle:hover {
+
+.ellipsis-toggle:hover {
   cursor: pointer;
 }
+
+.ellipsis-dots {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ellipsis-dots .dot {
+  width: 5px;
+  height: 5px;
+  background-color: black;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 2px 0px;
+}
+
 .downarrow {
   position: absolute;
   margin-left: 9vw;
 }
 
-.dropdown-menu {
+.ellipsis-menu {
   position: absolute;
-  top: 100%;
-  left: 0%;
+  top: 20%;
+  right: 0%;
   width: 200px;
   padding: 10px;
   background-color: #d9d9d9;
@@ -46,39 +64,44 @@
   color: black;
 }
 
-.dropdown-menu li {
+.ellipsis-menu li {
   display: flex;
   align-items: center;
   padding: 5px 0;
   cursor: pointer;
 }
 
-.dropdown-menu li.Settings {
+.ellipsis-menu li.Settings {
   border-bottom: 1px solid black;
 }
 
-.dropdown-menu li:hover {
+.ellipsis-menu li:hover {
   background-color: #e0e0e0;
 }
 
-.dropdown-menu li svg {
+.ellipsis-menu li svg {
   margin-right: 10px;
 }
 
 @media screen and (max-width: 768px) {
-  .dropdown {
-    position: unset;
-    width: 8.5rem;
-    margin-left: 1.5rem;
+  .ellipsis {
+    position: relative;
   }
   .downarrow {
     margin-left: 6.5rem;
   }
-  .dropdown-menu {
-    position: unset;
+  .ellipsis-dots .dot {
+    width: 4px;
+    height: 4px;
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 2px 0px;
+  }
+  .ellipsis-menu {
     top: 100%;
-    left: 0%;
-    width: 136px;
+    right: 10%;
+    width: 100px;
     padding: 10px;
     background-color: #d9d9d9;
     border: 1px solid #ccc;

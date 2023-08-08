@@ -52,7 +52,7 @@
   font-size: 1.5rem;
   font-family: Arial;
 }
-.inputfield {
+.inputfielddd {
   margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -62,7 +62,7 @@
 .inputusername {
   position: relative;
 }
-.inputfield input {
+.inputfielddd input {
   background-color: #fdfdfd;
   color: black;
   border: 1px solid #cccccc;
@@ -138,6 +138,9 @@
   height: 0.5rem;
   background: linear-gradient(120deg, #fdb316, #060e57 60%);
 }
+.forgotpassword {
+  margin-top: 0rem;
+}
 .forgottext {
   color: blue;
   margin-left: 12rem;
@@ -162,7 +165,7 @@
     margin-top: 1rem;
     font-size: 1.3rem;
   }
-  .inputfield input {
+  .inputfielddd input {
     width: 16rem;
   }
   .forgottext {

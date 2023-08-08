@@ -1,23 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  faColumns,
-  faClipboardList,
-  faCar,
-  faCalendarAlt,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import "./vehicles.css";
+import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+import Container from "../../../components/container/container";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
-import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
-import Dropdown from "../../../components/dropdown/dropdown";
-import SearchBar from "../../../components/searchbar/searchbar";
+import "./dashboardR.css";
+import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import ToyotaHilux from "../../../components/images/toyota-hilux.jpg";
 import MitsubishiMontero from "../../../components/images/mitsubishi-montero.jpg";
 import Fortuner from "../../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../../components/images/toyota-hiace.png";
-import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
+import CalendarInput from "../../../components/calendarinput/calendarinput";
+import TimeInput from "../../../components/timeinput/timeinput";
 
 type SidebarItem = {
   icon: any;
@@ -26,11 +21,8 @@ type SidebarItem = {
 };
 
 const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
+  { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
+  { icon: faClipboardList, text: "Request", path: "/Request" },
 ];
 
 interface Vehicle {
@@ -91,11 +83,10 @@ const fetchedVehicles: Vehicle[] = [
     status: "Unavailable",
   },
 ];
-
-export default function Vehicles() {
+export default function DashboardR() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isSetTripOpen, setIsSetTripOpen] = useState(false);
+  const navigate = useNavigate();
 
   const fetchedVehicleList = () => {
     setVehicles(fetchedVehicles);
@@ -105,51 +96,42 @@ export default function Vehicles() {
     fetchedVehicleList();
   }, []);
 
-  const handleSearchChange = (term: string) => {
-    setSearchTerm(term);
+  const handleSetTripModal = () => {
+    setIsSetTripOpen(true);
   };
 
-  const filteredVehicleList = vehicles.filter((vehicle) => {
-    const isCategoryMatch =
-      selectedCategory === null || vehicle.status === selectedCategory;
-
-    const isSearchMatch =
-      searchTerm === "" ||
-      vehicle.vehicle_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.vehicle_type.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return isCategoryMatch && isSearchMatch;
-  });
-
-  const handleCategoryChange = (status: string) => {
-    setSelectedCategory(status === "All" ? null : status);
+  const handleCancelTripModal = () => {
+    setIsSetTripOpen(false);
   };
-  const handleEllipsisMenu = (category: string) => {
-    if (category === "Unavailable") {
-      alert("clicked unavailable");
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const key = event.key;
+
+    if (key !== "Backspace" && isNaN(Number(key))) {
+      event.preventDefault();
     }
   };
+  const openRequestForm = () => {
+    navigate("/RequestForm");
+  };
+
   return (
     <>
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
-        <div className="margin-top-vehicles">
-          <Label label="Vehicles" />
+        <div className="margin-top-dashboard">
+          <Label label="Dashboard" />
         </div>
-        <div className="vehicles-row">
-          <SearchBar onSearchChange={handleSearchChange} />
-          <Dropdown
-            status={["All", "Available", "On Trip", "Unavailable"]}
-            onCategoryChange={handleCategoryChange}
-          />
+        <div className="requester-row">
+          <p>Available Vehicles</p>
+          <button onClick={handleSetTripModal}>Set Trip</button>
         </div>
-        <div className="vehicles-container">
-          {filteredVehicleList.length === 0 ? (
+        <div className="requester-dashboard-container">
+          {vehicles.length === 0 ? (
             <p className="vehicles-null">No vehicles available</p>
           ) : (
-            filteredVehicleList.map((vehicle) => (
-              <a className="vehicle-card">
+            vehicles.map((vehicle) => (
+              <a onClick={openRequestForm} className="vehicle-card">
                 <div className="vehicle-row">
                   <div className="vehicle-column">
                     <p className="vehicle-name">{vehicle.vehicle_name}</p>
@@ -159,21 +141,47 @@ export default function Vehicles() {
                     <p className="vehicle-detail">
                       Type: {vehicle.vehicle_type}
                     </p>
-                    <p className="vehicle-status">{vehicle.status}</p>
                   </div>
                   <img className="vehicle-image" src={vehicle.vehicle_image} />
-                  <div className="ellipsis-container">
-                    <Ellipsis
-                      onCategoryChange={handleEllipsisMenu}
-                      status={["Set Status", "Unavailable"]}
-                    />
-                  </div>
                 </div>
               </a>
             ))
           )}
         </div>
       </Container>
+      <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
+        <div className="modal-set-trip-body">
+          <h1>Set Trip</h1>
+          <div className="date-from">
+            <p>From: </p>
+            <div>
+              <CalendarInput />
+              <div className="separate-time">
+                <TimeInput />
+              </div>
+            </div>
+          </div>
+          <div className="date-to">
+            <p>To: </p>
+            <div>
+              <CalendarInput />
+              <div className="separate-time">
+                <TimeInput />
+              </div>
+            </div>
+          </div>
+          <div className="number-of-pass">
+            <p>
+              Number of Passenger{"("}s{"):"}
+            </p>
+            <input type="number" onKeyDown={handleKeyDown}></input>
+          </div>
+          <div className="modal-button-container">
+            <button onClick={handleCancelTripModal}>Cancel</button>
+            <button onClick={handleSetTripModal}>Set Trip</button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

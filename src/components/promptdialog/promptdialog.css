@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.modal-prompt-dialog {
+  margin-top: 36vh;
+  margin-left: 38vw;
+  background-color: #d9d9d9;
+  width: 25vw;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.modal-prompt-dialog h1 {
+  color: #060e57;
+  font-size: 1.4rem;
+  text-align: center;
+}
+.modal-prompt-dialog div {
+  margin-top: 4vh;
+  width: 25vw;
+  display: flex;
+  justify-content: space-around;
+}
+.modal-prompt-dialog button {
+  width: 8vw;
+}
+.modal-prompt-dialog button:nth-child(1) {
+  background-color: #a30303;
+}
+.modal-prompt-dialog button:nth-child(2) {
+  background-color: transparent;
+  color: black;
+  border: 3px solid #060e57;
+}
+.modal-prompt-dialog button:nth-child(2):hover {
+  background-color: #060e57;
+  color: white;
+}

@@ -1,4 +1,147 @@
-p {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.schedules-container {
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 70vh;
+  margin-left: 15vh;
+  margin-top: 2vw;
+  background-color: #d9d9d9;
+}
+
+.button-container {
+  display: flex;
+  gap: 0px;
+  margin-bottom: 0px;
+  width: 15vw;
+  background-color: #d9d9d9;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.button-container button {
+  padding: 10px;
+  width: 15vw;
+  background-color: #d9d9d9;
+  color: #333;
+  border-radius: 10px 10px 0px 0px;
+  color: #060e57;
+  border-bottom: 2px solid #e8a51c;
+}
+
+.button-container button.active {
+  border-right: 2px solid #060e57;
+  border-top: 2px solid #060e57;
+  border-left: 2px solid #060e57;
+  border-bottom: 0;
+  border-image: linear-gradient(to right, #e8a51c, #060e57);
+  border-image-slice: 1;
+}
+
+.schedules-margin-top {
+  margin-top: 3vw;
+}
+.schedules-row {
+  display: flex;
+  flex-direction: row;
+  background-color: #fbfbfb;
+  gap: 30%;
+}
+.searchbar-container {
+  margin-bottom: 0.5rem;
+}
+.table-container {
+  display: flex;
+  width: 90vw;
+  background-color: #d9d9d9;
+  justify-content: center;
+  overflow: auto;
+  padding-top: 1px;
+  margin-top: -2px;
+  border-top: 2px solid #060e57;
+  border-image: linear-gradient(to right, #e8a51c, #060e57);
+  border-image-slice: 1;
+}
+
+.table-container table {
+  width: 80vw;
   color: black;
-  font-size: 5rem;
+  table-layout: fixed;
+}
+.table-container table thead {
+  font-size: 1.5rem;
+  color: #060e57;
+}
+.table-container table tbody tr {
+  text-align: center;
+  height: 8vh;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.table-container table tbody tr:hover {
+  background-color: #060e57;
+  color: white;
+}
+
+.schedules-null {
+  font-size: 1.3rem;
+  color: #060e57;
+  font-weight: bold;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .schedules-container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 80vh;
+    margin-left: 0vh;
+    margin-top: 4vw;
+    background-color: #d9d9d9;
+  }
+  .button-container button {
+    width: 30vw;
+  }
+  .button-container button.active {
+    border: none;
+  }
+  .button-container.active {
+    border: none;
+    border-image: none;
+    border-image-slice: 0;
+  }
+  .button-container {
+    width: 15vw;
+    background-color: black;
+  }
+  .schedules-margin-top {
+    margin-top: 0rem;
+  }
+  .table-container {
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    width: 100vw;
+    margin-left: 0rem;
+  }
+  .table-container table {
+    width: 100vw;
+    table-layout: fixed;
+  }
+  .table-container table thead {
+    font-size: 1.1rem;
+  }
+  .table-container table tbody tr {
+    height: 7vh;
+    font-size: 1rem;
+  }
+  .schedules-null {
+    font-size: 1rem;
+    width: 50vw;
+  }
 }

@@ -1,0 +1,361 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.request-form-body {
+  margin-top: 5vw;
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+  padding: 1rem;
+}
+.request-form-body h1 {
+  margin-top: 1vw;
+  color: #060e57;
+  font-size: 2rem;
+  text-align: center;
+}
+.form-body {
+  margin: 1vw 0vw 0vw 2vw;
+  width: 94vw;
+  height: 76vh;
+  border-top: 8px solid #060e57;
+  border-image: linear-gradient(to right, #e8a51c, #060e57);
+  border-image-slice: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-body p {
+  color: black;
+}
+.form-body-shadow {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 70vw;
+  height: 70vh;
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cccccc;
+  padding-bottom: 2rem;
+}
+.first-row {
+  display: flex;
+  margin-top: 2vw;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.passenger_name_width {
+  width: 12vw;
+}
+.passengers-name-row {
+  margin-top: -2vw;
+  padding: 0px;
+  margin-left: 0vh;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1%;
+}
+.third-row {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vw;
+  justify-content: space-around;
+}
+.vehicle-info-name {
+  margin-top: 1vw;
+  display: flex;
+  flex-direction: row;
+  margin-left: 0vh;
+  width: 14vw;
+  color: black;
+  align-items: center;
+}
+
+.vehicle-info-name p:nth-child(1) {
+  display: flex;
+  margin-right: 2vh;
+  gap: 5%;
+  font-size: 1rem;
+  align-items: center;
+}
+.kilometer-info {
+  margin-top: 1vw;
+  display: flex;
+  flex-direction: row;
+  width: 14vw;
+}
+
+.kilometer-info p:nth-child(2) {
+  margin-left: 1vh;
+}
+.forth-row {
+  display: flex;
+  margin-top: 1vw;
+  margin-left: 10vh;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.calendar-containerr {
+  margin-left: -7vh;
+  width: 30vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.calendar-containerr p {
+}
+.customize-calendar {
+  background-color: transparent;
+  color: black;
+  font-size: 1.2rem;
+}
+.fifth-row {
+  margin-top: 1.5vw;
+  margin-left: 9vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5%;
+}
+.fifth-row div:nth-child(2) {
+  display: flex;
+  width: 4vw;
+  gap: 10%;
+}
+.fifth-row div:nth-child(3) {
+  display: flex;
+  width: 4vw;
+  gap: 10%;
+}
+
+.kilometer-info p:nth-child(1) {
+}
+.fifth-row label {
+  color: black;
+}
+
+.sixth-row {
+  margin-top: 2vw;
+  display: flex;
+  flex-direction: column;
+  margin-left: 8vh;
+}
+.sixth-row p {
+  font-weight: bold;
+}
+.purpose-row {
+  display: flex;
+  margin-top: 1vw;
+}
+.purpose-width {
+  width: 60vw;
+}
+.seventh-row {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-left: 8vh;
+}
+.seventh-row p {
+  font-weight: bold;
+}
+.seventh-row button {
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  height: 5vh;
+  width: 13vw;
+  justify-content: center;
+  background-color: #d9d9d9;
+  color: black;
+  text-align: center;
+}
+.seventh-row button:nth-child(3) {
+  width: 7vw;
+  background-color: transparent;
+  margin-left: 30vh;
+  color: black;
+  border: 2px solid #060e57;
+  align-items: center;
+}
+.seventh-row button:nth-child(4) {
+  width: 8vw;
+  border: none;
+  background: linear-gradient(120deg, #fdb316, #060e57 60%);
+  color: white;
+  align-items: center;
+}
+.button-row-container {
+  margin-top: 1vw;
+  display: flex;
+  flex-direction: row;
+  gap: 2%;
+}
+
+.iconn {
+  color: #060e57;
+}
+
+@media screen and (max-width: 768px) {
+  .request-form-body {
+    margin: 20vw 0vh 0vw 0vh;
+  }
+  .request-form-body h1 {
+    font-size: 1.5rem;
+  }
+  .form-body {
+    margin: 1vw 0vh 0vw 0vh;
+  }
+  .form-body-shadow {
+    width: 94vw;
+    height: 70vh;
+    margin-left: 0vh;
+  }
+  .first-row {
+    margin-left: 0vh;
+    justify-content: space-around;
+    display: flex;
+  }
+  .passenger_name_width {
+    width: 30vw;
+  }
+  .passengers-name-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .third-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vw;
+    justify-content: space-around;
+  }
+  .vehicle-info-name {
+    margin-top: 1vw;
+    margin-right: -0vh;
+    margin-left: 0.5vh;
+    width: 35vw;
+  }
+
+  .vehicle-info-name p:nth-child(1) {
+    margin-right: 1vh;
+    font-size: 0.8rem;
+  }
+  .vehicle-info-name p:nth-child(2) {
+    font-size: 80%;
+    margin-right: 0vh;
+  }
+  .kilometer-info {
+    width: 28vw;
+    font-size: 0.8rem;
+    margin-left: 1vh;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kilometer-info p:nth-child(2) {
+    margin-left: 1vh;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .forth-row {
+    display: flex;
+    margin-top: 1vw;
+    margin-left: 0vh;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .calendar-containerr {
+    margin-left: -7vh;
+    width: 30vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .calendar-icon-container {
+    left: 180%;
+  }
+  .calendar-containerr p {
+    font-size: 0.8rem;
+  }
+  .customize-calendar {
+    background-color: transparent;
+    color: black;
+    font-size: 1.2rem;
+    margin-left: -2.1vh;
+  }
+  .fifth-row {
+    margin-left: 1vh;
+
+    font-size: 0.8rem;
+  }
+  .fifth-row div:nth-child(2) {
+    display: flex;
+    width: 10vw;
+    gap: 15%;
+  }
+  .fifth-row div:nth-child(3) {
+    display: flex;
+    width: 10vw;
+    gap: 15%;
+  }
+  .sixth-row {
+    margin-top: 2vw;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2vh;
+  }
+  .sixth-row p {
+    font-size: 0.8rem;
+  }
+
+  .purpose-width {
+    width: 80vw;
+  }
+  .seventh-row {
+    margin-left: 1vh;
+  }
+  .seventh-row p {
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+  .seventh-row button {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    height: 5vh;
+    width: 30vw;
+    justify-content: center;
+    background-color: #d9d9d9;
+    color: black;
+    text-align: center;
+    font-size: 0.7rem;
+  }
+  .seventh-row button:nth-child(3) {
+    position: absolute;
+    top: 85%;
+    left: 10%;
+    width: 30vw;
+    background-color: transparent;
+    margin-left: 0vh;
+    color: black;
+    border: 2px solid #060e57;
+    align-items: center;
+    text-align: center;
+  }
+  .seventh-row button:nth-child(4) {
+    position: absolute;
+    top: 85%;
+    left: 65%;
+    width: 30vw;
+    border: none;
+    background: linear-gradient(120deg, #fdb316, #060e57 60%);
+    color: white;
+    align-items: center;
+  }
+}

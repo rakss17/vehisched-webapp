@@ -9,6 +9,10 @@ import MitsubishiMontero from "../../components/images/mitsubishi-montero.jpg";
 import Fortuner from "../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../components/images/toyota-hiace.png";
 import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
+import AddEdit from "../../components/admin/user/addedit";
+import AddEditVehicle from "../../components/admin/vehicle/addedit";
+import PromptDialog from "../../components/promptdialog/prompdialog";
+import Confirmation from "../../components/confirmation/confirmation";
 
 interface Vehicle {
   id: number;
@@ -72,69 +76,72 @@ const fetchedVehicles: Vehicle[] = [
 const fetchedRequesterData = [
   {
     id_number: "2020300100",
+    email: "bohari.ambulo@example.com",
     last_name: "Ambulo",
     first_name: "Bohari",
-    middle_initial: "S.",
+    middle_name: "Samuel",
     contact_number: "09123456789",
   },
 ];
+
 const fetchedVIPData = [
   {
     id_number: "VIP20230001",
+    email: "alice.smith@example.com",
     last_name: "Smith",
     first_name: "Alice",
-    middle_initial: "M.",
+    middle_name: "Marie",
     contact_number: "09111223344",
   },
   {
     id_number: "VIP20230002",
+    email: "robert.johnson@example.com",
     last_name: "Johnson",
     first_name: "Robert",
-    middle_initial: "L.",
+    middle_name: "Lewis",
     contact_number: "09222334455",
   },
   {
     id_number: "VIP20230003",
+    email: "sophia.garcia@example.com",
     last_name: "Garcia",
     first_name: "Sophia",
-    middle_initial: "N.",
+    middle_name: "Natalie",
     contact_number: "09333445566",
   },
   {
     id_number: "VIP20230004",
+    email: "michael.lee@example.com",
     last_name: "Lee",
     first_name: "Michael",
-    middle_initial: "J.",
+    middle_name: "James",
     contact_number: "09444556677",
   },
   {
     id_number: "VIP20230005",
+    email: "lily.wang@example.com",
     last_name: "Wang",
     first_name: "Lily",
-    middle_initial: "K.",
+    middle_name: "Katherine",
     contact_number: "09555667788",
   },
   {
-    id_number: "VIP20230005",
-    last_name: "Wang",
-    first_name: "Lily",
-    middle_initial: "K.",
-    contact_number: "09555667788",
-  },
-  {
-    id_number: "VIP20230005",
-    last_name: "Wang",
-    first_name: "Lily",
-    middle_initial: "K.",
-    contact_number: "09555667788",
+    id_number: "VIP20230006",
+    email: "emma.johnson@example.com",
+    last_name: "Johnson",
+    first_name: "Emma",
+    middle_name: "Anne",
+    contact_number: "09666778899",
   },
 ];
+
 const fetchedDriverData = [
   {
     id_number: "20230005",
+    email: "lilyy.wange@example.com",
     last_name: "Wange",
     first_name: "Lilyy",
-    middle_initial: "A.",
+    middle_name: "Alex",
     contact_number: "0955566773",
   },
 ];
@@ -150,6 +157,22 @@ export default function Admin() {
     useState<string>("Requester");
   const [searchAccountTerm, setSearchAccountTerm] = useState("");
   const [searchVehicleTerm, setSearchVehicleTerm] = useState("");
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
+  const [isEditVehicleOpen, setIsEditVehicleOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeleteVehicleOpen, setIsDeleteVehicleOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationOpenEdit, setIsConfirmationOpenEdit] = useState(false);
+  const [isConfirmationOpenVehicle, setIsConfirmationOpenVehicle] =
+    useState(false);
+  const [isConfirmationOpenVehicleEdit, setIsConfirmationOpenVehicleEdit] =
+    useState(false);
+  const [isConfirmationOpenDelete, setIsConfirmationOpenDelete] =
+    useState(false);
+  const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
+    useState(false);
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -242,10 +265,82 @@ export default function Admin() {
   };
   const handleEllipsisMenu = (category: string) => {
     if (category === "Edit") {
-      alert("clicked edit");
+      setIsEditOpen(true);
     } else if (category === "Delete") {
-      alert("clicked Delete");
+      setIsDeleteOpen(true);
     }
+  };
+  const handleEllipsisMenuVehicle = (category: string) => {
+    if (category === "Edit") {
+      setIsEditVehicleOpen(true);
+    } else if (category === "Delete") {
+      setIsDeleteVehicleOpen(true);
+    }
+  };
+  const handleAddUser = () => {
+    setIsAddOpen(true);
+  };
+  const handleAddUserButton = () => {
+    setIsAddOpen(false);
+    setIsConfirmationOpen(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpen(false);
+    }, 3000);
+  };
+  const handleEditUserButton = () => {
+    setIsEditOpen(false);
+    setIsConfirmationOpenEdit(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenEdit(false);
+    }, 3000);
+  };
+  const handleAddVehicleButton = () => {
+    setIsAddVehicleOpen(false);
+    setIsConfirmationOpenVehicle(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicle(false);
+    }, 3000);
+  };
+  const handleEditVehicleButton = () => {
+    setIsEditVehicleOpen(false);
+    setIsConfirmationOpenVehicleEdit(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicleEdit(false);
+    }, 3000);
+  };
+  const handleDeleteUserButton = () => {
+    setIsDeleteOpen(false);
+    setIsConfirmationOpenDelete(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenDelete(false);
+    }, 3000);
+  };
+  const handleDeleteVehicleButton = () => {
+    setIsDeleteVehicleOpen(false);
+    setIsConfirmationOpenVehicleDelete(true);
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicleDelete(false);
+    }, 3000);
+  };
+  const handleCancel = () => {
+    setIsAddOpen(false);
+    setIsEditOpen(false);
+    setIsAddVehicleOpen(false);
+    setIsEditVehicleOpen(false);
+  };
+  const handleAddVehicle = () => {
+    setIsAddVehicleOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsDeleteOpen(false);
+    setIsDeleteVehicleOpen(false);
   };
   return (
     <>
@@ -272,7 +367,7 @@ export default function Admin() {
           <div className="display-accounts-container">
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchAccount} />
-              <button>Add User {""}+</button>
+              <button onClick={handleAddUser}>Add User {""}+</button>
             </div>
             <div className="usertype-button-row">
               <button
@@ -333,9 +428,10 @@ export default function Admin() {
                 <thead>
                   <tr>
                     <th style={{ fontWeight: "normal" }}>ID</th>
+                    <th style={{ fontWeight: "normal" }}>Email</th>
                     <th style={{ fontWeight: "normal" }}>Last Name</th>
                     <th style={{ fontWeight: "normal" }}>First Name</th>
-                    <th style={{ fontWeight: "normal" }}>MI.</th>
+                    <th style={{ fontWeight: "normal" }}>Middle Name</th>
                     <th style={{ fontWeight: "normal" }}>Contact No.</th>
                   </tr>
                 </thead>
@@ -344,12 +440,19 @@ export default function Admin() {
                 ) : (
                   <tbody>
                     {filteredAccountsData.map((account) => (
-                      <tr key={account.index} onClick={() => alert("clicked")}>
+                      <tr key={account.index}>
                         <td>{account.id_number}</td>
+                        <td>{account.email}</td>
                         <td>{account.last_name}</td>
                         <td>{account.first_name}</td>
-                        <td>{account.middle_initial}</td>
+                        <td>{account.middle_name}</td>
                         <td>{account.contact_number}</td>
+                        <div>
+                          <Ellipsis
+                            onCategoryChange={handleEllipsisMenu}
+                            status={["Edit", "Delete"]}
+                          />
+                        </div>
                       </tr>
                     ))}
                   </tbody>
@@ -362,7 +465,7 @@ export default function Admin() {
           <>
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchVehicle} />
-              <button>Add Vehicle {""}+</button>
+              <button onClick={handleAddVehicle}>Add Vehicle {""}+</button>
             </div>
             <div className="vehicles-container">
               {filteredVehicleList.length === 0 ? (
@@ -387,7 +490,7 @@ export default function Admin() {
                       />
                       <div className="ellipsis-container">
                         <Ellipsis
-                          onCategoryChange={handleEllipsisMenu}
+                          onCategoryChange={handleEllipsisMenuVehicle}
                           status={["Edit", "Delete"]}
                         />
                       </div>
@@ -399,6 +502,65 @@ export default function Admin() {
           </>
         )}
       </Container>
+      <AddEdit
+        isOpen={isAddOpen}
+        onRequestClose={handleCancel}
+        header="Add User"
+        buttonText="Add User +"
+        onRequestAddEdit={handleAddUserButton}
+      />
+      <AddEdit
+        isOpen={isEditOpen}
+        onRequestClose={handleCancel}
+        header="Edit User"
+        buttonText="Update User +"
+        onRequestAddEdit={handleEditUserButton}
+      />
+      <AddEditVehicle
+        isOpen={isAddVehicleOpen}
+        onRequestClose={handleCancel}
+        header="Add Vehicle"
+        buttonText="Add Vehicle +"
+        onRequestAddEdit={handleAddVehicleButton}
+      />
+      <AddEditVehicle
+        isOpen={isEditVehicleOpen}
+        onRequestClose={handleCancel}
+        header="Edit Vehicle"
+        buttonText="Update Vehicle +"
+        onRequestAddEdit={handleEditVehicleButton}
+      />
+      <PromptDialog
+        isOpen={isDeleteOpen}
+        content="Are you sure you want to delete this user?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleDeleteUserButton}
+      />
+      <PromptDialog
+        isOpen={isDeleteVehicleOpen}
+        content="Are you sure you want to delete this vehicle?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleDeleteVehicleButton}
+      />
+      <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
+      <Confirmation isOpen={isConfirmationOpenEdit} header="User Updated!" />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicle}
+        header="Vehicle Added!"
+      />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicleEdit}
+        header="Vehicle Updated!"
+      />
+      <Confirmation isOpen={isConfirmationOpenDelete} header="User Deleted!" />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicleDelete}
+        header="Vehicle Deleted!"
+      />
     </>
   );
 }

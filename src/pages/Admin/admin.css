@@ -86,7 +86,7 @@
 
 .accounts-data-container table {
   width: 90vw;
-  table-layout: fixed;
+  padding-bottom: 3rem;
 }
 
 .accounts-data-container table thead {
@@ -101,6 +101,10 @@
   text-align: center;
   cursor: pointer;
   height: 7vh;
+}
+.accounts-data-container table tbody tr div {
+  background-color: transparent;
+  width: 1.2vw;
 }
 .accounts-data-container table tbody td {
   border-radius: 0px;

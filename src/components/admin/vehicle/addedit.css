@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.modal-add-edit {
+  background-color: #d9d9d9;
+  margin-top: 25vh;
+  margin-left: 35vw;
+  width: 30vw;
+  height: 58vh;
+  border-radius: 10px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+}
+.modal-add-edit h1 {
+  color: #060e57;
+  font-size: 1.5rem;
+  margin-top: 2vw;
+}
+.modal-add-edit div {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1vw;
+  width: 25vw;
+  height: 35vh;
+}
+.modal-add-edit div div {
+  display: flex;
+  flex-direction: row;
+  gap: 10%;
+}
+.modal-add-edit div div:nth-child(5) {
+  display: flex;
+  flex-direction: row;
+  gap: 0%;
+  align-items: center;
+}
+.modal-add-edit div div:last-child {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5vw;
+}
+.modal-add-edit label {
+  color: black;
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+.modal-add-edit input {
+  background-color: white;
+  border: none;
+  color: black;
+  width: 25vw;
+  height: 5vh;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.modal-add-edit button {
+  width: 10vw;
+  height: 5vh;
+  text-align: center;
+}
+.modal-add-edit button:nth-child(1) {
+  background-color: transparent;
+  color: black;
+  border: 2px solid #060e57;
+}
+.modal-add-edit button:nth-child(2) {
+  background-color: #060e57;
+}
+.modal-add-edit input[type="checkbox"] {
+  height: 3vh;
+  color: white;
+  width: 8vw;
+}

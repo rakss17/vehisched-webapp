@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./ellipsismenu.css";
 
 type EllipsisProps = {
@@ -9,6 +9,7 @@ type EllipsisProps = {
 export default function Ellipsis(props: EllipsisProps) {
   const [selectedOption, setSelectedOption] = useState(props.status[0]);
   const [isOpen, setIsOpen] = useState(false);
+  const ellipsisRef = useRef<HTMLDivElement>(null);
 
   const handleMenuToggle = () => {
     setIsOpen(!isOpen);
@@ -20,8 +21,24 @@ export default function Ellipsis(props: EllipsisProps) {
     props.onCategoryChange(option);
   };
 
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (
+      ellipsisRef.current &&
+      !ellipsisRef.current.contains(event.target as Node)
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
-    <div className="ellipsis">
+    <div className="ellipsis" ref={ellipsisRef}>
       <div className="ellipsis-toggle" onClick={handleMenuToggle}>
         <div className="ellipsis-dots">
           <span className="dot"></span>

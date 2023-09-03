@@ -8,10 +8,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import "./landing.css";
+import { SigninAPI } from "../../components/api/api";
+import { SigninParams } from "../../interfaces/interfaces";
 
 export default function Landing() {
   const [showPassword, setShowPassword] = useState(false);
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<SigninParams>({
     username: "",
     password: "",
   });
@@ -21,13 +23,7 @@ export default function Landing() {
   };
 
   const handleSignin = () => {
-    if (userData.username === "officestaff") {
-      navigate("/DashboardOS");
-    } else if (userData.username === "requester") {
-      navigate("/DashboardR");
-    } else if (userData.username === "admin") {
-      navigate("/Admin");
-    }
+    SigninAPI(userData, navigate);
   };
   return (
     <>

@@ -10,10 +10,14 @@ const AddEdit: React.FC<AddEditProps> = ({
   header,
   buttonText,
   onRequestAddEdit,
+  lastNameProps,
+  firstNameProps,
+  middleNameProps,
+  emailProps,
+  usernameProps,
+  contactNumberProps,
+  roleDropdownProps,
 }) => {
-  const handleDropdownChange = (selectedOption: string) => {
-    console.log("Selected option:", selectedOption);
-  };
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
@@ -27,28 +31,32 @@ const AddEdit: React.FC<AddEditProps> = ({
       <h1>{header}</h1>
       <div>
         <div>
+          <label>Email: </label>
+          <input {...emailProps} />
+        </div>
+        <div>
+          <label>Username: </label>
+          <input {...usernameProps} />
+        </div>
+        <div>
           <label>Last Name: </label>
-          <input></input>
+          <input {...lastNameProps} />
         </div>
         <div>
           <label>First Name: </label>
-          <input></input>
+          <input {...firstNameProps} />
         </div>
         <div>
           <label>Middle Name: </label>
-          <input></input>
-        </div>
-        <div>
-          <label>Email: </label>
-          <input></input>
+          <input {...middleNameProps} />
         </div>
         <div>
           <label>Contact Number: </label>
-          <input type="number" onKeyDown={handleKeyDown}></input>
+          <input {...contactNumberProps} onKeyDown={handleKeyDown} />
         </div>
         <div>
           <label>Role: </label>
-          <DropdownMenu onChange={handleDropdownChange} />
+          <DropdownMenu {...roleDropdownProps} />
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>

@@ -14,6 +14,8 @@ import {
   fetchedVehicles,
   fetchedAccountData,
 } from "../../components/mockdata.tsx/mockdata";
+import { SignupParams } from "../../interfaces/interfaces";
+import { SignupAPI } from "../../components/api/api";
 
 export default function Admin() {
   const [displayAccounts, setDisplayAccounts] = useState(true);
@@ -42,6 +44,23 @@ export default function Admin() {
     useState(false);
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
+  const [userData, setUserData] = useState<SignupParams>({
+    username: "",
+    password: "vehisched123",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    mobile_number: 0,
+    role: "",
+  });
+
+  const handleDropdownChange = (selectedOption: string) => {
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      role: selectedOption,
+    }));
+  };
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -168,11 +187,8 @@ export default function Admin() {
   };
   const handleAddUserButton = () => {
     setIsAddOpen(false);
-    setIsConfirmationOpen(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpen(false);
-    }, 3000);
+    console.log(userData);
+    SignupAPI(userData, setIsConfirmationOpen);
   };
   const handleEditUserButton = () => {
     setIsEditOpen(false);
@@ -386,14 +402,54 @@ export default function Admin() {
         header="Add User"
         buttonText="Add User +"
         onRequestAddEdit={handleAddUserButton}
+        lastNameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, last_name: event.target.value }),
+          value: userData.last_name,
+          type: "text",
+        }}
+        firstNameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, first_name: event.target.value }),
+          value: userData.first_name,
+          type: "text",
+        }}
+        middleNameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, middle_name: event.target.value }),
+          value: userData.middle_name,
+          type: "text",
+        }}
+        emailProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, email: event.target.value }),
+          value: userData.email,
+          type: "text",
+        }}
+        usernameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, username: event.target.value }),
+          value: userData.username,
+          type: "text",
+        }}
+        contactNumberProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, mobile_number: event.target.value }),
+          placeholder: "Last Name",
+          value: userData.mobile_number,
+          type: "number",
+        }}
+        roleDropdownProps={{
+          onChange: handleDropdownChange,
+        }}
       />
-      <AddEdit
+      {/* <AddEdit
         isOpen={isEditOpen}
         onRequestClose={handleCancel}
         header="Edit User"
         buttonText="Update User +"
         onRequestAddEdit={handleEditUserButton}
-      />
+      /> */}
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
         onRequestClose={handleCancel}

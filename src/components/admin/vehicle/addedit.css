@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-.modal-add-edit {
+.modal-add-edit2 {
   background-color: #d9d9d9;
   margin-top: 25vh;
   margin-left: 35vw;
@@ -15,40 +15,40 @@
   display: flex;
   align-items: center;
 }
-.modal-add-edit h1 {
+.modal-add-edit2 h1 {
   color: #060e57;
   font-size: 1.5rem;
   margin-top: 2vw;
 }
-.modal-add-edit div {
+.modal-add-edit2 div {
   display: flex;
   flex-direction: column;
   margin-top: 1vw;
   width: 25vw;
   height: 35vh;
 }
-.modal-add-edit div div {
+.modal-add-edit2 div div {
   display: flex;
   flex-direction: row;
   gap: 10%;
 }
-.modal-add-edit div div:nth-child(5) {
+.modal-add-edit2 div div:nth-child(5) {
   display: flex;
   flex-direction: row;
   gap: 0%;
   align-items: center;
 }
-.modal-add-edit div div:last-child {
+.modal-add-edit2 div div:last-child {
   display: flex;
   justify-content: center;
   margin-top: 1.5vw;
 }
-.modal-add-edit label {
+.modal-add-edit2 label {
   color: black;
   font-size: 1.2rem;
   white-space: nowrap;
 }
-.modal-add-edit input {
+.modal-add-edit2 input {
   background-color: white;
   border: none;
   color: black;
@@ -59,20 +59,20 @@
   font-size: 1rem;
 }
 
-.modal-add-edit button {
+.modal-add-edit2 button {
   width: 10vw;
   height: 5vh;
   text-align: center;
 }
-.modal-add-edit button:nth-child(1) {
+.modal-add-edit2 button:nth-child(1) {
   background-color: transparent;
   color: black;
   border: 2px solid #060e57;
 }
-.modal-add-edit button:nth-child(2) {
+.modal-add-edit2 button:nth-child(2) {
   background-color: #060e57;
 }
-.modal-add-edit input[type="checkbox"] {
+.modal-add-edit2 input[type="checkbox"] {
   height: 3vh;
   color: white;
   width: 8vw;

@@ -6,3 +6,11 @@ export interface Vehicle {
   vehicle_image: string;
   status: string;
 }
+
+export interface AddEditProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  header: string;
+  buttonText: string;
+  onRequestAddEdit: () => void;
+}

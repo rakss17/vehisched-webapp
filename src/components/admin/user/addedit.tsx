@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
 import DropdownMenu from "../dropdownmenu";
+import { AddEditProps } from "../../../interfaces/interfaces";
 
-interface AddEditProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  header: string;
-  buttonText: string;
-  onRequestAddEdit: () => void;
-}
 const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
@@ -41,7 +35,11 @@ const AddEdit: React.FC<AddEditProps> = ({
           <input></input>
         </div>
         <div>
-          <label>MI: </label>
+          <label>Middle Name: </label>
+          <input></input>
+        </div>
+        <div>
+          <label>Email: </label>
           <input></input>
         </div>
         <div>

@@ -4,140 +4,16 @@ import Container from "../../components/container/container";
 import Label from "../../components/label/label";
 import "./admin.css";
 import SearchBar from "../../components/searchbar/searchbar";
-import ToyotaHilux from "../../components/images/toyota-hilux.jpg";
-import MitsubishiMontero from "../../components/images/mitsubishi-montero.jpg";
-import Fortuner from "../../components/images/fortuner.jpg";
-import ToyotaHiace from "../../components/images/toyota-hiace.png";
 import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
 import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
 import { Vehicle } from "../../interfaces/interfaces";
-
-const fetchedVehicles: Vehicle[] = [
-  {
-    id: 1,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "On Trip",
-  },
-  {
-    id: 2,
-    vehicle_name: "KCU 2522 Montero Sport",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: MitsubishiMontero,
-    status: "Available",
-  },
-  {
-    id: 3,
-    vehicle_name: "KAB 2855 Fortuner",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: Fortuner,
-    status: "On Trip",
-  },
-  {
-    id: 4,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Available",
-  },
-  {
-    id: 5,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "Unavailable",
-  },
-  {
-    id: 6,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Unavailable",
-  },
-];
-
-const fetchedRequesterData = [
-  {
-    id_number: "2020300100",
-    email: "bohari.ambulo@example.com",
-    last_name: "Ambulo",
-    first_name: "Bohari",
-    middle_name: "Samuel",
-    contact_number: "09123456789",
-  },
-];
-
-const fetchedVIPData = [
-  {
-    id_number: "VIP20230001",
-    email: "alice.smith@example.com",
-    last_name: "Smith",
-    first_name: "Alice",
-    middle_name: "Marie",
-    contact_number: "09111223344",
-  },
-  {
-    id_number: "VIP20230002",
-    email: "robert.johnson@example.com",
-    last_name: "Johnson",
-    first_name: "Robert",
-    middle_name: "Lewis",
-    contact_number: "09222334455",
-  },
-  {
-    id_number: "VIP20230003",
-    email: "sophia.garcia@example.com",
-    last_name: "Garcia",
-    first_name: "Sophia",
-    middle_name: "Natalie",
-    contact_number: "09333445566",
-  },
-  {
-    id_number: "VIP20230004",
-    email: "michael.lee@example.com",
-    last_name: "Lee",
-    first_name: "Michael",
-    middle_name: "James",
-    contact_number: "09444556677",
-  },
-  {
-    id_number: "VIP20230005",
-    email: "lily.wang@example.com",
-    last_name: "Wang",
-    first_name: "Lily",
-    middle_name: "Katherine",
-    contact_number: "09555667788",
-  },
-  {
-    id_number: "VIP20230006",
-    email: "emma.johnson@example.com",
-    last_name: "Johnson",
-    first_name: "Emma",
-    middle_name: "Anne",
-    contact_number: "09666778899",
-  },
-];
-
-const fetchedDriverData = [
-  {
-    id_number: "20230005",
-    email: "lilyy.wange@example.com",
-    last_name: "Wange",
-    first_name: "Lilyy",
-    middle_name: "Alex",
-    contact_number: "0955566773",
-  },
-];
+import {
+  fetchedVehicles,
+  fetchedAccountData,
+} from "../../components/mockdata.tsx/mockdata";
 
 export default function Admin() {
   const [displayAccounts, setDisplayAccounts] = useState(true);
@@ -176,10 +52,14 @@ export default function Admin() {
   }, []);
 
   const handleButtonClick = (nav: string) => {
+    let filteredRole: any[] = [];
     switch (nav) {
       case "Accounts":
         setDisplayAccounts(true);
-        setAccountsData(fetchedRequesterData);
+        filteredRole = fetchedAccountData.filter(
+          (role) => role.role === "requester"
+        );
+        setAccountsData(filteredRole);
         setDisplayVehicles(false);
         break;
       case "Vehicles":
@@ -196,24 +76,37 @@ export default function Admin() {
   };
 
   const handleButton2Click = (nav: string) => {
+    let filteredRole: any[] = [];
     switch (nav) {
       case "Requester":
-        setAccountsData(fetchedRequesterData);
-
+        filteredRole = fetchedAccountData.filter(
+          (role) => role.role === "requester"
+        );
         break;
       case "VIP":
-        setAccountsData(fetchedVIPData);
-
+        filteredRole = fetchedAccountData.filter((role) => role.role === "vip");
         break;
       case "Driver":
-        setAccountsData(fetchedDriverData);
-
+        filteredRole = fetchedAccountData.filter(
+          (role) => role.role === "driver"
+        );
+        break;
+      case "GateGuard":
+        filteredRole = fetchedAccountData.filter(
+          (role) => role.role === "gate guard"
+        );
+        break;
+      case "OfficeStaff":
+        filteredRole = fetchedAccountData.filter(
+          (role) => role.role === "office staff"
+        );
         break;
       default:
         setAccountsData([]);
         break;
     }
     setSelectedAccountNavigation(nav);
+    setAccountsData(filteredRole);
   };
   useEffect(() => {
     handleButton2Click("Requester");
@@ -400,14 +293,6 @@ export default function Admin() {
                 }
               >
                 Office Staff
-              </button>
-              <button
-                onClick={() => handleButton2Click("UnitHead")}
-                className={
-                  selectedAccountNavigation === "UnitHead" ? "active" : ""
-                }
-              >
-                Unit Head
               </button>
             </div>
 

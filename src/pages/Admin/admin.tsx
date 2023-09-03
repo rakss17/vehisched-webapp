@@ -13,15 +13,8 @@ import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
+import { Vehicle } from "../../interfaces/interfaces";
 
-interface Vehicle {
-  id: number;
-  vehicle_name: string;
-  capacity: number;
-  vehicle_type: string;
-  vehicle_image: string;
-  status: string;
-}
 const fetchedVehicles: Vehicle[] = [
   {
     id: 1,

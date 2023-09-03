@@ -31,7 +31,7 @@ const AddEdit: React.FC<AddEditProps> = ({
       <h1>{header}</h1>
       <div>
         <div>
-          <label>Email: </label>
+          <label>Email Address: </label>
           <input {...emailProps} />
         </div>
         <div>
@@ -51,7 +51,7 @@ const AddEdit: React.FC<AddEditProps> = ({
           <input {...middleNameProps} />
         </div>
         <div>
-          <label>Contact Number: </label>
+          <label>Mobile Number: </label>
           <input {...contactNumberProps} onKeyDown={handleKeyDown} />
         </div>
         <div>

@@ -12,15 +12,16 @@ import Confirmation from "../../components/confirmation/confirmation";
 import { Vehicle } from "../../interfaces/interfaces";
 import {
   fetchedVehicles,
-  fetchedAccountData,
+  // fetchedAccountData,
 } from "../../components/mockdata.tsx/mockdata";
 import { SignupParams } from "../../interfaces/interfaces";
-import { SignupAPI } from "../../components/api/api";
+import { SignupAPI, fetchUsersAPI } from "../../components/api/api";
 
 export default function Admin() {
   const [displayAccounts, setDisplayAccounts] = useState(true);
   const [displayVehicles, setDisplayVehicles] = useState(false);
   const [accountsData, setAccountsData] = useState<any[]>([]);
+  const [fetchedUsersData, setFetchedUsersData] = useState<SignupParams[]>([]);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [selectedNavigation, setSelectedNavigation] =
     useState<string>("Accounts");
@@ -70,12 +71,18 @@ export default function Admin() {
     fetchedVehicleList();
   }, []);
 
+  useEffect(() => {
+    fetchUsersAPI(setFetchedUsersData);
+    handleButtonClick("Accounts");
+    handleButton2Click("Requester");
+  }, []);
+
   const handleButtonClick = (nav: string) => {
     let filteredRole: any[] = [];
     switch (nav) {
       case "Accounts":
         setDisplayAccounts(true);
-        filteredRole = fetchedAccountData.filter(
+        filteredRole = fetchedUsersData.filter(
           (role) => role.role === "requester"
         );
         setAccountsData(filteredRole);
@@ -98,25 +105,25 @@ export default function Admin() {
     let filteredRole: any[] = [];
     switch (nav) {
       case "Requester":
-        filteredRole = fetchedAccountData.filter(
+        filteredRole = fetchedUsersData.filter(
           (role) => role.role === "requester"
         );
         break;
       case "VIP":
-        filteredRole = fetchedAccountData.filter((role) => role.role === "vip");
+        filteredRole = fetchedUsersData.filter((role) => role.role === "vip");
         break;
       case "Driver":
-        filteredRole = fetchedAccountData.filter(
+        filteredRole = fetchedUsersData.filter(
           (role) => role.role === "driver"
         );
         break;
       case "GateGuard":
-        filteredRole = fetchedAccountData.filter(
+        filteredRole = fetchedUsersData.filter(
           (role) => role.role === "gate guard"
         );
         break;
       case "OfficeStaff":
-        filteredRole = fetchedAccountData.filter(
+        filteredRole = fetchedUsersData.filter(
           (role) => role.role === "office staff"
         );
         break;
@@ -127,22 +134,15 @@ export default function Admin() {
     setSelectedAccountNavigation(nav);
     setAccountsData(filteredRole);
   };
-  useEffect(() => {
-    handleButton2Click("Requester");
-  }, []);
+
   const filteredAccountsData = accountsData.filter((account) => {
     const isSearchMatch =
       searchAccountTerm === "" ||
-      account.id_number
-        .toLowerCase()
-        .includes(searchAccountTerm.toLowerCase()) ||
+      account.email.toLowerCase().includes(searchAccountTerm.toLowerCase()) ||
       account.last_name
         .toLowerCase()
         .includes(searchAccountTerm.toLowerCase()) ||
       account.first_name
-        .toLowerCase()
-        .includes(searchAccountTerm.toLowerCase()) ||
-      account.contact_number
         .toLowerCase()
         .includes(searchAccountTerm.toLowerCase());
 
@@ -340,7 +340,7 @@ export default function Admin() {
                         <td>{account.last_name}</td>
                         <td>{account.first_name}</td>
                         <td>{account.middle_name}</td>
-                        <td>{account.contact_number}</td>
+                        <td>{account.mobile_number}</td>
                         <div>
                           <Ellipsis
                             onCategoryChange={handleEllipsisMenu}
@@ -406,36 +406,41 @@ export default function Admin() {
           onChange: (event) =>
             setUserData({ ...userData, last_name: event.target.value }),
           value: userData.last_name,
+          placeholder: "Last Name",
           type: "text",
         }}
         firstNameProps={{
           onChange: (event) =>
             setUserData({ ...userData, first_name: event.target.value }),
           value: userData.first_name,
+          placeholder: "First Name",
           type: "text",
         }}
         middleNameProps={{
           onChange: (event) =>
             setUserData({ ...userData, middle_name: event.target.value }),
           value: userData.middle_name,
+          placeholder: "Middle Name",
           type: "text",
         }}
         emailProps={{
           onChange: (event) =>
             setUserData({ ...userData, email: event.target.value }),
           value: userData.email,
+          placeholder: "Email Address",
           type: "text",
         }}
         usernameProps={{
           onChange: (event) =>
             setUserData({ ...userData, username: event.target.value }),
           value: userData.username,
+          placeholder: "Username",
           type: "text",
         }}
         contactNumberProps={{
           onChange: (event) =>
             setUserData({ ...userData, mobile_number: event.target.value }),
-          placeholder: "Last Name",
+          placeholder: "Mobile Number",
           value: userData.mobile_number,
           type: "number",
         }}

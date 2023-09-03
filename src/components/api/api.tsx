@@ -5,6 +5,8 @@ const api = axios.create({
   baseURL: "http://localhost:8000/",
 });
 
+const token = localStorage.getItem("token");
+
 export function SigninAPI(userData: SigninParams, navigate: any) {
   api
     .post("api/v1/accounts/token/login", userData)
@@ -43,9 +45,28 @@ export function SignupAPI(userData: SignupParams, setIsConfirmationOpen: any) {
       setIsConfirmationOpen(true);
       setTimeout(() => {
         setIsConfirmationOpen(false);
+        window.location.reload();
       }, 3000);
     })
     .catch((error) => {
       console.log(error.message);
+    });
+}
+
+export function fetchUsersAPI(setFetchedUsersData: any) {
+  api
+    .get("api/v1/accounts/admin/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      setFetchedUsersData(response.data.results);
+    })
+    .catch((error) => {
+      console.error("Error fetching user list:", error);
+      throw error;
     });
 }

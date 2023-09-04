@@ -16,6 +16,8 @@ import {
 } from "../../components/mockdata.tsx/mockdata";
 import { SignupParams } from "../../interfaces/interfaces";
 import { SignupAPI, fetchUsersAPI } from "../../components/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export default function Admin() {
   const [displayAccounts, setDisplayAccounts] = useState(true);
@@ -55,6 +57,10 @@ export default function Admin() {
     mobile_number: 0,
     role: "",
   });
+  const dispatch = useDispatch();
+  const users = useSelector((state: RootState) => state.user.users);
+  const isLoading = useSelector((state: RootState) => state.user.loading);
+  const error = useSelector((state: RootState) => state.user.error);
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -72,13 +78,20 @@ export default function Admin() {
   }, []);
 
   useEffect(() => {
-    fetchUsersAPI(setFetchedUsersData);
-    handleButtonClick("Accounts");
-    handleButton2Click("Requester");
-  }, []);
+    dispatch(fetchUsersAPI() as any);
+  }, [dispatch]);
 
+  useEffect(() => {
+    setFetchedUsersData(users);
+  }, [users]);
+
+  useEffect(() => {
+    filteredRole = fetchedUsersData.filter((role) => role.role === "requester");
+    setAccountsData(filteredRole);
+  }, [fetchedUsersData]);
+
+  let filteredRole: any[] = [];
   const handleButtonClick = (nav: string) => {
-    let filteredRole: any[] = [];
     switch (nav) {
       case "Accounts":
         setDisplayAccounts(true);
@@ -102,7 +115,6 @@ export default function Admin() {
   };
 
   const handleButton2Click = (nav: string) => {
-    let filteredRole: any[] = [];
     switch (nav) {
       case "Requester":
         filteredRole = fetchedUsersData.filter(
@@ -128,7 +140,7 @@ export default function Admin() {
         );
         break;
       default:
-        setAccountsData([]);
+        setAccountsData([filteredRole]);
         break;
     }
     setSelectedAccountNavigation(nav);

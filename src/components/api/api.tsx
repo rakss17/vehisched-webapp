@@ -1,5 +1,13 @@
 import axios from "axios";
 import { SigninParams, SignupParams } from "../../interfaces/interfaces";
+import { Dispatch } from "redux";
+import {
+  fetchUsersStart,
+  fetchUsersSuccess,
+  fetchUsersFailure,
+} from "../../redux/slices/userSlices";
+import { ThunkAction } from "redux-thunk";
+import { RootState } from "../../redux/store";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/",
@@ -20,7 +28,6 @@ export function SigninAPI(userData: SigninParams, navigate: any) {
           },
         })
         .then((res) => {
-          console.log(res.data);
           if (res.data.user_type === "requester") {
             navigate("/DashboardR");
           } else if (res.data.user_type === "office staff") {
@@ -53,20 +60,23 @@ export function SignupAPI(userData: SignupParams, setIsConfirmationOpen: any) {
     });
 }
 
-export function fetchUsersAPI(setFetchedUsersData: any) {
-  api
-    .get("api/v1/accounts/admin/", {
-      headers: {
-        Authorization: `Token ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .then((response) => {
-      console.log(response.data);
-      setFetchedUsersData(response.data.results);
-    })
-    .catch((error) => {
-      console.error("Error fetching user list:", error);
-      throw error;
-    });
+export function fetchUsersAPI() {
+  return (dispatch: Dispatch) => {
+    dispatch(fetchUsersStart());
+
+    api
+      .get("api/v1/accounts/admin/", {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        dispatch(fetchUsersSuccess(response.data.results));
+      })
+      .catch((error) => {
+        console.error("Error fetching user list:", error);
+        dispatch(fetchUsersFailure("Failed to fetch users."));
+      });
+  };
 }

@@ -15,7 +15,12 @@ import {
   // fetchedAccountData,
 } from "../../components/mockdata.tsx/mockdata";
 import { SignupParams } from "../../interfaces/interfaces";
-import { SignupAPI, fetchUsersAPI } from "../../components/api/api";
+import {
+  SignupAPI,
+  fetchUsersAPI,
+  updateUserAPI,
+  fetchRoleByName,
+} from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
@@ -60,18 +65,18 @@ export default function Admin() {
   });
   const [userUpdate, setUserUpdate] = useState<SignupParams>({
     username: "",
-    password: "vehisched123",
     first_name: "",
     middle_name: "",
     last_name: "",
     email: "",
-    mobile_number: "",
+    mobile_number: null,
     role: "",
   });
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.user.users);
   const isLoading = useSelector((state: RootState) => state.user.loading);
   const error = useSelector((state: RootState) => state.user.error);
+  const userId = selectedAccount?.id ?? "";
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -222,11 +227,33 @@ export default function Admin() {
   };
   const handleEditUserButton = () => {
     setIsEditOpen(false);
-    setIsConfirmationOpenEdit(true);
-    console.log(userUpdate);
-    setTimeout(() => {
-      setIsConfirmationOpenEdit(false);
-    }, 3000);
+    const updatedUserData = {
+      username: userUpdate.username || (selectedAccount?.username ?? ""),
+      email: userUpdate.email || (selectedAccount?.email ?? ""),
+      first_name: userUpdate.first_name || (selectedAccount?.first_name ?? ""),
+      middle_name:
+        userUpdate.middle_name || (selectedAccount?.middle_name ?? ""),
+      last_name: userUpdate.last_name || (selectedAccount?.last_name ?? ""),
+      mobile_number:
+        userUpdate.mobile_number || (selectedAccount?.mobile_number ?? ""),
+      role_name: null,
+    };
+
+    const roleName = userUpdate.role || (selectedAccount?.role ?? "");
+
+    fetchRoleByName(roleName)
+      .then((res) => {
+        updatedUserData.role_name = res.role_name;
+        console.log("Updated user data:", updatedUserData);
+        updateUserAPI(updatedUserData, userId, setIsConfirmationOpenEdit)
+          .then(() => {})
+          .catch((error) => {
+            console.error("Error updating user:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching role:", error);
+      });
   };
   const handleAddVehicleButton = () => {
     setIsAddVehicleOpen(false);

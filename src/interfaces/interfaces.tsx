@@ -39,8 +39,9 @@ export interface SigninParams {
 }
 
 export interface SignupParams {
+  id?: any;
   username: string;
-  password: string;
+  password?: string;
   first_name: string;
   middle_name: string;
   last_name: string;

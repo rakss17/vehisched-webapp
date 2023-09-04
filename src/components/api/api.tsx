@@ -80,3 +80,49 @@ export function fetchUsersAPI() {
       });
   };
 }
+
+export function updateUserAPI(
+  userUpdate: any,
+  userId: any,
+  setIsConfirmationOpenEdit: any
+) {
+  const token = localStorage.getItem("token");
+
+  return api
+    .patch(`api/v1/accounts/update/${userId}/`, userUpdate, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setIsConfirmationOpenEdit(true);
+      setTimeout(() => {
+        setIsConfirmationOpenEdit(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.error("Error updating user:", error.message);
+      throw error;
+    });
+}
+
+export function fetchRoleByName(roleName: any) {
+  const token = localStorage.getItem("token");
+
+  return api
+    .get(`api/v1/accounts/roles/by-name/?role_name=${roleName}`, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error("Error fetching role:", error);
+      throw error;
+    });
+}

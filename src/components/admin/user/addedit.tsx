@@ -2,24 +2,22 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
 import DropdownMenu from "../dropdownmenu";
+import { AddEditProps } from "../../../interfaces/interfaces";
 
-interface AddEditProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  header: string;
-  buttonText: string;
-  onRequestAddEdit: () => void;
-}
 const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
   header,
   buttonText,
   onRequestAddEdit,
+  lastNameProps,
+  firstNameProps,
+  middleNameProps,
+  emailProps,
+  usernameProps,
+  contactNumberProps,
+  roleDropdownProps,
 }) => {
-  const handleDropdownChange = (selectedOption: string) => {
-    console.log("Selected option:", selectedOption);
-  };
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
@@ -33,24 +31,32 @@ const AddEdit: React.FC<AddEditProps> = ({
       <h1>{header}</h1>
       <div>
         <div>
+          <label>Email Address: </label>
+          <input {...emailProps} />
+        </div>
+        <div>
+          <label>Username: </label>
+          <input {...usernameProps} />
+        </div>
+        <div>
           <label>Last Name: </label>
-          <input></input>
+          <input {...lastNameProps} />
         </div>
         <div>
           <label>First Name: </label>
-          <input></input>
+          <input {...firstNameProps} />
         </div>
         <div>
-          <label>MI: </label>
-          <input></input>
+          <label>Middle Name: </label>
+          <input {...middleNameProps} />
         </div>
         <div>
-          <label>Contact Number: </label>
-          <input type="number" onKeyDown={handleKeyDown}></input>
+          <label>Mobile Number: </label>
+          <input {...contactNumberProps} onKeyDown={handleKeyDown} />
         </div>
         <div>
           <label>Role: </label>
-          <DropdownMenu onChange={handleDropdownChange} />
+          <DropdownMenu {...roleDropdownProps} />
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>

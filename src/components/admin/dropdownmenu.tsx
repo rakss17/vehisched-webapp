@@ -6,14 +6,7 @@ interface DropdownProps {
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({ onChange }) => {
-  const options = [
-    "Requester",
-    "VIP",
-    "Driver",
-    "Gate Guard",
-    "Office Staff",
-    "Unit Head",
-  ];
+  const options = ["requester", "vip", "driver", "gate guard", "office staff"];
 
   const [selectedOption, setSelectedOption] = useState<string | undefined>(
     undefined

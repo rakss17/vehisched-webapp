@@ -6,10 +6,10 @@
 
 .modal-add-edit {
   background-color: #d9d9d9;
-  margin-top: 0vh;
+  margin-top: 15vh;
   margin-left: 35vw;
   width: 30vw;
-  height: 58vh;
+  height: 73vh;
   border-radius: 10px;
   flex-direction: column;
   display: flex;

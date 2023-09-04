@@ -4,152 +4,26 @@ import Container from "../../components/container/container";
 import Label from "../../components/label/label";
 import "./admin.css";
 import SearchBar from "../../components/searchbar/searchbar";
-import ToyotaHilux from "../../components/images/toyota-hilux.jpg";
-import MitsubishiMontero from "../../components/images/mitsubishi-montero.jpg";
-import Fortuner from "../../components/images/fortuner.jpg";
-import ToyotaHiace from "../../components/images/toyota-hiace.png";
 import Ellipsis from "../../components/ellipsismenu/ellipsismenu";
 import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
-
-interface Vehicle {
-  id: number;
-  vehicle_name: string;
-  capacity: number;
-  vehicle_type: string;
-  vehicle_image: string;
-  status: string;
-}
-const fetchedVehicles: Vehicle[] = [
-  {
-    id: 1,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "On Trip",
-  },
-  {
-    id: 2,
-    vehicle_name: "KCU 2522 Montero Sport",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: MitsubishiMontero,
-    status: "Available",
-  },
-  {
-    id: 3,
-    vehicle_name: "KAB 2855 Fortuner",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: Fortuner,
-    status: "On Trip",
-  },
-  {
-    id: 4,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Available",
-  },
-  {
-    id: 5,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "Unavailable",
-  },
-  {
-    id: 6,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Unavailable",
-  },
-];
-
-const fetchedRequesterData = [
-  {
-    id_number: "2020300100",
-    email: "bohari.ambulo@example.com",
-    last_name: "Ambulo",
-    first_name: "Bohari",
-    middle_name: "Samuel",
-    contact_number: "09123456789",
-  },
-];
-
-const fetchedVIPData = [
-  {
-    id_number: "VIP20230001",
-    email: "alice.smith@example.com",
-    last_name: "Smith",
-    first_name: "Alice",
-    middle_name: "Marie",
-    contact_number: "09111223344",
-  },
-  {
-    id_number: "VIP20230002",
-    email: "robert.johnson@example.com",
-    last_name: "Johnson",
-    first_name: "Robert",
-    middle_name: "Lewis",
-    contact_number: "09222334455",
-  },
-  {
-    id_number: "VIP20230003",
-    email: "sophia.garcia@example.com",
-    last_name: "Garcia",
-    first_name: "Sophia",
-    middle_name: "Natalie",
-    contact_number: "09333445566",
-  },
-  {
-    id_number: "VIP20230004",
-    email: "michael.lee@example.com",
-    last_name: "Lee",
-    first_name: "Michael",
-    middle_name: "James",
-    contact_number: "09444556677",
-  },
-  {
-    id_number: "VIP20230005",
-    email: "lily.wang@example.com",
-    last_name: "Wang",
-    first_name: "Lily",
-    middle_name: "Katherine",
-    contact_number: "09555667788",
-  },
-  {
-    id_number: "VIP20230006",
-    email: "emma.johnson@example.com",
-    last_name: "Johnson",
-    first_name: "Emma",
-    middle_name: "Anne",
-    contact_number: "09666778899",
-  },
-];
-
-const fetchedDriverData = [
-  {
-    id_number: "20230005",
-    email: "lilyy.wange@example.com",
-    last_name: "Wange",
-    first_name: "Lilyy",
-    middle_name: "Alex",
-    contact_number: "0955566773",
-  },
-];
+import { Vehicle } from "../../interfaces/interfaces";
+import {
+  fetchedVehicles,
+  // fetchedAccountData,
+} from "../../components/mockdata.tsx/mockdata";
+import { SignupParams } from "../../interfaces/interfaces";
+import { SignupAPI, fetchUsersAPI } from "../../components/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export default function Admin() {
   const [displayAccounts, setDisplayAccounts] = useState(true);
   const [displayVehicles, setDisplayVehicles] = useState(false);
   const [accountsData, setAccountsData] = useState<any[]>([]);
+  const [fetchedUsersData, setFetchedUsersData] = useState<SignupParams[]>([]);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [selectedNavigation, setSelectedNavigation] =
     useState<string>("Accounts");
@@ -173,6 +47,27 @@ export default function Admin() {
     useState(false);
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
+  const [userData, setUserData] = useState<SignupParams>({
+    username: "",
+    password: "vehisched123",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    mobile_number: 0,
+    role: "",
+  });
+  const dispatch = useDispatch();
+  const users = useSelector((state: RootState) => state.user.users);
+  const isLoading = useSelector((state: RootState) => state.user.loading);
+  const error = useSelector((state: RootState) => state.user.error);
+
+  const handleDropdownChange = (selectedOption: string) => {
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      role: selectedOption,
+    }));
+  };
 
   const fetchedVehicleList = () => {
     setVehiclesData(fetchedVehicles);
@@ -182,11 +77,28 @@ export default function Admin() {
     fetchedVehicleList();
   }, []);
 
+  useEffect(() => {
+    dispatch(fetchUsersAPI() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFetchedUsersData(users);
+  }, [users]);
+
+  useEffect(() => {
+    filteredRole = fetchedUsersData.filter((role) => role.role === "requester");
+    setAccountsData(filteredRole);
+  }, [fetchedUsersData]);
+
+  let filteredRole: any[] = [];
   const handleButtonClick = (nav: string) => {
     switch (nav) {
       case "Accounts":
         setDisplayAccounts(true);
-        setAccountsData(fetchedRequesterData);
+        filteredRole = fetchedUsersData.filter(
+          (role) => role.role === "requester"
+        );
+        setAccountsData(filteredRole);
         setDisplayVehicles(false);
         break;
       case "Vehicles":
@@ -205,39 +117,44 @@ export default function Admin() {
   const handleButton2Click = (nav: string) => {
     switch (nav) {
       case "Requester":
-        setAccountsData(fetchedRequesterData);
-
+        filteredRole = fetchedUsersData.filter(
+          (role) => role.role === "requester"
+        );
         break;
       case "VIP":
-        setAccountsData(fetchedVIPData);
-
+        filteredRole = fetchedUsersData.filter((role) => role.role === "vip");
         break;
       case "Driver":
-        setAccountsData(fetchedDriverData);
-
+        filteredRole = fetchedUsersData.filter(
+          (role) => role.role === "driver"
+        );
+        break;
+      case "GateGuard":
+        filteredRole = fetchedUsersData.filter(
+          (role) => role.role === "gate guard"
+        );
+        break;
+      case "OfficeStaff":
+        filteredRole = fetchedUsersData.filter(
+          (role) => role.role === "office staff"
+        );
         break;
       default:
-        setAccountsData([]);
+        setAccountsData([filteredRole]);
         break;
     }
     setSelectedAccountNavigation(nav);
+    setAccountsData(filteredRole);
   };
-  useEffect(() => {
-    handleButton2Click("Requester");
-  }, []);
+
   const filteredAccountsData = accountsData.filter((account) => {
     const isSearchMatch =
       searchAccountTerm === "" ||
-      account.id_number
-        .toLowerCase()
-        .includes(searchAccountTerm.toLowerCase()) ||
+      account.email.toLowerCase().includes(searchAccountTerm.toLowerCase()) ||
       account.last_name
         .toLowerCase()
         .includes(searchAccountTerm.toLowerCase()) ||
       account.first_name
-        .toLowerCase()
-        .includes(searchAccountTerm.toLowerCase()) ||
-      account.contact_number
         .toLowerCase()
         .includes(searchAccountTerm.toLowerCase());
 
@@ -282,11 +199,8 @@ export default function Admin() {
   };
   const handleAddUserButton = () => {
     setIsAddOpen(false);
-    setIsConfirmationOpen(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpen(false);
-    }, 3000);
+    console.log(userData);
+    SignupAPI(userData, setIsConfirmationOpen);
   };
   const handleEditUserButton = () => {
     setIsEditOpen(false);
@@ -408,14 +322,6 @@ export default function Admin() {
               >
                 Office Staff
               </button>
-              <button
-                onClick={() => handleButton2Click("UnitHead")}
-                className={
-                  selectedAccountNavigation === "UnitHead" ? "active" : ""
-                }
-              >
-                Unit Head
-              </button>
             </div>
 
             <div className="accounts-data-container">
@@ -446,7 +352,7 @@ export default function Admin() {
                         <td>{account.last_name}</td>
                         <td>{account.first_name}</td>
                         <td>{account.middle_name}</td>
-                        <td>{account.contact_number}</td>
+                        <td>{account.mobile_number}</td>
                         <div>
                           <Ellipsis
                             onCategoryChange={handleEllipsisMenu}
@@ -508,14 +414,59 @@ export default function Admin() {
         header="Add User"
         buttonText="Add User +"
         onRequestAddEdit={handleAddUserButton}
+        lastNameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, last_name: event.target.value }),
+          value: userData.last_name,
+          placeholder: "Last Name",
+          type: "text",
+        }}
+        firstNameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, first_name: event.target.value }),
+          value: userData.first_name,
+          placeholder: "First Name",
+          type: "text",
+        }}
+        middleNameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, middle_name: event.target.value }),
+          value: userData.middle_name,
+          placeholder: "Middle Name",
+          type: "text",
+        }}
+        emailProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, email: event.target.value }),
+          value: userData.email,
+          placeholder: "Email Address",
+          type: "text",
+        }}
+        usernameProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, username: event.target.value }),
+          value: userData.username,
+          placeholder: "Username",
+          type: "text",
+        }}
+        contactNumberProps={{
+          onChange: (event) =>
+            setUserData({ ...userData, mobile_number: event.target.value }),
+          placeholder: "Mobile Number",
+          value: userData.mobile_number,
+          type: "number",
+        }}
+        roleDropdownProps={{
+          onChange: handleDropdownChange,
+        }}
       />
-      <AddEdit
+      {/* <AddEdit
         isOpen={isEditOpen}
         onRequestClose={handleCancel}
         header="Edit User"
         buttonText="Update User +"
         onRequestAddEdit={handleEditUserButton}
-      />
+      /> */}
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
         onRequestClose={handleCancel}

@@ -26,7 +26,7 @@ const AddEditVehicle: React.FC<AddEditProps> = ({
   };
 
   return (
-    <Modal className="modal-add-edit" isOpen={isOpen}>
+    <Modal className="modal-add-edit2" isOpen={isOpen}>
       <h1>{header}</h1>
       <div>
         <div>

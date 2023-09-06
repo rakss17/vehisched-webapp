@@ -1,16 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./dropdownmenu.css";
 
 interface DropdownProps {
   onChange: (selectedOption: string) => void;
+  selectedAccount?: { role: string };
 }
 
-const DropdownMenu: React.FC<DropdownProps> = ({ onChange }) => {
+const DropdownMenu: React.FC<DropdownProps> = ({
+  onChange,
+  selectedAccount,
+}) => {
   const options = ["requester", "vip", "driver", "gate guard", "office staff"];
 
-  const [selectedOption, setSelectedOption] = useState<string | undefined>(
-    undefined
+  // Initialize selectedOption based on the presence of selectedAccount
+  const initialSelectedOption = selectedAccount
+    ? selectedAccount.role
+    : "------------Select------------";
+
+  const [selectedOption, setSelectedOption] = useState<string>(
+    initialSelectedOption
   );
+
+  useEffect(() => {
+    setSelectedOption(selectedAccount ? selectedAccount.role : "");
+  }, [selectedAccount]);
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newOption = event.target.value;

@@ -15,7 +15,13 @@ import {
   // fetchedAccountData,
 } from "../../components/mockdata.tsx/mockdata";
 import { SignupParams } from "../../interfaces/interfaces";
-import { SignupAPI, fetchUsersAPI } from "../../components/api/api";
+import {
+  SignupAPI,
+  fetchUsersAPI,
+  updateUserAPI,
+  fetchRoleByName,
+  deleteUserAPI,
+} from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
@@ -47,6 +53,7 @@ export default function Admin() {
     useState(false);
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<SignupParams>();
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
     password: "vehisched123",
@@ -54,16 +61,32 @@ export default function Admin() {
     middle_name: "",
     last_name: "",
     email: "",
-    mobile_number: 0,
+    mobile_number: null,
+    role: "",
+  });
+  const [userUpdate, setUserUpdate] = useState<SignupParams>({
+    username: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    email: "",
+    mobile_number: null,
     role: "",
   });
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.user.users);
   const isLoading = useSelector((state: RootState) => state.user.loading);
   const error = useSelector((state: RootState) => state.user.error);
+  const userId = selectedAccount?.id ?? "";
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
+      ...prevUserData,
+      role: selectedOption,
+    }));
+  };
+  const handleDropdownChange2 = (selectedOption: string) => {
+    setUserUpdate((prevUserData) => ({
       ...prevUserData,
       role: selectedOption,
     }));
@@ -180,13 +203,16 @@ export default function Admin() {
   const handleSearchVehicle = (term: string) => {
     setSearchVehicleTerm(term);
   };
-  const handleEllipsisMenu = (category: string) => {
+  const handleEllipsisMenu = (category: string, account: any) => {
     if (category === "Edit") {
       setIsEditOpen(true);
+      setSelectedAccount(account);
     } else if (category === "Delete") {
       setIsDeleteOpen(true);
+      setSelectedAccount(account);
     }
   };
+
   const handleEllipsisMenuVehicle = (category: string) => {
     if (category === "Edit") {
       setIsEditVehicleOpen(true);
@@ -199,16 +225,37 @@ export default function Admin() {
   };
   const handleAddUserButton = () => {
     setIsAddOpen(false);
-    console.log(userData);
     SignupAPI(userData, setIsConfirmationOpen);
   };
   const handleEditUserButton = () => {
     setIsEditOpen(false);
-    setIsConfirmationOpenEdit(true);
+    const updatedUserData = {
+      username: userUpdate.username || (selectedAccount?.username ?? ""),
+      email: userUpdate.email || (selectedAccount?.email ?? ""),
+      first_name: userUpdate.first_name || (selectedAccount?.first_name ?? ""),
+      middle_name:
+        userUpdate.middle_name || (selectedAccount?.middle_name ?? ""),
+      last_name: userUpdate.last_name || (selectedAccount?.last_name ?? ""),
+      mobile_number:
+        userUpdate.mobile_number || (selectedAccount?.mobile_number ?? ""),
+      role_name: null,
+    };
 
-    setTimeout(() => {
-      setIsConfirmationOpenEdit(false);
-    }, 3000);
+    const roleName = userUpdate.role || (selectedAccount?.role ?? "");
+
+    fetchRoleByName(roleName)
+      .then((res) => {
+        updatedUserData.role_name = res.role_name;
+        console.log("Updated user data:", updatedUserData);
+        updateUserAPI(updatedUserData, userId, setIsConfirmationOpenEdit)
+          .then(() => {})
+          .catch((error) => {
+            console.error("Error updating user:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching role:", error);
+      });
   };
   const handleAddVehicleButton = () => {
     setIsAddVehicleOpen(false);
@@ -228,11 +275,8 @@ export default function Admin() {
   };
   const handleDeleteUserButton = () => {
     setIsDeleteOpen(false);
-    setIsConfirmationOpenDelete(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenDelete(false);
-    }, 3000);
+    console.log("Delete ID display", userId);
+    deleteUserAPI(userId, setIsConfirmationOpenDelete, setFetchedUsersData);
   };
   const handleDeleteVehicleButton = () => {
     setIsDeleteVehicleOpen(false);
@@ -333,7 +377,7 @@ export default function Admin() {
               >
                 <thead>
                   <tr>
-                    <th style={{ fontWeight: "normal" }}>ID</th>
+                    <th style={{ fontWeight: "normal" }}>Username</th>
                     <th style={{ fontWeight: "normal" }}>Email</th>
                     <th style={{ fontWeight: "normal" }}>Last Name</th>
                     <th style={{ fontWeight: "normal" }}>First Name</th>
@@ -347,7 +391,7 @@ export default function Admin() {
                   <tbody>
                     {filteredAccountsData.map((account) => (
                       <tr key={account.index}>
-                        <td>{account.id_number}</td>
+                        <td>{account.username}</td>
                         <td>{account.email}</td>
                         <td>{account.last_name}</td>
                         <td>{account.first_name}</td>
@@ -355,7 +399,9 @@ export default function Admin() {
                         <td>{account.mobile_number}</td>
                         <div>
                           <Ellipsis
-                            onCategoryChange={handleEllipsisMenu}
+                            onCategoryChange={(category) =>
+                              handleEllipsisMenu(category, account)
+                            }
                             status={["Edit", "Delete"]}
                           />
                         </div>
@@ -460,13 +506,59 @@ export default function Admin() {
           onChange: handleDropdownChange,
         }}
       />
-      {/* <AddEdit
+      <AddEdit
         isOpen={isEditOpen}
         onRequestClose={handleCancel}
         header="Edit User"
         buttonText="Update User +"
         onRequestAddEdit={handleEditUserButton}
-      /> */}
+        lastNameProps={{
+          onChange: (event) =>
+            setUserUpdate({ ...userUpdate, last_name: event.target.value }),
+          value: userUpdate.last_name,
+          placeholder: selectedAccount?.last_name ?? "",
+          type: "text",
+        }}
+        firstNameProps={{
+          onChange: (event) =>
+            setUserUpdate({ ...userUpdate, first_name: event.target.value }),
+          value: userUpdate.first_name,
+          placeholder: selectedAccount?.first_name ?? "",
+          type: "text",
+        }}
+        middleNameProps={{
+          onChange: (event) =>
+            setUserUpdate({ ...userUpdate, middle_name: event.target.value }),
+          value: userUpdate.middle_name,
+          placeholder: selectedAccount?.middle_name ?? "",
+          type: "text",
+        }}
+        emailProps={{
+          onChange: (event) =>
+            setUserUpdate({ ...userUpdate, email: event.target.value }),
+          value: userUpdate.email,
+          placeholder: selectedAccount?.email ?? "",
+          type: "text",
+        }}
+        usernameProps={{
+          onChange: (event) =>
+            setUserUpdate({ ...userUpdate, username: event.target.value }),
+          value: userUpdate.username,
+          placeholder: selectedAccount?.username ?? "",
+          type: "text",
+        }}
+        contactNumberProps={{
+          onChange: (event) =>
+            setUserUpdate({ ...userUpdate, mobile_number: event.target.value }),
+          placeholder: selectedAccount?.mobile_number ?? "",
+          value: userUpdate.mobile_number,
+          type: "number",
+        }}
+        roleDropdownProps={{
+          onChange: handleDropdownChange2,
+          selectedAccount: selectedAccount,
+        }}
+      />
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
         onRequestClose={handleCancel}

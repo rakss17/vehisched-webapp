@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import "./landing.css";
 import { SigninAPI } from "../../components/api/api";
 import { SigninParams } from "../../interfaces/interfaces";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export default function Landing() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,13 +19,17 @@ export default function Landing() {
     username: "",
     password: "",
   });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userInfo = useSelector((state: RootState) => state.userInfo.users);
+
   const handleToggleVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleSignin = () => {
-    SigninAPI(userData, navigate);
+    SigninAPI(userData, navigate, dispatch);
+    console.log("personal info: ", userInfo);
   };
   return (
     <>

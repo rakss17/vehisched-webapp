@@ -20,6 +20,7 @@ import {
   fetchUsersAPI,
   updateUserAPI,
   fetchRoleByName,
+  deleteUserAPI,
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -60,7 +61,7 @@ export default function Admin() {
     middle_name: "",
     last_name: "",
     email: "",
-    mobile_number: 0,
+    mobile_number: null,
     role: "",
   });
   const [userUpdate, setUserUpdate] = useState<SignupParams>({
@@ -208,6 +209,7 @@ export default function Admin() {
       setSelectedAccount(account);
     } else if (category === "Delete") {
       setIsDeleteOpen(true);
+      setSelectedAccount(account);
     }
   };
 
@@ -273,11 +275,8 @@ export default function Admin() {
   };
   const handleDeleteUserButton = () => {
     setIsDeleteOpen(false);
-    setIsConfirmationOpenDelete(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenDelete(false);
-    }, 3000);
+    console.log("Delete ID display", userId);
+    deleteUserAPI(userId, setIsConfirmationOpenDelete, setFetchedUsersData);
   };
   const handleDeleteVehicleButton = () => {
     setIsDeleteVehicleOpen(false);

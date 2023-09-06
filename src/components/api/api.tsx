@@ -126,3 +126,35 @@ export function fetchRoleByName(roleName: any) {
       throw error;
     });
 }
+
+export function deleteUserAPI(
+  userId: any,
+  setIsConfirmationOpenDelete: any,
+  setFetchedUsersData: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .delete(`api/v1/accounts/delete/${userId}/`, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response.status === 204) {
+        setIsConfirmationOpenDelete(true);
+        setFetchedUsersData((prevUsersData: any) =>
+          prevUsersData.filter((user: any) => user.id !== userId)
+        );
+        setTimeout(() => {
+          setIsConfirmationOpenDelete(false);
+          window.location.reload();
+        }, 3000);
+      } else if (response.status === 404) {
+        console.error("User not found");
+      } else {
+        console.error("Error deleting user");
+      }
+    })
+    .catch((error) => console.error("Error deleting user:", error));
+}

@@ -1,5 +1,5 @@
 import "./header.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import logo from "../images/logo.png";
@@ -13,7 +13,6 @@ export default function Header() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const userInfo = useSelector((state: RootState) => state.userInfo.user);
-  const users = useSelector((state: RootState) => state.user.users);
   const username = userInfo?.username;
   const dispatch = useDispatch();
 

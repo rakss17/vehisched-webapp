@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 import "./landing.css";
 import { SigninAPI } from "../../components/api/api";
 import { SigninParams } from "../../interfaces/interfaces";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
 
 export default function Landing() {
@@ -23,9 +24,24 @@ export default function Landing() {
   const usernameInputRef: RefObject<HTMLInputElement> = useRef(null);
   const [error, setError] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userInfo = useSelector((state: RootState) => state.userInfo.user);
+  const role = userInfo?.role;
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) {
+      if (role === "admin") {
+        navigate("/Admin");
+      } else if (role === "office staff") {
+        navigate("/DashboardOS");
+      } else if (role === "requester") {
+        navigate("/DashboardR");
+      }
+    }
+  }, []);
+
   const handleToggleVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -38,7 +54,6 @@ export default function Landing() {
   };
 
   const handleSignin = () => {
-    // Encrypt the password before storing it
     const encryptedPassword = encryptPassword(userData.password);
     const userDataToStore = { ...userData, password: encryptedPassword };
 

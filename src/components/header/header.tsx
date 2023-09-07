@@ -1,13 +1,19 @@
 import "./header.css";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import logo from "../images/logo.png";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
+import { persistor } from "../../redux/store";
+import { clearUserData } from "../../redux/actions/userActions";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const userInfo = useSelector((state: RootState) => state.userInfo.user);
+  const users = useSelector((state: RootState) => state.user.users);
+  const username = userInfo?.username;
+  const dispatch = useDispatch();
 
   const handleMenuToggle = () => {
     setIsOpen(!isOpen);
@@ -19,11 +25,20 @@ export default function Header() {
     } else if (option === "settings") {
       alert("Under Development!");
     } else if (option === "signout") {
-      navigate("/");
+      localStorage.removeItem("token");
+      window.location.href = "/";
+      dispatch(clearUserData());
+      persistor.purge();
     }
 
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    console.log("users", users);
+    console.log("userinfo", userInfo);
+    console.log("username", username);
+  }, []);
 
   return (
     <>
@@ -37,7 +52,7 @@ export default function Header() {
                 icon={faUser}
                 style={{ marginRight: "0px", marginTop: "3px" }}
               />
-              <span className="username">Ambulo, Bohari S.</span>
+              <span className="username">{username}</span>
               <span>▼</span>
             </div>
             {isOpen && (

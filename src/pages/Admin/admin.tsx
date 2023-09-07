@@ -247,12 +247,13 @@ export default function Admin() {
       .then((res) => {
         updatedUserData.role_name = res.role_name;
         console.log("Updated user data:", updatedUserData);
-        updateUserAPI(updatedUserData, userId, setIsConfirmationOpenEdit)
-          .then(() => {})
-          .catch((error) => {
-            console.error("Error updating user:", error);
-          });
+        return updateUserAPI(
+          updatedUserData,
+          userId,
+          setIsConfirmationOpenEdit
+        );
       })
+      .then(() => {})
       .catch((error) => {
         console.error("Error fetching role:", error);
       });

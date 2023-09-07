@@ -44,10 +44,19 @@ export async function SigninAPI(
     } else if (res.data.role === "office staff") {
       navigate("/DashboardOS");
     } else if (res.data.role === "admin") {
+      const adminData = {
+        id: res.data.id,
+        role: res.data.role,
+        username: res.data.username || "Default Username",
+        email: res.data.email || "Default Email",
+        first_name: res.data.first_name || "Default First Name",
+        middle_name: res.data.middle_name || "Default Middle Name",
+        last_name: res.data.last_name || "Default Last Name",
+        mobile_number: res.data.mobile_number || "Default Mobile Number",
+      };
+      dispatch(fetchUserInfoSuccess(adminData));
       navigate("/Admin");
     }
-
-    console.log("dataa ", res.data);
   } catch (error) {
     console.log(error);
   }
@@ -89,58 +98,53 @@ export function fetchUsersAPI() {
   };
 }
 
-export function updateUserAPI(
+export async function updateUserAPI(
   userUpdate: any,
   userId: any,
   setIsConfirmationOpenEdit: any
 ) {
-  const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.patch(
+      `api/v1/accounts/update/${userId}/`,
+      userUpdate,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  return async () => {
-    try {
-      const response = await api.patch(
-        `api/v1/accounts/update/${userId}/`,
-        userUpdate,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setIsConfirmationOpenEdit(true);
-      setTimeout(() => {
-        setIsConfirmationOpenEdit(false);
-        window.location.reload();
-      }, 3000);
-    } catch (error) {
-      console.error("Error updating user:", error);
-      throw error;
-    }
-  };
+    setIsConfirmationOpenEdit(true);
+    setTimeout(() => {
+      setIsConfirmationOpenEdit(false);
+      window.location.reload();
+    }, 3000);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
 }
 
-export function fetchRoleByName(roleName: any) {
-  return async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await api.get(
-        `api/v1/accounts/roles/by-name/?role_name=${roleName}`,
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+export async function fetchRoleByName(roleName: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get(
+      `api/v1/accounts/roles/by-name/?role_name=${roleName}`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching role:", error);
-      throw error;
-    }
-  };
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching role:", error);
+    throw error;
+  }
 }
 
 export function deleteUserAPI(

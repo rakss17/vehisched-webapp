@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SignupParams } from "../../interfaces/interfaces";
 
 interface UserState {
-  users: SignupParams[];
+  user: SignupParams | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: UserState = {
-  users: [],
+  user: null,
   loading: false,
   error: null,
 };
@@ -21,9 +21,9 @@ const userInfoSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    fetchUserInfoSuccess: (state, action: PayloadAction<SignupParams[]>) => {
+    fetchUserInfoSuccess: (state, action: PayloadAction<SignupParams>) => {
       state.loading = false;
-      state.users = action.payload;
+      state.user = action.payload;
     },
     fetchUserInfoFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;

@@ -20,11 +20,13 @@ const token = localStorage.getItem("token");
 export async function SigninAPI(
   userData: SigninParams,
   navigate: any,
-  dispatch: any
+  dispatch: any,
+  setLoadingBarProgress: (progress: number) => void,
+  setError: any
 ) {
   try {
     dispatch(fetchUserInfoStart());
-
+    setLoadingBarProgress(20);
     const response = await api.post("api/v1/accounts/token/login", userData);
     const token = response.data.auth_token;
 
@@ -36,9 +38,9 @@ export async function SigninAPI(
         "Content-Type": "application/json",
       },
     });
-
+    setLoadingBarProgress(40);
     dispatch(fetchUserInfoSuccess(res.data));
-
+    setLoadingBarProgress(70);
     if (res.data.role === "requester") {
       navigate("/DashboardR");
     } else if (res.data.role === "office staff") {
@@ -57,8 +59,12 @@ export async function SigninAPI(
       dispatch(fetchUserInfoSuccess(adminData));
       navigate("/Admin");
     }
+    setLoadingBarProgress(100);
   } catch (error) {
-    console.log(error);
+    setLoadingBarProgress(20);
+    setLoadingBarProgress(50);
+    setLoadingBarProgress(100);
+    setError(true);
   }
 }
 

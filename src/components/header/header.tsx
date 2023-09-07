@@ -7,8 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import { persistor } from "../../redux/store";
 import { clearUserData } from "../../redux/actions/userActions";
+import LoadingBar from "react-top-loading-bar";
 
 export default function Header() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const userInfo = useSelector((state: RootState) => state.userInfo.user);
   const users = useSelector((state: RootState) => state.user.users);
@@ -25,10 +27,14 @@ export default function Header() {
     } else if (option === "settings") {
       alert("Under Development!");
     } else if (option === "signout") {
+      setLoadingBarProgress(20);
       localStorage.removeItem("token");
-      window.location.href = "/";
+      setLoadingBarProgress(50);
       dispatch(clearUserData());
+      setLoadingBarProgress(70);
       persistor.purge();
+      setLoadingBarProgress(100);
+      window.location.href = "/";
     }
 
     setIsOpen(false);
@@ -36,6 +42,11 @@ export default function Header() {
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <div className="containerHeader">
         <img src={logo} alt="logo" />
         <div className="container-appname-dropdown">

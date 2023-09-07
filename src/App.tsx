@@ -15,7 +15,8 @@ import DashboardR from "./pages/Requester/DashboardR/dashboardR";
 import RequestForm from "./components/form/requestform";
 import Request from "./pages/Requester/Request/request";
 import Admin from "./pages/Admin/admin";
-import NotFound from "./pages/NotFound/notfound";
+import Unauthorized from "./pages/Error/unauthorized";
+import NotFound from "./pages/Error/notfound";
 
 function ProtectedRoute({
   path,
@@ -30,7 +31,7 @@ function ProtectedRoute({
   const userRole = userInfo?.role;
 
   if (!userRole || !allowedRoles.includes(userRole)) {
-    return <Navigate to="/NotFound" />;
+    return <Navigate to="/Unauthorized" />;
   }
 
   return children;
@@ -141,7 +142,8 @@ function App() {
                 }
               />
 
-              <Route path="/NotFound" element={<NotFound />} />
+              <Route path="/Unauthorized" element={<Unauthorized />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </HashRouter>
         </PersistGate>

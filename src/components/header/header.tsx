@@ -34,12 +34,6 @@ export default function Header() {
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    console.log("users", users);
-    console.log("userinfo", userInfo);
-    console.log("username", username);
-  }, []);
-
   return (
     <>
       <div className="containerHeader">

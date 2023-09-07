@@ -4,17 +4,22 @@ import storage from "redux-persist/lib/storage";
 import userReducer from "./slices/userSlices";
 import userInfoReducer from "./slices/userInfoSlices";
 
-// Create the persist configuration
-const persistConfig = {
-  key: "root",
+const userPersistConfig = {
+  key: "user",
   storage,
 };
 
-// Wrap the reducers with the persist reducer
-const persistedUserReducer = persistReducer(persistConfig, userReducer);
-const persistedUserInfoReducer = persistReducer(persistConfig, userInfoReducer);
+const userInfoPersistConfig = {
+  key: "userInfo",
+  storage,
+};
 
-// Configure the store with the persisted reducers
+const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
+const persistedUserInfoReducer = persistReducer(
+  userInfoPersistConfig,
+  userInfoReducer
+);
+
 const store = configureStore({
   reducer: {
     user: persistedUserReducer,
@@ -22,7 +27,6 @@ const store = configureStore({
   },
 });
 
-// Create the persistor
 const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -46,7 +46,7 @@
   height: 28rem;
   border-radius: 20px;
 }
-.form p {
+.signin-text {
   margin-top: 3rem;
   color: black;
   font-size: 1.5rem;
@@ -149,6 +149,10 @@
   text-decoration: underline;
   cursor: pointer;
 }
+.text-error {
+  color: red;
+  font-size: 1rem;
+}
 
 @media screen and (max-width: 768px) {
   .container {
@@ -161,7 +165,7 @@
     height: 25rem;
     margin-bottom: 5rem;
   }
-  .form p {
+  .signin-text {
     margin-top: 1rem;
     font-size: 1.3rem;
   }

@@ -1,13 +1,20 @@
 import "./header.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import logo from "../images/logo.png";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
+import { persistor } from "../../redux/store";
+import { clearUserData } from "../../redux/actions/userActions";
+import LoadingBar from "react-top-loading-bar";
 
 export default function Header() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const userInfo = useSelector((state: RootState) => state.userInfo.user);
+  const username = userInfo?.username;
+  const dispatch = useDispatch();
 
   const handleMenuToggle = () => {
     setIsOpen(!isOpen);
@@ -19,7 +26,14 @@ export default function Header() {
     } else if (option === "settings") {
       alert("Under Development!");
     } else if (option === "signout") {
-      navigate("/");
+      setLoadingBarProgress(20);
+      localStorage.removeItem("token");
+      setLoadingBarProgress(50);
+      dispatch(clearUserData());
+      setLoadingBarProgress(70);
+      persistor.purge();
+      setLoadingBarProgress(100);
+      window.location.href = "/";
     }
 
     setIsOpen(false);
@@ -27,6 +41,11 @@ export default function Header() {
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <div className="containerHeader">
         <img src={logo} alt="logo" />
         <div className="container-appname-dropdown">
@@ -37,7 +56,7 @@ export default function Header() {
                 icon={faUser}
                 style={{ marginRight: "0px", marginTop: "3px" }}
               />
-              <span className="username">Ambulo, Bohari S.</span>
+              <span className="username">{username}</span>
               <span>▼</span>
             </div>
             {isOpen && (

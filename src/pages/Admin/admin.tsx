@@ -79,17 +79,14 @@ export default function Admin() {
   });
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.user.users);
-  const isLoading = useSelector((state: RootState) => state.user.loading);
-  const error = useSelector((state: RootState) => state.user.error);
   const userId = selectedAccount?.id ?? "";
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     const newSocket = new WebSocket("ws://localhost:8000/ws/vehicle/vehicle/");
 
     newSocket.onopen = (event) => {
-      console.log("WebSocket connection opened:", event);
+      console.log("WebSocket: Connection Established");
       newSocket.send(
         JSON.stringify({
           action: "fetch_vehicles",
@@ -99,14 +96,13 @@ export default function Admin() {
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Received WebSocket message:", data);
       if (data.action === "vehicles_fetched") {
         setVehiclesData(data.data);
       }
     };
 
     newSocket.onclose = (event) => {
-      console.log("WebSocket connection closed:", event);
+      console.log("WebSocket: Connection Closed");
     };
 
     setSocket(newSocket);
@@ -115,18 +111,6 @@ export default function Admin() {
       newSocket.close();
     };
   }, []);
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.onmessage = (event) => {
-  //       const data = JSON.parse(event.data);
-  //       console.log("Received WebSocket message:", data);
-  //       if (data.action === "vehicle_posted") {
-  //         // Update your client-side state with the newly added vehicle
-  //         setVehiclesData((prevData) => [...prevData, data.data]);
-  //       }
-  //     };
-  //   }
-  // }, [socket]);
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -300,11 +284,9 @@ export default function Admin() {
       });
   };
   const handleAddVehicleButton = () => {
-    console.log("action: ", message);
-    console.log("websocket url: ", socket);
-    console.log("raw data: ", vehicleData);
     setIsAddVehicleOpen(false);
     if (socket) {
+      setIsConfirmationOpenVehicle(true);
       const action = "post_vehicle";
       const data = vehicleData;
       const dataa = {
@@ -312,11 +294,17 @@ export default function Admin() {
         data,
       };
       socket.send(JSON.stringify(dataa));
-    }
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
 
-    // setTimeout(() => {
-    //   setIsConfirmationOpenVehicle(false);
-    // }, 3000);
+        if (data.action === "vehicle_posted") {
+          setVehiclesData((prevData) => [...prevData, data.data]);
+        }
+      };
+      setTimeout(() => {
+        setIsConfirmationOpenVehicle(false);
+      }, 3000);
+    }
   };
 
   const handleEditVehicleButton = () => {

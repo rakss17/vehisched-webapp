@@ -16,6 +16,7 @@ interface InputProps {
 
 interface DropdownProps {
   onChange: (selectedOption: string) => void;
+  selectedAccount?: SignupParams | undefined;
 }
 
 export interface AddEditProps {

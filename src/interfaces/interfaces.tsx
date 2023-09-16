@@ -8,10 +8,11 @@ export interface Vehicle {
 }
 
 interface InputProps {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: any;
-  value: any;
-  type: any;
+  value?: any;
+  type?: any;
+  checked?: any;
 }
 
 interface DropdownProps {

@@ -50,6 +50,7 @@ export default function Admin() {
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
   const [selectedAccount, setSelectedAccount] = useState<SignupParams>();
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
     password: "vehisched123",
@@ -70,6 +71,14 @@ export default function Admin() {
     role: "",
   });
   const [vehicleData, setVehicleData] = useState<Vehicle>({
+    plate_number: "",
+    vehicle_name: "",
+    vehicle_type: "",
+    capacity: null,
+    status: "",
+    is_vip: false,
+  });
+  const [vehicleUpdate, setVehicleUpdate] = useState<Vehicle>({
     plate_number: "",
     vehicle_name: "",
     vehicle_type: "",
@@ -648,10 +657,9 @@ export default function Admin() {
           onChange: (event) =>
             setVehicleData({
               ...vehicleData,
-              is_vip: event.target.value,
+              is_vip: event.target.checked,
             }),
-
-          value: vehicleData.is_vip,
+          checked: vehicleData.is_vip,
           type: "checkbox",
         }}
       />

@@ -10,10 +10,6 @@ import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
 import { Vehicle } from "../../interfaces/interfaces";
-import {
-  fetchedVehicles,
-  // fetchedAccountData,
-} from "../../components/mockdata.tsx/mockdata";
 import { SignupParams } from "../../interfaces/interfaces";
 import {
   SignupAPI,
@@ -24,6 +20,7 @@ import {
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { serverSideUrl } from "../../components/api/api";
 
 export default function Admin() {
   const [displayAccounts, setDisplayAccounts] = useState(true);
@@ -54,6 +51,8 @@ export default function Admin() {
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
   const [selectedAccount, setSelectedAccount] = useState<SignupParams>();
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
     password: "vehisched123",
@@ -73,11 +72,59 @@ export default function Admin() {
     mobile_number: null,
     role: "",
   });
+  const [vehicleData, setVehicleData] = useState<Vehicle>({
+    plate_number: "",
+    vehicle_name: "",
+    vehicle_type: "",
+    capacity: null,
+    status: "",
+    is_vip: false,
+    vehicle_image: null,
+  });
+  const [vehicleUpdate, setVehicleUpdate] = useState<Vehicle>({
+    plate_number: "",
+    vehicle_name: "",
+    vehicle_type: "",
+    capacity: null,
+    status: "",
+    is_vip: false,
+    vehicle_image: null,
+  });
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.user.users);
-  const isLoading = useSelector((state: RootState) => state.user.loading);
-  const error = useSelector((state: RootState) => state.user.error);
   const userId = selectedAccount?.id ?? "";
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+
+  useEffect(() => {
+    const newSocket = new WebSocket("ws://localhost:8000/ws/vehicle/vehicle/");
+
+    newSocket.onopen = (event) => {
+      console.log("WebSocket: Connection Established");
+      newSocket.send(
+        JSON.stringify({
+          action: "fetch_vehicles",
+        })
+      );
+    };
+
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.action === "vehicles_fetched") {
+        setVehiclesData(data.data);
+        console.log("fetched vehicle data", data);
+      }
+    };
+
+    newSocket.onclose = (event) => {
+      console.log("WebSocket: Connection Closed");
+    };
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -91,14 +138,15 @@ export default function Admin() {
       role: selectedOption,
     }));
   };
-
-  const fetchedVehicleList = () => {
-    setVehiclesData(fetchedVehicles);
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setVehicleData({
+        ...vehicleData,
+        vehicle_image: selectedFile,
+      });
+    }
   };
-
-  useEffect(() => {
-    fetchedVehicleList();
-  }, []);
 
   useEffect(() => {
     dispatch(fetchUsersAPI() as any);
@@ -187,12 +235,12 @@ export default function Admin() {
     const isSearchMatch =
       searchVehicleTerm === "" ||
       vehicle.vehicle_name
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(searchVehicleTerm.toLowerCase()) ||
       vehicle.vehicle_type
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(searchVehicleTerm.toLowerCase()) ||
-      vehicle.status.toLowerCase().includes(searchVehicleTerm.toLowerCase());
+      vehicle.status?.toLowerCase().includes(searchVehicleTerm.toLowerCase());
 
     return isSearchMatch;
   });
@@ -213,11 +261,13 @@ export default function Admin() {
     }
   };
 
-  const handleEllipsisMenuVehicle = (category: string) => {
+  const handleEllipsisMenuVehicle = (category: string, vehicle: any) => {
     if (category === "Edit") {
       setIsEditVehicleOpen(true);
+      setSelectedVehicle(vehicle);
     } else if (category === "Delete") {
       setIsDeleteVehicleOpen(true);
+      setSelectedVehicle(vehicle);
     }
   };
   const handleAddUser = () => {
@@ -259,13 +309,30 @@ export default function Admin() {
       });
   };
   const handleAddVehicleButton = () => {
+    console.log("Vehicle with image: ", vehicleData);
     setIsAddVehicleOpen(false);
-    setIsConfirmationOpenVehicle(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenVehicle(false);
-    }, 3000);
+    if (socket) {
+      setIsConfirmationOpenVehicle(true);
+      const action = "post_vehicle";
+      const data = vehicleData;
+      const dataa = {
+        action,
+        data,
+      };
+      socket.send(JSON.stringify(dataa));
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if (data.action === "vehicle_posted") {
+          setVehiclesData((prevData) => [...prevData, data.data]);
+        }
+      };
+      setTimeout(() => {
+        setIsConfirmationOpenVehicle(false);
+      }, 3000);
+    }
   };
+
   const handleEditVehicleButton = () => {
     setIsEditVehicleOpen(false);
     setIsConfirmationOpenVehicleEdit(true);
@@ -439,11 +506,13 @@ export default function Admin() {
                       </div>
                       <img
                         className="vehicle-image"
-                        src={vehicle.vehicle_image}
+                        src={`${serverSideUrl}${vehicle.vehicle_image}`}
                       />
                       <div className="ellipsis-container">
                         <Ellipsis
-                          onCategoryChange={handleEllipsisMenuVehicle}
+                          onCategoryChange={(category) =>
+                            handleEllipsisMenuVehicle(category, vehicle)
+                          }
                           status={["Edit", "Delete"]}
                         />
                       </div>
@@ -566,6 +635,58 @@ export default function Admin() {
         header="Add Vehicle"
         buttonText="Add Vehicle +"
         onRequestAddEdit={handleAddVehicleButton}
+        plateNoProps={{
+          onChange: (event) =>
+            setVehicleData({
+              ...vehicleData,
+              plate_number: event.target.value,
+            }),
+          value: vehicleData.plate_number,
+          placeholder: "Plate Number",
+          type: "text",
+        }}
+        modelProps={{
+          onChange: (event) =>
+            setVehicleData({
+              ...vehicleData,
+              vehicle_name: event.target.value,
+            }),
+          value: vehicleData.vehicle_name,
+          placeholder: "Vehicle Name",
+          type: "text",
+        }}
+        seatingCapacityProps={{
+          onChange: (event) =>
+            setVehicleData({ ...vehicleData, capacity: event.target.value }),
+          placeholder: "Seating Capacity",
+          value: vehicleData.capacity,
+          type: "number",
+        }}
+        typeProps={{
+          onChange: (event) =>
+            setVehicleData({
+              ...vehicleData,
+              vehicle_type: event.target.value,
+            }),
+          placeholder: "Type",
+          value: vehicleData.vehicle_type,
+          type: "text",
+        }}
+        vipProps={{
+          onChange: (event) =>
+            setVehicleData({
+              ...vehicleData,
+              is_vip: event.target.checked,
+            }),
+          checked: vehicleData.is_vip,
+          type: "checkbox",
+        }}
+        uploadImageProps={{
+          type: "file",
+          accept: "image/*",
+          onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+            handleImageChange(event),
+        }}
       />
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
@@ -573,6 +694,55 @@ export default function Admin() {
         header="Edit Vehicle"
         buttonText="Update Vehicle +"
         onRequestAddEdit={handleEditVehicleButton}
+        plateNoProps={{
+          onChange: (event) =>
+            setVehicleUpdate({
+              ...vehicleUpdate,
+              plate_number: event.target.value,
+            }),
+          value: vehicleUpdate.plate_number,
+          placeholder: selectedVehicle?.plate_number ?? "",
+          type: "text",
+        }}
+        modelProps={{
+          onChange: (event) =>
+            setVehicleUpdate({
+              ...vehicleUpdate,
+              vehicle_name: event.target.value,
+            }),
+          value: vehicleUpdate.vehicle_name,
+          placeholder: selectedVehicle?.vehicle_name ?? "",
+          type: "text",
+        }}
+        seatingCapacityProps={{
+          onChange: (event) =>
+            setVehicleUpdate({
+              ...vehicleUpdate,
+              capacity: event.target.value,
+            }),
+          placeholder: selectedVehicle?.capacity ?? "",
+          value: vehicleUpdate.capacity,
+          type: "number",
+        }}
+        typeProps={{
+          onChange: (event) =>
+            setVehicleUpdate({
+              ...vehicleUpdate,
+              vehicle_type: event.target.value,
+            }),
+          placeholder: selectedVehicle?.vehicle_type ?? "",
+          value: vehicleUpdate.vehicle_type,
+          type: "text",
+        }}
+        vipProps={{
+          onChange: (event) =>
+            setVehicleUpdate({
+              ...vehicleUpdate,
+              is_vip: event.target.checked,
+            }),
+          checked: selectedVehicle?.is_vip ?? "",
+          type: "checkbox",
+        }}
       />
       <PromptDialog
         isOpen={isDeleteOpen}

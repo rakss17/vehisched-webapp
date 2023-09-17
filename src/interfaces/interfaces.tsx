@@ -1,21 +1,25 @@
 export interface Vehicle {
-  id: number;
-  vehicle_name: string;
-  capacity: number;
-  vehicle_type: string;
-  vehicle_image: string;
-  status: string;
+  plate_number?: any;
+  vehicle_name?: any;
+  vehicle_type?: any;
+  capacity?: any;
+  status?: string;
+  is_vip?: any;
+  vehicle_image?: any;
 }
 
 interface InputProps {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-  value: any;
-  type: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: any;
+  value?: any;
+  type?: any;
+  checked?: any;
+  accept?: any;
 }
 
 interface DropdownProps {
   onChange: (selectedOption: string) => void;
+  selectedAccount?: SignupParams | undefined;
 }
 
 export interface AddEditProps {
@@ -32,7 +36,19 @@ export interface AddEditProps {
   contactNumberProps?: InputProps;
   roleDropdownProps: DropdownProps;
 }
-
+export interface AddEditVehicleProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  header: string;
+  buttonText: string;
+  onRequestAddEdit: () => void;
+  plateNoProps?: InputProps;
+  modelProps?: InputProps;
+  seatingCapacityProps?: InputProps;
+  typeProps?: InputProps;
+  vipProps?: InputProps;
+  uploadImageProps?: InputProps;
+}
 export interface SigninParams {
   username: string;
   password: string;

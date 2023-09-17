@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
-import DropdownMenu from "../dropdownmenu";
+import { AddEditVehicleProps } from "../../../interfaces/interfaces";
 
-interface AddEditProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  header: string;
-  buttonText: string;
-  onRequestAddEdit: () => void;
-}
-const AddEditVehicle: React.FC<AddEditProps> = ({
+const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   isOpen,
   onRequestClose,
   header,
   buttonText,
   onRequestAddEdit,
+  plateNoProps,
+  modelProps,
+  seatingCapacityProps,
+  typeProps,
+  vipProps,
+  uploadImageProps,
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -31,23 +30,27 @@ const AddEditVehicle: React.FC<AddEditProps> = ({
       <div>
         <div>
           <label>Plate No.: </label>
-          <input></input>
+          <input {...plateNoProps} />
         </div>
         <div>
           <label>Model: </label>
-          <input></input>
+          <input {...modelProps} />
         </div>
         <div>
           <label>Seating Capacity: </label>
-          <input type="number" onKeyDown={handleKeyDown}></input>
+          <input {...seatingCapacityProps} onKeyDown={handleKeyDown} />
         </div>
         <div>
           <label>Type: </label>
-          <input></input>
+          <input {...typeProps} />
         </div>
         <div>
           <label>VIP: </label>
-          <input type="checkbox"></input>
+          <input {...vipProps} />
+        </div>
+        <div>
+          <label>Upload Image: </label>
+          <input {...uploadImageProps} />
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>

@@ -91,7 +91,7 @@ export default function Admin() {
     vehicle_image: null,
   });
   const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.user.users);
+  const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
   const [socket, setSocket] = useState<WebSocket | null>(null);
 

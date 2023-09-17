@@ -27,8 +27,10 @@ function ProtectedRoute({
   allowedRoles: string[];
   children: React.ReactNode;
 }) {
-  const userInfo = useSelector((state: RootState) => state.userInfo.user);
-  const userRole = userInfo?.role;
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const userRole = personalInfo?.role;
 
   if (!userRole || !allowedRoles.includes(userRole)) {
     return <Navigate to="/Unauthorized" />;

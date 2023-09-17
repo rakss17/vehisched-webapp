@@ -1,15 +1,8 @@
 import axios from "axios";
 import { SigninParams, SignupParams } from "../../interfaces/interfaces";
 import { Dispatch } from "redux";
-import {
-  fetchUsersStart,
-  fetchUsersSuccess,
-  fetchUsersFailure,
-} from "../../redux/slices/userSlices";
-import {
-  fetchUserInfoStart,
-  fetchUserInfoSuccess,
-} from "../../redux/slices/userInfoSlices";
+import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
+import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
 
 export const serverSideUrl = "http://localhost:8000";
 
@@ -27,7 +20,6 @@ export async function SigninAPI(
   setError: any
 ) {
   try {
-    dispatch(fetchUserInfoStart());
     setLoadingBarProgress(20);
     const response = await api.post("api/v1/accounts/token/login", userData);
     const token = response.data.auth_token;
@@ -41,24 +33,13 @@ export async function SigninAPI(
       },
     });
     setLoadingBarProgress(40);
-    dispatch(fetchUserInfoSuccess(res.data));
+    dispatch(fetchPersonalInfo(res.data));
     setLoadingBarProgress(70);
     if (res.data.role === "requester") {
       navigate("/DashboardR");
     } else if (res.data.role === "office staff") {
       navigate("/DashboardOS");
     } else if (res.data.role === "admin") {
-      const adminData = {
-        id: res.data.id,
-        role: res.data.role,
-        username: res.data.username || "Default Username",
-        email: res.data.email || "Default Email",
-        first_name: res.data.first_name || "Default First Name",
-        middle_name: res.data.middle_name || "Default Middle Name",
-        last_name: res.data.last_name || "Default Last Name",
-        mobile_number: res.data.mobile_number || "Default Mobile Number",
-      };
-      dispatch(fetchUserInfoSuccess(adminData));
       navigate("/Admin");
     }
     setLoadingBarProgress(100);
@@ -88,8 +69,6 @@ export function SignupAPI(userData: SignupParams, setIsConfirmationOpen: any) {
 export function fetchUsersAPI() {
   return async (dispatch: Dispatch) => {
     try {
-      dispatch(fetchUsersStart());
-
       const token = localStorage.getItem("token");
       const response = await api.get("api/v1/accounts/admin/", {
         headers: {
@@ -98,10 +77,9 @@ export function fetchUsersAPI() {
         },
       });
 
-      dispatch(fetchUsersSuccess(response.data.results));
+      dispatch(fetchUsersInfo(response.data.results));
     } catch (error) {
       console.error("Error fetching user list:", error);
-      dispatch(fetchUsersFailure("Failed to fetch users."));
     }
   };
 }

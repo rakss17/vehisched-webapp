@@ -26,8 +26,10 @@ export default function Landing() {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userInfo = useSelector((state: RootState) => state.userInfo.user);
-  const role = userInfo?.role;
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const role = personalInfo?.role;
   const token = localStorage.getItem("token");
 
   useEffect(() => {

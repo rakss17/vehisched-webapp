@@ -12,8 +12,10 @@ import LoadingBar from "react-top-loading-bar";
 export default function Header() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const userInfo = useSelector((state: RootState) => state.userInfo.user);
-  const username = userInfo?.username;
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const username = personalInfo?.username;
   const dispatch = useDispatch();
 
   const handleMenuToggle = () => {

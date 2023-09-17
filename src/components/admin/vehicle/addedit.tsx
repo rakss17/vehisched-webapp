@@ -14,6 +14,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   seatingCapacityProps,
   typeProps,
   vipProps,
+  uploadImageProps,
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -45,7 +46,11 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
         </div>
         <div>
           <label>VIP: </label>
-          <input {...vipProps} type="checkbox" />
+          <input {...vipProps} />
+        </div>
+        <div>
+          <label>Upload Image: </label>
+          <input {...uploadImageProps} />
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>

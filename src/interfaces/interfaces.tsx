@@ -1,10 +1,11 @@
 export interface Vehicle {
-  plate_number?: string;
-  vehicle_name?: string;
-  vehicle_type?: string;
+  plate_number?: any;
+  vehicle_name?: any;
+  vehicle_type?: any;
   capacity?: any;
   status?: string;
   is_vip?: any;
+  vehicle_image?: any;
 }
 
 interface InputProps {
@@ -13,6 +14,7 @@ interface InputProps {
   value?: any;
   type?: any;
   checked?: any;
+  accept?: any;
 }
 
 interface DropdownProps {
@@ -45,6 +47,7 @@ export interface AddEditVehicleProps {
   seatingCapacityProps?: InputProps;
   typeProps?: InputProps;
   vipProps?: InputProps;
+  uploadImageProps?: InputProps;
 }
 export interface SigninParams {
   username: string;

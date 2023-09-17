@@ -1,5 +1,9 @@
 import axios from "axios";
-import { SigninParams, SignupParams } from "../../interfaces/interfaces";
+import {
+  SigninParams,
+  SignupParams,
+  Vehicle,
+} from "../../interfaces/interfaces";
 import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
@@ -170,7 +174,7 @@ export function fetchVehiclesAPI() {
   return async (dispatch: Dispatch) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await api.get("api/v1/vehicles/fetch/", {
+      const response = await api.get("api/v1/vehicles/fetch-post/", {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",
@@ -182,4 +186,31 @@ export function fetchVehiclesAPI() {
       console.error("Error fetching user list:", error);
     }
   };
+}
+
+export function addVehiclesAPI(
+  vehicleData: Vehicle,
+  setIsConfirmationOpenVehicle: any
+) {
+  const formData = new FormData();
+  Object.keys(vehicleData).forEach((key) => {
+    formData.append(key, vehicleData[key]);
+  });
+
+  api
+    .post("api/v1/vehicles/fetch-post/", formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    })
+    .then((response) => {
+      setIsConfirmationOpenVehicle(true);
+      setTimeout(() => {
+        setIsConfirmationOpenVehicle(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }

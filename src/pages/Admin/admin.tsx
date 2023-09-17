@@ -18,6 +18,7 @@ import {
   updateUserAPI,
   fetchRoleByName,
   deleteUserAPI,
+  addVehiclesAPI,
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -132,7 +133,6 @@ export default function Admin() {
 
   useEffect(() => {
     setVehiclesData(vehicles);
-    console.log("weeeee", vehicles);
   }, [vehicles]);
 
   useEffect(() => {
@@ -289,10 +289,8 @@ export default function Admin() {
   };
   const handleAddVehicleButton = () => {
     setIsAddVehicleOpen(false);
-
-    setTimeout(() => {
-      setIsConfirmationOpenVehicle(false);
-    }, 3000);
+    console.log("vehicle data: ", vehicleData);
+    addVehiclesAPI(vehicleData, setIsConfirmationOpenVehicle);
   };
 
   const handleEditVehicleButton = () => {
@@ -468,7 +466,7 @@ export default function Admin() {
                       </div>
                       <img
                         className="vehicle-image"
-                        src={`${serverSideUrl}${vehicle.vehicle_image}`}
+                        src={vehicle.vehicle_image}
                       />
                       <div className="ellipsis-container">
                         <Ellipsis

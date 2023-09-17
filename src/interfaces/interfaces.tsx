@@ -1,4 +1,5 @@
 export interface Vehicle {
+  [key: string]: any;
   plate_number?: any;
   vehicle_name?: any;
   vehicle_type?: any;

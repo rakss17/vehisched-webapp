@@ -3,6 +3,7 @@ import { SigninParams, SignupParams } from "../../interfaces/interfaces";
 import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
+import { fetchVehiclesData } from "../../redux/slices/vehiclesDataSlices";
 
 export const serverSideUrl = "http://localhost:8000";
 
@@ -26,7 +27,7 @@ export async function SigninAPI(
 
     localStorage.setItem("token", token);
 
-    const res = await api.get("api/v1/accounts/user-profile/", {
+    const res = await api.get("api/v1/accounts/me/", {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
@@ -163,4 +164,22 @@ export function deleteUserAPI(
       }
     })
     .catch((error) => console.error("Error deleting user:", error));
+}
+
+export function fetchVehiclesAPI() {
+  return async (dispatch: Dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get("api/v1/vehicles/fetch/", {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      dispatch(fetchVehiclesData(response.data));
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
 }

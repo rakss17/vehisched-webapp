@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import usersInfoReducer from "./slices/usersInfoSlices";
 import personalInfoReducer from "./slices/personalInfoSlices";
+import vehiclesDataReducer from "./slices/vehiclesDataSlices";
 
 const usersInfoPersistConfig = {
   key: "user",
@@ -11,6 +12,11 @@ const usersInfoPersistConfig = {
 
 const personalInfoPersistConfig = {
   key: "personalInfo",
+  storage,
+};
+
+const vehiclesDataPersistConfig = {
+  key: "vehiclesData",
   storage,
 };
 
@@ -23,10 +29,16 @@ const persistedPersonalInfoReducer = persistReducer(
   personalInfoReducer
 );
 
+const persistedVehiclesDataReducer = persistReducer(
+  vehiclesDataPersistConfig,
+  vehiclesDataReducer
+);
+
 const store = configureStore({
   reducer: {
     usersInfo: persistedUsersInfoReducer,
     personalInfo: persistedPersonalInfoReducer,
+    vehiclesData: persistedVehiclesDataReducer,
   },
 });
 

@@ -14,6 +14,7 @@ import { SignupParams } from "../../interfaces/interfaces";
 import {
   SignupAPI,
   fetchUsersAPI,
+  fetchVehiclesAPI,
   updateUserAPI,
   fetchRoleByName,
   deleteUserAPI,
@@ -93,38 +94,7 @@ export default function Admin() {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-
-  useEffect(() => {
-    const newSocket = new WebSocket("ws://localhost:8000/ws/vehicle/vehicle/");
-
-    newSocket.onopen = (event) => {
-      console.log("WebSocket: Connection Established");
-      newSocket.send(
-        JSON.stringify({
-          action: "fetch_vehicles",
-        })
-      );
-    };
-
-    newSocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.action === "vehicles_fetched") {
-        setVehiclesData(data.data);
-        console.log("fetched vehicle data", data);
-      }
-    };
-
-    newSocket.onclose = (event) => {
-      console.log("WebSocket: Connection Closed");
-    };
-
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.close();
-    };
-  }, []);
+  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -155,6 +125,15 @@ export default function Admin() {
   useEffect(() => {
     setFetchedUsersData(users);
   }, [users]);
+
+  useEffect(() => {
+    dispatch(fetchVehiclesAPI() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    setVehiclesData(vehicles);
+    console.log("weeeee", vehicles);
+  }, [vehicles]);
 
   useEffect(() => {
     filteredRole = fetchedUsersData.filter((role) => role.role === "requester");
@@ -309,28 +288,11 @@ export default function Admin() {
       });
   };
   const handleAddVehicleButton = () => {
-    console.log("Vehicle with image: ", vehicleData);
     setIsAddVehicleOpen(false);
-    if (socket) {
-      setIsConfirmationOpenVehicle(true);
-      const action = "post_vehicle";
-      const data = vehicleData;
-      const dataa = {
-        action,
-        data,
-      };
-      socket.send(JSON.stringify(dataa));
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log(data);
-        if (data.action === "vehicle_posted") {
-          setVehiclesData((prevData) => [...prevData, data.data]);
-        }
-      };
-      setTimeout(() => {
-        setIsConfirmationOpenVehicle(false);
-      }, 3000);
-    }
+
+    setTimeout(() => {
+      setIsConfirmationOpenVehicle(false);
+    }, 3000);
   };
 
   const handleEditVehicleButton = () => {

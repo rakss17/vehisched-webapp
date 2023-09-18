@@ -19,6 +19,7 @@ import {
   fetchRoleByName,
   deleteUserAPI,
   addVehiclesAPI,
+  updateVehicleAPI,
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -96,6 +97,7 @@ export default function Admin() {
   const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
+  const vehicleId = selectedVehicle?.plate_number ?? "";
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -114,6 +116,17 @@ export default function Admin() {
       const selectedFile = event.target.files[0];
       setVehicleData({
         ...vehicleData,
+        vehicle_image: selectedFile,
+      });
+    }
+  };
+  const handleImageUpdateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setVehicleUpdate({
+        ...vehicleUpdate,
         vehicle_image: selectedFile,
       });
     }
@@ -295,11 +308,22 @@ export default function Admin() {
 
   const handleEditVehicleButton = () => {
     setIsEditVehicleOpen(false);
-    setIsConfirmationOpenVehicleEdit(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenVehicleEdit(false);
-    }, 3000);
+    const updatedVehicleData = {
+      plate_number:
+        vehicleUpdate.plate_number || (selectedVehicle?.plate_number ?? ""),
+      vehicle_name:
+        vehicleUpdate.vehicle_name || (selectedVehicle?.vehicle_name ?? ""),
+      capacity: vehicleUpdate.capacity || (selectedVehicle?.capacity ?? ""),
+      status: vehicleUpdate.status || (selectedVehicle?.status ?? ""),
+      is_vip: vehicleUpdate.is_vip || (selectedVehicle?.is_vip ?? ""),
+      vehicle_image:
+        vehicleUpdate.vehicle_image || (selectedVehicle?.vehicle_image ?? ""),
+    };
+    updateVehicleAPI(
+      updatedVehicleData,
+      vehicleId,
+      setIsConfirmationOpenVehicleEdit
+    );
   };
   const handleDeleteUserButton = () => {
     setIsDeleteOpen(false);
@@ -702,6 +726,12 @@ export default function Admin() {
             }),
           checked: selectedVehicle?.is_vip ?? "",
           type: "checkbox",
+        }}
+        uploadImageProps={{
+          type: "file",
+          accept: "image/*",
+          onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+            handleImageUpdateChange(event),
         }}
       />
       <PromptDialog

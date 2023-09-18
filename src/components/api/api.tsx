@@ -214,3 +214,36 @@ export function addVehiclesAPI(
       console.log(error);
     });
 }
+
+export async function updateVehicleAPI(
+  updatedVehicleData: any,
+  vehicleId: any,
+  setIsConfirmationOpenVehicleEdit: any
+) {
+  const formData = new FormData();
+  Object.keys(updatedVehicleData).forEach((key) => {
+    formData.append(key, updatedVehicleData[key]);
+  });
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.patch(
+      `api/v1/vehicles/update-delete/${vehicleId}/`,
+      formData, // Use formData directly for the request body
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+    console.log(`Updating vehicle with ID: ${vehicleId}`);
+
+    setIsConfirmationOpenVehicleEdit(true);
+    setTimeout(() => {
+      setIsConfirmationOpenVehicleEdit(false);
+      window.location.reload();
+    }, 3000);
+  } catch (error) {
+    console.log("Error updating user:", error);
+    throw error;
+  }
+}

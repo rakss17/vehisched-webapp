@@ -228,19 +228,47 @@ export async function updateVehicleAPI(
     const token = localStorage.getItem("token");
     const response = await api.patch(
       `api/v1/vehicles/update-delete/${vehicleId}/`,
-      formData, // Use formData directly for the request body
+      formData,
       {
         headers: {
           Authorization: `Token ${token}`,
         },
       }
     );
-    console.log(`Updating vehicle with ID: ${vehicleId}`);
 
     setIsConfirmationOpenVehicleEdit(true);
     setTimeout(() => {
       setIsConfirmationOpenVehicleEdit(false);
       window.location.reload();
+    }, 3000);
+  } catch (error) {
+    console.log("Error updating user:", error);
+    throw error;
+  }
+}
+
+export async function deleteVehicleAPI(
+  vehicleId: any,
+  setIsConfirmationOpenVehicleDelete: any,
+  setSelectedNavigation: any
+) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.delete(
+      `api/v1/vehicles/update-delete/${vehicleId}/`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    setIsConfirmationOpenVehicleDelete(true);
+    setTimeout(() => {
+      setIsConfirmationOpenVehicleDelete(false);
+      window.location.reload();
+      setSelectedNavigation("Vehicles");
     }, 3000);
   } catch (error) {
     console.log("Error updating user:", error);

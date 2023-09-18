@@ -20,6 +20,7 @@ import {
   deleteUserAPI,
   addVehiclesAPI,
   updateVehicleAPI,
+  deleteVehicleAPI,
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -296,13 +297,10 @@ export default function Admin() {
         );
       })
       .then(() => {})
-      .catch((error) => {
-        console.error("Error fetching role:", error);
-      });
+      .catch((error) => {});
   };
   const handleAddVehicleButton = () => {
     setIsAddVehicleOpen(false);
-    console.log("vehicle data: ", vehicleData);
     addVehiclesAPI(vehicleData, setIsConfirmationOpenVehicle);
   };
 
@@ -327,16 +325,15 @@ export default function Admin() {
   };
   const handleDeleteUserButton = () => {
     setIsDeleteOpen(false);
-    console.log("Delete ID display", userId);
     deleteUserAPI(userId, setIsConfirmationOpenDelete, setFetchedUsersData);
   };
   const handleDeleteVehicleButton = () => {
     setIsDeleteVehicleOpen(false);
-    setIsConfirmationOpenVehicleDelete(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenVehicleDelete(false);
-    }, 3000);
+    deleteVehicleAPI(
+      vehicleId,
+      setIsConfirmationOpenVehicleDelete,
+      setSelectedNavigation
+    );
   };
   const handleCancel = () => {
     setIsAddOpen(false);
@@ -479,7 +476,10 @@ export default function Admin() {
                   <a className="vehicle-card">
                     <div className="vehicle-row">
                       <div className="vehicle-column">
-                        <p className="vehicle-name">{vehicle.vehicle_name}</p>
+                        <p className="vehicle-name">
+                          {vehicle.plate_number}
+                          <br></br> {vehicle.vehicle_name}
+                        </p>
                         <p className="vehicle-detail">
                           Seating Capacity: {vehicle.capacity}
                         </p>

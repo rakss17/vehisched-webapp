@@ -66,3 +66,9 @@ export interface SignupParams {
   mobile_number: any;
   role: any;
 }
+
+export type SidebarItem = {
+  icon: any;
+  text: string;
+  path: string;
+};

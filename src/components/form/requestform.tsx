@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Container from "../container/container";
 import Header from "../header/header";
 import InputField from "../inputfield/inputfield";
@@ -20,6 +20,9 @@ import TimeInput from "../timeinput/timeinput";
 import Confirmation from "../confirmation/confirmation";
 
 export default function RequestForm() {
+  const location = useLocation();
+  const plateNumber = location.state?.plateNumber || "";
+  const vehicleName = location.state?.vehicleName || "";
   const [data, setData] = useState<{
     requester_name: string;
     office_dept: string;
@@ -161,9 +164,11 @@ export default function RequestForm() {
                 <div className="vehicle-info-name">
                   <p>
                     <FontAwesomeIcon icon={faCar} />
-                    Vehicle:{"  "}
+                    Vehicle:
                   </p>
-                  <p>KAB 2855 Fortuner</p>
+                  <p>
+                    {plateNumber} {vehicleName}
+                  </p>
                 </div>
                 <AddressInput />
                 <div className="kilometer-info">

@@ -222,6 +222,10 @@ export async function updateVehicleAPI(
 ) {
   const formData = new FormData();
   Object.keys(updatedVehicleData).forEach((key) => {
+    if (key === "vehicle_image" && updatedVehicleData[key] === null) {
+      // Skip appending 'vehicle_image' if it's null
+      return;
+    }
     formData.append(key, updatedVehicleData[key]);
   });
   try {

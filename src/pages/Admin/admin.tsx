@@ -313,9 +313,10 @@ export default function Admin() {
         vehicleUpdate.vehicle_name || (selectedVehicle?.vehicle_name ?? ""),
       capacity: vehicleUpdate.capacity || (selectedVehicle?.capacity ?? ""),
       status: vehicleUpdate.status || (selectedVehicle?.status ?? ""),
+      vehicle_type:
+        vehicleUpdate.vehicle_type || (selectedVehicle?.vehicle_type ?? ""),
       is_vip: vehicleUpdate.is_vip || (selectedVehicle?.is_vip ?? ""),
-      vehicle_image:
-        vehicleUpdate.vehicle_image || (selectedVehicle?.vehicle_image ?? ""),
+      vehicle_image: vehicleUpdate.vehicle_image,
     };
     updateVehicleAPI(
       updatedVehicleData,

@@ -18,18 +18,25 @@ import AddressInput from "../addressinput/addressinput";
 import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import Confirmation from "../confirmation/confirmation";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export default function RequestForm() {
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const firstName = personalInfo?.first_name;
+  const lastName = personalInfo?.last_name;
   const [data, setData] = useState<{
     requester_name: string;
     office_dept: string;
     purpose: string;
     passenger_names: string[];
   }>({
-    requester_name: "",
+    requester_name: `${lastName} ${firstName}`,
     office_dept: "",
     purpose: "",
     passenger_names: [],

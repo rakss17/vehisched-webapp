@@ -350,6 +350,19 @@ export default function Admin() {
     setIsDeleteOpen(false);
     setIsDeleteVehicleOpen(false);
   };
+
+  const getStatusColor = (status: any) => {
+    switch (status) {
+      case "Available":
+        return "green";
+      case "On trip":
+        return "#060e57";
+      case "Unavailable":
+        return "red";
+      default:
+        return "black";
+    }
+  };
   return (
     <>
       <Header />
@@ -487,7 +500,14 @@ export default function Admin() {
                         <p className="vehicle-detail">
                           Type: {vehicle.vehicle_type}
                         </p>
-                        <p className="vehicle-status">{vehicle.status}</p>
+                        <p
+                          className="vehicle-status"
+                          style={{
+                            color: getStatusColor(vehicle.status),
+                          }}
+                        >
+                          {vehicle.status}
+                        </p>
                       </div>
                       <img
                         className="vehicle-image"

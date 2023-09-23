@@ -56,6 +56,10 @@ export default function DashboardR() {
     navigate("/RequestForm", { state: { plateNumber, vehicleName } });
   };
 
+  const availableVehicles = vehiclesData.filter(
+    (vehicle) => vehicle.status === "Available"
+  );
+
   return (
     <>
       <Header />
@@ -69,10 +73,10 @@ export default function DashboardR() {
           <button onClick={handleSetTripModal}>Set Trip</button>
         </div>
         <div className="requester-dashboard-container">
-          {vehiclesData.length === 0 ? (
+          {availableVehicles.length === 0 ? (
             <p className="vehicles-null">No vehicles available</p>
           ) : (
-            vehiclesData.map((vehicle) => (
+            availableVehicles.map((vehicle) => (
               <a
                 onClick={() =>
                   openRequestForm(vehicle.plate_number, vehicle.vehicle_name)

@@ -1,29 +1,44 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./slices/userSlices";
-import userInfoReducer from "./slices/userInfoSlices";
+import usersInfoReducer from "./slices/usersInfoSlices";
+import personalInfoReducer from "./slices/personalInfoSlices";
+import vehiclesDataReducer from "./slices/vehiclesDataSlices";
 
-const userPersistConfig = {
+const usersInfoPersistConfig = {
   key: "user",
   storage,
 };
 
-const userInfoPersistConfig = {
-  key: "userInfo",
+const personalInfoPersistConfig = {
+  key: "personalInfo",
   storage,
 };
 
-const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
-const persistedUserInfoReducer = persistReducer(
-  userInfoPersistConfig,
-  userInfoReducer
+const vehiclesDataPersistConfig = {
+  key: "vehiclesData",
+  storage,
+};
+
+const persistedUsersInfoReducer = persistReducer(
+  usersInfoPersistConfig,
+  usersInfoReducer
+);
+const persistedPersonalInfoReducer = persistReducer(
+  personalInfoPersistConfig,
+  personalInfoReducer
+);
+
+const persistedVehiclesDataReducer = persistReducer(
+  vehiclesDataPersistConfig,
+  vehiclesDataReducer
 );
 
 const store = configureStore({
   reducer: {
-    user: persistedUserReducer,
-    userInfo: persistedUserInfoReducer,
+    usersInfo: persistedUsersInfoReducer,
+    personalInfo: persistedPersonalInfoReducer,
+    vehiclesData: persistedVehiclesDataReducer,
   },
 });
 

@@ -1,4 +1,5 @@
 export interface Vehicle {
+  [key: string]: any;
   plate_number?: any;
   vehicle_name?: any;
   vehicle_type?: any;
@@ -65,3 +66,9 @@ export interface SignupParams {
   mobile_number: any;
   role: any;
 }
+
+export type SidebarItem = {
+  icon: any;
+  text: string;
+  path: string;
+};

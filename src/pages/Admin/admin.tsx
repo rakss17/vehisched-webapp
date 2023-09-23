@@ -14,9 +14,13 @@ import { SignupParams } from "../../interfaces/interfaces";
 import {
   SignupAPI,
   fetchUsersAPI,
+  fetchVehiclesAPI,
   updateUserAPI,
   fetchRoleByName,
   deleteUserAPI,
+  addVehiclesAPI,
+  updateVehicleAPI,
+  deleteVehicleAPI,
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -91,40 +95,10 @@ export default function Admin() {
     vehicle_image: null,
   });
   const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.user.users);
+  const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-
-  useEffect(() => {
-    const newSocket = new WebSocket("ws://localhost:8000/ws/vehicle/vehicle/");
-
-    newSocket.onopen = (event) => {
-      console.log("WebSocket: Connection Established");
-      newSocket.send(
-        JSON.stringify({
-          action: "fetch_vehicles",
-        })
-      );
-    };
-
-    newSocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.action === "vehicles_fetched") {
-        setVehiclesData(data.data);
-        console.log("fetched vehicle data", data);
-      }
-    };
-
-    newSocket.onclose = (event) => {
-      console.log("WebSocket: Connection Closed");
-    };
-
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.close();
-    };
-  }, []);
+  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
+  const vehicleId = selectedVehicle?.plate_number ?? "";
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -147,6 +121,17 @@ export default function Admin() {
       });
     }
   };
+  const handleImageUpdateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setVehicleUpdate({
+        ...vehicleUpdate,
+        vehicle_image: selectedFile,
+      });
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchUsersAPI() as any);
@@ -155,6 +140,14 @@ export default function Admin() {
   useEffect(() => {
     setFetchedUsersData(users);
   }, [users]);
+
+  useEffect(() => {
+    dispatch(fetchVehiclesAPI() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    setVehiclesData(vehicles);
+  }, [vehicles]);
 
   useEffect(() => {
     filteredRole = fetchedUsersData.filter((role) => role.role === "requester");
@@ -304,55 +297,44 @@ export default function Admin() {
         );
       })
       .then(() => {})
-      .catch((error) => {
-        console.error("Error fetching role:", error);
-      });
+      .catch((error) => {});
   };
   const handleAddVehicleButton = () => {
-    console.log("Vehicle with image: ", vehicleData);
     setIsAddVehicleOpen(false);
-    if (socket) {
-      setIsConfirmationOpenVehicle(true);
-      const action = "post_vehicle";
-      const data = vehicleData;
-      const dataa = {
-        action,
-        data,
-      };
-      socket.send(JSON.stringify(dataa));
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log(data);
-        if (data.action === "vehicle_posted") {
-          setVehiclesData((prevData) => [...prevData, data.data]);
-        }
-      };
-      setTimeout(() => {
-        setIsConfirmationOpenVehicle(false);
-      }, 3000);
-    }
+    addVehiclesAPI(vehicleData, setIsConfirmationOpenVehicle);
   };
 
   const handleEditVehicleButton = () => {
     setIsEditVehicleOpen(false);
-    setIsConfirmationOpenVehicleEdit(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenVehicleEdit(false);
-    }, 3000);
+    const updatedVehicleData = {
+      plate_number:
+        vehicleUpdate.plate_number || (selectedVehicle?.plate_number ?? ""),
+      vehicle_name:
+        vehicleUpdate.vehicle_name || (selectedVehicle?.vehicle_name ?? ""),
+      capacity: vehicleUpdate.capacity || (selectedVehicle?.capacity ?? ""),
+      status: vehicleUpdate.status || (selectedVehicle?.status ?? ""),
+      vehicle_type:
+        vehicleUpdate.vehicle_type || (selectedVehicle?.vehicle_type ?? ""),
+      is_vip: vehicleUpdate.is_vip || (selectedVehicle?.is_vip ?? ""),
+      vehicle_image: vehicleUpdate.vehicle_image,
+    };
+    updateVehicleAPI(
+      updatedVehicleData,
+      vehicleId,
+      setIsConfirmationOpenVehicleEdit
+    );
   };
   const handleDeleteUserButton = () => {
     setIsDeleteOpen(false);
-    console.log("Delete ID display", userId);
     deleteUserAPI(userId, setIsConfirmationOpenDelete, setFetchedUsersData);
   };
   const handleDeleteVehicleButton = () => {
     setIsDeleteVehicleOpen(false);
-    setIsConfirmationOpenVehicleDelete(true);
-
-    setTimeout(() => {
-      setIsConfirmationOpenVehicleDelete(false);
-    }, 3000);
+    deleteVehicleAPI(
+      vehicleId,
+      setIsConfirmationOpenVehicleDelete,
+      setSelectedNavigation
+    );
   };
   const handleCancel = () => {
     setIsAddOpen(false);
@@ -367,6 +349,19 @@ export default function Admin() {
   const handleClose = () => {
     setIsDeleteOpen(false);
     setIsDeleteVehicleOpen(false);
+  };
+
+  const getStatusColor = (status: any) => {
+    switch (status) {
+      case "Available":
+        return "green";
+      case "On trip":
+        return "#060e57";
+      case "Unavailable":
+        return "red";
+      default:
+        return "black";
+    }
   };
   return (
     <>
@@ -495,18 +490,28 @@ export default function Admin() {
                   <a className="vehicle-card">
                     <div className="vehicle-row">
                       <div className="vehicle-column">
-                        <p className="vehicle-name">{vehicle.vehicle_name}</p>
+                        <p className="vehicle-name">
+                          {vehicle.plate_number}
+                          <br></br> {vehicle.vehicle_name}
+                        </p>
                         <p className="vehicle-detail">
                           Seating Capacity: {vehicle.capacity}
                         </p>
                         <p className="vehicle-detail">
                           Type: {vehicle.vehicle_type}
                         </p>
-                        <p className="vehicle-status">{vehicle.status}</p>
+                        <p
+                          className="vehicle-status"
+                          style={{
+                            color: getStatusColor(vehicle.status),
+                          }}
+                        >
+                          {vehicle.status}
+                        </p>
                       </div>
                       <img
                         className="vehicle-image"
-                        src={`${serverSideUrl}${vehicle.vehicle_image}`}
+                        src={vehicle.vehicle_image}
                       />
                       <div className="ellipsis-container">
                         <Ellipsis
@@ -742,6 +747,12 @@ export default function Admin() {
             }),
           checked: selectedVehicle?.is_vip ?? "",
           type: "checkbox",
+        }}
+        uploadImageProps={{
+          type: "file",
+          accept: "image/*",
+          onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+            handleImageUpdateChange(event),
         }}
       />
       <PromptDialog

@@ -13,88 +13,30 @@ import Fortuner from "../../../components/images/fortuner.jpg";
 import ToyotaHiace from "../../../components/images/toyota-hiace.png";
 import CalendarInput from "../../../components/calendarinput/calendarinput";
 import TimeInput from "../../../components/timeinput/timeinput";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
+import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
+import { fetchVehiclesAPI } from "../../../components/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
   { icon: faClipboardList, text: "Request", path: "/Request" },
 ];
 
-interface Vehicle {
-  id: number;
-  vehicle_name: string;
-  capacity: number;
-  vehicle_type: string;
-  vehicle_image: string;
-  status: string;
-}
-const fetchedVehicles: Vehicle[] = [
-  {
-    id: 1,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "On Trip",
-  },
-  {
-    id: 2,
-    vehicle_name: "KCU 2522 Montero Sport",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: MitsubishiMontero,
-    status: "Available",
-  },
-  {
-    id: 3,
-    vehicle_name: "KAB 2855 Fortuner",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: Fortuner,
-    status: "On Trip",
-  },
-  {
-    id: 4,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Available",
-  },
-  {
-    id: 5,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "Unavailable",
-  },
-  {
-    id: 6,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Unavailable",
-  },
-];
 export default function DashboardR() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
+  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const fetchedVehicleList = () => {
-    setVehicles(fetchedVehicles);
-  };
+  useEffect(() => {
+    dispatch(fetchVehiclesAPI() as any);
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchedVehicleList();
-  }, []);
+    setVehiclesData(vehicles);
+  }, [vehicles]);
 
   const handleSetTripModal = () => {
     setIsSetTripOpen(true);
@@ -110,9 +52,13 @@ export default function DashboardR() {
       event.preventDefault();
     }
   };
-  const openRequestForm = () => {
-    navigate("/RequestForm");
+  const openRequestForm = (plateNumber: string, vehicleName: string) => {
+    navigate("/RequestForm", { state: { plateNumber, vehicleName } });
   };
+
+  const availableVehicles = vehiclesData.filter(
+    (vehicle) => vehicle.status === "Available"
+  );
 
   return (
     <>
@@ -127,14 +73,23 @@ export default function DashboardR() {
           <button onClick={handleSetTripModal}>Set Trip</button>
         </div>
         <div className="requester-dashboard-container">
-          {vehicles.length === 0 ? (
+          {availableVehicles.length === 0 ? (
             <p className="vehicles-null">No vehicles available</p>
           ) : (
-            vehicles.map((vehicle) => (
-              <a onClick={openRequestForm} className="vehicle-card">
+            availableVehicles.map((vehicle) => (
+              <a
+                onClick={() =>
+                  openRequestForm(vehicle.plate_number, vehicle.vehicle_name)
+                }
+                className="vehicle-card"
+              >
                 <div className="vehicle-row">
                   <div className="vehicle-column">
-                    <p className="vehicle-name">{vehicle.vehicle_name}</p>
+                    <p className="vehicle-name">
+                      {vehicle.plate_number}
+                      <br></br>
+                      {vehicle.vehicle_name}
+                    </p>
                     <p className="vehicle-detail">
                       Seating Capacity: {vehicle.capacity}
                     </p>

@@ -72,3 +72,7 @@ export type SidebarItem = {
   text: string;
   path: string;
 };
+
+export interface AddressInputProps {
+  onPlaceSelect?: (value: any) => void;
+}

@@ -20,6 +20,8 @@ import TimeInput from "../timeinput/timeinput";
 import Confirmation from "../confirmation/confirmation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import USTPLogo from "../../assets/USTP LOGO.png";
+import DocumentCode from "../../assets/documentcode.jpg";
 
 export default function RequestForm() {
   const location = useLocation();
@@ -30,18 +32,18 @@ export default function RequestForm() {
   );
   const firstName = personalInfo?.first_name;
   const lastName = personalInfo?.last_name;
+  const middleName = personalInfo?.middle_name;
   const [data, setData] = useState<{
     requester_name: string;
     office_dept: string;
     purpose: string;
     passenger_names: string[];
   }>({
-    requester_name: `${lastName} ${firstName}`,
+    requester_name: `${lastName}, ${firstName} ${middleName}`,
     office_dept: "",
     purpose: "",
     passenger_names: [],
   });
-  const [urgentRequest, setUrgentRequest] = useState(false);
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate();
@@ -128,12 +130,20 @@ export default function RequestForm() {
       navigate("/DashboardR");
     }, 3000);
   };
+
+  const placeSelected = () => {
+    console.log("placed clicked");
+  };
   return (
     <>
       <Header />
       <Container>
         <div className="request-form-body">
-          <h1>Vehicle Request Form</h1>
+          <div className="request-form-header">
+            <img src={USTPLogo} alt="USTP Logo" />
+            <h1>Vehicle Request Form</h1>
+            <img src={DocumentCode} alt="Document Code" />
+          </div>
           <div className="form-body">
             <div className="form-body-shadow">
               <div className="first-row">
@@ -177,7 +187,8 @@ export default function RequestForm() {
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
-                <AddressInput />
+                {/* FURTHER DEBUGGING LATER */}
+                <AddressInput onPlaceSelect={placeSelected} />
                 <div className="kilometer-info">
                   <p>Kilometer{"(s)"}:</p>
                   <p>10</p>
@@ -193,47 +204,22 @@ export default function RequestForm() {
                   <TimeInput />
                 </div>
               </div>
-              <div className="fifth-row">
-                <p>Urgent Request?: </p>
-                <div>
-                  <label>Yes</label>
-                  <input
-                    type="checkbox"
-                    checked={urgentRequest}
-                    onChange={(event) => setUrgentRequest(event.target.checked)}
-                  />
-                </div>
-                <div>
-                  <label>No</label>
-                  <input
-                    type="checkbox"
-                    checked={!urgentRequest}
-                    onChange={(event) =>
-                      setUrgentRequest(!event.target.checked)
-                    }
+
+              <div className="sixth-row">
+                <div className="purpose-row">
+                  <InputField
+                    className="purpose-width"
+                    icon={faClipboard}
+                    value={data.purpose}
+                    label="Purpose"
+                    placeholder="Purpose"
+                    onChange={(event) => {
+                      setData({ ...data, purpose: event.target.value });
+                    }}
                   />
                 </div>
               </div>
-              {urgentRequest && (
-                <div className="sixth-row">
-                  <p>
-                    Please provide a brief statement explaining the urgency or
-                    importance of your purpose for requesting the reservation.
-                  </p>
-                  <div className="purpose-row">
-                    <InputField
-                      className="purpose-width"
-                      icon={faClipboard}
-                      value={data.purpose}
-                      label="Purpose"
-                      placeholder="Purpose"
-                      onChange={(event) => {
-                        setData({ ...data, purpose: event.target.value });
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
+
               <div className="seventh-row">
                 <p>
                   Requesters traveling to destinations exceed 50 kilometers are

@@ -13,10 +13,10 @@ import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import Dropdown from "../../../components/dropdown/dropdown";
 import SearchBar from "../../../components/searchbar/searchbar";
-import ToyotaHilux from "../../../components/images/toyota-hilux.jpg";
-import MitsubishiMontero from "../../../components/images/mitsubishi-montero.jpg";
-import Fortuner from "../../../components/images/fortuner.jpg";
-import ToyotaHiace from "../../../components/images/toyota-hiace.png";
+import ToyotaHilux from "../../../assets/toyota-hilux.jpg";
+import MitsubishiMontero from "../../../assets/mitsubishi-montero.jpg";
+import Fortuner from "../../../assets/fortuner.jpg";
+import ToyotaHiace from "../../../assets/toyota-hiace.png";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 
 type SidebarItem = {

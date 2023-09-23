@@ -2,7 +2,7 @@ import "./header.css";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-import logo from "../images/logo.png";
+import logo from "../../assets/logo.png";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import { persistor } from "../../redux/store";

@@ -2,35 +2,41 @@ import React, { useState } from "react";
 import TimePicker from "react-time-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import {
-  format,
-  setHours,
-  setMinutes,
-  getHours,
-  addHours,
-  subHours,
-} from "date-fns";
+import { format, setHours, getHours, addHours, subHours } from "date-fns";
 import "./timeinput.css";
+import { TimeInputProps } from "../../interfaces/interfaces";
 
-const TimeInput: React.FC = () => {
-  const [selectedTime, setSelectedTime] = useState<Date | null>(new Date());
+const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
+  const [selectedTime, setSelectedTime] = useState<any>(new Date());
 
   const handleTimeChange = (time: string | null) => {
-    setSelectedTime(
-      time ? new Date(new Date().toDateString() + " " + time) : null
-    );
+    if (time) {
+      const selectedTime = new Date(time);
+
+      const time12HourFormat = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }).format(selectedTime);
+
+      console.log("Time received in RequestForm:", time12HourFormat);
+    } else {
+      console.log("No time selected.");
+    }
   };
 
   const handleTimeIncrement = () => {
     if (selectedTime) {
       setSelectedTime(addHours(selectedTime, 1));
     }
+    onChange(selectedTime);
   };
 
   const handleTimeDecrement = () => {
     if (selectedTime) {
       setSelectedTime(subHours(selectedTime, 1));
     }
+    onChange(selectedTime);
   };
 
   const handleAmPmIncrement = () => {
@@ -43,6 +49,7 @@ const TimeInput: React.FC = () => {
         )
       );
     }
+    onChange(selectedTime);
   };
 
   const handleAmPmDecrement = () => {

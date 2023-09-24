@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  RequestFormProps,
   SigninParams,
   SignupParams,
   Vehicle,
@@ -223,7 +224,6 @@ export async function updateVehicleAPI(
   const formData = new FormData();
   Object.keys(updatedVehicleData).forEach((key) => {
     if (key === "vehicle_image" && updatedVehicleData[key] === null) {
-      // Skip appending 'vehicle_image' if it's null
       return;
     }
     formData.append(key, updatedVehicleData[key]);
@@ -278,4 +278,32 @@ export async function deleteVehicleAPI(
     console.log("Error updating user:", error);
     throw error;
   }
+}
+
+export function postRequestFromAPI(
+  data: RequestFormProps,
+  setIsConfirmationOpen: any,
+  navigate: any
+) {
+  const requestData = {
+    ...data,
+    passenger_names: JSON.stringify(data.passenger_names),
+  };
+  console.log(requestData);
+  api
+    .post("api/v1/request/fetch-post/", requestData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    })
+    .then((response) => {
+      setIsConfirmationOpen(true);
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        navigate("/DashboardR");
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }

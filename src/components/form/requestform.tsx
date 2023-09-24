@@ -22,6 +22,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import USTPLogo from "../../assets/USTP LOGO.png";
 import DocumentCode from "../../assets/documentcode.jpg";
+import { RequestFormProps } from "../../interfaces/interfaces";
+import { postRequestFromAPI } from "../api/api";
+import { format } from "date-fns";
 
 export default function RequestForm() {
   const location = useLocation();
@@ -33,16 +36,17 @@ export default function RequestForm() {
   const firstName = personalInfo?.first_name;
   const lastName = personalInfo?.last_name;
   const middleName = personalInfo?.middle_name;
-  const [data, setData] = useState<{
-    requester_name: string;
-    office_dept: string;
-    purpose: string;
-    passenger_names: string[];
-  }>({
-    requester_name: `${lastName}, ${firstName} ${middleName}`,
-    office_dept: "",
+  const userID = personalInfo?.id;
+  const [data, setData] = useState<RequestFormProps>({
+    requester_name: userID,
+    office_or_dept: "",
     purpose: "",
+    number_of_passenger: null,
     passenger_names: [],
+    travel_date: null,
+    travel_time: null,
+    destination: "",
+    vehicle: `${plateNumber}`,
   });
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -59,7 +63,11 @@ export default function RequestForm() {
     } else if (numPassengers < data.passenger_names.length) {
       updatedPassengerNames = updatedPassengerNames.slice(0, numPassengers);
     }
-    setData({ ...data, passenger_names: updatedPassengerNames });
+    setData({
+      ...data,
+      passenger_names: updatedPassengerNames,
+      number_of_passenger: numPassengers,
+    });
   }, [numPassengers]);
 
   const handlePassengerChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -124,15 +132,25 @@ export default function RequestForm() {
   };
 
   const handleSubmit = () => {
-    setIsConfirmationOpen(true);
-    setTimeout(() => {
-      setIsConfirmationOpen(false);
-      navigate("/DashboardR");
-    }, 3000);
+    postRequestFromAPI(data, setIsConfirmationOpen, navigate);
+  };
+  const handleDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, travel_date: formattedDate });
   };
 
-  const placeSelected = () => {
-    console.log("placed clicked");
+  const handleTimeChange = (time: string | null) => {
+    if (time) {
+      const selectedTime = new Date(time);
+      const formattedTime = `${String(selectedTime.getHours()).padStart(
+        2,
+        "0"
+      )}:${String(selectedTime.getMinutes()).padStart(2, "0")}`;
+
+      setData({ ...data, travel_time: formattedTime });
+    } else {
+      console.log("No time selected.");
+    }
   };
   return (
     <>
@@ -147,22 +165,23 @@ export default function RequestForm() {
           <div className="form-body">
             <div className="form-body-shadow">
               <div className="first-row">
-                <InputField
-                  value={data.requester_name}
-                  icon={faUser}
-                  label="Requester's name"
-                  placeholder="Requester's name"
-                  onChange={(event) => {
-                    setData({ ...data, requester_name: event.target.value });
-                  }}
-                />
+                <div className="vehicle-info-name">
+                  <p>
+                    <FontAwesomeIcon icon={faUser} />
+                    Requester's name:
+                  </p>
+                  <p>
+                    {lastName}, {firstName} {middleName}
+                  </p>
+                </div>
+
                 <InputField
                   icon={faBuilding}
-                  value={data.office_dept}
+                  value={data.office_or_dept}
                   label="Office/dept"
                   placeholder="Office/dept"
                   onChange={(event) => {
-                    setData({ ...data, office_dept: event.target.value });
+                    setData({ ...data, office_or_dept: event.target.value });
                   }}
                 />
                 <InputField
@@ -188,7 +207,7 @@ export default function RequestForm() {
                   </p>
                 </div>
                 {/* FURTHER DEBUGGING LATER */}
-                <AddressInput onPlaceSelect={placeSelected} />
+                <AddressInput />
                 <div className="kilometer-info">
                   <p>Kilometer{"(s)"}:</p>
                   <p>10</p>
@@ -197,11 +216,14 @@ export default function RequestForm() {
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <p>Date of Travel: </p>
-                  <CalendarInput className="customize-calendar" />
+                  <CalendarInput
+                    className="customize-calendar"
+                    onChange={handleDateChange}
+                  />
                 </div>
                 <div className="calendar-containerr">
                   <p>Time of Travel: </p>
-                  <TimeInput />
+                  <TimeInput onChange={handleTimeChange} />
                 </div>
               </div>
 

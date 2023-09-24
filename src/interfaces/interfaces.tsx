@@ -76,3 +76,24 @@ export type SidebarItem = {
 export interface AddressInputProps {
   onPlaceSelect?: (value: any) => void;
 }
+
+export interface RequestFormProps {
+  requester_name?: any;
+  office_or_dept?: any;
+  purpose?: any;
+  passenger_names: string[];
+  vehicle?: any;
+  destination?: any;
+  travel_date?: any;
+  travel_time?: any;
+  number_of_passenger?: any;
+}
+
+export interface TimeInputProps {
+  onChange: (time: string | null) => void;
+}
+
+export interface CalendarInputProps {
+  className?: string;
+  onChange: (date: Date | null) => void;
+}

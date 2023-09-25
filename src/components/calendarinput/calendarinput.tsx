@@ -4,12 +4,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./calendarinput.css";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CalendarInputProps } from "../../interfaces/interfaces";
 
-interface CalendarInputProps {
-  className?: string; // className prop for customization
-}
-
-const CalendarInput: React.FC<CalendarInputProps> = ({ className }) => {
+const CalendarInput: React.FC<CalendarInputProps> = ({
+  className,
+  onChange,
+}) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   useEffect(() => {
     setSelectedDate(new Date());
@@ -17,6 +17,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({ className }) => {
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
+    onChange(date);
   };
 
   return (

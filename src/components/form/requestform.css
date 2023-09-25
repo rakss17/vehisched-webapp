@@ -7,7 +7,7 @@
   margin-top: 5vw;
   display: flex;
   flex-direction: column;
-
+  background-color: white;
   height: 100vh;
   padding: 1rem;
 }
@@ -17,8 +17,22 @@
   font-size: 2rem;
   text-align: center;
 }
+.request-form-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.request-form-header img:nth-child(1) {
+  width: 8vw;
+  height: 15vh;
+}
+.request-form-header img:nth-child(3) {
+  width: 15vw;
+  height: 10vh;
+}
 .form-body {
-  margin: 1vw 0vw 0vw 2vw;
+  margin: 0vw 0vw 0vw 2vw;
   width: 94vw;
   height: 76vh;
   border-top: 8px solid #060e57;

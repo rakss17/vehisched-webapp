@@ -81,7 +81,6 @@ export default function Admin() {
     vehicle_name: "",
     vehicle_type: "",
     capacity: null,
-    status: "",
     is_vip: false,
     vehicle_image: null,
   });

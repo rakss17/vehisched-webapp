@@ -27,15 +27,51 @@ export default function DashboardR() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchVehiclesAPI() as any);
-  }, [dispatch]);
+    const newSocket = new WebSocket(
+      "ws://localhost:8000/ws/vehicle/available/"
+    );
 
-  useEffect(() => {
-    setVehiclesData(vehicles);
-  }, [vehicles]);
+    newSocket.onopen = (event) => {
+      console.log("WebSocket connection opened");
+      newSocket.send(
+        JSON.stringify({
+          action: "fetch_available_vehicles",
+        })
+      );
+    };
+
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Received WebSocket message:", data);
+      if (data.type === "available.vehicles") {
+        setVehiclesData(data.data);
+      } else if (data.type === "status.update") {
+        console.log("Received status update:", data.message);
+        const plateNumber = data.data.plate_number;
+        if (data.message.includes("added")) {
+          setVehiclesData((prevVehicles) => [...prevVehicles, data.data]);
+        } else if (data.message.includes("removed")) {
+          setVehiclesData((prevVehicles) =>
+            prevVehicles.filter(
+              (vehicle) => vehicle.plate_number !== plateNumber
+            )
+          );
+        }
+      }
+    };
+
+    newSocket.onclose = (event) => {
+      console.log("WebSocket connection closed:", event);
+    };
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
 
   const handleSetTripModal = () => {
     setIsSetTripOpen(true);
+    console.log("hehe");
   };
 
   const handleCancelTripModal = () => {
@@ -106,19 +142,15 @@ export default function DashboardR() {
           <div className="date-from">
             <p>From: </p>
             <div>
-              <CalendarInput />
-              <div className="separate-time">
-                <TimeInput />
-              </div>
+              {/* <CalendarInput /> */}
+              <div className="separate-time">{/* <TimeInput /> */}</div>
             </div>
           </div>
           <div className="date-to">
             <p>To: </p>
             <div>
-              <CalendarInput />
-              <div className="separate-time">
-                <TimeInput />
-              </div>
+              {/* <CalendarInput /> */}
+              <div className="separate-time">{/* <TimeInput /> */}</div>
             </div>
           </div>
           <div className="number-of-pass">

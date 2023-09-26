@@ -141,13 +141,7 @@ export default function RequestForm() {
 
   const handleTimeChange = (time: string | null) => {
     if (time) {
-      const selectedTime = new Date(time);
-      const formattedTime = `${String(selectedTime.getHours()).padStart(
-        2,
-        "0"
-      )}:${String(selectedTime.getMinutes()).padStart(2, "0")}`;
-
-      setData({ ...data, travel_time: formattedTime });
+      setData({ ...data, travel_time: time });
     } else {
       console.log("No time selected.");
     }

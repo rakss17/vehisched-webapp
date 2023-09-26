@@ -11,8 +11,9 @@ import CalendarInput from "../../../components/calendarinput/calendarinput";
 import TimeInput from "../../../components/timeinput/timeinput";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
 import { fetchVehiclesAPI } from "../../../components/api/api";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { serverSideUrl } from "../../../components/api/api";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
@@ -22,10 +23,13 @@ const sidebarData: SidebarItem[] = [
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
-  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
-  const dispatch = useDispatch();
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const role = personalInfo?.role;
   const navigate = useNavigate();
 
+  console.log(role);
   useEffect(() => {
     const newSocket = new WebSocket(
       "ws://localhost:8000/ws/vehicle/available/"
@@ -88,9 +92,15 @@ export default function DashboardR() {
     navigate("/RequestForm", { state: { plateNumber, vehicleName } });
   };
 
-  const availableVehicles = vehiclesData.filter(
-    (vehicle) => vehicle.status === "Available"
-  );
+  const availableVehicles = vehiclesData.filter((vehicle) => {
+    if (role === "requester") {
+      return vehicle.status === "Available" && !vehicle.is_vip;
+    } else if (role === "vip") {
+      return vehicle.status === "Available" && vehicle.is_vip;
+    } else {
+      return false;
+    }
+  });
 
   return (
     <>
@@ -129,7 +139,10 @@ export default function DashboardR() {
                       Type: {vehicle.vehicle_type}
                     </p>
                   </div>
-                  <img className="vehicle-image" src={vehicle.vehicle_image} />
+                  <img
+                    className="vehicle-image"
+                    src={serverSideUrl + vehicle.vehicle_image}
+                  />
                 </div>
               </a>
             ))

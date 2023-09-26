@@ -56,7 +56,6 @@ export default function Admin() {
     useState(false);
   const [selectedAccount, setSelectedAccount] = useState<SignupParams>();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
     password: "vehisched123",

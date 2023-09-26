@@ -41,7 +41,7 @@ export async function SigninAPI(
     setLoadingBarProgress(40);
     dispatch(fetchPersonalInfo(res.data));
     setLoadingBarProgress(70);
-    if (res.data.role === "requester") {
+    if (res.data.role === "requester" || res.data.role === "vip") {
       navigate("/DashboardR");
     } else if (res.data.role === "office staff") {
       navigate("/DashboardOS");

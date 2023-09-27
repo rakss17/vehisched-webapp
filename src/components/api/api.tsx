@@ -294,6 +294,7 @@ export function postRequestFromAPI(
     .post("api/v1/request/fetch-post/", requestData, {
       headers: {
         Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
       },
     })
     .then((response) => {

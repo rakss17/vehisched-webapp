@@ -17,7 +17,10 @@ import { SidebarItem } from "../../../interfaces/interfaces";
 import RequestFormDetails from "../../../components/form/requestformdetails";
 import Confirmation from "../../../components/confirmation/confirmation";
 import { RequestFormProps } from "../../../interfaces/interfaces";
-import { fetchRequestOfficeStaffAPI } from "../../../components/api/api";
+import {
+  approveRequestAPI,
+  fetchRequestOfficeStaffAPI,
+} from "../../../components/api/api";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -35,6 +38,7 @@ export default function Requests() {
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const requestId = selectedRequest?.request_id;
 
   const currentDate = new Date();
 
@@ -121,19 +125,7 @@ export default function Requests() {
     setIsRequestFormOpen(false);
   };
   const handleConfirmationApprove = () => {
-    setIsRequestFormOpen(false);
-    setIsConfirmationOpen(true);
-
-    const updatedRequestList = requestList.map((request) =>
-      request.request_id === selectedRequest?.request_id
-        ? { ...request, status: "Approved" }
-        : request
-    );
-    setRequestList(updatedRequestList);
-
-    setTimeout(() => {
-      setIsConfirmationOpen(false);
-    }, 3000);
+    approveRequestAPI(requestId, setIsRequestFormOpen, setIsConfirmationOpen);
   };
 
   const selectedRequestDetails = selectedRequest

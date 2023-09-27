@@ -343,3 +343,36 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
       console.error("Error fetching request list:", error);
     });
 }
+
+export function approveRequestAPI(
+  requestId: any,
+  setIsRequestFormOpen: any,
+  setIsConfirmationOpen: any
+) {
+  api
+    .patch(
+      `/api/v1/request/approve/${requestId}/`,
+      {
+        is_approved: true,
+        status: "Approved",
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsRequestFormOpen(false);
+      setIsConfirmationOpen(true);
+
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

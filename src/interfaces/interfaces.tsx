@@ -78,7 +78,6 @@ export interface AddressInputProps {
 }
 
 export interface RequestFormProps {
-  requester_name?: any;
   office_or_dept?: any;
   purpose?: any;
   passenger_names: string[];
@@ -87,6 +86,19 @@ export interface RequestFormProps {
   travel_date?: any;
   travel_time?: any;
   number_of_passenger?: any;
+  status?: any;
+  request_id?: any;
+  requester_last_name?: any;
+  requester_first_name?: any;
+  requester_middle_name?: any;
+}
+
+export interface RequestFormDetailsProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  selectedRequest: RequestFormProps | null;
+  showButtons: boolean;
+  onApprove: () => void;
 }
 
 export interface TimeInputProps {

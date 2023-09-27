@@ -325,3 +325,21 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       console.error("Error fetching request list:", error);
     });
 }
+
+export function fetchRequestOfficeStaffAPI(setRequestList: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/request/fetch/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setRequestList(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching request list:", error);
+    });
+}

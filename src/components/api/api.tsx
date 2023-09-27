@@ -308,3 +308,20 @@ export function postRequestFromAPI(
       console.log(error);
     });
 }
+
+export function fetchRequestAPI(setRequestFilteredData: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/request/fetch-post/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setRequestFilteredData(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching request list:", error);
+    });
+}

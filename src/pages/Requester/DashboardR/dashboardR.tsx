@@ -29,7 +29,6 @@ export default function DashboardR() {
   const role = personalInfo?.role;
   const navigate = useNavigate();
 
-  console.log(role);
   useEffect(() => {
     const newSocket = new WebSocket(
       "ws://localhost:8000/ws/vehicle/available/"
@@ -65,7 +64,7 @@ export default function DashboardR() {
     };
 
     newSocket.onclose = (event) => {
-      console.log("WebSocket connection closed:", event);
+      console.log("WebSocket connection closed");
     };
 
     return () => {

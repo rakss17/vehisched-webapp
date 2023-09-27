@@ -7,163 +7,66 @@ import Label from "../../../components/label/label";
 import "./request.css";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 import Confirmation from "../../../components/confirmation/confirmation";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
+import { SidebarItem } from "../../../interfaces/interfaces";
+import { fetchRequestAPI } from "../../../components/api/api";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
   { icon: faClipboardList, text: "Request", path: "/Request" },
 ];
-const fetchedPendingData = [
-  {
-    request_number: "02",
-    travel_date: "August 17, 2023",
-    vehicle: "Ford Ranger",
-    status: "Pending",
-  },
-  {
-    request_number: "03",
-    travel_date: "August 18, 2023",
-    vehicle: "Nissan Navara",
-    status: "Pending",
-  },
-  {
-    request_number: "04",
-    travel_date: "August 19, 2023",
-    vehicle: "Chevrolet Colorado",
-    status: "Pending",
-  },
-  {
-    request_number: "05",
-    travel_date: "August 20, 2023",
-    vehicle: "Honda Ridgeline",
-    status: "Pending",
-  },
-  {
-    request_number: "06",
-    travel_date: "August 21, 2023",
-    vehicle: "Mitsubishi Triton",
-    status: "Pending",
-  },
-  {
-    request_number: "07",
-    travel_date: "August 22, 2023",
-    vehicle: "Isuzu D-Max",
-    status: "Pending",
-  },
-  {
-    request_number: "08",
-    travel_date: "August 23, 2023",
-    vehicle: "Volkswagen Amarok",
-    status: "Pending",
-  },
-  {
-    request_number: "09",
-    travel_date: "August 24, 2023",
-    vehicle: "Mazda BT-50",
-    status: "Pending",
-  },
-  {
-    request_number: "10",
-    travel_date: "August 25, 2023",
-    vehicle: "GMC Canyon",
-    status: "Pending",
-  },
-  {
-    request_number: "11",
-    travel_date: "August 26, 2023",
-    vehicle: "RAM 1500",
-    status: "Pending",
-  },
-];
-
-const fetchedApprovedData = [
-  {
-    request_number: "10",
-    travel_date: "April 16, 2024",
-    vehicle: "Toyota hilux",
-    status: "Approved",
-  },
-  {
-    request_number: "02",
-    travel_date: "August 17, 2023",
-    vehicle: "Ford Ranger",
-    status: "Approved",
-  },
-  {
-    request_number: "03",
-    travel_date: "August 18, 2023",
-    vehicle: "Nissan Navara",
-    status: "Approved",
-  },
-  {
-    request_number: "04",
-    travel_date: "August 19, 2023",
-    vehicle: "Chevrolet Colorado",
-    status: "Approved",
-  },
-];
-const fetchedCanceledData = [
-  {
-    request_number: "10",
-    travel_date: "April 16, 2024",
-    vehicle: "Toyota hilux",
-    status: "Canceled",
-  },
-];
-const fetchedDeclinedData = [
-  {
-    request_number: "10",
-    travel_date: "April 16, 2024",
-    vehicle: "Toyota hilux",
-    status: "Declined",
-  },
-  {
-    request_number: "10",
-    travel_date: "August 25, 2023",
-    vehicle: "GMC Canyon",
-    status: "Declined",
-  },
-  {
-    request_number: "11",
-    travel_date: "August 26, 2023",
-    vehicle: "RAM 1500",
-    status: "Declined",
-  },
-];
 
 export default function Request() {
   const [requestData, setRequestData] = useState<any[]>([]);
+  const [requestFilteredData, setRequestFilteredData] = useState<any[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("Pending");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
+  useEffect(() => {
+    fetchRequestAPI(setRequestFilteredData);
+  }, []);
+
   const handleButtonClick = (status: string) => {
+    let filteredData = [];
+
     switch (status) {
       case "Pending":
-        setRequestData(fetchedPendingData);
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Pending"
+        );
         break;
       case "Approved":
-        setRequestData(fetchedApprovedData);
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Approved"
+        );
         break;
       case "Canceled":
-        setRequestData(fetchedCanceledData);
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Canceled"
+        );
         break;
       case "Declined":
-        setRequestData(fetchedDeclinedData);
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Declined"
+        );
         break;
       default:
-        setRequestData([]);
+        // Set to empty for unknown status
         break;
     }
+    setRequestData(filteredData);
     setSelectedStatus(status);
   };
   useEffect(() => {
     handleButtonClick("Pending");
   }, []);
+
+  let filteredStatus: any[] = [];
+  useEffect(() => {
+    filteredStatus = requestFilteredData.filter(
+      (request) => request.status === "Pending"
+    );
+    setRequestData(filteredStatus);
+  }, [requestFilteredData]);
 
   const onHandleEllipsis = (requestNumber: string) => {
     setIsConfirmationOpen(true);
@@ -238,7 +141,7 @@ export default function Request() {
                 <tbody>
                   {filteredData.map((request, index) => (
                     <tr key={index}>
-                      <td>{request.request_number}</td>
+                      <td>{request.request_id}</td>
                       <td>{request.travel_date}</td>
                       <td>{request.vehicle}</td>
                       <td className="ellipsis-cell">

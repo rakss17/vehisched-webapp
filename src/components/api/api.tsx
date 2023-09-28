@@ -90,6 +90,22 @@ export function fetchUsersAPI() {
   };
 }
 
+export async function fetchDriversAPI(setDrivers: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/drivers/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    setDrivers(response.data);
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+}
+
 export async function updateUserAPI(
   userUpdate: any,
   userId: any,

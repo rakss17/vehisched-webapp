@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TimePicker from "react-time-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { format, setHours, getHours, addHours, subHours } from "date-fns";
+import { format, setHours, setMinutes, getHours, getMinutes } from "date-fns";
 import "./timeinput.css";
 import { TimeInputProps } from "../../interfaces/interfaces";
 
@@ -12,55 +12,45 @@ const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
   const handleTimeChange = (time: string | null) => {
     if (time) {
       const selectedTime = new Date(time);
-
-      const time12HourFormat = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }).format(selectedTime);
-
-      console.log("Time received in RequestForm:", time12HourFormat);
+      console.log("Time received in RequestForm:", selectedTime);
     } else {
       console.log("No time selected.");
     }
   };
 
-  const handleTimeIncrement = () => {
+  const handleHourIncrement = () => {
     if (selectedTime) {
-      setSelectedTime(addHours(selectedTime, 1));
+      const incrementedTime = new Date(selectedTime);
+      incrementedTime.setHours(incrementedTime.getHours() + 1);
+      setSelectedTime(incrementedTime);
+      onChange(format(incrementedTime, "HH:mm"));
     }
-    onChange(selectedTime);
   };
 
-  const handleTimeDecrement = () => {
+  const handleHourDecrement = () => {
     if (selectedTime) {
-      setSelectedTime(subHours(selectedTime, 1));
+      const decrementedTime = new Date(selectedTime);
+      decrementedTime.setHours(decrementedTime.getHours() - 1);
+      setSelectedTime(decrementedTime);
+      onChange(format(decrementedTime, "HH:mm"));
     }
-    onChange(selectedTime);
   };
 
-  const handleAmPmIncrement = () => {
+  const handleMinuteIncrement = () => {
     if (selectedTime) {
-      const currentHour = getHours(selectedTime);
-      setSelectedTime(
-        setHours(
-          selectedTime,
-          currentHour >= 12 ? currentHour - 12 : currentHour + 12
-        )
-      );
+      const incrementedTime = new Date(selectedTime);
+      incrementedTime.setMinutes(incrementedTime.getMinutes() + 1);
+      setSelectedTime(incrementedTime);
+      onChange(format(incrementedTime, "HH:mm"));
     }
-    onChange(selectedTime);
   };
 
-  const handleAmPmDecrement = () => {
+  const handleMinuteDecrement = () => {
     if (selectedTime) {
-      const currentHour = getHours(selectedTime);
-      setSelectedTime(
-        setHours(
-          selectedTime,
-          currentHour >= 12 ? currentHour - 12 : currentHour + 12
-        )
-      );
+      const decrementedTime = new Date(selectedTime);
+      decrementedTime.setMinutes(decrementedTime.getMinutes() - 1);
+      setSelectedTime(decrementedTime);
+      onChange(format(decrementedTime, "HH:mm"));
     }
   };
 
@@ -83,21 +73,21 @@ const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
         />
       </div>
       <div className="arrow-buttons">
-        <button onClick={handleTimeIncrement}>
+        <button onClick={handleHourIncrement}>
           <FontAwesomeIcon icon={faAngleUp} />
         </button>
 
-        <button onClick={handleTimeDecrement}>
+        <button onClick={handleHourDecrement}>
           <FontAwesomeIcon icon={faAngleDown} />
         </button>
       </div>
       <div className="am-pm-container">{renderAMPM()}</div>
       <div className="arrow-buttons-ampm">
-        <button onClick={handleAmPmIncrement}>
+        <button onClick={handleMinuteIncrement}>
           <FontAwesomeIcon icon={faAngleUp} />
         </button>
 
-        <button onClick={handleAmPmDecrement}>
+        <button onClick={handleMinuteDecrement}>
           <FontAwesomeIcon icon={faAngleDown} />
         </button>
       </div>

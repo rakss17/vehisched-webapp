@@ -18,12 +18,10 @@ import MitsubishiMontero from "../../../assets/mitsubishi-montero.jpg";
 import Fortuner from "../../../assets/fortuner.jpg";
 import ToyotaHiace from "../../../assets/toyota-hiace.png";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
+import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
+import { fetchVehiclesAPI } from "../../../components/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -33,83 +31,26 @@ const sidebarData: SidebarItem[] = [
   { icon: faUser, text: "Drivers", path: "/Drivers" },
 ];
 
-interface Vehicle {
-  id: number;
-  vehicle_name: string;
-  capacity: number;
-  vehicle_type: string;
-  vehicle_image: string;
-  status: string;
-}
-const fetchedVehicles: Vehicle[] = [
-  {
-    id: 1,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "On Trip",
-  },
-  {
-    id: 2,
-    vehicle_name: "KCU 2522 Montero Sport",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: MitsubishiMontero,
-    status: "Available",
-  },
-  {
-    id: 3,
-    vehicle_name: "KAB 2855 Fortuner",
-    capacity: 7,
-    vehicle_type: "SUV",
-    vehicle_image: Fortuner,
-    status: "On Trip",
-  },
-  {
-    id: 4,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Available",
-  },
-  {
-    id: 5,
-    vehicle_name: "KDA 1368 Toyota Hilux",
-    capacity: 5,
-    vehicle_type: "Pickup Truck",
-    vehicle_image: ToyotaHilux,
-    status: "Unavailable",
-  },
-  {
-    id: 6,
-    vehicle_name: "KYZ 2069 Toyota Hiace",
-    capacity: 15,
-    vehicle_type: "Van",
-    vehicle_image: ToyotaHiace,
-    status: "Unavailable",
-  },
-];
-
 export default function Vehicles() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const fetchedVehicleList = () => {
-    setVehicles(fetchedVehicles);
-  };
+  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchedVehicleList();
-  }, []);
+    dispatch(fetchVehiclesAPI() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    setVehiclesData(vehicles);
+  }, [vehicles]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
 
-  const filteredVehicleList = vehicles.filter((vehicle) => {
+  const filteredVehicleList = vehiclesData.filter((vehicle) => {
     const isCategoryMatch =
       selectedCategory === null || vehicle.status === selectedCategory;
 
@@ -129,6 +70,19 @@ export default function Vehicles() {
       alert("clicked unavailable");
     }
   };
+
+  const getStatusColor = (status: any) => {
+    switch (status) {
+      case "Available":
+        return "green";
+      case "On trip":
+        return "#060e57";
+      case "Unavailable":
+        return "red";
+      default:
+        return "black";
+    }
+  };
   return (
     <>
       <Header />
@@ -140,7 +94,7 @@ export default function Vehicles() {
         <div className="vehicles-row">
           <SearchBar onSearchChange={handleSearchChange} />
           <Dropdown
-            status={["All", "Available", "On Trip", "Unavailable"]}
+            status={["All", "Available", "On Trip", "Reserved", "Unavailable"]}
             onCategoryChange={handleCategoryChange}
           />
         </div>
@@ -159,7 +113,14 @@ export default function Vehicles() {
                     <p className="vehicle-detail">
                       Type: {vehicle.vehicle_type}
                     </p>
-                    <p className="vehicle-status">{vehicle.status}</p>
+                    <p
+                      className="vehicle-status"
+                      style={{
+                        color: getStatusColor(vehicle.status),
+                      }}
+                    >
+                      {vehicle.status}
+                    </p>
                   </div>
                   <img className="vehicle-image" src={vehicle.vehicle_image} />
                   <div className="ellipsis-container">

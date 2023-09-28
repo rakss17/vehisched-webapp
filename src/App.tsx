@@ -109,7 +109,7 @@ function App() {
                 element={
                   <ProtectedRoute
                     path="/DashboardR"
-                    allowedRoles={["requester"]}
+                    allowedRoles={["requester", "vip"]}
                   >
                     <DashboardR />
                   </ProtectedRoute>
@@ -120,7 +120,7 @@ function App() {
                 element={
                   <ProtectedRoute
                     path="/RequestForm"
-                    allowedRoles={["requester"]}
+                    allowedRoles={["requester", "vip"]}
                   >
                     <RequestForm />
                   </ProtectedRoute>
@@ -129,7 +129,10 @@ function App() {
               <Route
                 path="/Request"
                 element={
-                  <ProtectedRoute path="/Request" allowedRoles={["requester"]}>
+                  <ProtectedRoute
+                    path="/Request"
+                    allowedRoles={["requester", "vip"]}
+                  >
                     <Request />
                   </ProtectedRoute>
                 }

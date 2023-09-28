@@ -41,7 +41,7 @@ export async function SigninAPI(
     setLoadingBarProgress(40);
     dispatch(fetchPersonalInfo(res.data));
     setLoadingBarProgress(70);
-    if (res.data.role === "requester") {
+    if (res.data.role === "requester" || res.data.role === "vip") {
       navigate("/DashboardR");
     } else if (res.data.role === "office staff") {
       navigate("/DashboardOS");
@@ -294,6 +294,7 @@ export function postRequestFromAPI(
     .post("api/v1/request/fetch-post/", requestData, {
       headers: {
         Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
       },
     })
     .then((response) => {
@@ -301,6 +302,74 @@ export function postRequestFromAPI(
       setTimeout(() => {
         setIsConfirmationOpen(false);
         navigate("/DashboardR");
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export function fetchRequestAPI(setRequestFilteredData: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/request/fetch-post/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setRequestFilteredData(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching request list:", error);
+    });
+}
+
+export function fetchRequestOfficeStaffAPI(setRequestList: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/request/fetch/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setRequestList(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching request list:", error);
+    });
+}
+
+export function approveRequestAPI(
+  requestId: any,
+  setIsRequestFormOpen: any,
+  setIsConfirmationOpen: any
+) {
+  api
+    .patch(
+      `/api/v1/request/approve/${requestId}/`,
+      {
+        is_approved: true,
+        status: "Approved",
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsRequestFormOpen(false);
+      setIsConfirmationOpen(true);
+
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        window.location.reload();
       }, 3000);
     })
     .catch((error) => {

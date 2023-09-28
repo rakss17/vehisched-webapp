@@ -3,15 +3,7 @@ import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
-import { Request } from "../../pages/OfficeStaff/Requests/requests";
-
-interface RequestFormDetailsProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  selectedRequest: Request | null;
-  showButtons: boolean;
-  onApprove: () => void;
-}
+import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -59,11 +51,17 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   >
                     Requester's Name:
                   </th>
-                  <td style={{ width: "20vw" }}>Bohari S. Ambulo</td>
+                  <td style={{ width: "20vw" }}>
+                    {selectedRequest.requester_last_name},{" "}
+                    {selectedRequest.requester_first_name}{" "}
+                    {selectedRequest.requester_middle_name}
+                  </td>
                 </tr>
                 <tr>
                   <th style={{ paddingRight: "10px" }}>Office/Dept: </th>
-                  <td style={{ width: "5vw" }}>CEATSDA</td>
+                  <td style={{ width: "5vw" }}>
+                    {selectedRequest.office_or_dept}
+                  </td>
                 </tr>
               </tbody>
               <tbody
@@ -83,11 +81,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   >
                     Passenger's Name:
                   </th>
-                  <td>
-                    Bohari S. Ambulo, Michael Ray V. romeo, Mark Dave M Lorejo,
-                    Tristan C. Araquil, Michael Ray V. romeo, Mark Dave M
-                    Lorejo, Tristan C. Araquil
-                  </td>
+                  <td>{selectedRequest.passenger_names}</td>
                 </tr>
               </tbody>
               <tbody
@@ -108,7 +102,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   >
                     Vehicle:
                   </th>
-                  <td style={{ width: "20vw" }}>Toyota Hilux</td>
+                  <td style={{ width: "20vw" }}>{selectedRequest.vehicle}</td>
                 </tr>
 
                 <tr>
@@ -126,7 +120,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       paddingRight: "65px",
                     }}
                   >
-                    99
+                    {selectedRequest.number_of_passenger}
                   </td>
                 </tr>
               </tbody>
@@ -156,9 +150,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       verticalAlign: "top",
                     }}
                   >
-                    Cogon Public Market dawdawdawdaw dawdawdawdawd adaw dawd
-                    awdaw ldjaw jdpawj dopawj dpaw dawjpdojawdjawdpoawjdpawjdawj
-                    d2312312312
+                    {selectedRequest.destination}
                   </td>
                 </tr>
                 <tr>
@@ -195,11 +187,15 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   >
                     Date of Travel:
                   </th>
-                  <td style={{ width: "20vw" }}>September 1, 2023</td>
+                  <td style={{ width: "20vw" }}>
+                    {selectedRequest.travel_date}
+                  </td>
                 </tr>
                 <tr>
                   <th style={{ paddingRight: "10px" }}>Time: </th>
-                  <td style={{ width: "5vw" }}>7:00 am</td>
+                  <td style={{ width: "5vw" }}>
+                    {selectedRequest.travel_time}
+                  </td>
                 </tr>
               </tbody>
               <tbody
@@ -219,7 +215,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   >
                     Purpose:
                   </th>
-                  <td>Pahulay kay gikapoy nas capstone</td>
+                  <td>{selectedRequest.purpose}</td>
                 </tr>
               </tbody>
               {showButtons && (

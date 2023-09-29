@@ -16,8 +16,6 @@ const api = axios.create({
   baseURL: "http://localhost:8000/",
 });
 
-const token = localStorage.getItem("token");
-
 export async function SigninAPI(
   userData: SigninParams,
   navigate: any,
@@ -238,6 +236,7 @@ export function addVehiclesAPI(
   setIsConfirmationOpenVehicle: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
+  const token = localStorage.getItem("token");
   const formData = new FormData();
   Object.keys(vehicleData).forEach((key) => {
     formData.append(key, vehicleData[key]);
@@ -344,11 +343,11 @@ export function postRequestFromAPI(
   navigate: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
+  const token = localStorage.getItem("token");
   const requestData = {
     ...data,
     passenger_names: JSON.stringify(data.passenger_names),
   };
-  console.log(requestData);
   api
     .post("api/v1/request/fetch-post/", requestData, {
       headers: {
@@ -410,6 +409,7 @@ export function approveRequestAPI(
   setIsRequestFormOpen: any,
   setIsConfirmationOpen: any
 ) {
+  const token = localStorage.getItem("token");
   api
     .patch(
       `/api/v1/request/approve/${requestId}/`,

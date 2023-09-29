@@ -25,8 +25,10 @@ import DocumentCode from "../../assets/documentcode.jpg";
 import { RequestFormProps } from "../../interfaces/interfaces";
 import { postRequestFromAPI } from "../api/api";
 import { format } from "date-fns";
+import LoadingBar from "react-top-loading-bar";
 
 export default function RequestForm() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
@@ -132,7 +134,13 @@ export default function RequestForm() {
   };
 
   const handleSubmit = () => {
-    postRequestFromAPI(data, setIsConfirmationOpen, navigate);
+    setLoadingBarProgress(20);
+    postRequestFromAPI(
+      data,
+      setIsConfirmationOpen,
+      navigate,
+      setLoadingBarProgress
+    );
   };
   const handleDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
@@ -148,6 +156,11 @@ export default function RequestForm() {
   };
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Container>
         <div className="request-form-body">

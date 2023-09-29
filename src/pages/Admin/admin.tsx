@@ -24,9 +24,10 @@ import {
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { serverSideUrl } from "../../components/api/api";
+import LoadingBar from "react-top-loading-bar";
 
 export default function Admin() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [displayAccounts, setDisplayAccounts] = useState(true);
   const [displayVehicles, setDisplayVehicles] = useState(false);
   const [accountsData, setAccountsData] = useState<any[]>([]);
@@ -265,11 +266,13 @@ export default function Admin() {
     setIsAddOpen(true);
   };
   const handleAddUserButton = () => {
+    setLoadingBarProgress(20);
     setIsAddOpen(false);
-    SignupAPI(userData, setIsConfirmationOpen);
+    SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
   };
   const handleEditUserButton = () => {
     setIsEditOpen(false);
+    setLoadingBarProgress(20);
     const updatedUserData = {
       username: userUpdate.username || (selectedAccount?.username ?? ""),
       email: userUpdate.email || (selectedAccount?.email ?? ""),
@@ -291,18 +294,25 @@ export default function Admin() {
         return updateUserAPI(
           updatedUserData,
           userId,
-          setIsConfirmationOpenEdit
+          setIsConfirmationOpenEdit,
+          setLoadingBarProgress
         );
       })
       .then(() => {})
       .catch((error) => {});
   };
   const handleAddVehicleButton = () => {
+    setLoadingBarProgress(20);
     setIsAddVehicleOpen(false);
-    addVehiclesAPI(vehicleData, setIsConfirmationOpenVehicle);
+    addVehiclesAPI(
+      vehicleData,
+      setIsConfirmationOpenVehicle,
+      setLoadingBarProgress
+    );
   };
 
   const handleEditVehicleButton = () => {
+    setLoadingBarProgress(20);
     setIsEditVehicleOpen(false);
     const updatedVehicleData = {
       plate_number:
@@ -319,19 +329,28 @@ export default function Admin() {
     updateVehicleAPI(
       updatedVehicleData,
       vehicleId,
-      setIsConfirmationOpenVehicleEdit
+      setIsConfirmationOpenVehicleEdit,
+      setLoadingBarProgress
     );
   };
   const handleDeleteUserButton = () => {
+    setLoadingBarProgress(20);
     setIsDeleteOpen(false);
-    deleteUserAPI(userId, setIsConfirmationOpenDelete, setFetchedUsersData);
+    deleteUserAPI(
+      userId,
+      setIsConfirmationOpenDelete,
+      setFetchedUsersData,
+      setLoadingBarProgress
+    );
   };
   const handleDeleteVehicleButton = () => {
+    setLoadingBarProgress(20);
     setIsDeleteVehicleOpen(false);
     deleteVehicleAPI(
       vehicleId,
       setIsConfirmationOpenVehicleDelete,
-      setSelectedNavigation
+      setSelectedNavigation,
+      setLoadingBarProgress
     );
   };
   const handleCancel = () => {
@@ -363,6 +382,11 @@ export default function Admin() {
   };
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Container>
         <div className="label-margin-admin">

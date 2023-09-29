@@ -65,6 +65,8 @@ export interface SignupParams {
   email: string;
   mobile_number: any;
   role: any;
+  status?: any;
+  user?: any;
 }
 
 export type SidebarItem = {
@@ -91,6 +93,7 @@ export interface RequestFormProps {
   requester_last_name?: any;
   requester_first_name?: any;
   requester_middle_name?: any;
+  requester_name?: any;
 }
 
 export interface RequestFormDetailsProps {

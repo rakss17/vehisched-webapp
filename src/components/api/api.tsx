@@ -16,8 +16,6 @@ const api = axios.create({
   baseURL: "http://localhost:8000/",
 });
 
-const token = localStorage.getItem("token");
-
 export async function SigninAPI(
   userData: SigninParams,
   navigate: any,
@@ -57,17 +55,29 @@ export async function SigninAPI(
   }
 }
 
-export function SignupAPI(userData: SignupParams, setIsConfirmationOpen: any) {
+export function SignupAPI(
+  userData: SignupParams,
+  setIsConfirmationOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
   api
     .post("api/v1/accounts/users/", userData)
     .then((response) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
       setIsConfirmationOpen(true);
+      setLoadingBarProgress(70);
       setTimeout(() => {
+        setLoadingBarProgress(90);
         setIsConfirmationOpen(false);
+        setLoadingBarProgress(100);
         window.location.reload();
       }, 3000);
     })
     .catch((error) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
+      setLoadingBarProgress(100);
       console.log(error.message);
     });
 }
@@ -90,10 +100,27 @@ export function fetchUsersAPI() {
   };
 }
 
+export async function fetchDriversAPI(setDrivers: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/drivers/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    setDrivers(response.data);
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+}
+
 export async function updateUserAPI(
   userUpdate: any,
   userId: any,
-  setIsConfirmationOpenEdit: any
+  setIsConfirmationOpenEdit: any,
+  setLoadingBarProgress: (progress: number) => void
 ) {
   try {
     const token = localStorage.getItem("token");
@@ -107,13 +134,17 @@ export async function updateUserAPI(
         },
       }
     );
-
+    setLoadingBarProgress(50);
     setIsConfirmationOpenEdit(true);
     setTimeout(() => {
+      setLoadingBarProgress(100);
       setIsConfirmationOpenEdit(false);
       window.location.reload();
     }, 3000);
   } catch (error) {
+    setLoadingBarProgress(20);
+    setLoadingBarProgress(50);
+    setLoadingBarProgress(100);
     console.error("Error updating user:", error);
     throw error;
   }
@@ -142,9 +173,11 @@ export async function fetchRoleByName(roleName: any) {
 export function deleteUserAPI(
   userId: any,
   setIsConfirmationOpenDelete: any,
-  setFetchedUsersData: any
+  setFetchedUsersData: any,
+  setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
+  setLoadingBarProgress(20);
   api
     .delete(`api/v1/accounts/delete/${userId}/`, {
       headers: {
@@ -154,17 +187,26 @@ export function deleteUserAPI(
     })
     .then((response) => {
       if (response.status === 204) {
+        setLoadingBarProgress(50);
         setIsConfirmationOpenDelete(true);
         setFetchedUsersData((prevUsersData: any) =>
           prevUsersData.filter((user: any) => user.id !== userId)
         );
         setTimeout(() => {
+          setLoadingBarProgress(70);
+          setLoadingBarProgress(100);
           setIsConfirmationOpenDelete(false);
           window.location.reload();
         }, 3000);
       } else if (response.status === 404) {
+        setLoadingBarProgress(20);
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
         console.error("User not found");
       } else {
+        setLoadingBarProgress(20);
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
         console.error("Error deleting user");
       }
     })
@@ -191,8 +233,10 @@ export function fetchVehiclesAPI() {
 
 export function addVehiclesAPI(
   vehicleData: Vehicle,
-  setIsConfirmationOpenVehicle: any
+  setIsConfirmationOpenVehicle: any,
+  setLoadingBarProgress: (progress: number) => void
 ) {
+  const token = localStorage.getItem("token");
   const formData = new FormData();
   Object.keys(vehicleData).forEach((key) => {
     formData.append(key, vehicleData[key]);
@@ -205,13 +249,18 @@ export function addVehiclesAPI(
       },
     })
     .then((response) => {
+      setLoadingBarProgress(50);
       setIsConfirmationOpenVehicle(true);
       setTimeout(() => {
+        setLoadingBarProgress(100);
         setIsConfirmationOpenVehicle(false);
         window.location.reload();
       }, 3000);
     })
     .catch((error) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
+      setLoadingBarProgress(100);
       console.log(error);
     });
 }
@@ -219,7 +268,8 @@ export function addVehiclesAPI(
 export async function updateVehicleAPI(
   updatedVehicleData: any,
   vehicleId: any,
-  setIsConfirmationOpenVehicleEdit: any
+  setIsConfirmationOpenVehicleEdit: any,
+  setLoadingBarProgress: (progress: number) => void
 ) {
   const formData = new FormData();
   Object.keys(updatedVehicleData).forEach((key) => {
@@ -239,13 +289,16 @@ export async function updateVehicleAPI(
         },
       }
     );
-
+    setLoadingBarProgress(50);
     setIsConfirmationOpenVehicleEdit(true);
     setTimeout(() => {
+      setLoadingBarProgress(100);
       setIsConfirmationOpenVehicleEdit(false);
       window.location.reload();
     }, 3000);
   } catch (error) {
+    setLoadingBarProgress(50);
+    setLoadingBarProgress(100);
     console.log("Error updating user:", error);
     throw error;
   }
@@ -254,7 +307,8 @@ export async function updateVehicleAPI(
 export async function deleteVehicleAPI(
   vehicleId: any,
   setIsConfirmationOpenVehicleDelete: any,
-  setSelectedNavigation: any
+  setSelectedNavigation: any,
+  setLoadingBarProgress: (progress: number) => void
 ) {
   try {
     const token = localStorage.getItem("token");
@@ -267,14 +321,17 @@ export async function deleteVehicleAPI(
         },
       }
     );
-
+    setLoadingBarProgress(50);
     setIsConfirmationOpenVehicleDelete(true);
     setTimeout(() => {
+      setLoadingBarProgress(100);
       setIsConfirmationOpenVehicleDelete(false);
       window.location.reload();
       setSelectedNavigation("Vehicles");
     }, 3000);
   } catch (error) {
+    setLoadingBarProgress(50);
+    setLoadingBarProgress(100);
     console.log("Error updating user:", error);
     throw error;
   }
@@ -283,13 +340,14 @@ export async function deleteVehicleAPI(
 export function postRequestFromAPI(
   data: RequestFormProps,
   setIsConfirmationOpen: any,
-  navigate: any
+  navigate: any,
+  setLoadingBarProgress: (progress: number) => void
 ) {
+  const token = localStorage.getItem("token");
   const requestData = {
     ...data,
     passenger_names: JSON.stringify(data.passenger_names),
   };
-  console.log(requestData);
   api
     .post("api/v1/request/fetch-post/", requestData, {
       headers: {
@@ -298,7 +356,9 @@ export function postRequestFromAPI(
       },
     })
     .then((response) => {
+      setLoadingBarProgress(50);
       setIsConfirmationOpen(true);
+      setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpen(false);
         navigate("/DashboardR");
@@ -349,6 +409,7 @@ export function approveRequestAPI(
   setIsRequestFormOpen: any,
   setIsConfirmationOpen: any
 ) {
+  const token = localStorage.getItem("token");
   api
     .patch(
       `/api/v1/request/approve/${requestId}/`,

@@ -13,12 +13,8 @@ import "./drivers.css";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
+import { SidebarItem, SignupParams } from "../../../interfaces/interfaces";
+import { fetchDriversAPI } from "../../../components/api/api";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -28,83 +24,13 @@ const sidebarData: SidebarItem[] = [
   { icon: faUser, text: "Drivers", path: "/Drivers" },
 ];
 
-interface Driver {
-  id: number;
-  driver_name: string;
-  status: string;
-}
-const fetchedDrivers: Driver[] = [
-  {
-    id: 1,
-    driver_name: "Ambulo, Bohari S.",
-    status: "On Trip",
-  },
-  {
-    id: 2,
-    driver_name: "Araquil, Tristan C.",
-    status: "Available",
-  },
-  {
-    id: 3,
-    driver_name: "Lorejo, Mark Dave M.",
-    status: "Unavailable",
-  },
-  {
-    id: 4,
-    driver_name: "Romeo, Michael Ray V.",
-    status: "On Trip",
-  },
-  {
-    id: 5,
-    driver_name: "Ibahay, Mike Emmanuel ",
-    status: "Unavailable",
-  },
-  {
-    id: 6,
-    driver_name: "Gabut, Anton Joseph C. ",
-    status: "Available",
-  },
-  {
-    id: 7,
-    driver_name: "Abragan, Juren Roy R. ",
-    status: "On Trip",
-  },
-  {
-    id: 8,
-    driver_name: "Ednilan, Jonathan B. ",
-    status: "Unavailable",
-  },
-  {
-    id: 9,
-    driver_name: "Genson, Edmar J. ",
-    status: "On Trip",
-  },
-  {
-    id: 10,
-    driver_name: "Iligan, CJ Andrey B.",
-    status: "Available",
-  },
-  {
-    id: 11,
-    driver_name: "Engracia, Jayde Mike",
-    status: "Available",
-  },
-  {
-    id: 12,
-    driver_name: "Magdugo, Bon C.",
-    status: "Unavailable",
-  },
-];
 export default function Drivers() {
-  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [drivers, setDrivers] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const fetchedDriverList = () => {
-    setDrivers(fetchedDrivers);
-  };
 
   useEffect(() => {
-    fetchedDriverList();
+    fetchDriversAPI(setDrivers);
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -117,7 +43,11 @@ export default function Drivers() {
 
     const isSearchMatch =
       searchTerm === "" ||
-      driver.driver_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.user.middle_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       driver.status.toLowerCase().includes(searchTerm.toLowerCase());
 
     return isCategoryMatch && isSearchMatch;
@@ -149,7 +79,10 @@ export default function Drivers() {
             filteredDriverList.map((driver) => (
               <a className="driver-card">
                 <div className="driver-card-column">
-                  <p className="driver-name">{driver.driver_name}</p>
+                  <p className="driver-name">
+                    {driver.user.last_name}, {driver.user.first_name}{" "}
+                    {driver.user.middle_name}
+                  </p>
                   <p className="driver-status">{driver.status}</p>
                 </div>
               </a>

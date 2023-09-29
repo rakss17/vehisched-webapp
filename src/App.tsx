@@ -15,6 +15,7 @@ import DashboardR from "./pages/Requester/DashboardR/dashboardR";
 import RequestForm from "./components/form/requestform";
 import Request from "./pages/Requester/Request/request";
 import Admin from "./pages/Admin/admin";
+import AccountActivated from "./pages/Activated/accountactivated";
 import Unauthorized from "./pages/Error/unauthorized";
 import NotFound from "./pages/Error/notfound";
 
@@ -47,6 +48,7 @@ function App() {
           <HashRouter>
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/AccountActivated" element={<AccountActivated />} />
 
               <Route
                 path="/DashboardOS"

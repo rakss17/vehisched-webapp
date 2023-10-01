@@ -468,6 +468,7 @@ export default function Admin() {
                     <th style={{ fontWeight: "normal" }}>First Name</th>
                     <th style={{ fontWeight: "normal" }}>Middle Name</th>
                     <th style={{ fontWeight: "normal" }}>Contact No.</th>
+                    <th style={{ fontWeight: "normal" }}>Status</th>
                   </tr>
                 </thead>
                 {filteredAccountsData.length === 0 ? (
@@ -482,6 +483,20 @@ export default function Admin() {
                         <td>{account.first_name}</td>
                         <td>{account.middle_name}</td>
                         <td>{account.mobile_number}</td>
+                        <td>
+                          <div
+                            style={{
+                              width: "10px",
+                              height: "10px",
+                              borderRadius: "50%",
+                              backgroundColor: account.is_active
+                                ? "green"
+                                : "red",
+                              marginLeft: "50px",
+                            }}
+                          ></div>
+                          {account.is_active ? true : false}
+                        </td>
                         <div>
                           <Ellipsis
                             onCategoryChange={(category) =>

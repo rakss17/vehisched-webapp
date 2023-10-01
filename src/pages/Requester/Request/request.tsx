@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import LoadingBar from "react-top-loading-bar";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
@@ -7,8 +8,9 @@ import Label from "../../../components/label/label";
 import "./request.css";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 import Confirmation from "../../../components/confirmation/confirmation";
+import PromptDialog from "../../../components/promptdialog/prompdialog";
 import { SidebarItem } from "../../../interfaces/interfaces";
-import { fetchRequestAPI } from "../../../components/api/api";
+import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
@@ -16,10 +18,14 @@ const sidebarData: SidebarItem[] = [
 ];
 
 export default function Request() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [requestData, setRequestData] = useState<any[]>([]);
   const [requestFilteredData, setRequestFilteredData] = useState<any[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("Pending");
+  const [selectedRequest, setSelectedRequest] = useState<any>();
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const requestId = selectedRequest?.request_id ?? "";
 
   useEffect(() => {
     fetchRequestAPI(setRequestFilteredData);
@@ -68,15 +74,22 @@ export default function Request() {
     setRequestData(filteredStatus);
   }, [requestFilteredData]);
 
-  const onHandleEllipsis = (requestNumber: string) => {
-    setIsConfirmationOpen(true);
-    const updatedRequestData = requestData.map((request) =>
-      request.request_number === requestNumber
-        ? { ...request, status: "Canceled" }
-        : request
-    );
+  const onHandleEllipsis = (category: any, request: any) => {
+    if (category === "Cancel Request") {
+      setIsCancelOpen(true);
+      setSelectedRequest(request);
+    }
+  };
 
-    setRequestData(updatedRequestData);
+  const handleCancelButton = () => {
+    console.log(selectedRequest);
+    setLoadingBarProgress(20);
+    setIsCancelOpen(false);
+    cancelRequestAPI(requestId, setIsConfirmationOpen, setLoadingBarProgress);
+  };
+
+  const handleClose = () => {
+    setIsCancelOpen(false);
     setTimeout(() => {
       setIsConfirmationOpen(false);
     }, 3000);
@@ -88,6 +101,11 @@ export default function Request() {
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
@@ -148,8 +166,8 @@ export default function Request() {
                         {selectedStatus === "Pending" ||
                         selectedStatus === "Approved" ? (
                           <Ellipsis
-                            onCategoryChange={() =>
-                              onHandleEllipsis(request.request_number)
+                            onCategoryChange={(category) =>
+                              onHandleEllipsis(category, request)
                             }
                             status={["Cancel Request"]}
                           />
@@ -163,6 +181,14 @@ export default function Request() {
           </div>
         </div>
       </Container>
+      <PromptDialog
+        isOpen={isCancelOpen}
+        content="Are you sure you want to cancel your request?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleCancelButton}
+      />
       <Confirmation isOpen={isConfirmationOpen} header="Request Canceled!" />
     </>
   );

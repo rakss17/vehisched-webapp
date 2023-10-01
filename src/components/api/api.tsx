@@ -475,3 +475,36 @@ export function approveRequestAPI(
       console.log(error);
     });
 }
+
+export function cancelRequestAPI(
+  requestId: any,
+  setIsConfirmationOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+
+  api
+    .patch(
+      `/api/v1/request/cancel/${requestId}/`,
+      {
+        status: "Canceled",
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsConfirmationOpen(true);
+
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

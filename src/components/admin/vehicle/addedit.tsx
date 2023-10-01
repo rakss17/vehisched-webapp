@@ -15,6 +15,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   typeProps,
   vipProps,
   uploadImageProps,
+  vehicleErrorMessages,
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -56,6 +57,15 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
           <button onClick={onRequestClose}>Cancel</button>
           <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>
+        {vehicleErrorMessages.length > 0 && (
+            <div className="error-messages">
+              <ul>
+                {vehicleErrorMessages.map((vehicleErrorMessages, index) => (
+                  <li key={index}>{vehicleErrorMessages}</li>
+                ))}
+              </ul>
+            </div>
+          )}
       </div>
     </Modal>
   );

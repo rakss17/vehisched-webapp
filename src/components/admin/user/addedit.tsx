@@ -4,6 +4,7 @@ import "./addedit.css";
 import DropdownMenu from "../dropdownmenu";
 import { AddEditProps } from "../../../interfaces/interfaces";
 
+
 const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
@@ -17,6 +18,8 @@ const AddEdit: React.FC<AddEditProps> = ({
   usernameProps,
   contactNumberProps,
   roleDropdownProps,
+  errorMessages,
+  
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -62,6 +65,16 @@ const AddEdit: React.FC<AddEditProps> = ({
           <button onClick={onRequestClose}>Cancel</button>
           <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>
+        {errorMessages.length > 0 && (
+            <div className="error-messages">
+              <ul>
+                {errorMessages.map((errorMessage, index) => (
+                  <li key={index}>{errorMessage}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+     
       </div>
     </Modal>
   );

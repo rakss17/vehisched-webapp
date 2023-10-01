@@ -279,10 +279,62 @@ export default function Admin() {
   const handleAddUser = () => {
     setIsAddOpen(true);
   };
+
+
+
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i; // Regular expression for email validation
   const handleAddUserButton = () => {
-    setLoadingBarProgress(20);
-    setIsAddOpen(false);
-    SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
+
+    // Define an array to store validation errors
+    const validationErrors: string[] = [];
+
+    // Check if username is blank
+    if (!userData.username) {
+      validationErrors.push("Please enter Username");
+    }
+
+    // Check if first_name is blank
+    if (!userData.first_name) {
+      validationErrors.push("Please enter  First Name");
+    }
+
+    // Check if middle_name is blank
+    if (!userData.middle_name) {
+      validationErrors.push("Please enter  Middle Name");
+    }
+
+    // Check if last_name is blank
+    if (!userData.last_name) {
+      validationErrors.push("Please enter Last Name");
+    }
+
+    // Check if email is blank
+    if (!userData.email) {
+      validationErrors.push("Please enter Email");
+    } else if (!emailRegex.test(userData.email)) {
+      validationErrors.push("Please enter a valid Email");
+    }
+
+    // Check if mobile_number is blank
+    if (!userData.mobile_number) {
+      validationErrors.push("Please enter Mobile Number");
+    }
+
+    // Check if role is blank
+    if (!userData.role) {
+      validationErrors.push("Please Choose a Role");
+    }
+
+    // Update the errorMessages state with the validation errors
+    setErrorMessages(validationErrors);
+
+    // If there are no validation errors, proceed with SignupAPI
+    if (validationErrors.length === 0) {
+      setLoadingBarProgress(20);
+      setIsAddOpen(false);
+      SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
+    }
   };
   const handleEditUserButton = () => {
     setIsEditOpen(false);
@@ -315,7 +367,36 @@ export default function Admin() {
       .then(() => {})
       .catch((error) => {});
   };
+
+  const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>([]);
   const handleAddVehicleButton = () => {
+
+    const vehicleValidationErrors: string[] = [];
+
+    if(!vehicleData.capacity){
+      vehicleValidationErrors.push("Please enter Seating Capacity");
+    }
+
+    if(!vehicleData.plate_number){
+      vehicleValidationErrors.push("Please enter Plate Number")
+    }
+
+    if(!vehicleData.vehicle_image){
+      vehicleValidationErrors.push("Please upload Image")
+    }
+
+    if(!vehicleData.vehicle_name){
+      vehicleValidationErrors.push("Please enter Vehicle Name")
+    }
+
+    if(!vehicleData.vehicle_type){
+      vehicleValidationErrors.push("Please enter Vehilce Type")
+    }
+
+    // Update the errorMessages state with the validation errors
+    setVehicleErrorMessages(vehicleValidationErrors);
+
+    if (vehicleValidationErrors.length === 0) {
     setLoadingBarProgress(20);
     setIsAddVehicleOpen(false);
     addVehiclesAPI(
@@ -323,6 +404,7 @@ export default function Admin() {
       setIsConfirmationOpenVehicle,
       setLoadingBarProgress
     );
+    }
   };
 
   const handleEditVehicleButton = () => {
@@ -656,7 +738,9 @@ export default function Admin() {
         roleDropdownProps={{
           onChange: handleDropdownChange,
         }}
+        errorMessages={errorMessages} // Pass the validation errors as a prop
       />
+
       <AddEdit
         isOpen={isEditOpen}
         onRequestClose={handleCancel}
@@ -709,6 +793,7 @@ export default function Admin() {
           onChange: handleDropdownChange2,
           selectedAccount: selectedAccount,
         }}
+        errorMessages={errorMessages}
       />
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
@@ -768,6 +853,7 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageChange(event),
         }}
+        vehicleErrorMessages ={vehicleErrorMessages}
       />
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
@@ -830,6 +916,7 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageUpdateChange(event),
         }}
+        vehicleErrorMessages ={vehicleErrorMessages}
       />
       <PromptDialog
         isOpen={isDeleteOpen}

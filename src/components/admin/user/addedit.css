@@ -52,7 +52,6 @@
   border-radius: 10px;
   font-size: 1rem;
 }
-
 .modal-add-edit button {
   width: 10vw;
   height: 5vh;
@@ -65,4 +64,18 @@
 }
 .modal-add-edit button:nth-child(2) {
   background-color: #060e57;
+}
+.errorContainer{
+  align-self: center;
+  width: 10vw;
+  height: 5vh;
+  background-color: #d9d9d9;
+}
+.error-messages {
+  text-align: center;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  align-self: center;
+  background-color: #d9d9d9;
 }

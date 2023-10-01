@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import LoadingBar from "react-top-loading-bar";
 import {
   faColumns,
   faClipboardList,
@@ -13,13 +14,14 @@ import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import Dropdown from "../../../components/dropdown/dropdown";
 import SearchBar from "../../../components/searchbar/searchbar";
-import ToyotaHilux from "../../../assets/toyota-hilux.jpg";
-import MitsubishiMontero from "../../../assets/mitsubishi-montero.jpg";
-import Fortuner from "../../../assets/fortuner.jpg";
-import ToyotaHiace from "../../../assets/toyota-hiace.png";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
+import PromptDialog from "../../../components/promptdialog/prompdialog";
+import Confirmation from "../../../components/confirmation/confirmation";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
-import { fetchVehiclesAPI } from "../../../components/api/api";
+import {
+  fetchVehiclesAPI,
+  toggleVehicleStatusAPI,
+} from "../../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 
@@ -32,9 +34,17 @@ const sidebarData: SidebarItem[] = [
 ];
 
 export default function Vehicles() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<any>();
+  const [isAvailableOpen, setIsAvailableOpen] = useState(false);
+  const [isUnavailableOpen, setIsUnavailableOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationOpenUnavailable, setIsConfirmationOpenUnavailable] =
+    useState(false);
+  const vehicleId = selectedVehicle?.plate_number ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const dispatch = useDispatch();
 
@@ -65,10 +75,40 @@ export default function Vehicles() {
   const handleCategoryChange = (status: string) => {
     setSelectedCategory(status === "All" ? null : status);
   };
-  const handleEllipsisMenu = (category: string) => {
+  const handleEllipsisMenu = (category: string, vehicle: any) => {
     if (category === "Unavailable") {
-      alert("clicked unavailable");
+      setIsUnavailableOpen(true);
+      setSelectedVehicle(vehicle);
+    } else if (category === "Available") {
+      setIsAvailableOpen(true);
+      setSelectedVehicle(vehicle);
     }
+  };
+
+  const handleAvailableButton = () => {
+    setLoadingBarProgress(20);
+    setIsAvailableOpen(false);
+    toggleVehicleStatusAPI(
+      vehicleId,
+      setIsConfirmationOpen,
+      setIsConfirmationOpenUnavailable,
+      setLoadingBarProgress
+    );
+  };
+  const handleUnavailableButton = () => {
+    setLoadingBarProgress(20);
+    setIsUnavailableOpen(false);
+    toggleVehicleStatusAPI(
+      vehicleId,
+      setIsConfirmationOpen,
+      setIsConfirmationOpenUnavailable,
+      setLoadingBarProgress
+    );
+  };
+
+  const handleClose = () => {
+    setIsAvailableOpen(false);
+    setIsUnavailableOpen(false);
   };
 
   const getStatusColor = (status: any) => {
@@ -85,6 +125,11 @@ export default function Vehicles() {
   };
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
@@ -125,8 +170,14 @@ export default function Vehicles() {
                   <img className="vehicle-image" src={vehicle.vehicle_image} />
                   <div className="ellipsis-container">
                     <Ellipsis
-                      onCategoryChange={handleEllipsisMenu}
-                      status={["Set Status", "Unavailable"]}
+                      onCategoryChange={(category) =>
+                        handleEllipsisMenu(category, vehicle)
+                      }
+                      status={
+                        vehicle.status == "Available"
+                          ? ["Set Status", "Unavailable"]
+                          : ["Set Status", "Available"]
+                      }
                     />
                   </div>
                 </div>
@@ -135,6 +186,31 @@ export default function Vehicles() {
           )}
         </div>
       </Container>
+      <PromptDialog
+        isOpen={isAvailableOpen}
+        content="Set status to available?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleAvailableButton}
+      />
+      <Confirmation
+        isOpen={isConfirmationOpen}
+        header="Vehicle status set to available!"
+      />
+
+      <PromptDialog
+        isOpen={isUnavailableOpen}
+        content="Set status to unavailable?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleUnavailableButton}
+      />
+      <Confirmation
+        isOpen={isConfirmationOpenUnavailable}
+        header="Vehicle status set to unavailable!"
+      />
     </>
   );
 }

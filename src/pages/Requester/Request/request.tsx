@@ -56,7 +56,6 @@ export default function Request() {
         );
         break;
       default:
-        // Set to empty for unknown status
         break;
     }
     setRequestData(filteredData);

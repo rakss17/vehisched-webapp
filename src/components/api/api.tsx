@@ -261,6 +261,7 @@ export function fetchVehiclesAPI() {
           "Content-Type": "application/json",
         },
       });
+      console.log(response.data);
 
       dispatch(fetchVehiclesData(response.data));
     } catch (error) {
@@ -498,11 +499,49 @@ export function cancelRequestAPI(
     )
     .then((response) => {
       setIsConfirmationOpen(true);
-
+      setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpen(false);
         window.location.reload();
       }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export function toggleVehicleStatusAPI(
+  vehicleId: any,
+  setIsConfirmationOpen: any,
+  setIsConfirmationOpenUnavailable: any,
+  setLoadingBarProgress: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post(`api/v1/vehicles/toggle_status/${vehicleId}/`, null, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response.data.status === "Available") {
+        setIsConfirmationOpen(true);
+        setTimeout(() => {
+          setLoadingBarProgress(70);
+          setLoadingBarProgress(100);
+          setIsConfirmationOpen(false);
+          window.location.reload();
+        }, 3000);
+      } else if (response.data.status === "Unavailable") {
+        setIsConfirmationOpenUnavailable(true);
+        setTimeout(() => {
+          setLoadingBarProgress(70);
+          setLoadingBarProgress(100);
+          setIsConfirmationOpenUnavailable(false);
+          window.location.reload();
+        }, 3000);
+      }
     })
     .catch((error) => {
       console.log(error);

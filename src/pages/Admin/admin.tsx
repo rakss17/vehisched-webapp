@@ -48,7 +48,6 @@ export default function Admin() {
   const [isDeactivateOpen, setIsDeactivateOpen] = useState(false);
   const [isActivateOpen, setIsActivateOpen] = useState(false);
   const [isDeleteVehicleOpen, setIsDeleteVehicleOpen] = useState(false);
-
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationOpenActivated, setIsConfirmationOpenActivated] =
     useState(false);

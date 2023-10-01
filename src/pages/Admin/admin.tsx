@@ -21,6 +21,7 @@ import {
   addVehiclesAPI,
   updateVehicleAPI,
   deleteVehicleAPI,
+  toggleUserActivationAPI,
 } from "../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -44,8 +45,15 @@ export default function Admin() {
   const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
   const [isEditVehicleOpen, setIsEditVehicleOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDeactivateOpen, setIsDeactivateOpen] = useState(false);
+  const [isActivateOpen, setIsActivateOpen] = useState(false);
   const [isDeleteVehicleOpen, setIsDeleteVehicleOpen] = useState(false);
+
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationOpenActivated, setIsConfirmationOpenActivated] =
+    useState(false);
+  const [isConfirmationOpenDeactivated, setIsConfirmationOpenDeactivated] =
+    useState(false);
   const [isConfirmationOpenEdit, setIsConfirmationOpenEdit] = useState(false);
   const [isConfirmationOpenVehicle, setIsConfirmationOpenVehicle] =
     useState(false);
@@ -250,6 +258,12 @@ export default function Admin() {
     } else if (category === "Delete") {
       setIsDeleteOpen(true);
       setSelectedAccount(account);
+    } else if (category === "Deactivate") {
+      setIsDeactivateOpen(true);
+      setSelectedAccount(account);
+    } else if (category === "Activate") {
+      setIsActivateOpen(true);
+      setSelectedAccount(account);
     }
   };
 
@@ -343,6 +357,26 @@ export default function Admin() {
       setLoadingBarProgress
     );
   };
+  const handleActivateUserButton = () => {
+    setLoadingBarProgress(20);
+    setIsActivateOpen(false);
+    toggleUserActivationAPI(
+      userId,
+      setIsConfirmationOpenActivated,
+      setIsConfirmationOpenDeactivated,
+      setLoadingBarProgress
+    );
+  };
+  const handleDeactivateUserButton = () => {
+    setLoadingBarProgress(20);
+    setIsDeactivateOpen(false);
+    toggleUserActivationAPI(
+      userId,
+      setIsConfirmationOpenActivated,
+      setIsConfirmationOpenDeactivated,
+      setLoadingBarProgress
+    );
+  };
   const handleDeleteVehicleButton = () => {
     setLoadingBarProgress(20);
     setIsDeleteVehicleOpen(false);
@@ -365,6 +399,7 @@ export default function Admin() {
 
   const handleClose = () => {
     setIsDeleteOpen(false);
+    setIsDeactivateOpen(false);
     setIsDeleteVehicleOpen(false);
   };
 
@@ -502,7 +537,11 @@ export default function Admin() {
                             onCategoryChange={(category) =>
                               handleEllipsisMenu(category, account)
                             }
-                            status={["Edit", "Delete"]}
+                            status={
+                              account.is_active
+                                ? ["Edit", "Deactivate", "Delete"]
+                                : ["Edit", "Activate", "Delete"]
+                            }
                           />
                         </div>
                       </tr>
@@ -801,6 +840,22 @@ export default function Admin() {
         onRequestDelete={handleDeleteUserButton}
       />
       <PromptDialog
+        isOpen={isDeactivateOpen}
+        content="Are you sure you want to deactivate this user?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleDeactivateUserButton}
+      />
+      <PromptDialog
+        isOpen={isActivateOpen}
+        content="Are you sure you want to activate this user?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onRequestDelete={handleActivateUserButton}
+      />
+      <PromptDialog
         isOpen={isDeleteVehicleOpen}
         content="Are you sure you want to delete this vehicle?"
         buttonText1="Yes"
@@ -809,7 +864,16 @@ export default function Admin() {
         onRequestDelete={handleDeleteVehicleButton}
       />
       <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
+
       <Confirmation isOpen={isConfirmationOpenEdit} header="User Updated!" />
+      <Confirmation
+        isOpen={isConfirmationOpenActivated}
+        header="User Activated!"
+      />
+      <Confirmation
+        isOpen={isConfirmationOpenDeactivated}
+        header="User Deactivated!"
+      />
       <Confirmation
         isOpen={isConfirmationOpenVehicle}
         header="Vehicle Added!"

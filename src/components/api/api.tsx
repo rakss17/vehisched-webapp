@@ -213,6 +213,44 @@ export function deleteUserAPI(
     .catch((error) => console.error("Error deleting user:", error));
 }
 
+export function toggleUserActivationAPI(
+  userId: any,
+  setIsConfirmationOpenActivated: any,
+  setIsConfirmationOpenDeactivated: any,
+  setLoadingBarProgress: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post(`api/v1/accounts/toggle_activation/${userId}/`, null, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response.data.is_active === true) {
+        setIsConfirmationOpenActivated(true);
+        setTimeout(() => {
+          setLoadingBarProgress(70);
+          setLoadingBarProgress(100);
+          setIsConfirmationOpenActivated(false);
+          window.location.reload();
+        }, 3000);
+      } else if (response.data.is_active === false) {
+        setIsConfirmationOpenDeactivated(true);
+        setTimeout(() => {
+          setLoadingBarProgress(70);
+          setLoadingBarProgress(100);
+          setIsConfirmationOpenDeactivated(false);
+          window.location.reload();
+        }, 3000);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export function fetchVehiclesAPI() {
   return async (dispatch: Dispatch) => {
     try {

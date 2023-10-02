@@ -14,11 +14,6 @@
   flex-direction: column;
   display: flex;
   align-items: center;
-
-  &.error-visible {
-    height: 90vh; /* Adjust the height as needed */
-    margin-top: 3vh;
-  }
 }
 .modal-add-edit h1 {
   color: #060e57;

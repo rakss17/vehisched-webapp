@@ -105,6 +105,9 @@ export default function Admin() {
   const userId = selectedAccount?.id ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const vehicleId = selectedVehicle?.plate_number ?? "";
+  const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>(
+    []
+  );
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
@@ -372,30 +375,39 @@ export default function Admin() {
       .then(() => {})
       .catch((error) => {});
   };
-  const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>(
-    []
-  );
+
   const handleAddVehicleButton = () => {
     const vehicleValidationErrors: string[] = [];
 
-    if (!vehicleData.capacity) {
-      vehicleValidationErrors.push("Please enter Seating Capacity");
-    }
+    const allFieldsBlank =
+      !vehicleData.plate_number &&
+      !vehicleData.vehicle_name &&
+      !vehicleData.capacity &&
+      !vehicleData.vehicle_type &&
+      !vehicleData.vehicle_image;
 
-    if (!vehicleData.plate_number) {
-      vehicleValidationErrors.push("Please enter Plate Number");
-    }
+    if (allFieldsBlank) {
+      vehicleValidationErrors.push("Required all fields!");
+    } else {
+      if (!vehicleData.plate_number) {
+        vehicleValidationErrors.push("Please enter plate number");
+      }
 
-    if (!vehicleData.vehicle_image) {
-      vehicleValidationErrors.push("Please upload Image");
-    }
+      if (!vehicleData.vehicle_name) {
+        vehicleValidationErrors.push("Please enter vehicle name");
+      }
 
-    if (!vehicleData.vehicle_name) {
-      vehicleValidationErrors.push("Please enter Vehicle Name");
-    }
+      if (!vehicleData.capacity) {
+        vehicleValidationErrors.push("Please enter seating capacity");
+      }
 
-    if (!vehicleData.vehicle_type) {
-      vehicleValidationErrors.push("Please enter Vehilce Type");
+      if (!vehicleData.vehicle_type) {
+        vehicleValidationErrors.push("Please enter vehilce type");
+      }
+
+      if (!vehicleData.vehicle_image) {
+        vehicleValidationErrors.push("Please upload image");
+      }
     }
 
     setVehicleErrorMessages(vehicleValidationErrors);
@@ -474,6 +486,8 @@ export default function Admin() {
     );
   };
   const handleCancel = () => {
+    setErrorMessages([]);
+    setVehicleErrorMessages([]);
     setIsAddOpen(false);
     setIsEditOpen(false);
     setIsAddVehicleOpen(false);
@@ -742,7 +756,7 @@ export default function Admin() {
         roleDropdownProps={{
           onChange: handleDropdownChange,
         }}
-        errorMessages={errorMessages} // Pass the validation errors as a prop
+        errorMessages={errorMessages}
       />
       <AddEdit
         isOpen={isEditOpen}
@@ -796,7 +810,6 @@ export default function Admin() {
           onChange: handleDropdownChange2,
           selectedAccount: selectedAccount,
         }}
-        errorMessages={errorMessages} // Pass the validation errors as a prop
       />
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
@@ -919,7 +932,6 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageUpdateChange(event),
         }}
-        vehicleErrorMessages={vehicleErrorMessages}
       />
       <PromptDialog
         isOpen={isDeleteOpen}

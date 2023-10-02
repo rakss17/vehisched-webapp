@@ -15,7 +15,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   typeProps,
   vipProps,
   uploadImageProps,
-  vehicleErrorMessages,
+  vehicleErrorMessages = [],
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -24,11 +24,51 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
       event.preventDefault();
     }
   };
+  const calculateModalStyles = () => {
+    const modalStyles = {
+      content: {
+        height: calculateModalHeight(),
+        marginTop: calculateMarginTop(),
+      },
+    };
+    return modalStyles;
+  };
+
+  const calculateModalHeight = () => {
+    if (vehicleErrorMessages.length > 0) {
+      return 65 + vehicleErrorMessages.length * 5 + "vh";
+    } else {
+      return "65vh";
+    }
+  };
+
+  const calculateMarginTop = () => {
+    const defaultMarginTop = "15vh";
+
+    if (vehicleErrorMessages.length >= 2) {
+      return "5vh";
+    } else {
+      return defaultMarginTop;
+    }
+  };
 
   return (
-    <Modal className="modal-add-edit2" isOpen={isOpen}>
+    <Modal
+      className="modal-add-edit2"
+      isOpen={isOpen}
+      style={calculateModalStyles()}
+    >
       <h1>{header}</h1>
       <div>
+        {vehicleErrorMessages.length > 0 && (
+          <div className="v-error-messages">
+            <ul>
+              {vehicleErrorMessages.map((vehicleErrorMessages, index) => (
+                <ul key={index}>{vehicleErrorMessages}</ul>
+              ))}
+            </ul>
+          </div>
+        )}
         <div>
           <label>Plate No.: </label>
           <input {...plateNoProps} />
@@ -57,15 +97,6 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
           <button onClick={onRequestClose}>Cancel</button>
           <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>
-        {vehicleErrorMessages.length > 0 && (
-            <div className="v-error-messages">
-              <ul>
-                {vehicleErrorMessages.map((vehicleErrorMessages, index) => (
-                  <li key={index}>{vehicleErrorMessages}</li>
-                ))}
-              </ul>
-            </div>
-          )}
       </div>
     </Modal>
   );

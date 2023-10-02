@@ -66,3 +66,11 @@
 .modal-add-edit button:nth-child(2) {
   background-color: #060e57;
 }
+.error-messages {
+  text-align: center;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  align-self: center;
+
+}

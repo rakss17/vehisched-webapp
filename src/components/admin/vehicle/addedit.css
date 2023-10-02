@@ -77,3 +77,10 @@
   color: white;
   width: 8vw;
 }
+.v-error-messages {
+  text-align: center;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  align-self: center;
+}

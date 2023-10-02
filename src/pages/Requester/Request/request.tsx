@@ -11,6 +11,7 @@ import Confirmation from "../../../components/confirmation/confirmation";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import { SidebarItem } from "../../../interfaces/interfaces";
 import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
+import { RequestApproveWebsocket } from "../../../components/api/websocket";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
@@ -29,6 +30,9 @@ export default function Request() {
 
   useEffect(() => {
     fetchRequestAPI(setRequestFilteredData);
+  }, []);
+  useEffect(() => {
+    RequestApproveWebsocket();
   }, []);
 
   const handleButtonClick = (status: string) => {

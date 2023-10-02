@@ -36,7 +36,7 @@ export interface AddEditProps {
   usernameProps?: InputProps;
   contactNumberProps?: InputProps;
   roleDropdownProps: DropdownProps;
-  errorMessages: string[];
+  errorMessages?: string[];
 }
 export interface AddEditVehicleProps {
   isOpen: boolean;
@@ -50,7 +50,7 @@ export interface AddEditVehicleProps {
   typeProps?: InputProps;
   vipProps?: InputProps;
   uploadImageProps?: InputProps;
-  vehicleErrorMessages: string[]
+  vehicleErrorMessages?: string[];
 }
 export interface SigninParams {
   username: string;

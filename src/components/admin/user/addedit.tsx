@@ -17,7 +17,7 @@ const AddEdit: React.FC<AddEditProps> = ({
   usernameProps,
   contactNumberProps,
   roleDropdownProps,
-  errorMessages,
+  errorMessages = [],
 }) => {
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -27,10 +27,51 @@ const AddEdit: React.FC<AddEditProps> = ({
     }
   };
 
+  const calculateModalStyles = () => {
+    const modalStyles = {
+      content: {
+        height: calculateModalHeight(),
+        marginTop: calculateMarginTop(),
+      },
+    };
+    return modalStyles;
+  };
+
+  const calculateModalHeight = () => {
+    if (errorMessages.length > 0) {
+      return 73 + errorMessages.length * 5 + "vh";
+    } else {
+      return "73vh";
+    }
+  };
+
+  const calculateMarginTop = () => {
+    const defaultMarginTop = "15vh";
+
+    if (errorMessages.length >= 2) {
+      return "5vh";
+    } else {
+      return defaultMarginTop;
+    }
+  };
+
   return (
-    <Modal className="modal-add-edit" isOpen={isOpen}>
+    <Modal
+      className="modal-add-edit"
+      isOpen={isOpen}
+      style={calculateModalStyles()}
+    >
       <h1>{header}</h1>
       <div>
+        {errorMessages && errorMessages.length > 0 && (
+          <div className="error-messages">
+            <ul>
+              {errorMessages.map((errorMessage, index) => (
+                <ul key={index}>{errorMessage}</ul>
+              ))}
+            </ul>
+          </div>
+        )}
         <div>
           <label>Email Address: </label>
           <input {...emailProps} />
@@ -63,15 +104,6 @@ const AddEdit: React.FC<AddEditProps> = ({
           <button onClick={onRequestClose}>Cancel</button>
           <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>
-        {errorMessages.length > 0 && (
-            <div className="error-messages">
-              <ul>
-                {errorMessages.map((errorMessage, index) => (
-                  <li key={index}>{errorMessage}</li>
-                ))}
-              </ul>
-            </div>
-          )}
       </div>
     </Modal>
   );

@@ -27,7 +27,13 @@
   width: 25vw;
   height: 35vh;
 }
-.modal-add-edit2 div div {
+.modal-add-edit2 div div:nth-child(1) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.modal-add-edit2 div div:nth-child(n + 1) {
   display: flex;
   flex-direction: row;
   gap: 10%;

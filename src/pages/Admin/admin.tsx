@@ -105,6 +105,11 @@ export default function Admin() {
   const userId = selectedAccount?.id ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const vehicleId = selectedVehicle?.plate_number ?? "";
+  const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>(
+    []
+  );
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -278,60 +283,67 @@ export default function Admin() {
   const handleAddUser = () => {
     setIsAddOpen(true);
   };
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
-  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i; // Regular expression for email validation
-  const handleAddUserButton = () => {
 
-    // Define an array to store validation errors
+  const handleAddUserButton = () => {
     const validationErrors: string[] = [];
 
-    // Check if username is blank
-    if (!userData.username) {
-      validationErrors.push("Please enter Username");
+    const allFieldsBlank =
+      !userData.email &&
+      !userData.username &&
+      !userData.first_name &&
+      !userData.middle_name &&
+      !userData.last_name &&
+      !userData.mobile_number &&
+      !userData.role;
+
+    if (allFieldsBlank) {
+      validationErrors.push("Required all fields!");
+    } else {
+      if (!userData.email) {
+        validationErrors.push("Please enter email");
+      } else if (!emailRegex.test(userData.email)) {
+        validationErrors.push("Please enter a valid email");
+      }
+      if (!userData.username) {
+        validationErrors.push("Please enter username");
+      }
+
+      if (!userData.first_name) {
+        validationErrors.push("Please enter first name");
+      }
+
+      if (!userData.middle_name) {
+        validationErrors.push("Please enter middle name");
+      }
+
+      if (!userData.last_name) {
+        validationErrors.push("Please enter last name");
+      }
+
+      if (!userData.mobile_number) {
+        validationErrors.push("Please enter mobile number");
+      } else if (
+        userData.mobile_number.length !== 11 ||
+        userData.mobile_number.length > 11
+      ) {
+        validationErrors.push("Please enter a valid 11-digits mobile number");
+      }
+
+      if (!userData.role) {
+        validationErrors.push("Please choose a role");
+      }
     }
 
-    // Check if first_name is blank
-    if (!userData.first_name) {
-      validationErrors.push("Please enter  First Name");
-    }
-
-    // Check if middle_name is blank
-    if (!userData.middle_name) {
-      validationErrors.push("Please enter  Middle Name");
-    }
-
-    // Check if last_name is blank
-    if (!userData.last_name) {
-      validationErrors.push("Please enter Last Name");
-    }
-
-    // Check if email is blank
-    if (!userData.email) {
-      validationErrors.push("Please enter Email");
-    } else if (!emailRegex.test(userData.email)) {
-      validationErrors.push("Please enter a valid Email");
-    }
-
-    // Check if mobile_number is blank
-    if (!userData.mobile_number) {
-      validationErrors.push("Please enter Mobile Number");
-    }
-
-    // Check if role is blank
-    if (!userData.role) {
-      validationErrors.push("Please Choose a Role");
-    }
-
-    // Update the errorMessages state with the validation errors
     setErrorMessages(validationErrors);
 
-    // If there are no validation errors, proceed with SignupAPI
     if (validationErrors.length === 0) {
+      setErrorMessages([]);
       setLoadingBarProgress(20);
       setIsAddOpen(false);
       SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
     }
   };
+
   const handleEditUserButton = () => {
     setIsEditOpen(false);
     setLoadingBarProgress(20);
@@ -363,42 +375,51 @@ export default function Admin() {
       .then(() => {})
       .catch((error) => {});
   };
-  const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>([]);
-  const handleAddVehicleButton = () => {
 
+  const handleAddVehicleButton = () => {
     const vehicleValidationErrors: string[] = [];
 
-    if(!vehicleData.capacity){
-      vehicleValidationErrors.push("Please enter Seating Capacity");
+    const allFieldsBlank =
+      !vehicleData.plate_number &&
+      !vehicleData.vehicle_name &&
+      !vehicleData.capacity &&
+      !vehicleData.vehicle_type &&
+      !vehicleData.vehicle_image;
+
+    if (allFieldsBlank) {
+      vehicleValidationErrors.push("Required all fields!");
+    } else {
+      if (!vehicleData.plate_number) {
+        vehicleValidationErrors.push("Please enter plate number");
+      }
+
+      if (!vehicleData.vehicle_name) {
+        vehicleValidationErrors.push("Please enter vehicle name");
+      }
+
+      if (!vehicleData.capacity) {
+        vehicleValidationErrors.push("Please enter seating capacity");
+      }
+
+      if (!vehicleData.vehicle_type) {
+        vehicleValidationErrors.push("Please enter vehilce type");
+      }
+
+      if (!vehicleData.vehicle_image) {
+        vehicleValidationErrors.push("Please upload image");
+      }
     }
 
-    if(!vehicleData.plate_number){
-      vehicleValidationErrors.push("Please enter Plate Number")
-    }
-
-    if(!vehicleData.vehicle_image){
-      vehicleValidationErrors.push("Please upload Image")
-    }
-
-    if(!vehicleData.vehicle_name){
-      vehicleValidationErrors.push("Please enter Vehicle Name")
-    }
-
-    if(!vehicleData.vehicle_type){
-      vehicleValidationErrors.push("Please enter Vehilce Type")
-    }
-
-    // Update the errorMessages state with the validation errors
     setVehicleErrorMessages(vehicleValidationErrors);
 
     if (vehicleValidationErrors.length === 0) {
-    setLoadingBarProgress(20);
-    setIsAddVehicleOpen(false);
-    addVehiclesAPI(
-      vehicleData,
-      setIsConfirmationOpenVehicle,
-      setLoadingBarProgress
-    );
+      setLoadingBarProgress(20);
+      setIsAddVehicleOpen(false);
+      addVehiclesAPI(
+        vehicleData,
+        setIsConfirmationOpenVehicle,
+        setLoadingBarProgress
+      );
     }
   };
 
@@ -465,6 +486,8 @@ export default function Admin() {
     );
   };
   const handleCancel = () => {
+    setErrorMessages([]);
+    setVehicleErrorMessages([]);
     setIsAddOpen(false);
     setIsEditOpen(false);
     setIsAddVehicleOpen(false);
@@ -733,7 +756,7 @@ export default function Admin() {
         roleDropdownProps={{
           onChange: handleDropdownChange,
         }}
-        errorMessages={errorMessages} // Pass the validation errors as a prop
+        errorMessages={errorMessages}
       />
       <AddEdit
         isOpen={isEditOpen}
@@ -787,7 +810,6 @@ export default function Admin() {
           onChange: handleDropdownChange2,
           selectedAccount: selectedAccount,
         }}
-        errorMessages={errorMessages} // Pass the validation errors as a prop
       />
       <AddEditVehicle
         isOpen={isAddVehicleOpen}
@@ -847,7 +869,7 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageChange(event),
         }}
-        vehicleErrorMessages ={vehicleErrorMessages}
+        vehicleErrorMessages={vehicleErrorMessages}
       />
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
@@ -910,7 +932,6 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageUpdateChange(event),
         }}
-        vehicleErrorMessages ={vehicleErrorMessages}
       />
       <PromptDialog
         isOpen={isDeleteOpen}

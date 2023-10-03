@@ -21,7 +21,12 @@ import {
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
-  { icon: faClipboardList, text: "Request", path: "/Request" },
+  {
+    icon: faClipboardList,
+    text: "Request",
+    path: "/Request",
+    notification: 10,
+  },
 ];
 
 export default function DashboardR() {

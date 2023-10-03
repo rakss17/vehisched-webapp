@@ -59,6 +59,7 @@
 }
 
 .sidebar-button {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -69,6 +70,20 @@
   color: #060e57;
   cursor: pointer;
 }
+
+.notification {
+  position: absolute;
+  top: 0.5rem;
+  right: -0.5rem;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 0.2rem 0.5rem; /* Adjust padding for better appearance */
+  font-size: 1rem;
+  transform: translate(50%, -50%);
+  z-index: 1; /* Ensure it's above the button */
+}
+
 .sidebar-button.active {
   background-color: #fdb316;
   color: white;

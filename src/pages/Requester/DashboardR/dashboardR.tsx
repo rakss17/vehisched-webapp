@@ -10,11 +10,14 @@ import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import CalendarInput from "../../../components/calendarinput/calendarinput";
 import TimeInput from "../../../components/timeinput/timeinput";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
-import { fetchVehiclesAPI } from "../../../components/api/api";
+import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { serverSideUrl } from "../../../components/api/api";
-import { VehicleAvailableWebsocket } from "../../../components/api/websocket";
+import {
+  VehicleAvailableWebsocket,
+  RequestApproveWebsocket,
+} from "../../../components/api/websocket";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
@@ -28,15 +31,17 @@ export default function DashboardR() {
     (state: RootState) => state.personalInfo.data
   );
   const role = personalInfo?.role;
+  const userName = personalInfo?.username;
   const navigate = useNavigate();
 
   useEffect(() => {
     VehicleAvailableWebsocket(setVehiclesData);
   }, []);
 
+  RequestApproveWebsocket(userName);
+
   const handleSetTripModal = () => {
     setIsSetTripOpen(true);
-    console.log("hehe");
   };
 
   const handleCancelTripModal = () => {
@@ -68,6 +73,7 @@ export default function DashboardR() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top-dashboard">
           <Label label="Dashboard" />
         </div>

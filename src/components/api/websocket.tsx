@@ -1,3 +1,7 @@
+import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export function VehicleAvailableWebsocket(setVehiclesData: any) {
   const newSocket = new WebSocket("ws://localhost:8000/ws/vehicle/available/");
 
@@ -39,34 +43,43 @@ export function VehicleAvailableWebsocket(setVehiclesData: any) {
   };
 }
 
-export function RequestApproveWebsocket() {
-  const newSocket = new WebSocket("ws://localhost:8000/ws/request/approve/");
-
-  newSocket.onopen = (event) => {
-    console.log("Request WebSocket connection opened");
-    newSocket.send(
-      JSON.stringify({
-        action: "approve",
-      })
+export function RequestApproveWebsocket(userName: any) {
+  useEffect(() => {
+    const newSocket = new WebSocket(
+      `ws://localhost:8000/ws/request/approve/?requester_name=${userName}`
     );
-  };
 
-  newSocket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log("Request Approved:", data);
-    if (data.type === "approve.notification") {
-      // Handle the approved request and show a notification
-      console.log("Request Approved ddd:", data.message);
-      alert(data.message);
-      // You can use a notification library here, e.g., react-toastify
-    }
-  };
+    newSocket.onopen = (event) => {
+      console.log("Request WebSocket connection opened");
+      newSocket.send(
+        JSON.stringify({
+          action: "approve",
+        })
+      );
+    };
 
-  newSocket.onclose = (event) => {
-    console.log("WebSocket connection closed");
-  };
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (
+        data.type === "approve.notification" &&
+        data.status === "Approved" &&
+        data.message != "Notification message goes here"
+      ) {
+        toast.success(data.message, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    };
 
-  return () => {
-    newSocket.close();
-  };
+    newSocket.onclose = (event) => {
+      console.log("WebSocket connection closed");
+    };
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  return null;
 }

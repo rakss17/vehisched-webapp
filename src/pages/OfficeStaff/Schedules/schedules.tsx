@@ -12,6 +12,9 @@ import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
+import { NotificationWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type SidebarItem = {
   icon: any;
@@ -159,6 +162,10 @@ export default function Schedules() {
   const [selectedSched, setSelectedSched] = useState<string>("Today");
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    NotificationWebsocket();
+  }, []);
+
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
@@ -208,6 +215,7 @@ export default function Schedules() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="schedules-margin-top">
           <Label label="Schedules" />
         </div>

@@ -82,3 +82,41 @@ export function RequestApproveWebsocket(userName: any) {
 
   return null;
 }
+
+export function NotificationWebsocket() {
+  const newSocket = new WebSocket(
+    "ws://localhost:8000/ws/notification/created/"
+  );
+
+  newSocket.onopen = (event) => {
+    console.log("Notification WebSocket connection opened");
+    newSocket.send(
+      JSON.stringify({
+        action: "created",
+      })
+    );
+  };
+
+  newSocket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (
+      data.type === "notify.request_created" &&
+      data.message != "Notification message goes here"
+    ) {
+      console.log("createad", data);
+      toast.success(data.message, {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: false,
+      });
+    }
+  };
+
+  newSocket.onclose = (event) => {
+    console.log("WebSocket connection closed");
+  };
+
+  return () => {
+    newSocket.close();
+  };
+}

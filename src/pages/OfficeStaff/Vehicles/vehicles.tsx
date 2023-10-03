@@ -24,6 +24,9 @@ import {
 } from "../../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { NotificationWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -55,6 +58,10 @@ export default function Vehicles() {
   useEffect(() => {
     setVehiclesData(vehicles);
   }, [vehicles]);
+
+  useEffect(() => {
+    NotificationWebsocket();
+  }, []);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -133,6 +140,7 @@ export default function Vehicles() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top-vehicles">
           <Label label="Vehicles" />
         </div>
@@ -151,7 +159,10 @@ export default function Vehicles() {
               <a className="vehicle-card">
                 <div className="vehicle-row">
                   <div className="vehicle-column">
-                    <p className="vehicle-name">{vehicle.vehicle_name}</p>
+                    <p className="vehicle-name">
+                      {vehicle.plate_number}
+                      <br></br> {vehicle.vehicle_name}
+                    </p>
                     <p className="vehicle-detail">
                       Seating Capacity: {vehicle.capacity}
                     </p>

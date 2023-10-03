@@ -21,6 +21,9 @@ import {
   approveRequestAPI,
   fetchRequestOfficeStaffAPI,
 } from "../../../components/api/api";
+import { NotificationWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -39,8 +42,11 @@ export default function Requests() {
     useState<RequestFormProps | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const requestId = selectedRequest?.request_id;
-
   const currentDate = new Date();
+
+  useEffect(() => {
+    NotificationWebsocket();
+  }, []);
 
   useEffect(() => {
     fetchRequestOfficeStaffAPI(setRequestList);
@@ -133,11 +139,14 @@ export default function Requests() {
         (request) => request.request_id === selectedRequest.request_id
       )
     : [];
+
+  filteredRequestList.reverse();
   return (
     <>
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top">
           <Label label="Request" />
         </div>

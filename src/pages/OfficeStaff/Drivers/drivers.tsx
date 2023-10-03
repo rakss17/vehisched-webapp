@@ -15,10 +15,18 @@ import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
 import { SidebarItem, SignupParams } from "../../../interfaces/interfaces";
 import { fetchDriversAPI } from "../../../components/api/api";
+import { NotificationWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
+  {
+    icon: faClipboardList,
+    text: "Requests",
+    path: "/Requests",
+    notification: 10,
+  },
   { icon: faCar, text: "Vehicles", path: "/Vehicles" },
   { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
   { icon: faUser, text: "Drivers", path: "/Drivers" },
@@ -31,6 +39,10 @@ export default function Drivers() {
 
   useEffect(() => {
     fetchDriversAPI(setDrivers);
+  }, []);
+
+  useEffect(() => {
+    NotificationWebsocket();
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -62,6 +74,7 @@ export default function Drivers() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top-drivers">
           <Label label="Drivers" />
         </div>

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export function VehicleAvailableWebsocket(setVehiclesData: any) {
   const newSocket = new WebSocket("ws://localhost:8000/ws/vehicle/available/");

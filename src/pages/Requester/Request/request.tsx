@@ -22,7 +22,6 @@ const sidebarData: SidebarItem[] = [
     icon: faClipboardList,
     text: "Request",
     path: "/Request",
-    notification: 10,
   },
 ];
 

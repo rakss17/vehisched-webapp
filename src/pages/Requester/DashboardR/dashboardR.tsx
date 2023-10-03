@@ -10,24 +10,15 @@ import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import CalendarInput from "../../../components/calendarinput/calendarinput";
 import TimeInput from "../../../components/timeinput/timeinput";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { serverSideUrl } from "../../../components/api/api";
+import { serverSideUrl, fetchNotification } from "../../../components/api/api";
 import {
   VehicleAvailableWebsocket,
   RequestApproveWebsocket,
 } from "../../../components/api/websocket";
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
-  {
-    icon: faClipboardList,
-    text: "Request",
-    path: "/Request",
-    notification: 10,
-  },
-];
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
@@ -38,9 +29,24 @@ export default function DashboardR() {
   const role = personalInfo?.role;
   const userName = personalInfo?.username;
   const navigate = useNavigate();
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
+    {
+      icon: faClipboardList,
+      text: "Request",
+      path: "/Request",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+  ];
 
   useEffect(() => {
     VehicleAvailableWebsocket(setVehiclesData);
+  }, []);
+
+  useEffect(() => {
+    fetchNotification(setNotifList);
   }, []);
 
   RequestApproveWebsocket(userName);

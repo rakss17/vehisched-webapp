@@ -75,7 +75,7 @@ export type SidebarItem = {
   icon: any;
   text: string;
   path: string;
-  notification?: number;
+  notification?: any;
 };
 
 export interface AddressInputProps {

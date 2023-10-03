@@ -9,6 +9,8 @@ import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
 import { fetchVehiclesData } from "../../redux/slices/vehiclesDataSlices";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const serverSideUrl = "http://localhost:8000";
 
@@ -545,5 +547,32 @@ export function toggleVehicleStatusAPI(
     })
     .catch((error) => {
       console.log(error);
+    });
+}
+
+export function fetchNotification(setNotifList: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/notification/fetch/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setNotifList(response.data);
+      const unreadNotifications = response.data.filter(
+        (notification: any) => !notification.read_status
+      );
+      unreadNotifications.forEach((notification: any) => {
+        console.log("Subject:", notification.subject);
+        toast.success(notification.subject, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching notif list:", error);
     });
 }

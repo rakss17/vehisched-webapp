@@ -163,7 +163,14 @@ export default function Requests() {
         <div className="request-row">
           <SearchBar onSearchChange={handleSearchChange} />
           <Dropdown
-            status={["All", "Pending", "Approved", "Rejected", "Logs"]}
+            status={[
+              "All",
+              "Pending",
+              "Approved",
+              "Canceled",
+              "Rejected",
+              "Logs",
+            ]}
             onCategoryChange={handleCategoryChange}
           />
         </div>

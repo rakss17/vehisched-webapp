@@ -566,10 +566,18 @@ export function fetchNotification(setNotifList: any) {
       );
       unreadNotifications.forEach((notification: any) => {
         console.log("Subject:", notification.subject);
-        toast.success(notification.subject, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: false,
-        });
+
+        if (notification.subject.includes("has been created")) {
+          toast.success(notification.subject, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("has been canceled")) {
+          toast.info(notification.subject, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        }
       });
     })
     .catch((error) => {

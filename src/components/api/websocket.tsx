@@ -85,28 +85,37 @@ export function RequestApproveWebsocket(userName: any) {
 
 export function NotificationWebsocket() {
   const newSocket = new WebSocket(
-    "ws://localhost:8000/ws/notification/created/"
+    "ws://localhost:8000/ws/notification/request-status/"
   );
 
   newSocket.onopen = (event) => {
     console.log("Notification WebSocket connection opened");
     newSocket.send(
       JSON.stringify({
-        action: "created",
+        action: ["created", "canceled"],
       })
     );
   };
 
   newSocket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-
+    console.log(data);
     if (
       data.type === "notify.request_created" &&
-      data.message != "Notification message goes here"
+      data.message != "Notification message goes here for created"
     ) {
       console.log("createad", data);
       toast.success(data.message, {
-        position: toast.POSITION.TOP_CENTER,
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: false,
+      });
+    } else if (
+      data.type === "notify.request_canceled" &&
+      data.message != "Notification message goes here for canceled"
+    ) {
+      console.log("canceled", data);
+      toast.info(data.message, {
+        position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: false,
       });
     }

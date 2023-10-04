@@ -20,6 +20,7 @@ import { fetchNotification } from "../../../components/api/api";
 
 export default function DashboardOS() {
   const [notifList, setNotifList] = useState<any[]>([]);
+  console.log(notifList);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },

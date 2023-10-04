@@ -44,7 +44,148 @@
   border-image-slice: 1;
   gap: 5%;
 }
+.requester-schedule-container {
+  height: 50vh;
+  width: 88vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.requester-schedule-container div {
+  background-color: #d9d9d9;
+  height: 50vh;
+  width: 40vw;
+}
+.requester-schedule-container div div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 1vw;
+}
+.requester-schedule-container div div:nth-child(1) h1 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-schedule-container div div:nth-child(1) h2 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-schedule-container div div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 1vw;
+}
+.requester-schedule-container div div:nth-child(2) h2 {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(2) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 0vw;
+}
+.requester-schedule-container div div:nth-child(3) div {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 0vw;
+  align-items: center;
+  height: 5vh;
+  width: 18vw;
+  gap: 1vw;
+}
+.requester-schedule-container div div:nth-child(3) h2 {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(3) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(4) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 1vw;
+  overflow: hidden;
+}
+.requester-schedule-container div div:nth-child(4) h2 {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(4) p {
+  color: black;
+  font-size: 1.1rem;
+}
 
+.requester-schedule-container div div:nth-child(5) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 0vw;
+}
+.requester-schedule-container div div:nth-child(5) div {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 0vw;
+  align-items: center;
+  height: 5vh;
+  width: 18vw;
+  gap: 1vw;
+}
+.requester-schedule-container div div:nth-child(5) h2 {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(5) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-schedule-container div div:nth-child(5) div:nth-child(2) p {
+  color: #060e57;
+}
+.requester-schedule-container div div:nth-child(6) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 3vh;
+  padding-right: 4vw;
+  align-items: center;
+  justify-content: flex-end;
+  height: 5vh;
+}
+.requester-schedule-container div div:nth-child(6) button {
+  background-color: transparent;
+  font-weight: bold;
+  font-size: 1rem;
+  color: black;
+  border: 2px solid #060e57;
+}
+.requester-schedule-container div div:nth-child(6) button:nth-child(1):hover {
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cccccc;
+}
 .modal-set-trip {
   display: flex;
   align-items: center;

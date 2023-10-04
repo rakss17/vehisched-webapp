@@ -22,6 +22,7 @@ import {
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
+  const [hasSchedule, setHasSchedule] = useState(true);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -88,44 +89,95 @@ export default function DashboardR() {
         <div className="margin-top-dashboard">
           <Label label="Dashboard" />
         </div>
-        <div className="requester-row">
-          <p>Available Vehicles</p>
-          <button onClick={handleSetTripModal}>Set Trip</button>
-        </div>
-        <div className="requester-dashboard-container">
-          {availableVehicles.length === 0 ? (
-            <p className="vehicles-null">No vehicles available</p>
-          ) : (
-            availableVehicles.map((vehicle) => (
-              <a
-                onClick={() =>
-                  openRequestForm(vehicle.plate_number, vehicle.vehicle_name)
-                }
-                className="vehicle-card"
-              >
-                <div className="vehicle-row">
-                  <div className="vehicle-column">
-                    <p className="vehicle-name">
-                      {vehicle.plate_number}
-                      <br></br>
-                      {vehicle.vehicle_name}
-                    </p>
-                    <p className="vehicle-detail">
-                      Seating Capacity: {vehicle.capacity}
-                    </p>
-                    <p className="vehicle-detail">
-                      Type: {vehicle.vehicle_type}
+        {hasSchedule ? (
+          <>
+            <div className="requester-row">
+              <p>Ongoing Schedule </p>
+              <div></div>
+            </div>
+            <div className="requester-dashboard-container">
+              <div className="requester-schedule-container">
+                <div>
+                  <div>
+                    <h1>Schedule no. </h1> <h2>10</h2>
+                  </div>
+                  <div>
+                    <h2>Travel date and time: </h2> <p>2023/10/24 10:00 am</p>
+                  </div>
+                  <div>
+                    <div>
+                      <h2>Driver: </h2> <p>Bohari S. Ambulo</p>
+                    </div>
+                    <div>
+                      <h2>Contact No.: </h2> <p>094457455221212</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h2>Destination: </h2>{" "}
+                    <p>
+                      dawdawdawdlawjdlawjdawdjawopdjawdawdawdawdawdawdawdawdawdawdawadawdawdaw
                     </p>
                   </div>
-                  <img
-                    className="vehicle-image"
-                    src={serverSideUrl + vehicle.vehicle_image}
-                  />
+                  <div>
+                    <div>
+                      <h2>Vehicle: </h2> <p>ABC-123</p>
+                    </div>
+                    <div>
+                      <h2>Status: </h2> <p>Scheduled</p>
+                    </div>
+                  </div>
+                  <div>
+                    <button>View more info</button>
+                  </div>
                 </div>
-              </a>
-            ))
-          )}
-        </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="requester-row">
+              <p>Available Vehicles</p>
+              <button onClick={handleSetTripModal}>Set Trip</button>
+            </div>
+            <div className="requester-dashboard-container">
+              {availableVehicles.length === 0 ? (
+                <p className="vehicles-null">No vehicles available</p>
+              ) : (
+                availableVehicles.map((vehicle) => (
+                  <a
+                    onClick={() =>
+                      openRequestForm(
+                        vehicle.plate_number,
+                        vehicle.vehicle_name
+                      )
+                    }
+                    className="vehicle-card"
+                  >
+                    <div className="vehicle-row">
+                      <div className="vehicle-column">
+                        <p className="vehicle-name">
+                          {vehicle.plate_number}
+                          <br></br>
+                          {vehicle.vehicle_name}
+                        </p>
+                        <p className="vehicle-detail">
+                          Seating Capacity: {vehicle.capacity}
+                        </p>
+                        <p className="vehicle-detail">
+                          Type: {vehicle.vehicle_type}
+                        </p>
+                      </div>
+                      <img
+                        className="vehicle-image"
+                        src={serverSideUrl + vehicle.vehicle_image}
+                      />
+                    </div>
+                  </a>
+                ))
+              )}
+            </div>
+          </>
+        )}
       </Container>
       <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
         <div className="modal-set-trip-body">

@@ -11,10 +11,18 @@ import Confirmation from "../../../components/confirmation/confirmation";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import { SidebarItem } from "../../../interfaces/interfaces";
 import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
+import { RequestApproveWebsocket } from "../../../components/api/websocket";
+import { ToastContainer, toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
-  { icon: faClipboardList, text: "Request", path: "/Request" },
+  {
+    icon: faClipboardList,
+    text: "Request",
+    path: "/Request",
+  },
 ];
 
 export default function Request() {
@@ -26,10 +34,16 @@ export default function Request() {
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const requestId = selectedRequest?.request_id ?? "";
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const userName = personalInfo?.username;
 
   useEffect(() => {
     fetchRequestAPI(setRequestFilteredData);
   }, []);
+
+  RequestApproveWebsocket(userName);
 
   const handleButtonClick = (status: string) => {
     let filteredData = [];
@@ -108,6 +122,7 @@ export default function Request() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="label-margin">
           <Label label="Request" />
         </div>

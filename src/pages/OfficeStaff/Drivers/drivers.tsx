@@ -14,23 +14,42 @@ import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
 import { SidebarItem, SignupParams } from "../../../interfaces/interfaces";
-import { fetchDriversAPI } from "../../../components/api/api";
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
+import {
+  fetchDriversAPI,
+  fetchNotification,
+} from "../../../components/api/api";
+import { NotificationWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Drivers() {
   const [drivers, setDrivers] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+  ];
+  useEffect(() => {
+    fetchNotification(setNotifList);
+  }, []);
 
   useEffect(() => {
     fetchDriversAPI(setDrivers);
+  }, []);
+
+  useEffect(() => {
+    NotificationWebsocket();
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -62,6 +81,7 @@ export default function Drivers() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top-drivers">
           <Label label="Drivers" />
         </div>

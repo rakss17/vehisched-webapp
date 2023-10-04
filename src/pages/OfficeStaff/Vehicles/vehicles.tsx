@@ -21,17 +21,13 @@ import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
 import {
   fetchVehiclesAPI,
   toggleVehicleStatusAPI,
+  fetchNotification,
 } from "../../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
+import { NotificationWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Vehicles() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -47,6 +43,23 @@ export default function Vehicles() {
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const dispatch = useDispatch();
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+  ];
+  useEffect(() => {
+    fetchNotification(setNotifList);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchVehiclesAPI() as any);
@@ -55,6 +68,10 @@ export default function Vehicles() {
   useEffect(() => {
     setVehiclesData(vehicles);
   }, [vehicles]);
+
+  useEffect(() => {
+    NotificationWebsocket();
+  }, []);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
@@ -133,6 +150,7 @@ export default function Vehicles() {
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top-vehicles">
           <Label label="Vehicles" />
         </div>
@@ -151,7 +169,10 @@ export default function Vehicles() {
               <a className="vehicle-card">
                 <div className="vehicle-row">
                   <div className="vehicle-column">
-                    <p className="vehicle-name">{vehicle.vehicle_name}</p>
+                    <p className="vehicle-name">
+                      {vehicle.plate_number}
+                      <br></br> {vehicle.vehicle_name}
+                    </p>
                     <p className="vehicle-detail">
                       Seating Capacity: {vehicle.capacity}
                     </p>

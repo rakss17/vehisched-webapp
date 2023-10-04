@@ -20,18 +20,11 @@ import { RequestFormProps } from "../../../interfaces/interfaces";
 import {
   approveRequestAPI,
   fetchRequestOfficeStaffAPI,
+  fetchNotification,
 } from "../../../components/api/api";
 import { NotificationWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
 
 export default function Requests() {
   const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
@@ -43,6 +36,23 @@ export default function Requests() {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+  ];
+  useEffect(() => {
+    fetchNotification(setNotifList);
+  }, []);
 
   useEffect(() => {
     NotificationWebsocket();

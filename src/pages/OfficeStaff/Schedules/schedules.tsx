@@ -15,20 +15,8 @@ import SearchBar from "../../../components/searchbar/searchbar";
 import { NotificationWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
+import { SidebarItem } from "../../../interfaces/interfaces";
+import { fetchNotification } from "../../../components/api/api";
 
 interface TableData {
   label: string;
@@ -161,6 +149,23 @@ export default function Schedules() {
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
   const [selectedSched, setSelectedSched] = useState<string>("Today");
   const [searchTerm, setSearchTerm] = useState("");
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+  ];
+  useEffect(() => {
+    fetchNotification(setNotifList);
+  }, []);
 
   useEffect(() => {
     NotificationWebsocket();

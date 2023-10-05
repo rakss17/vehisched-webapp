@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import usersInfoReducer from "./slices/usersInfoSlices";
 import personalInfoReducer from "./slices/personalInfoSlices";
 import vehiclesDataReducer from "./slices/vehiclesDataSlices";
+import driversDataReducer from "./slices/driversDataSlices";
 
 const usersInfoPersistConfig = {
   key: "user",
@@ -17,6 +18,10 @@ const personalInfoPersistConfig = {
 
 const vehiclesDataPersistConfig = {
   key: "vehiclesData",
+  storage,
+};
+const driversDataPersistConfig = {
+  key: "driversData",
   storage,
 };
 
@@ -33,12 +38,17 @@ const persistedVehiclesDataReducer = persistReducer(
   vehiclesDataPersistConfig,
   vehiclesDataReducer
 );
+const persistedDriversDataReducer = persistReducer(
+  driversDataPersistConfig,
+  driversDataReducer
+);
 
 const store = configureStore({
   reducer: {
     usersInfo: persistedUsersInfoReducer,
     personalInfo: persistedPersonalInfoReducer,
     vehiclesData: persistedVehiclesDataReducer,
+    driversData: persistedDriversDataReducer,
   },
 });
 

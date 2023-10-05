@@ -140,8 +140,14 @@ export default function Requests() {
   const handleCloseRequestForm = () => {
     setIsRequestFormOpen(false);
   };
-  const handleConfirmationApprove = () => {
-    approveRequestAPI(requestId, setIsRequestFormOpen, setIsConfirmationOpen);
+  const handleConfirmationApprove = (selectedDriverId: any) => {
+    console.log("driver iddddd", selectedDriverId);
+    approveRequestAPI(
+      requestId,
+      selectedDriverId,
+      setIsRequestFormOpen,
+      setIsConfirmationOpen
+    );
   };
 
   const selectedRequestDetails = selectedRequest
@@ -223,7 +229,9 @@ export default function Requests() {
           onRequestClose={handleCloseRequestForm}
           selectedRequest={selectedRequestDetails[0]}
           showButtons={selectedRequest?.status === "Pending"}
-          onApprove={handleConfirmationApprove}
+          onApprove={(selectedDriverId) =>
+            handleConfirmationApprove(selectedDriverId)
+          }
         />
       )}
 

@@ -18,55 +18,262 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-.modal-request-form div div:nth-child(1) {
+
+.request-form-container {
+  height: 50vh;
+  width: 50vw;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.request-form-container div:nth-child(1) {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  gap: 40%;
-  margin-top: 3vw;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  justify-content: space-around;
+  width: 55vw;
+  height: 5vh;
+  gap: 1vw;
 }
-.modal-request-form div div:nth-child(1) h1 {
-  font-size: 1.3rem;
-  text-align: center;
-  margin-left: 30vh;
-}
-.modal-request-form div div:nth-child(1) p {
+.request-form-container div:nth-child(1) h1 {
+  color: black;
   font-size: 1.5rem;
-  text-align: center;
+}
+.request-form-container div:nth-child(1) p {
+  font-size: 1.5rem;
   color: red;
-  font-weight: bold;
-  cursor: pointer;
 }
-.modal-request-form div div:nth-child(2) {
-  width: 45vw;
-  height: 85vh;
+.request-form-container div:nth-child(2) {
   display: flex;
-  flex-direction: column;
-
-  margin-top: 1vw;
-}
-
-.table-button-container {
-  height: 8vh;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
   width: 50vw;
+  gap: 0vw;
 }
-.table-button-container tr {
+.request-form-container div:nth-child(2) div:nth-child(1) {
   display: flex;
-  margin-top: 2vw;
-  width: 45vw;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 30vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(2) div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 12vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(2) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(2) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.request-form-container div:nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  align-items: flex-start;
+  height: 8vh;
+  gap: 1vw;
+  width: 50vw;
+  padding-left: 4vw;
+}
+.request-form-container div:nth-child(3) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(3) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.request-form-container div:nth-child(4) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 4vw;
+  align-items: center;
+  height: 5vh;
+  width: 50vw;
+  gap: 14vw;
+}
+.request-form-container div:nth-child(4) div {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 0vw;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 13vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(4) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(4) p {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(5) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 4vw;
+  align-items: center;
+  height: 5vh;
+  width: 50vw;
+  gap: 0.8vw;
+}
+.request-form-container div:nth-child(5) div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: 7vh;
+  width: 30vw;
+  gap: 1vw;
+  padding-left: 0vw;
+  overflow: hidden;
+}
+.request-form-container div:nth-child(5) div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-left: 0vw;
+  height: 7vh;
+  width: 10vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(5) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(5) p {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(6) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 4vw;
+  align-items: center;
+  height: 5vh;
+  width: 50vw;
+  gap: 18.8vw;
+}
+.request-form-container div:nth-child(6) div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 0vw;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 15vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(6) div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 0vw;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 10vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(6) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(6) p {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(7) {
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 4vw;
+  align-items: center;
+  display: flex;
+  height: 5vh;
+  width: 50vw;
+  gap: 0vw;
+}
+.request-form-container div:nth-child(7) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(7) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.request-form-container div:nth-child(7) .dropdown-custom {
+  position: relative;
+  display: inline-block;
+  width: 12vw;
+  margin-left: 5rem;
+  background-color: #060e57;
+  border-radius: 5px;
+}
+
+.request-form-container div:nth-child(7) .toggle-custom {
+  cursor: pointer;
+  padding: 0px;
+  background: green;
+  width: 2vw;
+  gap: 10%;
+  flex-direction: row;
+  border-radius: 0px;
+  font-size: 1rem;
+}
+
+.request-form-container div:nth-child(8) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5vh;
+  align-items: center;
+  height: 6vh;
+  width: 50vw;
   justify-content: space-around;
 }
-.table-button-container button {
-  width: 10vw;
-  height: 5vh;
-  text-align: center;
-}
-.table-button-container button:nth-child(1) {
+.request-form-container div:nth-child(8) button:nth-child(1) {
+  width: 8vw;
+  height: 6vh;
   background-color: transparent;
   color: black;
   border: 1px solid #060e57;
 }
-.table-button-container button:nth-child(2) {
+.request-form-container div:nth-child(8) button:nth-child(2) {
+  width: 8vw;
+  height: 6vh;
   background-color: #060e57;
   color: white;
 }

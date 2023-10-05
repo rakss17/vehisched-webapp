@@ -21,12 +21,16 @@ import {
 import { NotificationWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 export default function Drivers() {
-  const [drivers, setDrivers] = useState<SignupParams[]>([]);
+  const [driversData, setDriversData] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [notifList, setNotifList] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const drivers = useSelector((state: RootState) => state.driversData.data);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -45,8 +49,12 @@ export default function Drivers() {
   }, []);
 
   useEffect(() => {
-    fetchDriversAPI(setDrivers);
-  }, []);
+    dispatch(fetchDriversAPI() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    setDriversData(drivers);
+  }, [drivers]);
 
   useEffect(() => {
     NotificationWebsocket();
@@ -56,7 +64,7 @@ export default function Drivers() {
     setSearchTerm(term);
   };
 
-  const filteredDriverList = drivers.filter((driver) => {
+  const filteredDriverList = driversData.filter((driver) => {
     const isCategoryMatch =
       selectedCategory === null || driver.status === selectedCategory;
 

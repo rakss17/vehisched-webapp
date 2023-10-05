@@ -19,10 +19,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const driversInfo = useSelector((state: RootState) => state.driversData.data);
 
-  const driverNames = driversInfo.map((driver) => {
-    const { first_name, middle_name, last_name } = driver.user;
-    return `${first_name} ${middle_name} ${last_name}`;
-  });
+  const driverNames = driversInfo
+    .filter((driver) => driver.status === "Available") // Filter drivers with status "Available"
+    .map((driver) => {
+      const { first_name, middle_name, last_name } = driver.user;
+      return `${first_name} ${middle_name} ${last_name}`;
+    });
 
   const dropdownDrivers = ["Select Driver", ...driverNames];
 

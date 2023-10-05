@@ -224,6 +224,25 @@
   display: flex;
   height: 5vh;
   width: 50vw;
+  gap: 2vw;
+}
+.request-form-container div:nth-child(7) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(7) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.request-form-container div:nth-child(7) {
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 4vw;
+  align-items: center;
+  display: flex;
+  height: 5vh;
+  width: 50vw;
   gap: 0vw;
 }
 .request-form-container div:nth-child(7) h2 {

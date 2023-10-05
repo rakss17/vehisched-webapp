@@ -104,7 +104,7 @@ export interface RequestFormDetailsProps {
   onRequestClose: () => void;
   selectedRequest: RequestFormProps | null;
   showButtons: boolean;
-  onApprove: () => void;
+  onApprove: (driverId: string | null) => void;
 }
 
 export interface TimeInputProps {

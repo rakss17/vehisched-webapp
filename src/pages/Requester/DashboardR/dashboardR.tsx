@@ -22,7 +22,7 @@ import {
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
-  const [hasSchedule, setHasSchedule] = useState(true);
+  const [hasSchedule, setHasSchedule] = useState(false);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data

@@ -9,6 +9,7 @@ import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
 import { fetchVehiclesData } from "../../redux/slices/vehiclesDataSlices";
+import { fetchDriversData } from "../../redux/slices/driversDataSlices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -102,20 +103,22 @@ export function fetchUsersAPI() {
   };
 }
 
-export async function fetchDriversAPI(setDrivers: any) {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await api.get("api/v1/accounts/drivers/", {
-      headers: {
-        Authorization: `Token ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    setDrivers(response.data);
-    console.log(response.data);
-  } catch (error) {
-    console.error("Error fetching user list:", error);
-  }
+export function fetchDriversAPI() {
+  return async (dispatch: Dispatch) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get("api/v1/accounts/drivers/", {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      dispatch(fetchDriversData(response.data));
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
 }
 
 export async function updateUserAPI(
@@ -447,6 +450,7 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
 
 export function approveRequestAPI(
   requestId: any,
+  selectedDriverId: any,
   setIsRequestFormOpen: any,
   setIsConfirmationOpen: any
 ) {
@@ -457,6 +461,7 @@ export function approveRequestAPI(
       {
         is_approved: true,
         status: "Approved",
+        driver_id: selectedDriverId,
       },
       {
         headers: {

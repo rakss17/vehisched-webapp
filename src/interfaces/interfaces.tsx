@@ -97,6 +97,7 @@ export interface RequestFormProps {
   requester_first_name?: any;
   requester_middle_name?: any;
   requester_name?: any;
+  driver_name?: any;
 }
 
 export interface RequestFormDetailsProps {

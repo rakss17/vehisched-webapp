@@ -20,7 +20,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const driversInfo = useSelector((state: RootState) => state.driversData.data);
 
   const driverNames = driversInfo
-    .filter((driver) => driver.status === "Available") // Filter drivers with status "Available"
+    .filter((driver) => driver.status === "Available")
     .map((driver) => {
       const { first_name, middle_name, last_name } = driver.user;
       return `${first_name} ${middle_name} ${last_name}`;
@@ -46,7 +46,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         <div className="request-form-container">
           <div>
             <p></p>
-            <h1>Request Form</h1>
+            <h1>Request Form No. {selectedRequest.request_id}</h1>
             <p onClick={onRequestClose}>
               <FontAwesomeIcon icon={faXmark} />
             </p>
@@ -96,14 +96,22 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <p>{selectedRequest.travel_time}</p>
             </div>
           </div>
-          <div>
-            <h2>Assign a driver: </h2>{" "}
-            <Dropdown
-              status={dropdownDrivers}
-              onCategoryChange={handleChooseDriver}
-              dropdownClassName="dropdown-custom"
-            />
-          </div>
+          {selectedRequest.status !== "Pending" && (
+            <div>
+              <h2>Driver: </h2>
+              <p>{selectedRequest.driver_name}</p>
+            </div>
+          )}
+          {selectedRequest.status === "Pending" && (
+            <div>
+              <h2>Assign a driver: </h2>
+              <Dropdown
+                status={dropdownDrivers}
+                onCategoryChange={handleChooseDriver}
+                dropdownClassName="dropdown-custom"
+              />
+            </div>
+          )}
 
           <div>
             {showButtons && (

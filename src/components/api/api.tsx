@@ -589,3 +589,23 @@ export function fetchNotification(setNotifList: any) {
       console.error("Error fetching notif list:", error);
     });
 }
+
+export function fetchSchedule(setSchedule: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/tripticket/fetch/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      const scheduledTrips = response.data.filter(
+        (trip: any) => trip.status === "Scheduled"
+      );
+      setSchedule(scheduledTrips);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}

@@ -14,7 +14,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { serverSideUrl, fetchNotification } from "../../../components/api/api";
+import {
+  serverSideUrl,
+  fetchNotification,
+  fetchSchedule,
+} from "../../../components/api/api";
 import {
   VehicleAvailableWebsocket,
   RequestApproveWebsocket,
@@ -23,6 +27,7 @@ import {
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [hasSchedule, setHasSchedule] = useState(false);
+  const [schedule, setSchedule] = useState<any[]>([]);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -48,6 +53,15 @@ export default function DashboardR() {
 
   useEffect(() => {
     fetchNotification(setNotifList);
+  }, []);
+
+  useEffect(() => {
+    fetchSchedule((data: any) => {
+      setSchedule(data);
+      if (data.length > 0) {
+        setHasSchedule(true);
+      }
+    });
   }, []);
 
   RequestApproveWebsocket(userName);
@@ -99,31 +113,32 @@ export default function DashboardR() {
               <div className="requester-schedule-container">
                 <div>
                   <div>
-                    <h1>Schedule no. </h1> <h2>10</h2>
+                    <h1>Schedule no. </h1> <h2>{schedule[0]?.tripticket_id}</h2>
                   </div>
                   <div>
-                    <h2>Travel date and time: </h2> <p>2023/10/24 10:00 am</p>
-                  </div>
-                  <div>
-                    <div>
-                      <h2>Driver: </h2> <p>Bohari S. Ambulo</p>
-                    </div>
-                    <div>
-                      <h2>Contact No.: </h2> <p>094457455221212</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h2>Destination: </h2>{" "}
+                    <h2>Travel date and time: </h2>{" "}
                     <p>
-                      dawdawdawdlawjdlawjdawdjawopdjawdawdawdawdawdawdawdawdawdawdawadawdawdaw
+                      {schedule[0]?.travel_date}, {schedule[0]?.travel_time}{" "}
                     </p>
                   </div>
                   <div>
                     <div>
-                      <h2>Vehicle: </h2> <p>ABC-123</p>
+                      <h2>Driver: </h2> <p>{schedule[0]?.driver}</p>
                     </div>
                     <div>
-                      <h2>Status: </h2> <p>Scheduled</p>
+                      <h2>Contact No.: </h2>{" "}
+                      <p>{schedule[0]?.contact_no_of_driver}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h2>Destination: </h2> <p>{schedule[0]?.destination}</p>
+                  </div>
+                  <div>
+                    <div>
+                      <h2>Vehicle: </h2> <p>{schedule[0]?.vehicle}</p>
+                    </div>
+                    <div>
+                      <h2>Status: </h2> <p>{schedule[0]?.status}</p>
                     </div>
                   </div>
                   <div>

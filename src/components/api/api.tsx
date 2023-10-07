@@ -593,7 +593,7 @@ export function fetchNotification(setNotifList: any) {
 export function fetchSchedule(setSchedule: any) {
   const token = localStorage.getItem("token");
   api
-    .get("api/v1/tripticket/fetch/", {
+    .get("api/v1/tripticket/fetch-requester/", {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
@@ -604,6 +604,23 @@ export function fetchSchedule(setSchedule: any) {
         (trip: any) => trip.status === "Scheduled"
       );
       setSchedule(scheduledTrips);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}
+
+export function fetchScheduleOfficeStaff(setSchedule: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/tripticket/fetch-office-staff/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setSchedule(response.data);
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

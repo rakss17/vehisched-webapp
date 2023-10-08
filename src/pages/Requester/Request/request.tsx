@@ -95,10 +95,14 @@ export default function Request() {
   };
 
   const handleCancelButton = () => {
-    console.log(selectedRequest);
     setLoadingBarProgress(20);
     setIsCancelOpen(false);
-    cancelRequestAPI(requestId, setIsConfirmationOpen, setLoadingBarProgress);
+    cancelRequestAPI(
+      requestId,
+      setIsConfirmationOpen,
+      setLoadingBarProgress,
+      selectedStatus
+    );
   };
 
   const handleClose = () => {

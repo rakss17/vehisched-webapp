@@ -621,10 +621,7 @@ export function fetchSchedule(setSchedule: any) {
       },
     })
     .then((response) => {
-      const scheduledTrips = response.data.filter(
-        (trip: any) => trip.status === "Scheduled"
-      );
-      setSchedule(scheduledTrips);
+      setSchedule(response.data);
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

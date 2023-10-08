@@ -139,7 +139,7 @@ export default function DashboardR() {
                     </p>
                   </div>
                   <div>
-                    <p>Waiting for approval</p>
+                    <p>Waiting for office staff's approval</p>
                     <p className="loading-dots"></p>
                   </div>
                 </div>

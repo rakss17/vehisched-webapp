@@ -429,6 +429,25 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       console.error("Error fetching request list:", error);
     });
 }
+export function fetchPendingRequestAPI(setPendingSchedule: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/request/fetch-post/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      const pendingScheduleTrips = response.data.filter(
+        (trip: any) => trip.status === "Pending"
+      );
+      setPendingSchedule(pendingScheduleTrips);
+    })
+    .catch((error) => {
+      console.error("Error fetching request list:", error);
+    });
+}
 
 export function fetchRequestOfficeStaffAPI(setRequestList: any) {
   const token = localStorage.getItem("token");

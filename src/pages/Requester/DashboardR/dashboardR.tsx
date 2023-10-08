@@ -18,6 +18,7 @@ import {
   serverSideUrl,
   fetchNotification,
   fetchSchedule,
+  fetchPendingRequestAPI,
 } from "../../../components/api/api";
 import {
   VehicleAvailableWebsocket,
@@ -27,7 +28,9 @@ import {
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [hasSchedule, setHasSchedule] = useState(false);
+  const [hasPendingSchedule, setHasPendingSchedule] = useState(true);
   const [schedule, setSchedule] = useState<any[]>([]);
+  const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -60,6 +63,18 @@ export default function DashboardR() {
       setSchedule(data);
       if (data.length > 0) {
         setHasSchedule(true);
+        setHasPendingSchedule(false);
+      }
+    });
+  }, []);
+  useEffect(() => {
+    fetchPendingRequestAPI((data: any) => {
+      setPendingSchedule(data);
+      if (data.length > 0) {
+        setHasPendingSchedule(true);
+        setHasSchedule(false);
+      } else {
+        setHasPendingSchedule(false);
       }
     });
   }, []);
@@ -103,46 +118,29 @@ export default function DashboardR() {
         <div className="margin-top-dashboard">
           <Label label="Dashboard" />
         </div>
-        {hasSchedule ? (
+        {hasPendingSchedule ? (
           <>
             <div className="requester-row">
-              <p>Ongoing Schedule </p>
+              <p>Waiting for approval </p>
               <div></div>
             </div>
             <div className="requester-dashboard-container">
-              <div className="requester-schedule-container">
+              <div className="requester-pending-schedule-container">
                 <div>
                   <div>
-                    <h1>Schedule no. </h1> <h2>{schedule[0]?.tripticket_id}</h2>
+                    <h1>Schedule no. </h1>{" "}
+                    <h2>{pendingSchedule[0]?.request_id}</h2>
                   </div>
                   <div>
                     <h2>Travel date and time: </h2>{" "}
                     <p>
-                      {schedule[0]?.travel_date}, {schedule[0]?.travel_time}{" "}
+                      {pendingSchedule[0]?.travel_date},{" "}
+                      {pendingSchedule[0]?.travel_time}{" "}
                     </p>
                   </div>
                   <div>
-                    <div>
-                      <h2>Driver: </h2> <p>{schedule[0]?.driver}</p>
-                    </div>
-                    <div>
-                      <h2>Contact No.: </h2>{" "}
-                      <p>{schedule[0]?.contact_no_of_driver}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h2>Destination: </h2> <p>{schedule[0]?.destination}</p>
-                  </div>
-                  <div>
-                    <div>
-                      <h2>Vehicle: </h2> <p>{schedule[0]?.vehicle}</p>
-                    </div>
-                    <div>
-                      <h2>Status: </h2> <p>{schedule[0]?.status}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <button>View more info</button>
+                    <p>Waiting for approval</p>
+                    <p className="loading-dots"></p>
                   </div>
                 </div>
               </div>
@@ -150,47 +148,97 @@ export default function DashboardR() {
           </>
         ) : (
           <>
-            <div className="requester-row">
-              <p>Available Vehicles</p>
-              <button onClick={handleSetTripModal}>Set Trip</button>
-            </div>
-            <div className="requester-dashboard-container">
-              {availableVehicles.length === 0 ? (
-                <p className="vehicles-null">No vehicles available</p>
-              ) : (
-                availableVehicles.map((vehicle) => (
-                  <a
-                    onClick={() =>
-                      openRequestForm(
-                        vehicle.plate_number,
-                        vehicle.vehicle_name
-                      )
-                    }
-                    className="vehicle-card"
-                  >
-                    <div className="vehicle-row">
-                      <div className="vehicle-column">
-                        <p className="vehicle-name">
-                          {vehicle.plate_number}
-                          <br></br>
-                          {vehicle.vehicle_name}
-                        </p>
-                        <p className="vehicle-detail">
-                          Seating Capacity: {vehicle.capacity}
-                        </p>
-                        <p className="vehicle-detail">
-                          Type: {vehicle.vehicle_type}
+            {hasSchedule ? (
+              <>
+                <div className="requester-row">
+                  <p>Ongoing Schedule </p>
+                  <div></div>
+                </div>
+                <div className="requester-dashboard-container">
+                  <div className="requester-schedule-container">
+                    <div>
+                      <div>
+                        <h1>Schedule no. </h1>{" "}
+                        <h2>{schedule[0]?.tripticket_id}</h2>
+                      </div>
+                      <div>
+                        <h2>Travel date and time: </h2>{" "}
+                        <p>
+                          {schedule[0]?.travel_date}, {schedule[0]?.travel_time}{" "}
                         </p>
                       </div>
-                      <img
-                        className="vehicle-image"
-                        src={serverSideUrl + vehicle.vehicle_image}
-                      />
+                      <div>
+                        <div>
+                          <h2>Driver: </h2> <p>{schedule[0]?.driver}</p>
+                        </div>
+                        <div>
+                          <h2>Contact No.: </h2>{" "}
+                          <p>{schedule[0]?.contact_no_of_driver}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h2>Destination: </h2> <p>{schedule[0]?.destination}</p>
+                      </div>
+                      <div>
+                        <div>
+                          <h2>Vehicle: </h2> <p>{schedule[0]?.vehicle}</p>
+                        </div>
+                        <div>
+                          <h2>Status: </h2> <p>{schedule[0]?.status}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <button>View more info</button>
+                      </div>
                     </div>
-                  </a>
-                ))
-              )}
-            </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="requester-row">
+                  <p>Available Vehicles</p>
+                  <button onClick={handleSetTripModal}>Set Trip</button>
+                </div>
+                <div className="requester-dashboard-container">
+                  {availableVehicles.length === 0 ? (
+                    <p className="vehicles-null">No vehicles available</p>
+                  ) : (
+                    availableVehicles.map((vehicle) => (
+                      <a
+                        onClick={() =>
+                          openRequestForm(
+                            vehicle.plate_number,
+                            vehicle.vehicle_name
+                          )
+                        }
+                        className="vehicle-card"
+                      >
+                        <div className="vehicle-row">
+                          <div className="vehicle-column">
+                            <p className="vehicle-name">
+                              {vehicle.plate_number}
+                              <br></br>
+                              {vehicle.vehicle_name}
+                            </p>
+                            <p className="vehicle-detail">
+                              Seating Capacity: {vehicle.capacity}
+                            </p>
+                            <p className="vehicle-detail">
+                              Type: {vehicle.vehicle_type}
+                            </p>
+                          </div>
+                          <img
+                            className="vehicle-image"
+                            src={serverSideUrl + vehicle.vehicle_image}
+                          />
+                        </div>
+                      </a>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
           </>
         )}
       </Container>

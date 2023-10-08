@@ -24,7 +24,6 @@ import {
 export default function Schedules() {
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-
   const [selectedSched, setSelectedSched] = useState<string>("Today");
   const [searchTerm, setSearchTerm] = useState("");
   const [notifList, setNotifList] = useState<any[]>([]);

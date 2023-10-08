@@ -53,6 +53,12 @@ export default function Schedules() {
     fetchScheduleOfficeStaff(setSchedulesData);
   }, []);
 
+  useEffect(() => {
+    if (schedulesData.length > 0) {
+      handleButtonClick("Today");
+    }
+  }, [schedulesData]);
+
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
@@ -64,9 +70,7 @@ export default function Schedules() {
     switch (sched) {
       case "Today":
         filteredData = schedulesData.filter(
-          (schedule) =>
-            schedule.travel_date === currentDate &&
-            schedule.travel_time >= new Date().toLocaleTimeString()
+          (schedule) => schedule.travel_date === currentDate
         );
         break;
       case "Upcoming":
@@ -83,30 +87,33 @@ export default function Schedules() {
     setSelectedSched(sched);
   };
 
-  useEffect(() => {
-    handleButtonClick("Today");
-  }, []);
   const filteredSchedulesData = filteredData.filter((schedule) => {
     const isSearchMatch =
       searchTerm === "" ||
-      schedule.request_number
+      schedule.request_id
+        .toString()
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       schedule.requester_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      schedule.time.toLowerCase().includes(searchTerm.toLowerCase());
+      schedule.travel_time.toLowerCase().includes(searchTerm.toLowerCase());
 
     if (selectedSched === "Today") {
       return isSearchMatch;
     } else if (selectedSched === "Upcoming") {
       return (
         isSearchMatch ||
-        schedule.date.toLowerCase().includes(searchTerm.toLowerCase())
+        schedule.travel_date.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     return false;
   });
+
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
 
   return (
     <>
@@ -161,7 +168,7 @@ export default function Schedules() {
                     <tr key={index}>
                       <td>{schedule.request_id}</td>
                       <td>{schedule.requester_name}</td>
-                      <td>{schedule.travel_time}</td>
+                      <td>{formatTime(schedule.travel_time)}</td>
                       {selectedSched === "Upcoming" && (
                         <td>{schedule.travel_date}</td>
                       )}

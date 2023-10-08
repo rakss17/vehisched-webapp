@@ -633,7 +633,7 @@ export function fetchSchedule(setSchedule: any) {
 
 export function fetchScheduleOfficeStaff(setSchedule: any) {
   const token = localStorage.getItem("token");
-  api
+  return api
     .get("api/v1/tripticket/fetch-office-staff/", {
       headers: {
         Authorization: `Token ${token}`,

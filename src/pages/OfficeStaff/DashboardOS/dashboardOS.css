@@ -39,6 +39,9 @@
   height: 50vh;
   background-color: #d9d9d9;
 }
+.today-trip:hover {
+  cursor: pointer;
+}
 .today-trip p {
   color: #060e57;
   font-size: 2.5rem;

@@ -22,6 +22,7 @@ import {
   fetchNotification,
   fetchScheduleOfficeStaff,
 } from "../../../components/api/api";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardOS() {
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
@@ -40,6 +41,7 @@ export default function DashboardOS() {
     { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
     { icon: faUser, text: "Drivers", path: "/Drivers" },
   ];
+  const navigate = useNavigate();
   useEffect(() => {
     fetchNotification(setNotifList);
   }, []);
@@ -58,6 +60,10 @@ export default function DashboardOS() {
     });
   }, []);
 
+  const handleOnClickTodaysTrip = () => {
+    navigate("/Schedules");
+  };
+
   return (
     <>
       <Header />
@@ -66,11 +72,11 @@ export default function DashboardOS() {
         <ToastContainer />
         <Label label="Dashboard" />
         <div className="dashboard-container">
-          <div className="today-trip">
+          <div onClick={handleOnClickTodaysTrip} className="today-trip">
             <p>Today's Trip</p>
             <h2>{todayTrips}</h2>
           </div>
-          <CalendarSchedule />
+          <CalendarSchedule schedulesData={schedulesData} />
         </div>
       </Container>
     </>

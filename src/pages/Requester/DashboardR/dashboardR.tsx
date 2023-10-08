@@ -109,6 +109,11 @@ export default function DashboardR() {
     }
   });
 
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
+
   return (
     <>
       <Header />
@@ -135,7 +140,7 @@ export default function DashboardR() {
                     <h2>Travel date and time: </h2>{" "}
                     <p>
                       {pendingSchedule[0]?.travel_date},{" "}
-                      {pendingSchedule[0]?.travel_time}{" "}
+                      {formatTime(pendingSchedule[0]?.travel_time)}{" "}
                     </p>
                   </div>
                   <div>
@@ -164,7 +169,8 @@ export default function DashboardR() {
                       <div>
                         <h2>Travel date and time: </h2>{" "}
                         <p>
-                          {schedule[0]?.travel_date}, {schedule[0]?.travel_time}{" "}
+                          {schedule[0]?.travel_date},{" "}
+                          {formatTime(schedule[0]?.travel_time)}{" "}
                         </p>
                       </div>
                       <div>

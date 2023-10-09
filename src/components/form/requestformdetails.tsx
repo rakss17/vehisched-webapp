@@ -5,8 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { fetchDriversAPI } from "../api/api";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -17,9 +16,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
-  const driversInfo = useSelector((state: RootState) => state.driversData.data);
+  const [driversData, setDriversData] = useState<any[]>([]);
 
-  const driverNames = driversInfo
+  useEffect(() => {
+    fetchDriversAPI(setDriversData);
+  }, []);
+  const driverNames = driversData
     .filter((driver) => driver.status === "Available")
     .map((driver) => {
       const { first_name, middle_name, last_name } = driver.user;
@@ -29,7 +31,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const dropdownDrivers = ["Select Driver", ...driverNames];
 
   const handleChooseDriver = (driverName: string) => {
-    const selectedDriver = driversInfo.find((driver) => {
+    const selectedDriver = driversData.find((driver) => {
       const { first_name, middle_name, last_name } = driver.user;
       const fullName = `${first_name} ${middle_name} ${last_name}`;
       return fullName === driverName;

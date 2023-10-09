@@ -103,22 +103,20 @@ export function fetchUsersAPI() {
   };
 }
 
-export function fetchDriversAPI() {
-  return async (dispatch: Dispatch) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await api.get("api/v1/accounts/drivers/", {
-        headers: {
-          Authorization: `Token ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      dispatch(fetchDriversData(response.data));
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+export async function fetchDriversAPI(setDriversData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/drivers/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    setDriversData(response.data);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
 }
 
 export async function updateUserAPI(

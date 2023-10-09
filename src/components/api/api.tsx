@@ -429,6 +429,25 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       console.error("Error fetching request list:", error);
     });
 }
+export function fetchPendingRequestAPI(setPendingSchedule: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/request/fetch-post/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      const pendingScheduleTrips = response.data.filter(
+        (trip: any) => trip.status === "Pending"
+      );
+      setPendingSchedule(pendingScheduleTrips);
+    })
+    .catch((error) => {
+      console.error("Error fetching request list:", error);
+    });
+}
 
 export function fetchRequestOfficeStaffAPI(setRequestList: any) {
   const token = localStorage.getItem("token");
@@ -487,7 +506,8 @@ export function approveRequestAPI(
 export function cancelRequestAPI(
   requestId: any,
   setIsConfirmationOpen: any,
-  setLoadingBarProgress: (progress: number) => void
+  setLoadingBarProgress: (progress: number) => void,
+  selectedStatus: any
 ) {
   const token = localStorage.getItem("token");
 
@@ -496,6 +516,7 @@ export function cancelRequestAPI(
       `/api/v1/request/cancel/${requestId}/`,
       {
         status: "Canceled",
+        selected_status: selectedStatus,
       },
       {
         headers: {
@@ -587,5 +608,39 @@ export function fetchNotification(setNotifList: any) {
     })
     .catch((error) => {
       console.error("Error fetching notif list:", error);
+    });
+}
+
+export function fetchSchedule(setSchedule: any) {
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/tripticket/fetch-requester/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setSchedule(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}
+
+export function fetchScheduleOfficeStaff(setSchedule: any) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/tripticket/fetch-office-staff/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setSchedule(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
     });
 }

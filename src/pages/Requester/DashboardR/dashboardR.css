@@ -187,6 +187,98 @@
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
+.requester-pending-schedule-container {
+  height: 50vh;
+  width: 88vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.requester-pending-schedule-container div {
+  background-color: #d9d9d9;
+  height: 30vh;
+  width: 40vw;
+  padding-top: 1.5vh;
+}
+.requester-pending-schedule-container div div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 1vw;
+}
+.requester-pending-schedule-container div div:nth-child(1) h1 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-pending-schedule-container div div:nth-child(1) h2 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-pending-schedule-container div div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 1vw;
+}
+.requester-pending-schedule-container div div:nth-child(2) h2 {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-pending-schedule-container div div:nth-child(2) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-pending-schedule-container div div:nth-child(3) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 15vw;
+  align-items: center;
+  height: 5vh;
+  gap: 0.5vw;
+}
+.requester-pending-schedule-container div div:nth-child(3) p:nth-child(1) {
+  color: black;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.requester-pending-schedule-container div div:nth-child(3) p:nth-child(2) {
+  color: black;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+@keyframes loadingDots {
+  0% {
+    content: ". . . .";
+  }
+  25% {
+    content: ".   ";
+  }
+  50% {
+    content: ". .  ";
+  }
+  75% {
+    content: ". . . ";
+  }
+  100% {
+    content: ". . . .";
+  }
+}
+
+.loading-dots::before {
+  content: ". . . .";
+  animation: loadingDots 2s linear infinite;
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
 .modal-set-trip {
   display: flex;
   align-items: center;

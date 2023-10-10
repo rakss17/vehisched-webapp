@@ -47,6 +47,8 @@ export default function RequestForm() {
     passenger_names: [],
     travel_date: null,
     travel_time: null,
+    return_date: null,
+    return_time: null,
     destination: "",
     vehicle: `${plateNumber}`,
   });
@@ -142,14 +144,25 @@ export default function RequestForm() {
       setLoadingBarProgress
     );
   };
-  const handleDateChange = (date: Date | null) => {
+  const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
   };
+  const handleEndDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, return_date: formattedDate });
+  };
 
-  const handleTimeChange = (time: string | null) => {
+  const handleStartTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, travel_time: time });
+    } else {
+      console.log("No time selected.");
+    }
+  };
+  const handleEndTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, return_time: time });
     } else {
       console.log("No time selected.");
     }
@@ -225,12 +238,25 @@ export default function RequestForm() {
                   <p>Date of Travel: </p>
                   <CalendarInput
                     className="customize-calendar"
-                    onChange={handleDateChange}
+                    onChange={handleStartDateChange}
                   />
                 </div>
                 <div className="calendar-containerr">
+                  <p>To </p>
+                  <CalendarInput
+                    className="customize-calendar"
+                    onChange={handleEndDateChange}
+                  />
+                </div>
+              </div>
+              <div className="forth-row">
+                <div className="calendar-containerr">
                   <p>Time of Travel: </p>
-                  <TimeInput onChange={handleTimeChange} />
+                  <TimeInput onChange={handleStartTimeChange} />
+                </div>
+                <div className="calendar-containerr">
+                  <p>To </p>
+                  <TimeInput onChange={handleEndTimeChange} />
                 </div>
               </div>
 

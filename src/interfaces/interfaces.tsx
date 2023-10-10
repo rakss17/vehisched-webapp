@@ -90,6 +90,8 @@ export interface RequestFormProps {
   destination?: any;
   travel_date?: any;
   travel_time?: any;
+  return_date?: any;
+  return_time?: any;
   number_of_passenger?: any;
   status?: any;
   request_id?: any;

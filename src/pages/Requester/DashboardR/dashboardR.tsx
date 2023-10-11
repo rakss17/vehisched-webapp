@@ -73,6 +73,8 @@ export default function DashboardR() {
       if (data.length > 0) {
         setHasSchedule(true);
         setHasPendingSchedule(false);
+        setIsOngoingScheduleClick(true);
+        handleButtonClick("Ongoing Schedule");
       }
     });
   }, []);
@@ -83,6 +85,8 @@ export default function DashboardR() {
       if (data.length > 0) {
         setHasPendingSchedule(true);
         setHasSchedule(false);
+        setIsOngoingScheduleClick(true);
+        handleButtonClick("Ongoing Schedule");
       } else {
         setHasPendingSchedule(false);
       }
@@ -254,20 +258,20 @@ export default function DashboardR() {
           )}
           {isAvailableVehicleClick && (
             <>
-              <div className="available-vehicle-container">
-                {vehiclesData.length === 0 ? (
-                  <p className="vehicles-null">
-                    No vehicles available or Please set your trip schedule to
-                    display available vehicles
+              {vehiclesData.length === 0 ? (
+                <p className="vehicles-null">
+                  No vehicles available or Please set your trip schedule to
+                  display available vehicles
+                </p>
+              ) : (
+                <>
+                  <p className="date-available-range">
+                    Available vehicles from {data.travel_date},{" "}
+                    {formatTime(data.travel_time)} to {data.return_date},{" "}
+                    {formatTime(data.return_time)}
                   </p>
-                ) : (
-                  vehiclesData.map((vehicle) => (
-                    <>
-                      <p>
-                        Available vehicles from {data.travel_date},{" "}
-                        {formatTime(data.travel_time)} to {data.return_date},{" "}
-                        {formatTime(data.return_time)}
-                      </p>
+                  <div className="vehicle-container">
+                    {vehiclesData.map((vehicle) => (
                       <a
                         onClick={() =>
                           openRequestForm(
@@ -282,7 +286,7 @@ export default function DashboardR() {
                           <div className="vehicle-column">
                             <p className="vehicle-name">
                               {vehicle.plate_number}
-                              <br></br>
+                              <br />
                               {vehicle.vehicle_name}
                             </p>
                             <p className="vehicle-detail">
@@ -295,13 +299,90 @@ export default function DashboardR() {
                           <img
                             className="vehicle-image"
                             src={serverSideUrl + vehicle.vehicle_image}
+                            alt={vehicle.vehicle_name}
                           />
                         </div>
                       </a>
-                    </>
-                  ))
-                )}
-              </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+          {isOngoingScheduleClick && (
+            <>
+              {hasPendingSchedule ? (
+                <>
+                  <div className="requester-pending-schedule-container">
+                    <div>
+                      <div>
+                        <h1>Schedule no. </h1>{" "}
+                        <h2>{pendingSchedule[0]?.request_id}</h2>
+                      </div>
+                      <div>
+                        <h2>Travel date and time: </h2>{" "}
+                        <p>
+                          {pendingSchedule[0]?.travel_date},{" "}
+                          {formatTime(pendingSchedule[0]?.travel_time)}{" "}
+                        </p>
+                      </div>
+                      <div>
+                        <p>Waiting for office staff's approval</p>
+                        <p className="loading-dots"></p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {schedule.length === 0 ? (
+                    <p className="vehicles-null">No schedules ongoing</p>
+                  ) : (
+                    <div className="requester-schedule-container">
+                      <div>
+                        <div>
+                          <h1>Schedule no. </h1>{" "}
+                          <h2>{schedule[0]?.tripticket_id}</h2>
+                        </div>
+                        <div>
+                          <h2>Travel date and time: </h2>{" "}
+                          <p>
+                            {schedule[0]?.travel_date},{" "}
+                            {formatTime(schedule[0]?.travel_time)}
+                            <strong> to </strong>
+                            {schedule[0]?.return_date},{" "}
+                            {formatTime(schedule[0]?.return_time)}
+                          </p>
+                        </div>
+                        <div>
+                          <div>
+                            <h2>Driver: </h2> <p>{schedule[0]?.driver}</p>
+                          </div>
+                          <div>
+                            <h2>Contact No.: </h2>{" "}
+                            <p>{schedule[0]?.contact_no_of_driver}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <h2>Destination: </h2>{" "}
+                          <p>{schedule[0]?.destination}</p>
+                        </div>
+                        <div>
+                          <div>
+                            <h2>Vehicle: </h2> <p>{schedule[0]?.vehicle}</p>
+                          </div>
+                          <div>
+                            <h2>Status: </h2> <p>{schedule[0]?.status}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <button>View more info</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </>
           )}
         </div>

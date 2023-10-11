@@ -61,9 +61,19 @@
   gap: 5%;
   justify-content: center;
 }
-.available-vehicle-container {
-  height: 68vh;
+.vehicle-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 55vh;
   width: 88vw;
+  gap: 0%;
+  padding-left: 5vh;
+}
+.date-available-range {
+  color: #060e57;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 .requester-schedule-container {
   height: 50vh;

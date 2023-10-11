@@ -25,27 +25,40 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
   schedulesData,
 }) => {
   const [markedDates, setMarkedDates] = useState<Date[]>([]);
+  const [startDates, setStartDates] = useState<Date[]>([]);
+  const [endDates, setEndDates] = useState<Date[]>([]);
 
   const markDates = () => {
-    const dates = schedulesData.map((schedule) => {
-      const date = new Date(schedule.travel_date);
-      const time = schedule.travel_time;
-      const [hours, minutes] = time.split(":");
-      date.setHours(Number(hours));
-      date.setMinutes(Number(minutes));
-      return date;
+    const startDates = schedulesData.map((schedule) => {
+      const startDate = new Date(schedule.travel_date);
+      const startTime = schedule.travel_time;
+      const [startHours, startMinutes] = startTime.split(":");
+      startDate.setHours(Number(startHours));
+      startDate.setMinutes(Number(startMinutes));
+      return startDate;
     });
-    setMarkedDates(dates);
+
+    const endDates = schedulesData.map((schedule) => {
+      const endDate = new Date(schedule.return_date);
+      const endTime = schedule.return_time;
+      const [endHours, endMinutes] = endTime.split(":");
+      endDate.setHours(Number(endHours));
+      endDate.setMinutes(Number(endMinutes));
+      return endDate;
+    });
+
+    setStartDates(startDates);
+    setEndDates(endDates);
   };
 
   useEffect(() => {
     markDates();
   }, [schedulesData]);
 
-  const events: Event[] = markedDates.map((date, index) => ({
+  const events: Event[] = startDates.map((startDate, index) => ({
     title: `Trip ${schedulesData[index].tripticket_id}`,
-    start: date,
-    end: date,
+    start: startDate,
+    end: endDates[index],
   }));
 
   return (

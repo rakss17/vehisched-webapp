@@ -6,27 +6,43 @@
 .margin-top-dashboard {
   margin-top: 5rem;
 }
+
+.requester-row-container {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
 .requester-row {
   margin-top: 2vw;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
-  gap: 30%;
+  justify-content: space-evenly;
+  width: 80vw;
+  gap: 0%;
 }
-.requester-row p {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #060e57;
-}
+
 .requester-row button {
-  background-color: #060e57;
-  font-size: 1rem;
+  width: 13vw;
+  height: 5vh;
+  padding: 0;
+  background-color: transparent;
+  color: #060e57;
   font-weight: bold;
+  font-size: 1.4rem;
+  text-align: center;
+  border: none;
+}
+.requester-row button.active {
+  border-bottom: 5px solid #060e57;
+  border-radius: 0px;
 }
 .requester-row button:hover {
-  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-  border: 1px solid #cccccc;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 5px solid #060e57;
+  border-radius: 0px;
 }
 .requester-dashboard-container {
   display: flex;
@@ -43,6 +59,21 @@
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
   gap: 5%;
+  justify-content: center;
+}
+.vehicle-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 55vh;
+  width: 88vw;
+  gap: 0%;
+  padding-left: 5vh;
+}
+.date-available-range {
+  color: #060e57;
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 .requester-schedule-container {
   height: 50vh;
@@ -286,8 +317,6 @@
   background-color: #d9d9d9;
   width: 30vw;
   height: 55vh;
-  margin-top: 20vh;
-  margin-left: 35vw;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
@@ -304,7 +333,7 @@
   flex-direction: row;
   justify-content: space-around;
 }
-.modal-button-container button:nth-child(1) {
+/* .modal-button-container button:nth-child(1) {
   background-color: transparent;
   font-weight: bold;
   font-size: 1rem;
@@ -314,15 +343,15 @@
 .modal-button-container button:nth-child(1):hover {
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
-}
+} */
 
-.modal-button-container button:nth-child(2) {
+.modal-button-container button:nth-child(1) {
   background-color: #060e57;
   font-size: 1rem;
   font-weight: bold;
 }
 
-.modal-button-container button:nth-child(2):hover {
+.modal-button-container button:nth-child(1):hover {
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }

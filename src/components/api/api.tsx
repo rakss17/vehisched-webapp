@@ -408,6 +408,18 @@ export function postRequestFromAPI(
     })
     .catch((error) => {
       console.log(error);
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
     });
 }
 
@@ -606,6 +618,36 @@ export function fetchNotification(setNotifList: any) {
     })
     .catch((error) => {
       console.error("Error fetching notif list:", error);
+    });
+}
+
+export function checkVehicleAvailability(
+  setVehiclesData: any,
+  preferred_start_travel_date: any,
+  preferred_start_travel_time: any,
+  preferred_end_travel_date: any,
+  preferred_end_travel_time: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/tripticket/check-vehicle-availability/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_start_travel_time: preferred_start_travel_time,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_end_travel_time: preferred_end_travel_time,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setVehiclesData(response.data);
+      console.log("kni", response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching vehicle list:", error);
     });
 }
 

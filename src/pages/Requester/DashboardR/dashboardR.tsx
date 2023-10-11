@@ -19,11 +19,13 @@ import {
   fetchNotification,
   fetchSchedule,
   fetchPendingRequestAPI,
+  checkVehicleAvailability,
 } from "../../../components/api/api";
 import {
   VehicleAvailableWebsocket,
   RequestApproveWebsocket,
 } from "../../../components/api/websocket";
+import { format } from "date-fns";
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
@@ -31,10 +33,21 @@ export default function DashboardR() {
   const [hasPendingSchedule, setHasPendingSchedule] = useState(true);
   const [schedule, setSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
+  const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
+  const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
+  const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
+  const [selectedButton, setSelectedButton] =
+    useState<string>("Set Trip Schedule");
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
+  const [data, setData] = useState<any>({
+    travel_date: null,
+    travel_time: null,
+    return_date: null,
+    return_time: null,
+  });
   const role = personalInfo?.role;
   const userName = personalInfo?.username;
   const navigate = useNavigate();
@@ -51,10 +64,6 @@ export default function DashboardR() {
   ];
 
   useEffect(() => {
-    VehicleAvailableWebsocket(setVehiclesData);
-  }, []);
-
-  useEffect(() => {
     fetchNotification(setNotifList);
   }, []);
 
@@ -67,6 +76,7 @@ export default function DashboardR() {
       }
     });
   }, []);
+
   useEffect(() => {
     fetchPendingRequestAPI((data: any) => {
       setPendingSchedule(data);
@@ -82,7 +92,14 @@ export default function DashboardR() {
   RequestApproveWebsocket(userName);
 
   const handleSetTripModal = () => {
-    setIsSetTripOpen(true);
+    checkVehicleAvailability(
+      setVehiclesData,
+      data.travel_date,
+      data.travel_time,
+      data.return_date,
+      data.return_time
+    );
+    handleButtonClick("Available Vehicle");
   };
 
   const handleCancelTripModal = () => {
@@ -99,19 +116,71 @@ export default function DashboardR() {
     navigate("/RequestForm", { state: { plateNumber, vehicleName } });
   };
 
-  const availableVehicles = vehiclesData.filter((vehicle) => {
-    if (role === "requester") {
-      return vehicle.status === "Available" && !vehicle.is_vip;
-    } else if (role === "vip") {
-      return vehicle.status === "Available" && vehicle.is_vip;
-    } else {
-      return false;
+  // const availableVehicles = vehiclesData.filter((vehicle) => {
+  //   if (role === "requester") {
+  //     return vehicle.status === "Available" && !vehicle.is_vip;
+  //   } else if (role === "vip") {
+  //     return vehicle.status === "Available" && vehicle.is_vip;
+  //   } else {
+  //     return false;
+  //   }
+  // });
+
+  const handleButtonClick = (button: string) => {
+    switch (button) {
+      case "Set Trip Schedule":
+        setIsTripScheduleClick(true);
+        setIsAvailableVehicleClick(false);
+        setIsOngoingScheduleClick(false);
+        break;
+      case "Available Vehicle":
+        setIsTripScheduleClick(false);
+        setIsAvailableVehicleClick(true);
+        setIsOngoingScheduleClick(false);
+        break;
+      case "Ongoing Schedule":
+        setIsTripScheduleClick(false);
+        setIsAvailableVehicleClick(false);
+        setIsOngoingScheduleClick(true);
+        break;
+
+      default:
+        break;
     }
-  });
+
+    setSelectedButton(button);
+  };
+  useEffect(() => {
+    handleButtonClick("Set Trip Schedule");
+  }, []);
 
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
+
+  const handleStartDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, travel_date: formattedDate });
+  };
+  const handleEndDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, return_date: formattedDate });
+  };
+
+  const handleStartTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, travel_time: time });
+    } else {
+      console.log("No time selected.");
+    }
+  };
+  const handleEndTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, return_time: time });
+    } else {
+      console.log("No time selected.");
+    }
   };
 
   return (
@@ -123,94 +192,82 @@ export default function DashboardR() {
         <div className="margin-top-dashboard">
           <Label label="Dashboard" />
         </div>
-        {hasPendingSchedule ? (
-          <>
-            <div className="requester-row">
-              <p>Waiting for approval </p>
-              <div></div>
-            </div>
-            <div className="requester-dashboard-container">
-              <div className="requester-pending-schedule-container">
-                <div>
-                  <div>
-                    <h1>Schedule no. </h1>{" "}
-                    <h2>{pendingSchedule[0]?.request_id}</h2>
-                  </div>
-                  <div>
-                    <h2>Travel date and time: </h2>{" "}
-                    <p>
-                      {pendingSchedule[0]?.travel_date},{" "}
-                      {formatTime(pendingSchedule[0]?.travel_time)}{" "}
-                    </p>
-                  </div>
-                  <div>
-                    <p>Waiting for office staff's approval</p>
-                    <p className="loading-dots"></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            {hasSchedule ? (
-              <>
-                <div className="requester-row">
-                  <p>Ongoing Schedule </p>
-                  <div></div>
-                </div>
-                <div className="requester-dashboard-container">
-                  <div className="requester-schedule-container">
+        <div className="requester-row-container">
+          <div className="requester-row">
+            <button
+              onClick={() => handleButtonClick("Set Trip Schedule")}
+              className={selectedButton === "Set Trip Schedule" ? "active" : ""}
+            >
+              Set Trip Schedule
+            </button>
+            <button
+              onClick={() => handleButtonClick("Available Vehicle")}
+              className={selectedButton === "Available Vehicle" ? "active" : ""}
+            >
+              Available Vehicle
+            </button>
+            <button
+              onClick={() => handleButtonClick("Ongoing Schedule")}
+              className={selectedButton === "Ongoing Schedule" ? "active" : ""}
+            >
+              Ongoing Schedule
+            </button>
+          </div>
+        </div>
+        <div className="requester-dashboard-container">
+          {isTripScheduleClick && (
+            <>
+              <div className="modal-set-trip">
+                <div className="modal-set-trip-body">
+                  <h1>Set Trip</h1>
+                  <div className="date-from">
+                    <p>From: </p>
                     <div>
-                      <div>
-                        <h1>Schedule no. </h1>{" "}
-                        <h2>{schedule[0]?.tripticket_id}</h2>
-                      </div>
-                      <div>
-                        <h2>Travel date and time: </h2>{" "}
-                        <p>
-                          {schedule[0]?.travel_date},{" "}
-                          {formatTime(schedule[0]?.travel_time)}{" "}
-                        </p>
-                      </div>
-                      <div>
-                        <div>
-                          <h2>Driver: </h2> <p>{schedule[0]?.driver}</p>
-                        </div>
-                        <div>
-                          <h2>Contact No.: </h2>{" "}
-                          <p>{schedule[0]?.contact_no_of_driver}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <h2>Destination: </h2> <p>{schedule[0]?.destination}</p>
-                      </div>
-                      <div>
-                        <div>
-                          <h2>Vehicle: </h2> <p>{schedule[0]?.vehicle}</p>
-                        </div>
-                        <div>
-                          <h2>Status: </h2> <p>{schedule[0]?.status}</p>
-                        </div>
-                      </div>
-                      <div>
-                        <button>View more info</button>
+                      <CalendarInput onChange={handleStartDateChange} />
+                      <div className="separate-time">
+                        <TimeInput onChange={handleStartTimeChange} />
                       </div>
                     </div>
                   </div>
+                  <div className="date-to">
+                    <p>To: </p>
+                    <div>
+                      <CalendarInput onChange={handleEndDateChange} />
+                      <div className="separate-time">
+                        {" "}
+                        <TimeInput onChange={handleEndTimeChange} />
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div className="number-of-pass">
+                    <p>
+                      Number of Passenger{"("}s{"):"}
+                    </p>
+                    <input type="number" onKeyDown={handleKeyDown}></input>
+                  </div> */}
+                  <div className="modal-button-container">
+                    <button onClick={handleSetTripModal}>Set Trip</button>
+                  </div>
                 </div>
-              </>
-            ) : (
-              <>
-                <div className="requester-row">
-                  <p>Available Vehicles</p>
-                  <button onClick={handleSetTripModal}>Set Trip</button>
-                </div>
-                <div className="requester-dashboard-container">
-                  {availableVehicles.length === 0 ? (
-                    <p className="vehicles-null">No vehicles available</p>
-                  ) : (
-                    availableVehicles.map((vehicle) => (
+              </div>
+            </>
+          )}
+          {isAvailableVehicleClick && (
+            <>
+              <div className="available-vehicle-container">
+                {vehiclesData.length === 0 ? (
+                  <p className="vehicles-null">
+                    No vehicles available or Please set your trip schedule to
+                    display available vehicles
+                  </p>
+                ) : (
+                  vehiclesData.map((vehicle) => (
+                    <>
+                      <p>
+                        Available vehicles from {data.travel_date},{" "}
+                        {formatTime(data.travel_time)} to {data.return_date},{" "}
+                        {formatTime(data.return_time)}
+                      </p>
                       <a
                         onClick={() =>
                           openRequestForm(
@@ -219,6 +276,7 @@ export default function DashboardR() {
                           )
                         }
                         className="vehicle-card"
+                        key={vehicle.plate_number}
                       >
                         <div className="vehicle-row">
                           <div className="vehicle-column">
@@ -240,43 +298,17 @@ export default function DashboardR() {
                           />
                         </div>
                       </a>
-                    ))
-                  )}
-                </div>
-              </>
-            )}
-          </>
-        )}
-      </Container>
-      <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
-        <div className="modal-set-trip-body">
-          <h1>Set Trip</h1>
-          <div className="date-from">
-            <p>From: </p>
-            <div>
-              {/* <CalendarInput /> */}
-              <div className="separate-time">{/* <TimeInput /> */}</div>
-            </div>
-          </div>
-          <div className="date-to">
-            <p>To: </p>
-            <div>
-              {/* <CalendarInput /> */}
-              <div className="separate-time">{/* <TimeInput /> */}</div>
-            </div>
-          </div>
-          <div className="number-of-pass">
-            <p>
-              Number of Passenger{"("}s{"):"}
-            </p>
-            <input type="number" onKeyDown={handleKeyDown}></input>
-          </div>
-          <div className="modal-button-container">
-            <button onClick={handleCancelTripModal}>Cancel</button>
-            <button onClick={handleSetTripModal}>Set Trip</button>
-          </div>
+                    </>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
-      </Modal>
+      </Container>
+      {/* <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
+        
+      </Modal> */}
     </>
   );
 }

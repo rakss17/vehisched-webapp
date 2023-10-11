@@ -408,6 +408,18 @@ export function postRequestFromAPI(
     })
     .catch((error) => {
       console.log(error);
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
     });
 }
 

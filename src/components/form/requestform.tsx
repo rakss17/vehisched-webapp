@@ -26,6 +26,8 @@ import { RequestFormProps } from "../../interfaces/interfaces";
 import { postRequestFromAPI } from "../api/api";
 import { format } from "date-fns";
 import LoadingBar from "react-top-loading-bar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RequestForm() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -174,6 +176,7 @@ export default function RequestForm() {
         progress={loadingBarProgress}
         onLoaderFinished={() => setLoadingBarProgress(0)}
       />
+      <ToastContainer />
       <Header />
       <Container>
         <div className="request-form-body">

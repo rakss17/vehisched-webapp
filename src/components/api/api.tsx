@@ -13,7 +13,7 @@ import { fetchDriversData } from "../../redux/slices/driversDataSlices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const serverSideUrl = "http://localhost:8000";
+export const serverSideUrl = "http://localhost:8000/media/";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/",

@@ -98,11 +98,10 @@ export default function Drivers() {
             <p className="drivers-null">No drivers available</p>
           ) : (
             filteredDriverList.map((driver) => (
-              <a className="driver-card">
+              <a key={driver.id} className="driver-card">
                 <div className="driver-card-column">
                   <p className="driver-name">
-                    {driver.user.last_name}, {driver.user.first_name}{" "}
-                    {driver.user.middle_name}
+                    {driver.last_name}, {driver.first_name} {driver.middle_name}
                   </p>
                   <p className="driver-status">{driver.status}</p>
                 </div>

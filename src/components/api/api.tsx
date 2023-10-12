@@ -141,7 +141,6 @@ export async function fetchDriversAPI(setDriversData: any) {
         "Content-Type": "application/json",
       },
     });
-
     setDriversData(response.data);
   } catch (error) {
     console.error("Error fetching user list:", error);

@@ -22,16 +22,19 @@ import {
   fetchVehiclesAPI,
   toggleVehicleStatusAPI,
   fetchNotification,
+  fetchVehicleSchedules,
 } from "../../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { NotificationWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CalendarModal from "../../../components/calendar/calendarmodal";
 
 export default function Vehicles() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
+  const [vehicleSchedulesData, setVehicleSchedules] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState<any>();
@@ -40,6 +43,7 @@ export default function Vehicles() {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationOpenUnavailable, setIsConfirmationOpenUnavailable] =
     useState(false);
+  const [isVehicleCalendarOpen, setIsVehiclCalendarOpen] = useState(false);
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const dispatch = useDispatch();
@@ -93,14 +97,17 @@ export default function Vehicles() {
     setSelectedCategory(status === "All" ? null : status);
   };
   const handleEllipsisMenu = (category: string, vehicle: any) => {
-    if (category === "Unavailable") {
-      setIsUnavailableOpen(true);
-      setSelectedVehicle(vehicle);
-    } else if (category === "Available") {
-      setIsAvailableOpen(true);
-      setSelectedVehicle(vehicle);
+    setSelectedVehicle(vehicle);
+    if (category === "View Schedules") {
+      setIsVehiclCalendarOpen(true);
     }
   };
+
+  useEffect(() => {
+    if (selectedVehicle && isVehicleCalendarOpen) {
+      fetchVehicleSchedules(setVehicleSchedules, selectedVehicle.plate_number);
+    }
+  }, [selectedVehicle, isVehicleCalendarOpen]);
 
   const handleAvailableButton = () => {
     setLoadingBarProgress(20);
@@ -126,6 +133,7 @@ export default function Vehicles() {
   const handleClose = () => {
     setIsAvailableOpen(false);
     setIsUnavailableOpen(false);
+    setIsVehiclCalendarOpen(false);
   };
 
   const getStatusColor = (status: any) => {
@@ -140,6 +148,7 @@ export default function Vehicles() {
         return "black";
     }
   };
+
   return (
     <>
       <LoadingBar
@@ -166,7 +175,7 @@ export default function Vehicles() {
             <p className="vehicles-null">No vehicles available</p>
           ) : (
             filteredVehicleList.map((vehicle) => (
-              <a className="vehicle-card">
+              <a key={vehicle.plate_number} className="vehicle-card">
                 <div className="vehicle-row">
                   <div className="vehicle-column">
                     <p className="vehicle-name">
@@ -194,11 +203,7 @@ export default function Vehicles() {
                       onCategoryChange={(category) =>
                         handleEllipsisMenu(category, vehicle)
                       }
-                      status={
-                        vehicle.status == "Available"
-                          ? ["Set Status", "Unavailable"]
-                          : ["Set Status", "Available"]
-                      }
+                      status={["View Schedules"]}
                     />
                   </div>
                 </div>
@@ -231,6 +236,11 @@ export default function Vehicles() {
       <Confirmation
         isOpen={isConfirmationOpenUnavailable}
         header="Vehicle status set to unavailable!"
+      />
+      <CalendarModal
+        isOpen={isVehicleCalendarOpen}
+        selectedSchedule={vehicleSchedulesData}
+        onRequestClose={handleClose}
       />
     </>
   );

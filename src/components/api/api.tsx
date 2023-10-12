@@ -713,3 +713,27 @@ export function fetchScheduleOfficeStaff(setSchedule: any) {
       console.error("Error fetching schedule list:", error);
     });
 }
+
+export function fetchVehicleSchedules(
+  setVehicleSchedules: any,
+  vehicleId: any
+) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/tripticket/vehicle-schedules/", {
+      params: {
+        plate_number: vehicleId,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setVehicleSchedules(response.data);
+      console.log("vehicle schedule", response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}

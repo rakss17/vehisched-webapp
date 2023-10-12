@@ -48,7 +48,7 @@ export default function DashboardOS() {
   useEffect(() => {
     NotificationWebsocket();
   }, []);
-  console.log("scheduleee", schedulesData);
+
   useEffect(() => {
     const currentDate = format(new Date(), "yyyy-MM-dd");
     fetchScheduleOfficeStaff((data: any) => {

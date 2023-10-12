@@ -120,7 +120,7 @@ export default function Drivers() {
           ) : (
             filteredDriverList.map((driver) => (
               <a key={driver.id} className="driver-card">
-                <div className="ellipsis-container">
+                <div className="driver-ellipsis-container">
                   <Ellipsis
                     onCategoryChange={(category) =>
                       handleEllipsisMenu(category, driver)
@@ -132,6 +132,8 @@ export default function Drivers() {
                   <p className="driver-name">
                     {driver.last_name}, {driver.first_name} {driver.middle_name}
                   </p>
+                  <p className="driver-status">{driver.mobile_number}</p>
+
                   <p className="driver-status">{driver.status}</p>
                 </div>
               </a>

@@ -17,18 +17,23 @@ import { SidebarItem, SignupParams } from "../../../interfaces/interfaces";
 import {
   fetchDriversAPI,
   fetchNotification,
+  fetchDriverSchedules,
 } from "../../../components/api/api";
 import { NotificationWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CalendarModal from "../../../components/calendar/calendarmodal";
+import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 
 export default function Drivers() {
   const [driversData, setDriversData] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [notifList, setNotifList] = useState<any[]>([]);
-
+  const [isDriverCalendarOpen, setIsDriverCalendarOpen] = useState(false);
+  const [driverSchedulesData, setDriverSchedules] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const [selectedDriver, setSelectedDriver] = useState<any>();
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
     {
@@ -73,8 +78,24 @@ export default function Drivers() {
     return isCategoryMatch && isSearchMatch;
   });
 
+  const handleEllipsisMenu = (category: string, vehicle: any) => {
+    setSelectedDriver(vehicle);
+    if (category === "View Schedules") {
+      setIsDriverCalendarOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDriver && isDriverCalendarOpen) {
+      fetchDriverSchedules(setDriverSchedules, selectedDriver.id);
+    }
+  }, [selectedDriver, isDriverCalendarOpen]);
   const handleCategoryChange = (status: string) => {
     setSelectedCategory(status === "All" ? null : status);
+  };
+
+  const handleClose = () => {
+    setIsDriverCalendarOpen(false);
   };
 
   return (
@@ -99,6 +120,14 @@ export default function Drivers() {
           ) : (
             filteredDriverList.map((driver) => (
               <a key={driver.id} className="driver-card">
+                <div className="ellipsis-container">
+                  <Ellipsis
+                    onCategoryChange={(category) =>
+                      handleEllipsisMenu(category, driver)
+                    }
+                    status={["View Schedules"]}
+                  />
+                </div>
                 <div className="driver-card-column">
                   <p className="driver-name">
                     {driver.last_name}, {driver.first_name} {driver.middle_name}
@@ -110,6 +139,11 @@ export default function Drivers() {
           )}
         </div>
       </Container>
+      <CalendarModal
+        isOpen={isDriverCalendarOpen}
+        selectedSchedule={driverSchedulesData}
+        onRequestClose={handleClose}
+      />
     </>
   );
 }

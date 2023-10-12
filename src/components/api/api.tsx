@@ -696,7 +696,7 @@ export function fetchSchedule(setSchedule: any) {
     });
 }
 
-export function fetchScheduleOfficeStaff(setSchedule: any) {
+export async function fetchScheduleOfficeStaff(setSchedule: any) {
   const token = localStorage.getItem("token");
   return api
     .get("api/v1/tripticket/fetch-office-staff/", {
@@ -713,7 +713,7 @@ export function fetchScheduleOfficeStaff(setSchedule: any) {
     });
 }
 
-export function fetchVehicleSchedules(
+export async function fetchVehicleSchedules(
   setVehicleSchedules: any,
   vehicleId: any
 ) {
@@ -730,7 +730,29 @@ export function fetchVehicleSchedules(
     })
     .then((response) => {
       setVehicleSchedules(response.data);
-      console.log("vehicle schedule", response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}
+
+export async function fetchDriverSchedules(
+  setDriverSchedules: any,
+  driverId: any
+) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/tripticket/driver-schedules/", {
+      params: {
+        driver_id: driverId,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setDriverSchedules(response.data);
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

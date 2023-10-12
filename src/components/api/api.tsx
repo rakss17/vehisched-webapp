@@ -103,6 +103,35 @@ export function fetchUsersAPI() {
   };
 }
 
+export function fetchDriversScheduleAPI(
+  setDriversData: any,
+  travel_date: any,
+  travel_time: any,
+  return_date: any,
+  return_time: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/tripticket/check-driver-availability/", {
+      params: {
+        preferred_start_travel_date: travel_date,
+        preferred_start_travel_time: travel_time,
+        preferred_end_travel_date: return_date,
+        preferred_end_travel_time: return_time,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setDriversData(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching driver list:", error);
+    });
+}
+
 export async function fetchDriversAPI(setDriversData: any) {
   try {
     const token = localStorage.getItem("token");

@@ -112,9 +112,13 @@ export interface RequestFormDetailsProps {
 
 export interface TimeInputProps {
   onChange: (time: string | null) => void;
+  selectedDate?: string | null;
+  handleDateChange?: (date: Date | null) => void;
 }
 
 export interface CalendarInputProps {
   className?: string;
   onChange: (date: Date | null) => void;
+  disableDaysBefore?: any;
+  selectedDate?: Date | null;
 }

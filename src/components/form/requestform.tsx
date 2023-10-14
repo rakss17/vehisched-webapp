@@ -34,6 +34,10 @@ export default function RequestForm() {
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
+  const travelDate = location.state?.data.travel_date || "";
+  const travelTime = location.state?.data.travel_time || "";
+  const returnDate = location.state?.data.return_date || "";
+  const returnTime = location.state?.data.return_time || "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -47,10 +51,10 @@ export default function RequestForm() {
     purpose: "",
     number_of_passenger: null,
     passenger_names: [],
-    travel_date: null,
-    travel_time: null,
-    return_date: null,
-    return_time: null,
+    travel_date: travelDate,
+    travel_time: travelTime,
+    return_date: returnDate,
+    return_time: returnTime,
     destination: "",
     vehicle: `${plateNumber}`,
   });
@@ -146,28 +150,10 @@ export default function RequestForm() {
       setLoadingBarProgress
     );
   };
-  const handleStartDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, travel_date: formattedDate });
-  };
-  const handleEndDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, return_date: formattedDate });
-  };
 
-  const handleStartTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, travel_time: time });
-    } else {
-      console.log("No time selected.");
-    }
-  };
-  const handleEndTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, return_time: time });
-    } else {
-      console.log("No time selected.");
-    }
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
   return (
     <>
@@ -238,28 +224,22 @@ export default function RequestForm() {
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
-                  <p>Date of Travel: </p>
-                  <CalendarInput
-                    className="customize-calendar"
-                    onChange={handleStartDateChange}
-                  />
+                  <p>Date of Travel:</p>
+                  <p>{travelDate}</p>
                 </div>
                 <div className="calendar-containerr">
                   <p>To </p>
-                  <CalendarInput
-                    className="customize-calendar"
-                    onChange={handleEndDateChange}
-                  />
+                  <p>{returnDate}</p>
                 </div>
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <p>Time of Travel: </p>
-                  <TimeInput onChange={handleStartTimeChange} />
+                  <p>{formatTime(travelTime)}</p>
                 </div>
                 <div className="calendar-containerr">
                   <p>To </p>
-                  <TimeInput onChange={handleEndTimeChange} />
+                  <p>{formatTime(returnTime)}</p>
                 </div>
               </div>
 

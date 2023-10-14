@@ -6,7 +6,11 @@ import { format, setHours, setMinutes, getHours, getMinutes } from "date-fns";
 import "./timeinput.css";
 import { TimeInputProps } from "../../interfaces/interfaces";
 
-const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
+const TimeInput: React.FC<TimeInputProps> = ({
+  onChange,
+  selectedDate,
+  handleDateChange,
+}) => {
   const [selectedTime, setSelectedTime] = useState<any>(new Date());
 
   const handleTimeChange = (time: string | null) => {
@@ -24,6 +28,18 @@ const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
       incrementedTime.setHours(incrementedTime.getHours() + 1);
       setSelectedTime(incrementedTime);
       onChange(format(incrementedTime, "HH:mm"));
+
+      if (incrementedTime.getHours() === 0) {
+        if (selectedDate) {
+          const currentDate = new Date(selectedDate);
+
+          currentDate.setDate(currentDate.getDate() + 1);
+
+          if (handleDateChange) {
+            handleDateChange(currentDate);
+          }
+        }
+      }
     }
   };
 
@@ -33,6 +49,18 @@ const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
       decrementedTime.setHours(decrementedTime.getHours() - 1);
       setSelectedTime(decrementedTime);
       onChange(format(decrementedTime, "HH:mm"));
+
+      if (decrementedTime.getHours() === 23) {
+        if (selectedDate) {
+          const currentDate = new Date(selectedDate);
+
+          currentDate.setDate(currentDate.getDate() - 1);
+
+          if (handleDateChange) {
+            handleDateChange(currentDate);
+          }
+        }
+      }
     }
   };
 
@@ -42,6 +70,22 @@ const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
       incrementedTime.setMinutes(incrementedTime.getMinutes() + 1);
       setSelectedTime(incrementedTime);
       onChange(format(incrementedTime, "HH:mm"));
+
+      0;
+      if (
+        incrementedTime.getHours() === 0 &&
+        incrementedTime.getMinutes() === 0
+      ) {
+        if (selectedDate) {
+          const currentDate = new Date(selectedDate);
+
+          currentDate.setDate(currentDate.getDate() + 1);
+
+          if (handleDateChange) {
+            handleDateChange(currentDate);
+          }
+        }
+      }
     }
   };
 
@@ -51,6 +95,21 @@ const TimeInput: React.FC<TimeInputProps> = ({ onChange }) => {
       decrementedTime.setMinutes(decrementedTime.getMinutes() - 1);
       setSelectedTime(decrementedTime);
       onChange(format(decrementedTime, "HH:mm"));
+
+      if (
+        decrementedTime.getHours() === 23 &&
+        decrementedTime.getMinutes() === 59
+      ) {
+        if (selectedDate) {
+          const currentDate = new Date(selectedDate);
+
+          currentDate.setDate(currentDate.getDate() - 1);
+
+          if (handleDateChange) {
+            handleDateChange(currentDate);
+          }
+        }
+      }
     }
   };
 

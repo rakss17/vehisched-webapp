@@ -117,7 +117,7 @@ export default function DashboardR() {
     }
   };
   const openRequestForm = (plateNumber: string, vehicleName: string) => {
-    navigate("/RequestForm", { state: { plateNumber, vehicleName } });
+    navigate("/RequestForm", { state: { plateNumber, vehicleName, data } });
   };
 
   // const availableVehicles = vehiclesData.filter((vehicle) => {
@@ -187,6 +187,8 @@ export default function DashboardR() {
     }
   };
 
+  console.log("date", data.travel_date);
+
   return (
     <>
       <Header />
@@ -227,16 +229,30 @@ export default function DashboardR() {
                   <div className="date-from">
                     <p>From: </p>
                     <div>
-                      <CalendarInput onChange={handleStartDateChange} />
+                      <CalendarInput
+                        selectedDate={
+                          data.travel_date ? new Date(data.travel_date) : null
+                        }
+                        onChange={handleStartDateChange}
+                        disableDaysBefore={2}
+                      />
+
                       <div className="separate-time">
-                        <TimeInput onChange={handleStartTimeChange} />
+                        <TimeInput
+                          onChange={handleStartTimeChange}
+                          selectedDate={data.travel_date}
+                          handleDateChange={handleStartDateChange}
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="date-to">
                     <p>To: </p>
                     <div>
-                      <CalendarInput onChange={handleEndDateChange} />
+                      <CalendarInput
+                        onChange={handleEndDateChange}
+                        disableDaysBefore={2}
+                      />
                       <div className="separate-time">
                         {" "}
                         <TimeInput onChange={handleEndTimeChange} />

@@ -9,25 +9,34 @@ import { CalendarInputProps } from "../../interfaces/interfaces";
 const CalendarInput: React.FC<CalendarInputProps> = ({
   className,
   onChange,
+  disableDaysBefore = 0,
+  selectedDate, // Add this line
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
+
   useEffect(() => {
-    setSelectedDate(new Date());
-  }, []);
+    setDate(selectedDate || new Date());
+  }, [selectedDate]); // Add selectedDate as a dependency
 
   const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+    setDate(date);
     onChange(date);
   };
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + disableDaysBefore);
 
   return (
     <>
       <div className={`calendar-container ${className}`}>
         <DatePicker
+          key={date?.toString()}
           className={`calendar-input ${className}`}
-          selected={selectedDate}
+          selected={date}
           onChange={handleDateChange}
+          minDate={minDate}
         />
+
         <div className="calendar-icon-container">
           <FontAwesomeIcon
             className={`calendar-input-icon ${className}`}

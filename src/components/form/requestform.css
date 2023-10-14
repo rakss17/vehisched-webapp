@@ -215,6 +215,15 @@
 .iconn {
   color: #060e57;
 }
+.red-label {
+  color: red;
+}
+.form-errors{
+  flex-direction: column;
+  margin-top: -50vh;
+  margin-right: 2vw;
+  color: red;
+}
 
 @media screen and (max-width: 768px) {
   .request-form-body {

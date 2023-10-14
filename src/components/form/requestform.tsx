@@ -31,6 +31,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function RequestForm() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
+
+  const [formErrors, setFormErrors] = useState({
+    office_or_dept: "",
+    number_of_passengers: "",
+    passenger_names: "",
+    destination: "",
+    purpose: "",
+  });
+
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
@@ -59,7 +68,7 @@ export default function RequestForm() {
     vehicle: `${plateNumber}`,
   });
   const [numPassengers, setNumPassengers] = useState(0);
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,6 +92,17 @@ export default function RequestForm() {
   const handlePassengerChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setNumPassengers(Number(value));
+  
+    // Check if all passenger names are filled
+    if (data.passenger_names.length === numPassengers && data.passenger_names.every(name => name.trim() !== '')) {
+      // Clear the passenger_names error when all names are entered
+      setFormErrors((prevErrors) => ({ ...prevErrors, passenger_names: "" }));
+    }
+  };
+  
+
+  const clearDestinationError = () => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
   };
 
   const generatePassengerInputs = () => {
@@ -142,13 +162,76 @@ export default function RequestForm() {
   };
 
   const handleSubmit = () => {
-    setLoadingBarProgress(20);
-    postRequestFromAPI(
-      data,
-      setIsConfirmationOpen,
-      navigate,
-      setLoadingBarProgress
-    );
+    
+    
+    // Check for validation errors before submitting
+    if (validateForm()) {
+      setLoadingBarProgress(20);
+      postRequestFromAPI(data, setIsConfirmationOpen, navigate, setLoadingBarProgress);
+    } else {
+      // Handle validation errors, e.g., display an error message or scroll to the first error
+    }
+  };
+
+  const validateForm = () => {
+    let valid = true;
+
+    // Validate 'office_or_dept'
+    if (!data.office_or_dept) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        office_or_dept: "Please input office or dept",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, office_or_dept: "" }));
+    }
+
+    // Validate 'number_of_passengers'
+    if (numPassengers <= 0) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        number_of_passengers: "Number of passengers must be greater than 0",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, number_of_passengers: "" }));
+    }
+
+    // Validate 'passenger_names'
+    for (let i = 0; i < numPassengers; i++) {
+      if (!data.passenger_names[i]) {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          passenger_names: "Please input all passenger names",
+        }));
+        valid = false;
+        break;
+      }
+    }
+     // Validate 'destination'
+     if (!data.destination) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        destination: "Please input destination",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
+    }
+
+    // Validate 'purpose'
+    if (!data.purpose) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        purpose: "Please input purpose",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, purpose: "" }));
+    }
+
+    return valid;
   };
 
   const formatTime = (timeString: any) => {
@@ -165,13 +248,29 @@ export default function RequestForm() {
       <ToastContainer />
       <Header />
       <Container>
-        <div className="request-form-body">
+      <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />
             <h1>Vehicle Request Form</h1>
             <img src={DocumentCode} alt="Document Code" />
           </div>
           <div className="form-body">
+
+            {/* Add a new section for form errors */}
+            <div className="form-errors">
+              {Object.values(formErrors).map((error, index) => {
+                if (error) {
+                  return (
+                    <div key={index} className="error-message">
+                      {error}
+                    </div>
+                  );
+                }
+                return null;
+                
+              })}
+            </div>
+            
             <div className="form-body-shadow">
               <div className="first-row">
                 <div className="vehicle-info-name">
@@ -191,8 +290,11 @@ export default function RequestForm() {
                   placeholder="Office/dept"
                   onChange={(event) => {
                     setData({ ...data, office_or_dept: event.target.value });
+                    setFormErrors({ ...formErrors, office_or_dept: "" }); // Clear the error
                   }}
                 />
+               
+        
                 <InputField
                   icon={faUsers}
                   onKeyDown={handleKeyDown}
@@ -201,6 +303,7 @@ export default function RequestForm() {
                   onChange={handlePassengerChange}
                   type="number"
                 />
+               
               </div>
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
@@ -217,6 +320,7 @@ export default function RequestForm() {
                 </div>
                 {/* FURTHER DEBUGGING LATER */}
                 <AddressInput />
+                
                 <div className="kilometer-info">
                   <p>Kilometer{"(s)"}:</p>
                   <p>10</p>
@@ -245,18 +349,20 @@ export default function RequestForm() {
 
               <div className="sixth-row">
                 <div className="purpose-row">
-                  <InputField
-                    className="purpose-width"
-                    icon={faClipboard}
-                    value={data.purpose}
-                    label="Purpose"
-                    placeholder="Purpose"
-                    onChange={(event) => {
-                      setData({ ...data, purpose: event.target.value });
-                    }}
-                  />
-                </div>
+                <InputField
+                  className="purpose-width"
+                  icon={faClipboard}
+                  value={data.purpose}
+                  label="Purpose"
+                  placeholder="Purpose"
+                  onChange={(event) => {
+                    setData({ ...data, purpose: event.target.value });
+                    setFormErrors({ ...formErrors, purpose: "" }); // Clear the error
+                  }}
+                />
+                
               </div>
+            </div>
 
               <div className="seventh-row">
                 <p>

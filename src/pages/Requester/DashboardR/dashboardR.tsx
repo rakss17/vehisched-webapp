@@ -9,6 +9,7 @@ import "./dashboardR.css";
 import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import CalendarInput from "../../../components/calendarinput/calendarinput";
 import TimeInput from "../../../components/timeinput/timeinput";
+import Countdown from "../../../components/countdown/countdown";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -355,8 +356,16 @@ export default function DashboardR() {
                     <div className="requester-schedule-container">
                       <div>
                         <div>
-                          <h1>Schedule no. </h1>{" "}
-                          <h2>{schedule[0]?.tripticket_id}</h2>
+                          <div>
+                            <h1>Schedule no. </h1>{" "}
+                            <h2>{schedule[0]?.tripticket_id}</h2>
+                          </div>
+                          <div>
+                            <Countdown
+                              travelDate={schedule[0]?.travel_date}
+                              travelTime={schedule[0]?.travel_time}
+                            />
+                          </div>
                         </div>
                         <div>
                           <h2>Travel date and time: </h2>{" "}

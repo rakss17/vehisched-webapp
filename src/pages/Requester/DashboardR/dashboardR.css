@@ -95,7 +95,19 @@
   padding-left: 2vw;
   align-items: center;
   height: 5vh;
-  gap: 1vw;
+  gap: 0.5vw;
+}
+
+.requester-schedule-container div div:nth-child(1) div:nth-child(1) {
+  padding-left: 0vw;
+  padding-top: 0vh;
+}
+.requester-schedule-container div div:nth-child(1) div:nth-child(2) {
+  display: flex;
+  justify-content: flex-start;
+  width: 48vw;
+  padding-left: 0vw;
+  padding-top: 0vh;
 }
 .requester-schedule-container div div:nth-child(1) h1 {
   color: black;

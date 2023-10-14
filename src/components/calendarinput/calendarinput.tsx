@@ -10,13 +10,13 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
   className,
   onChange,
   disableDaysBefore = 0,
-  selectedDate, // Add this line
+  selectedDate,
 }) => {
   const [date, setDate] = useState<Date | null>(null);
 
   useEffect(() => {
     setDate(selectedDate || new Date());
-  }, [selectedDate]); // Add selectedDate as a dependency
+  }, [selectedDate]);
 
   const handleDateChange = (date: Date | null) => {
     setDate(date);

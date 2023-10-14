@@ -187,8 +187,6 @@ export default function DashboardR() {
     }
   };
 
-  console.log("date", data.travel_date);
-
   return (
     <>
       <Header />

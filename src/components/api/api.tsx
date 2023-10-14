@@ -292,8 +292,6 @@ export function fetchVehiclesAPI() {
           "Content-Type": "application/json",
         },
       });
-      console.log(response.data);
-
       dispatch(fetchVehiclesData(response.data));
     } catch (error) {
       console.error("Error fetching user list:", error);
@@ -435,13 +433,26 @@ export function postRequestFromAPI(
       }, 3000);
     })
     .catch((error) => {
-      console.log(error);
       if (error.response && error.response.data) {
-        const errorMessage = error.response.data.error || "An error occurred.";
-        toast.error(errorMessage, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: false,
-        });
+        if (error.response.data.type === "Approved") {
+          setLoadingBarProgress(50);
+          setLoadingBarProgress(100);
+          const errorMessage =
+            error.response.data.error || "An error occurred.";
+          toast.error(errorMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (error.response.data.type === "Pending") {
+          setLoadingBarProgress(50);
+          setLoadingBarProgress(100);
+          const errorMessage =
+            error.response.data.error || "An error occurred.";
+          toast.error(errorMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        }
       } else {
         toast.error("An unknown error occurred.", {
           position: toast.POSITION.TOP_CENTER,
@@ -498,7 +509,6 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
     })
     .then((response) => {
       setRequestList(response.data);
-      console.log(response.data);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);
@@ -629,8 +639,6 @@ export function fetchNotification(setNotifList: any) {
         (notification: any) => !notification.read_status
       );
       unreadNotifications.forEach((notification: any) => {
-        console.log("Subject:", notification.subject);
-
         if (notification.subject.includes("has been created")) {
           toast.success(notification.subject, {
             position: toast.POSITION.TOP_CENTER,
@@ -672,7 +680,6 @@ export function checkVehicleAvailability(
     })
     .then((response) => {
       setVehiclesData(response.data);
-      console.log("kni", response.data);
     })
     .catch((error) => {
       console.error("Error fetching vehicle list:", error);

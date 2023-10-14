@@ -5,7 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
-import { fetchDriversAPI } from "../api/api";
+import { fetchDriversScheduleAPI } from "../api/api";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -19,26 +19,32 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [driversData, setDriversData] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchDriversAPI(setDriversData);
+    fetchDriversScheduleAPI(
+      setDriversData,
+      selectedRequest.travel_date,
+      selectedRequest.travel_time,
+      selectedRequest.return_date,
+      selectedRequest.return_time
+    );
   }, []);
-  const driverNames = driversData
-    .filter((driver) => driver.status === "Available")
-    .map((driver) => {
-      const { first_name, middle_name, last_name } = driver.user;
-      return `${first_name} ${middle_name} ${last_name}`;
-    });
 
-  const dropdownDrivers = ["Select Driver", ...driverNames];
+  const dropdownDrivers = [
+    "Select Driver",
+    ...driversData.map(
+      (driver) =>
+        `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
+    ),
+  ];
 
   const handleChooseDriver = (driverName: string) => {
     const selectedDriver = driversData.find((driver) => {
-      const { first_name, middle_name, last_name } = driver.user;
+      const { first_name, middle_name, last_name } = driver;
       const fullName = `${first_name} ${middle_name} ${last_name}`;
       return fullName === driverName;
     });
 
     if (selectedDriver) {
-      setSelectedDriverId(selectedDriver.user.id);
+      setSelectedDriverId(selectedDriver.id);
     }
   };
 
@@ -92,10 +98,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             <div>
               <h2>Date of travel:</h2>
               <p>{selectedRequest.travel_date}</p>
+              <h2>to:</h2>
+              <p>{selectedRequest.return_date}</p>
             </div>
             <div>
               <h2>Time:</h2>
               <p>{selectedRequest.travel_time}</p>
+              <h2>to:</h2>
+              <p>{selectedRequest.return_time}</p>
             </div>
           </div>
           {selectedRequest.status !== "Pending" && (

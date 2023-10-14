@@ -176,23 +176,20 @@
 }
 .request-form-container div:nth-child(6) {
   display: flex;
-  flex-direction: row;
-  margin-top: 2vh;
+  flex-direction: column;
+  margin-top: 0vh;
   padding-left: 4vw;
-  align-items: center;
-  height: 5vh;
+  height: 10vh;
   width: 50vw;
-  gap: 18.8vw;
+  gap: 0vw;
 }
 .request-form-container div:nth-child(6) div:nth-child(1) {
   display: flex;
   flex-direction: row;
   margin-top: 0vh;
   padding-left: 0vw;
-  align-items: center;
-  justify-content: flex-start;
   height: 5vh;
-  width: 15vw;
+  width: 23vw;
   gap: 1vw;
 }
 .request-form-container div:nth-child(6) div:nth-child(2) {
@@ -200,10 +197,8 @@
   flex-direction: row;
   margin-top: 0vh;
   padding-left: 0vw;
-  align-items: center;
-  justify-content: flex-start;
   height: 5vh;
-  width: 10vw;
+  width: 20vw;
   gap: 1vw;
 }
 .request-form-container div:nth-child(6) h2 {

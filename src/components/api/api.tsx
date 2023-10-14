@@ -13,7 +13,7 @@ import { fetchDriversData } from "../../redux/slices/driversDataSlices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const serverSideUrl = "http://localhost:8000";
+export const serverSideUrl = "http://localhost:8000/media/";
 
 const api = axios.create({
   baseURL: "http://localhost:8000/",
@@ -103,6 +103,35 @@ export function fetchUsersAPI() {
   };
 }
 
+export function fetchDriversScheduleAPI(
+  setDriversData: any,
+  travel_date: any,
+  travel_time: any,
+  return_date: any,
+  return_time: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/tripticket/check-driver-availability/", {
+      params: {
+        preferred_start_travel_date: travel_date,
+        preferred_start_travel_time: travel_time,
+        preferred_end_travel_date: return_date,
+        preferred_end_travel_time: return_time,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setDriversData(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching driver list:", error);
+    });
+}
+
 export async function fetchDriversAPI(setDriversData: any) {
   try {
     const token = localStorage.getItem("token");
@@ -112,7 +141,6 @@ export async function fetchDriversAPI(setDriversData: any) {
         "Content-Type": "application/json",
       },
     });
-
     setDriversData(response.data);
   } catch (error) {
     console.error("Error fetching user list:", error);
@@ -668,7 +696,7 @@ export function fetchSchedule(setSchedule: any) {
     });
 }
 
-export function fetchScheduleOfficeStaff(setSchedule: any) {
+export async function fetchScheduleOfficeStaff(setSchedule: any) {
   const token = localStorage.getItem("token");
   return api
     .get("api/v1/tripticket/fetch-office-staff/", {
@@ -679,6 +707,52 @@ export function fetchScheduleOfficeStaff(setSchedule: any) {
     })
     .then((response) => {
       setSchedule(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}
+
+export async function fetchVehicleSchedules(
+  setVehicleSchedules: any,
+  vehicleId: any
+) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/tripticket/vehicle-schedules/", {
+      params: {
+        plate_number: vehicleId,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setVehicleSchedules(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}
+
+export async function fetchDriverSchedules(
+  setDriverSchedules: any,
+  driverId: any
+) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/tripticket/driver-schedules/", {
+      params: {
+        driver_id: driverId,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setDriverSchedules(response.data);
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

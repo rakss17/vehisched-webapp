@@ -639,7 +639,7 @@ export function fetchNotification(setNotifList: any) {
         (notification: any) => !notification.read_status
       );
       unreadNotifications.forEach((notification: any) => {
-        if (notification.subject.includes("has been created")) {
+        if (notification.subject.includes("has been created" || "left")) {
           toast.success(notification.subject, {
             position: toast.POSITION.TOP_CENTER,
             autoClose: false,

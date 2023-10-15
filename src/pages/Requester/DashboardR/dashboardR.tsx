@@ -249,12 +249,19 @@ export default function DashboardR() {
                     <p>To: </p>
                     <div>
                       <CalendarInput
+                        selectedDate={
+                          data.travel_date ? new Date(data.return_date) : null
+                        }
                         onChange={handleEndDateChange}
                         disableDaysBefore={2}
                       />
                       <div className="separate-time">
                         {" "}
-                        <TimeInput onChange={handleEndTimeChange} />
+                        <TimeInput
+                          onChange={handleEndTimeChange}
+                          selectedDate={data.return_date}
+                          handleDateChange={handleEndDateChange}
+                        />
                       </div>
                     </div>
                   </div>

@@ -55,7 +55,11 @@ export default function DashboardR() {
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
-    { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
+    {
+      icon: faColumns,
+      text: "Dashboard",
+      path: "/DashboardR",
+    },
     {
       icon: faClipboardList,
       text: "Request",

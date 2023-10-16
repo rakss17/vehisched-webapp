@@ -9,8 +9,8 @@ import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
 import { fetchVehiclesData } from "../../redux/slices/vehiclesDataSlices";
-import { fetchDriversData } from "../../redux/slices/driversDataSlices";
-import { ToastContainer, toast } from "react-toastify";
+import { getTimeElapsed } from "../functions/getTimeElapsed";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const serverSideUrl = "http://localhost:8000/media/";
@@ -639,13 +639,105 @@ export function fetchNotification(setNotifList: any) {
         (notification: any) => !notification.read_status
       );
       unreadNotifications.forEach((notification: any) => {
-        if (notification.subject.includes("has been created" || "left")) {
-          toast.success(notification.subject, {
+        if (notification.subject.includes("has been created")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.success(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("has been approved")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.success(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("1 hour")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("12 hours")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("24 hours")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
             position: toast.POSITION.TOP_CENTER,
             autoClose: false,
           });
         } else if (notification.subject.includes("has been canceled")) {
-          toast.info(notification.subject, {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
             position: toast.POSITION.TOP_CENTER,
             autoClose: false,
           });

@@ -22,7 +22,7 @@ import {
   fetchRequestOfficeStaffAPI,
   fetchNotification,
 } from "../../../components/api/api";
-import { NotificationWebsocket } from "../../../components/api/websocket";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -55,7 +55,7 @@ export default function Requests() {
   }, []);
 
   useEffect(() => {
-    NotificationWebsocket();
+    NotificationCreatedCancelWebsocket();
   }, []);
 
   useEffect(() => {

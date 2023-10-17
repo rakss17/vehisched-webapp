@@ -22,10 +22,7 @@ import {
   fetchPendingRequestAPI,
   checkVehicleAvailability,
 } from "../../../components/api/api";
-import {
-  VehicleAvailableWebsocket,
-  RequestApproveWebsocket,
-} from "../../../components/api/websocket";
+import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
 
 export default function DashboardR() {
@@ -98,7 +95,7 @@ export default function DashboardR() {
     });
   }, []);
 
-  RequestApproveWebsocket(userName);
+  NotificationApprovalScheduleReminderWebsocket(userName);
 
   const handleSetTripModal = () => {
     checkVehicleAvailability(

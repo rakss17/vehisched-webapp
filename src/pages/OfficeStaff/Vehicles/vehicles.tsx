@@ -26,7 +26,7 @@ import {
 } from "../../../components/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { NotificationWebsocket } from "../../../components/api/websocket";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CalendarModal from "../../../components/calendar/calendarmodal";
@@ -74,7 +74,7 @@ export default function Vehicles() {
   }, [vehicles]);
 
   useEffect(() => {
-    NotificationWebsocket();
+    NotificationCreatedCancelWebsocket();
   }, []);
 
   const handleSearchChange = (term: string) => {

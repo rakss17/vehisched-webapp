@@ -19,7 +19,7 @@ import {
   fetchNotification,
   fetchDriverSchedules,
 } from "../../../components/api/api";
-import { NotificationWebsocket } from "../../../components/api/websocket";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CalendarModal from "../../../components/calendar/calendarmodal";
@@ -55,7 +55,7 @@ export default function Drivers() {
   }, []);
 
   useEffect(() => {
-    NotificationWebsocket();
+    NotificationCreatedCancelWebsocket();
   }, []);
 
   const handleSearchChange = (term: string) => {

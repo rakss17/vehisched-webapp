@@ -68,7 +68,7 @@ export default function RequestForm() {
     vehicle: `${plateNumber}`,
   });
   const [numPassengers, setNumPassengers] = useState(0);
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,14 +92,16 @@ export default function RequestForm() {
   const handlePassengerChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setNumPassengers(Number(value));
-  
+
     // Check if all passenger names are filled
-    if (data.passenger_names.length === numPassengers && data.passenger_names.every(name => name.trim() !== '')) {
+    if (
+      data.passenger_names.length === numPassengers &&
+      data.passenger_names.every((name) => name.trim() !== "")
+    ) {
       // Clear the passenger_names error when all names are entered
       setFormErrors((prevErrors) => ({ ...prevErrors, passenger_names: "" }));
     }
   };
-  
 
   const clearDestinationError = () => {
     setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
@@ -162,12 +164,15 @@ export default function RequestForm() {
   };
 
   const handleSubmit = () => {
-    
-    
     // Check for validation errors before submitting
     if (validateForm()) {
       setLoadingBarProgress(20);
-      postRequestFromAPI(data, setIsConfirmationOpen, navigate, setLoadingBarProgress);
+      postRequestFromAPI(
+        data,
+        setIsConfirmationOpen,
+        navigate,
+        setLoadingBarProgress
+      );
     } else {
       // Handle validation errors, e.g., display an error message or scroll to the first error
     }
@@ -195,7 +200,10 @@ export default function RequestForm() {
       }));
       valid = false;
     } else {
-      setFormErrors((prevErrors) => ({ ...prevErrors, number_of_passengers: "" }));
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        number_of_passengers: "",
+      }));
     }
 
     // Validate 'passenger_names'
@@ -209,16 +217,16 @@ export default function RequestForm() {
         break;
       }
     }
-     // Validate 'destination'
-     if (!data.destination) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        destination: "Please input destination",
-      }));
-      valid = false;
-    } else {
-      setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
-    }
+    // Validate 'destination'
+    //  if (!data.destination) {
+    //   setFormErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     destination: "Please input destination",
+    //   }));
+    //   valid = false;
+    // } else {
+    //   setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
+    // }
 
     // Validate 'purpose'
     if (!data.purpose) {
@@ -248,14 +256,13 @@ export default function RequestForm() {
       <ToastContainer />
       <Header />
       <Container>
-      <div className="request-form-body">
+        <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />
             <h1>Vehicle Request Form</h1>
             <img src={DocumentCode} alt="Document Code" />
           </div>
           <div className="form-body">
-
             {/* Add a new section for form errors */}
             <div className="form-errors">
               {Object.values(formErrors).map((error, index) => {
@@ -267,10 +274,9 @@ export default function RequestForm() {
                   );
                 }
                 return null;
-                
               })}
             </div>
-            
+
             <div className="form-body-shadow">
               <div className="first-row">
                 <div className="vehicle-info-name">
@@ -293,8 +299,7 @@ export default function RequestForm() {
                     setFormErrors({ ...formErrors, office_or_dept: "" }); // Clear the error
                   }}
                 />
-               
-        
+
                 <InputField
                   icon={faUsers}
                   onKeyDown={handleKeyDown}
@@ -303,7 +308,6 @@ export default function RequestForm() {
                   onChange={handlePassengerChange}
                   type="number"
                 />
-               
               </div>
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
@@ -320,7 +324,7 @@ export default function RequestForm() {
                 </div>
                 {/* FURTHER DEBUGGING LATER */}
                 <AddressInput />
-                
+
                 <div className="kilometer-info">
                   <p>Kilometer{"(s)"}:</p>
                   <p>10</p>
@@ -349,20 +353,19 @@ export default function RequestForm() {
 
               <div className="sixth-row">
                 <div className="purpose-row">
-                <InputField
-                  className="purpose-width"
-                  icon={faClipboard}
-                  value={data.purpose}
-                  label="Purpose"
-                  placeholder="Purpose"
-                  onChange={(event) => {
-                    setData({ ...data, purpose: event.target.value });
-                    setFormErrors({ ...formErrors, purpose: "" }); // Clear the error
-                  }}
-                />
-                
+                  <InputField
+                    className="purpose-width"
+                    icon={faClipboard}
+                    value={data.purpose}
+                    label="Purpose"
+                    placeholder="Purpose"
+                    onChange={(event) => {
+                      setData({ ...data, purpose: event.target.value });
+                      setFormErrors({ ...formErrors, purpose: "" }); // Clear the error
+                    }}
+                  />
+                </div>
               </div>
-            </div>
 
               <div className="seventh-row">
                 <p>

@@ -12,7 +12,7 @@ import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
-import { NotificationWebsocket } from "../../../components/api/websocket";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SidebarItem } from "../../../interfaces/interfaces";
@@ -45,7 +45,7 @@ export default function Schedules() {
   }, []);
 
   useEffect(() => {
-    NotificationWebsocket();
+    NotificationCreatedCancelWebsocket();
   }, []);
 
   useEffect(() => {

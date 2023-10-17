@@ -11,7 +11,7 @@ import Confirmation from "../../../components/confirmation/confirmation";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import { SidebarItem } from "../../../interfaces/interfaces";
 import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
-import { RequestApproveWebsocket } from "../../../components/api/websocket";
+import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -43,7 +43,7 @@ export default function Request() {
     fetchRequestAPI(setRequestFilteredData);
   }, []);
 
-  RequestApproveWebsocket(userName);
+  NotificationApprovalScheduleReminderWebsocket(userName);
 
   const handleButtonClick = (status: string) => {
     let filteredData = [];

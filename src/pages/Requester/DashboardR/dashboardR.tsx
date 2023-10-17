@@ -254,7 +254,7 @@ export default function DashboardR() {
                     <div>
                       <CalendarInput
                         selectedDate={
-                          data.travel_date ? new Date(data.return_date) : null
+                          data.return_date ? new Date(data.return_date) : null
                         }
                         onChange={handleEndDateChange}
                         disableDaysBefore={2}

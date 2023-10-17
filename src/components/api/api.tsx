@@ -95,8 +95,7 @@ export function fetchUsersAPI() {
           "Content-Type": "application/json",
         },
       });
-
-      dispatch(fetchUsersInfo(response.data.results));
+      dispatch(fetchUsersInfo(response.data));
     } catch (error) {
       console.error("Error fetching user list:", error);
     }

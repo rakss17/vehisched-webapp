@@ -7,6 +7,7 @@ import {
   faCar,
   faCalendarAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 
@@ -40,6 +41,7 @@ export default function DashboardOS() {
     { icon: faCar, text: "Vehicles", path: "/Vehicles" },
     { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
     { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
   const navigate = useNavigate();
   useEffect(() => {

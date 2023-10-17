@@ -5,6 +5,7 @@ import {
   faCar,
   faCalendarAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -49,6 +50,7 @@ export default function Requests() {
     { icon: faCar, text: "Vehicles", path: "/Vehicles" },
     { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
     { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
   useEffect(() => {
     fetchNotification(setNotifList);

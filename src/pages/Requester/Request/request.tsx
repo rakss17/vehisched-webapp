@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import { faColumns, faClipboardList, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoadingBar from "react-top-loading-bar";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -33,6 +34,7 @@ export default function Request() {
   const [selectedRequest, setSelectedRequest] = useState<any>();
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState(null);
   const requestId = selectedRequest?.request_id ?? "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -116,6 +118,12 @@ export default function Request() {
     (request) => request.status === selectedStatus
   );
 
+  const onHandleAngleDown = (index: any) => {
+    setSelectedRequestIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+  
+  
+
   return (
     <>
       <LoadingBar
@@ -166,32 +174,50 @@ export default function Request() {
             >
               <thead>
                 <tr>
-                  <th style={{ fontWeight: "normal" }}>Request No.</th>
-                  <th style={{ fontWeight: "normal" }}>Travel Date</th>
-                  <th style={{ fontWeight: "normal" }}>Vehicle</th>
+                  <th></th>
+                  <th>Request No.</th>
+                  <th>Travel Date</th>
+                  <th>Vehicle</th>
                 </tr>
               </thead>
               {filteredData.length === 0 ? (
-                <p>No request available.</p>
+                <p style={{ position: 'absolute'}}>No request available.</p>
               ) : (
                 <tbody>
                   {filteredData.map((request, index) => (
-                    <tr key={index}>
-                      <td>{request.request_id}</td>
-                      <td>{request.travel_date}</td>
-                      <td>{request.vehicle}</td>
-                      <td className="ellipsis-cell">
-                        {selectedStatus === "Pending" ||
-                        selectedStatus === "Approved" ? (
-                          <Ellipsis
-                            onCategoryChange={(category) =>
-                              onHandleEllipsis(category, request)
-                            }
-                            status={["Cancel Request"]}
-                          />
-                        ) : null}
-                      </td>
-                    </tr>
+                    <>
+                    <tr key={request.request_id} className={selectedRequestIndex === request.request_id ? 'selected-request' : ''}>
+<td className="angle-down">
+  <FontAwesomeIcon
+    icon={faAngleDown}
+    style={{ fontSize: '24px' }}
+    onClick={() => onHandleAngleDown(request.request_id)}
+  />
+</td>
+
+
+    <td>{request.request_id}</td>
+    <td>{request.travel_date}</td>
+    <td>{request.vehicle}</td>
+    <td className="ellipsis-cell">
+      {selectedStatus === "Pending" || selectedStatus === "Approved" ? (
+        <Ellipsis
+          onCategoryChange={(category) => onHandleEllipsis(category, request)}
+          status={["Cancel Request"]}
+        />
+      ) : null}
+    </td>
+  </tr>
+  {selectedRequestIndex === request.request_id && (
+  <div className={`request-more-info ${selectedRequestIndex === request.request_id ? 'show' : ''}`}>
+    <td></td>
+    <td><strong>Destination: </strong><p>Zone 3, pinikitan camaman-an cagayan de oro city</p></td>
+    <td>vehicle: {request.vehicle}</td>
+    <td></td>
+    <td></td>
+  </div>
+  )}
+                    </>
                   ))}
                 </tbody>
               )}

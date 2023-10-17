@@ -54,29 +54,76 @@
   border-top: 8px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
+   margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  
 }
+.requests-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .requests-container p {
   font-size: 1.3rem;
 }
 .requests-container table {
-  width: 80vw;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  
 }
+.requests-container table thead th,
+.requests-container table tbody td {
+  padding: 0.5rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.requests-container table thead th:first-child,
+.requests-container table tbody td:first-child {
+  text-align: left;
+}
+
 .requests-container table tbody tr {
   text-align: center;
   background-color: #d9d9d9;
   height: 6vh;
   font-size: 1.2rem;
   cursor: pointer;
+ position: relative;
 }
 
 .requests-container table thead {
   font-size: 1.3rem;
+  
 }
 
 .ellipsis-cell {
   width: 3vw;
   overflow: visible;
 }
+.angle-down{
+  width: 7vw;
+  height: 6vh;
+  position: absolute;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.request-more-info {
+  background-color: #d9d9d9;
+  padding: 1rem;
+  margin-top: 1rem;
+  display: none;
+}
+
+.selected-request + .request-more-info {
+  display: block;
+}
+
 
 @media screen and (max-width: 768px) {
   .label-margin {

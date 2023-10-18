@@ -21,6 +21,7 @@ import { NotificationApprovalScheduleReminderWebsocket } from "../../../componen
 import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { useSpring, animated } from "@react-spring/web";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
@@ -46,6 +47,9 @@ export default function Request() {
     (state: RootState) => state.personalInfo.data
   );
   const userName = personalInfo?.username;
+  const springProps = useSpring({
+    height: expandedRequestIndex ? "40vh" : "0vh",
+  });
 
   useEffect(() => {
     fetchRequestAPI(setRequestFilteredData);
@@ -132,7 +136,10 @@ export default function Request() {
       prevIndex === index ? null : index
     );
   };
-
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
   return (
     <>
       <LoadingBar
@@ -245,26 +252,86 @@ export default function Request() {
                         </td>
                       </tr>
                       {selectedRequestIndex === request.request_id && (
-                        <div
+                        <animated.div
+                          style={springProps}
                           className={`request-more-info ${
                             selectedRequestIndex === request.request_id
                               ? "show"
                               : ""
                           }`}
                         >
-                          <div>
+                          {/* first child */}
+                          <div className="request-more-info-first-child">
                             <div>
-                              <strong>Destination: </strong>
-                              <p>
-                                Zone 3, pinikitan camaman-an cagayan de oro city
-                              </p>
+                              <strong>Destination:</strong>
+                              <p>{request.destination}</p>
                             </div>
                             <div>
                               <strong>Vehicle: </strong>
                               {request.vehicle}
                             </div>
                           </div>
-                        </div>
+                          {/* second child */}
+                          <div className="request-more-info-second-child">
+                            <strong>Date of Travel: </strong>
+                            <p>
+                              {request.travel_date},{" "}
+                              {formatTime(request.travel_time)}
+                            </p>
+                          </div>
+                          {/* third child */}
+                          <div className="request-more-info-third-child">
+                            <div className="request-more-info-third-child-passengers">
+                              <strong
+                                style={{
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Passengers:{" "}
+                              </strong>
+                              <p
+                                style={{
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {request.passenger_names}
+                              </p>
+                            </div>
+                            <div className="request-more-info-third-child-driver">
+                              <div>
+                                <strong>Driver: </strong>
+                                <p>{request.driver_name}</p>
+                              </div>
+                              <div>
+                                <strong>Contact No.: </strong>
+                                <p>099321312312312</p>
+                              </div>
+                            </div>
+                          </div>
+                          {/* fourth child */}
+                          <div className="request-more-info-fourth-child">
+                            <div className="request-more-info-fourth-child-purpose">
+                              <strong
+                                style={{
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Purpose:{" "}
+                              </strong>
+                              <p
+                                style={{
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {request.purpose}
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Status: </strong>
+                              <p>{request.status}</p>
+                            </div>
+                          </div>
+                        </animated.div>
                       )}
                     </>
                   ))}

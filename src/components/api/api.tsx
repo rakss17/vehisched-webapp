@@ -471,12 +471,26 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       },
     })
     .then((response) => {
-      setRequestFilteredData(response.data);
+      const responseData = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
+      const updatedData = responseData.map((item) => {
+        if (item.passenger_names) {
+          const validJson = item.passenger_names.replace(/'/g, '"');
+          const passengerNamesArray = JSON.parse(validJson);
+          item.passenger_names = passengerNamesArray.join(", ");
+        }
+        return item;
+      });
+
+      setRequestFilteredData(updatedData);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);
     });
 }
+
 export function fetchPendingRequestAPI(setPendingSchedule: any) {
   const token = localStorage.getItem("token");
   api
@@ -507,7 +521,19 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
       },
     })
     .then((response) => {
-      setRequestList(response.data);
+      const responseData = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
+      const updatedData = responseData.map((item) => {
+        if (item.passenger_names) {
+          const validJson = item.passenger_names.replace(/'/g, '"');
+          const passengerNamesArray = JSON.parse(validJson);
+          item.passenger_names = passengerNamesArray.join(", ");
+        }
+        return item;
+      });
+      setRequestList(updatedData);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);

@@ -107,8 +107,105 @@
   background-color: #d9d9d9;
   padding: 1rem;
   width: 80vw;
-  height: 10vh;
-  transition: height 0.3s ease;
+  /* height: 40vh; */
+  margin-top: -3vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+.request-more-info strong {
+  font-size: 1.2rem;
+}
+.request-more-info-first-child {
+  width: 80vw;
+  flex-direction: row;
+  display: flex;
+}
+.request-more-info-first-child div:nth-child(1) {
+  flex-direction: row;
+  width: 50vw;
+  overflow: hidden;
+  padding-left: 4vw;
+  display: flex;
+  height: 8vh;
+  gap: 1vw;
+}
+.request-more-info-first-child div:nth-child(1) strong {
+  white-space: nowrap;
+}
+.request-more-info-first-child div:nth-child(1) p {
+  word-wrap: break-word;
+}
+.request-more-info-first-child div:nth-child(2) {
+  width: 30vw;
+  padding-left: 2vw;
+  gap: 1vw;
+}
+.request-more-info-second-child {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+  padding-left: 4vw;
+  gap: 1vw;
+}
+.request-more-info-third-child {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+}
+.request-more-info-third-child-passengers {
+  flex-direction: row;
+  width: 50vw;
+  overflow: hidden;
+  padding-left: 4vw;
+  display: flex;
+  height: 8vh;
+  gap: 1vw;
+}
+.request-more-info-third-child-driver {
+  width: 30vw;
+  padding-left: 2vw;
+  gap: 1vw;
+}
+
+.request-more-info-third-child-driver div:nth-child(1) {
+  gap: 1vw;
+  display: flex;
+}
+.request-more-info-third-child-driver div:nth-child(2) {
+  display: flex;
+  gap: 1vw;
+}
+.request-more-info-third-child-driver div:nth-child(2) strong {
+  white-space: nowrap;
+}
+.request-more-info-third-child-driver div:nth-child(2) p {
+  word-wrap: break-word;
+}
+
+.request-more-info-fourth-child {
+  display: flex;
+  flex-direction: row;
+  width: 80vw;
+}
+.request-more-info-fourth-child-purpose {
+  flex-direction: row;
+  width: 50vw;
+  padding-left: 4vw;
+  display: flex;
+  height: 8vh;
+  gap: 1vw;
+}
+/* .request-more-info-fourth-child-purpose strong {
+  white-space: nowrap;
+} */
+
+.request-more-info-fourth-child div:nth-child(2) {
+  width: 30vw;
+  padding-left: 2vw;
+  gap: 1vw;
+  display: flex;
 }
 
 /* .selected-request + .request-more-info {

@@ -11,7 +11,6 @@ const CalendarModal: React.FC<any> = ({
   onRequestClose,
 }) => {
   const [showMore, setShowMore] = useState(false);
-  console.log("selectedschedule", selectedSchedule);
 
   const handleShowMore = () => {
     setShowMore(true);
@@ -42,7 +41,7 @@ const CalendarModal: React.FC<any> = ({
                 <div className="main-info">
                   <div>
                     <strong>Trip No.: </strong>
-                    <p>{schedule.tripticket_id}</p>
+                    <p>{schedule.tripticket_id || undefined}</p>
                   </div>
                   <div className="date-and-time-modal">
                     <strong>Date and time: </strong>

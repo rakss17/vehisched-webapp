@@ -110,7 +110,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           {selectedRequest.status !== "Pending" && (
             <div>
-              <h2>Driver: </h2>
+              <h2>Driver:</h2>
               <p>{selectedRequest.driver_name}</p>
             </div>
           )}

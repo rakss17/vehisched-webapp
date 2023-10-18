@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { faColumns, faClipboardList, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faColumns,
+  faClipboardList,
+  faAngleDown,
+  faAngleUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoadingBar from "react-top-loading-bar";
 import Header from "../../../components/header/header";
@@ -35,6 +40,7 @@ export default function Request() {
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [selectedRequestIndex, setSelectedRequestIndex] = useState(null);
+  const [expandedRequestIndex, setExpandedRequestIndex] = useState(null);
   const requestId = selectedRequest?.request_id ?? "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -119,10 +125,13 @@ export default function Request() {
   );
 
   const onHandleAngleDown = (index: any) => {
-    setSelectedRequestIndex((prevIndex) => (prevIndex === index ? null : index));
+    setExpandedRequestIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
+    setSelectedRequestIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
   };
-  
-  
 
   return (
     <>
@@ -176,47 +185,87 @@ export default function Request() {
                 <tr>
                   <th></th>
                   <th>Request No.</th>
+                  <th></th>
                   <th>Travel Date</th>
+                  <th></th>
                   <th>Vehicle</th>
+                  <th></th>
                 </tr>
               </thead>
               {filteredData.length === 0 ? (
-                <p style={{ position: 'absolute'}}>No request available.</p>
+                <p style={{ position: "absolute" }}>No request available.</p>
               ) : (
                 <tbody>
                   {filteredData.map((request, index) => (
                     <>
-                    <tr key={request.request_id} className={selectedRequestIndex === request.request_id ? 'selected-request' : ''}>
-<td className="angle-down">
-  <FontAwesomeIcon
-    icon={faAngleDown}
-    style={{ fontSize: '24px' }}
-    onClick={() => onHandleAngleDown(request.request_id)}
-  />
-</td>
+                      <tr
+                        key={request.request_id}
+                        className={
+                          selectedRequestIndex === request.request_id
+                            ? "selected-request"
+                            : ""
+                        }
+                      >
+                        <td className="angle-down">
+                          {expandedRequestIndex === request.request_id ? (
+                            <FontAwesomeIcon
+                              icon={faAngleUp}
+                              style={{ fontSize: "24px" }}
+                              onClick={() =>
+                                onHandleAngleDown(request.request_id)
+                              }
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faAngleDown}
+                              style={{ fontSize: "24px" }}
+                              onClick={() =>
+                                onHandleAngleDown(request.request_id)
+                              }
+                            />
+                          )}
+                        </td>
 
-
-    <td>{request.request_id}</td>
-    <td>{request.travel_date}</td>
-    <td>{request.vehicle}</td>
-    <td className="ellipsis-cell">
-      {selectedStatus === "Pending" || selectedStatus === "Approved" ? (
-        <Ellipsis
-          onCategoryChange={(category) => onHandleEllipsis(category, request)}
-          status={["Cancel Request"]}
-        />
-      ) : null}
-    </td>
-  </tr>
-  {selectedRequestIndex === request.request_id && (
-  <div className={`request-more-info ${selectedRequestIndex === request.request_id ? 'show' : ''}`}>
-    <td></td>
-    <td><strong>Destination: </strong><p>Zone 3, pinikitan camaman-an cagayan de oro city</p></td>
-    <td>vehicle: {request.vehicle}</td>
-    <td></td>
-    <td></td>
-  </div>
-  )}
+                        <td>{request.request_id}</td>
+                        <td></td>
+                        <td>{request.travel_date}</td>
+                        <td></td>
+                        <td>{request.vehicle}</td>
+                        <td></td>
+                        <td className="ellipsis-cell">
+                          {selectedStatus === "Pending" ||
+                          selectedStatus === "Approved" ? (
+                            <Ellipsis
+                              onCategoryChange={(category) =>
+                                onHandleEllipsis(category, request)
+                              }
+                              status={["Cancel Request"]}
+                            />
+                          ) : null}
+                        </td>
+                      </tr>
+                      {selectedRequestIndex === request.request_id && (
+                        <div
+                          className={`request-more-info ${
+                            selectedRequestIndex === request.request_id
+                              ? "show"
+                              : ""
+                          }`}
+                        >
+                          <div>
+                            <div>
+                              <strong>Destination: </strong>
+                              <p>
+                                Zone 3, pinikitan camaman-an cagayan de oro city
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Vehicle: </strong>
+                              {request.vehicle}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </>
                   ))}
                 </tbody>

@@ -10,6 +10,8 @@ export default function AutoCompleteAddressGoogle({
   travel_date,
   travel_time,
 }: AutoCompleteAddressGoogleProps) {
+  const apiKey = process.env.GOOGLE_MAP_API_KEY;
+
   console.log("autocomplete travel_date", travel_date);
   console.log("autocomplete travel_time", travel_time);
   return (
@@ -18,7 +20,7 @@ export default function AutoCompleteAddressGoogle({
         types: ["establishment", "geocode"],
         componentRestrictions: { country: "PH" },
       }}
-      apiKey="AIzaSyDAR2aPxWHFsplW7mEcUSoRWllqhn67gUY"
+      apiKey={apiKey}
       onPlaceSelected={(place) =>
         handlePlaceSelect(place, travel_date, travel_time)
       }

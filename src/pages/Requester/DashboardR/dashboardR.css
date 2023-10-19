@@ -367,14 +367,69 @@
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
+.trip-category {
+  margin-top: 1vw;
+  width: 25vw;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.trip-category div {
+  width: 20vw;
+  display: flex;
+  padding-left: 2vw;
+  justify-content: space-evenly;
+}
+.trip-category button {
+  width: 7vw;
+  height: 5vh;
+  font-size: 0.9rem;
+  text-align: center;
+  white-space: nowrap;
+  background-color: transparent;
+  color: #060e57;
+  border: 2px solid #060e57;
+  font-weight: bold;
+}
+.trip-category button.active {
+  background-color: #060e57;
+  color: white;
+}
+
+.trip-category p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.one-way-sub-category {
+  margin-top: 1vw;
+  width: 25vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.one-way-sub-category p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.one-way-sub-category select {
+  width: 15vw;
+  border-radius: 1px;
+  background-color: white;
+}
+
 .date-from {
   margin-top: 1vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-
   width: 25vw;
   height: 10vh;
+}
+.travel-datee {
+  margin-left: -3vw;
 }
 .date-from p {
   color: #060e57;

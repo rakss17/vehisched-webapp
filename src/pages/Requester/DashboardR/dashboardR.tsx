@@ -34,8 +34,12 @@ export default function DashboardR() {
   const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
+  const [isRoundTripClick, setIsRoundTripClick] = useState(false);
+  const [isOneWayClick, setIsOneWayClick] = useState(false);
   const [selectedButton, setSelectedButton] =
     useState<string>("Set Trip Schedule");
+  const [selectedTripButton, setSelectedTripButton] =
+    useState<string>("Round Trip");
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -156,6 +160,20 @@ export default function DashboardR() {
 
     setSelectedButton(button);
   };
+  const handleButtonClickTrip = (button: string) => {
+    switch (button) {
+      case "Round Trip":
+        setIsOneWayClick(false);
+        break;
+      case "One-way":
+        setIsOneWayClick(true);
+        break;
+      default:
+        break;
+    }
+
+    setSelectedTripButton(button);
+  };
   useEffect(() => {
     handleButtonClick("Set Trip Schedule");
   }, []);
@@ -226,8 +244,44 @@ export default function DashboardR() {
               <div className="modal-set-trip">
                 <div className="modal-set-trip-body">
                   <h1>Set Trip</h1>
+                  <div className="trip-category">
+                    <p>Category: </p>
+                    <div>
+                      <button
+                        onClick={() => handleButtonClickTrip("Round Trip")}
+                        className={
+                          selectedTripButton === "Round Trip" ? "active" : ""
+                        }
+                      >
+                        Round Trip
+                      </button>
+                      <button
+                        onClick={() => handleButtonClickTrip("One-way")}
+                        className={
+                          selectedTripButton === "One-way" ? "active" : ""
+                        }
+                      >
+                        One-way
+                      </button>
+                    </div>
+                  </div>
+                  {isOneWayClick && (
+                    <div className="one-way-sub-category">
+                      <p>Type: </p>
+                      <select>
+                        <option>--------- Select Type --------</option>
+                        <option>Drop</option>
+                        <option>Fetch</option>
+                      </select>
+                    </div>
+                  )}
+
                   <div className="date-from">
-                    <p>From: </p>
+                    {!isOneWayClick ? (
+                      <p>From: </p>
+                    ) : (
+                      <p className="travel-datee">Travel Date: </p>
+                    )}
                     <div>
                       <CalendarInput
                         selectedDate={
@@ -246,26 +300,29 @@ export default function DashboardR() {
                       </div>
                     </div>
                   </div>
-                  <div className="date-to">
-                    <p>To: </p>
-                    <div>
-                      <CalendarInput
-                        selectedDate={
-                          data.return_date ? new Date(data.return_date) : null
-                        }
-                        onChange={handleEndDateChange}
-                        disableDaysBefore={2}
-                      />
-                      <div className="separate-time">
-                        {" "}
-                        <TimeInput
-                          onChange={handleEndTimeChange}
-                          selectedDate={data.return_date}
-                          handleDateChange={handleEndDateChange}
+                  {!isOneWayClick && (
+                    <div className="date-to">
+                      <p>To: </p>
+                      <div>
+                        <CalendarInput
+                          selectedDate={
+                            data.return_date ? new Date(data.return_date) : null
+                          }
+                          onChange={handleEndDateChange}
+                          disableDaysBefore={2}
                         />
+                        <div className="separate-time">
+                          {" "}
+                          <TimeInput
+                            onChange={handleEndTimeChange}
+                            selectedDate={data.return_date}
+                            handleDateChange={handleEndDateChange}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
+
                   {/* <div className="number-of-pass">
                     <p>
                       Number of Passenger{"("}s{"):"}

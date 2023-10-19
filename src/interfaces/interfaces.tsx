@@ -100,6 +100,8 @@ export interface RequestFormProps {
   requester_middle_name?: any;
   requester_name?: any;
   driver_name?: any;
+  category?: any;
+  sub_category?: any;
 }
 
 export interface RequestFormDetailsProps {

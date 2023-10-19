@@ -21,9 +21,11 @@ import {
   fetchSchedule,
   fetchPendingRequestAPI,
   checkVehicleAvailability,
+  handlePlaceSelect,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
+import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
@@ -49,6 +51,8 @@ export default function DashboardR() {
     travel_time: null,
     return_date: null,
     return_time: null,
+    category: "",
+    sub_category: "",
   });
   const role = personalInfo?.role;
   const userName = personalInfo?.username;
@@ -107,7 +111,9 @@ export default function DashboardR() {
       data.travel_date,
       data.travel_time,
       data.return_date,
-      data.return_time
+      data.return_time,
+      data.category,
+      data.sub_category
     );
     handleButtonClick("Available Vehicle");
   };
@@ -171,7 +177,7 @@ export default function DashboardR() {
       default:
         break;
     }
-
+    setData({ ...data, category: button });
     setSelectedTripButton(button);
   };
   useEffect(() => {
@@ -206,6 +212,8 @@ export default function DashboardR() {
       console.log("No time selected.");
     }
   };
+
+  console.log(data);
 
   return (
     <>
@@ -266,14 +274,30 @@ export default function DashboardR() {
                     </div>
                   </div>
                   {isOneWayClick && (
-                    <div className="one-way-sub-category">
-                      <p>Type: </p>
-                      <select>
-                        <option>--------- Select Type --------</option>
-                        <option>Drop</option>
-                        <option>Fetch</option>
-                      </select>
-                    </div>
+                    <>
+                      <div className="one-way-sub-category">
+                        <p>Type: </p>
+                        <select
+                          value={data.sub_category}
+                          onChange={(event) => {
+                            setData({
+                              ...data,
+                              sub_category: event.target.value,
+                            });
+                          }}
+                        >
+                          <option>--------- Select Type --------</option>
+                          <option value="Drop">Drop</option>
+                          <option value="Fetch">Fetch</option>
+                        </select>
+                      </div>
+                      <div>
+                        <AutoCompleteAddressGoogle
+                          travel_date={data.travel_date}
+                          travel_time={data.travel_time}
+                        />
+                      </div>
+                    </>
                   )}
 
                   <div className="date-from">

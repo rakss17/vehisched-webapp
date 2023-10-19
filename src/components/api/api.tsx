@@ -474,7 +474,7 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       const responseData = Array.isArray(response.data)
         ? response.data
         : [response.data];
-
+      console.log(response.data);
       const updatedData = responseData.map((item) => {
         if (item.passenger_names) {
           const validJson = item.passenger_names.replace(/'/g, '"');
@@ -779,7 +779,9 @@ export function checkVehicleAvailability(
   preferred_start_travel_date: any,
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
-  preferred_end_travel_time: any
+  preferred_end_travel_time: any,
+  category: any,
+  sub_category: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -789,6 +791,8 @@ export function checkVehicleAvailability(
         preferred_start_travel_time: preferred_start_travel_time,
         preferred_end_travel_date: preferred_end_travel_date,
         preferred_end_travel_time: preferred_end_travel_time,
+        category: category,
+        sub_category: sub_category,
       },
       headers: {
         Authorization: `Token ${token}`,
@@ -881,4 +885,31 @@ export async function fetchDriverSchedules(
     .catch((error) => {
       console.error("Error fetching schedule list:", error);
     });
+}
+
+export async function handlePlaceSelect(
+  place: any,
+  travel_date: any,
+  travel_time: any
+) {
+  console.log("handleplaceselect place", place);
+  console.log("handleplaceselect travel_date", travel_date);
+  console.log("handleplaceselect travel_time", travel_time);
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/api/v1/request/place-details/`,
+      {
+        params: {
+          place_id: place.place_id,
+          travel_date: travel_date,
+          travel_time: travel_time,
+        },
+      }
+    );
+    const data = response.data;
+    console.log(data);
+    // Rest of your code...
+  } catch (error) {
+    console.log("Error:", error);
+  }
 }

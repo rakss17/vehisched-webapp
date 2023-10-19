@@ -47,6 +47,8 @@ export default function RequestForm() {
   const travelTime = location.state?.data.travel_time || "";
   const returnDate = location.state?.data.return_date || "";
   const returnTime = location.state?.data.return_time || "";
+  const category = location.state?.data.category || "";
+  const subCategory = location.state?.data.sub_category || "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -66,6 +68,8 @@ export default function RequestForm() {
     return_time: returnTime,
     destination: "",
     vehicle: `${plateNumber}`,
+    category: category,
+    sub_category: subCategory,
   });
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);

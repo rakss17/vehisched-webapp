@@ -52,7 +52,7 @@ export default function DashboardR() {
     return_date: null,
     return_time: null,
     category: "",
-    sub_category: "",
+    sub_category: "N/A",
   });
   const role = personalInfo?.role;
   const userName = personalInfo?.username;

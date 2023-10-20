@@ -420,8 +420,16 @@
   background-color: white;
 }
 
-.date-from {
+.date-from-roundtrip {
   margin-top: 1vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 25vw;
+  height: 10vh;
+}
+.date-from-oneway {
+  margin-top: 2vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -431,7 +439,12 @@
 .travel-datee {
   margin-left: -3vw;
 }
-.date-from p {
+.date-from-roundtrip p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.date-from-oneway p {
   color: #060e57;
   font-size: 1rem;
   font-weight: bold;
@@ -453,6 +466,27 @@
 }
 .separate-time {
   margin-top: 1vw;
+}
+.trip-destination {
+  margin-top: 1vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 25vw;
+  height: 5vh;
+}
+.trip-destination p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: -3vw;
+}
+.trip-destination-autocomplete-roundtrip {
+  height: 5vh;
+}
+
+.trip-destination-autocomplete-oneway {
+  height: 10vh;
 }
 
 .number-of-pass {

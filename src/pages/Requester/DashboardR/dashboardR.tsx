@@ -56,6 +56,7 @@ export default function DashboardR() {
   });
   const role = personalInfo?.role;
   const userName = personalInfo?.username;
+  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -142,7 +143,13 @@ export default function DashboardR() {
 
   useEffect(() => {
     setData({ ...data, category: "Round Trip" });
+    setSelectedTripButton("Round Trip");
   }, []);
+  const checkAutocompleteDisability = () => {
+    if (data.travel_date !== null && data.travel_time !== null) {
+      setIsAutocompleteDisabled(false);
+    }
+  };
 
   const handleButtonClick = (button: string) => {
     switch (button) {
@@ -172,8 +179,10 @@ export default function DashboardR() {
     switch (button) {
       case "Round Trip":
         setIsOneWayClick(false);
+        setIsAutocompleteDisabled(false);
         break;
       case "One-way":
+        setIsAutocompleteDisabled(true);
         setIsOneWayClick(true);
         break;
       default:
@@ -194,6 +203,9 @@ export default function DashboardR() {
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
+    if (selectedTripButton === "One-way") {
+      checkAutocompleteDisability();
+    }
   };
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
@@ -203,6 +215,9 @@ export default function DashboardR() {
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, travel_time: time });
+      if (selectedTripButton === "One-way") {
+        checkAutocompleteDisability();
+      }
     } else {
       console.log("No time selected.");
     }
@@ -291,40 +306,82 @@ export default function DashboardR() {
                           <option value="Fetch">Fetch</option>
                         </select>
                       </div>
-                      <div>
+                    </>
+                  )}
+                  <div className="trip-destination">
+                    <p>Destination: </p>
+                    {selectedTripButton === "Round Trip" ? (
+                      <div className="trip-destination-autocomplete-roundtrip">
                         <AutoCompleteAddressGoogle
                           travel_date={data.travel_date}
                           travel_time={data.travel_time}
                           setData={setData}
+                          isDisabled={isAutocompleteDisabled}
                         />
                       </div>
-                    </>
-                  )}
-
-                  <div className="date-from">
-                    {!isOneWayClick ? (
-                      <p>From: </p>
                     ) : (
-                      <p className="travel-datee">Travel Date: </p>
-                    )}
-                    <div>
-                      <CalendarInput
-                        selectedDate={
-                          data.travel_date ? new Date(data.travel_date) : null
-                        }
-                        onChange={handleStartDateChange}
-                        disableDaysBefore={2}
-                      />
-
-                      <div className="separate-time">
-                        <TimeInput
-                          onChange={handleStartTimeChange}
-                          selectedDate={data.travel_date}
-                          handleDateChange={handleStartDateChange}
+                      <div className="trip-destination-autocomplete-oneway">
+                        <AutoCompleteAddressGoogle
+                          travel_date={data.travel_date}
+                          travel_time={data.travel_time}
+                          setData={setData}
+                          isDisabled={isAutocompleteDisabled}
                         />
+                      </div>
+                    )}
+                  </div>
+                  {selectedTripButton === "Round Trip" ? (
+                    <div className="date-from-roundtrip">
+                      {!isOneWayClick ? (
+                        <p>From: </p>
+                      ) : (
+                        <p className="travel-datee">Travel Date: </p>
+                      )}
+                      <div>
+                        <CalendarInput
+                          selectedDate={
+                            data.travel_date ? new Date(data.travel_date) : null
+                          }
+                          onChange={handleStartDateChange}
+                          disableDaysBefore={2}
+                        />
+
+                        <div className="separate-time">
+                          <TimeInput
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="date-from-oneway">
+                      {!isOneWayClick ? (
+                        <p>From: </p>
+                      ) : (
+                        <p className="travel-datee">Travel Date: </p>
+                      )}
+                      <div>
+                        <CalendarInput
+                          selectedDate={
+                            data.travel_date ? new Date(data.travel_date) : null
+                          }
+                          onChange={handleStartDateChange}
+                          disableDaysBefore={2}
+                        />
+
+                        <div className="separate-time">
+                          <TimeInput
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {!isOneWayClick && (
                     <div className="date-to">
                       <p>To: </p>

@@ -779,9 +779,7 @@ export function checkVehicleAvailability(
   preferred_start_travel_date: any,
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
-  preferred_end_travel_time: any,
-  category: any,
-  sub_category: any
+  preferred_end_travel_time: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -791,8 +789,6 @@ export function checkVehicleAvailability(
         preferred_start_travel_time: preferred_start_travel_time,
         preferred_end_travel_date: preferred_end_travel_date,
         preferred_end_travel_time: preferred_end_travel_time,
-        category: category,
-        sub_category: sub_category,
       },
       headers: {
         Authorization: `Token ${token}`,
@@ -890,7 +886,8 @@ export async function fetchDriverSchedules(
 export async function handlePlaceSelect(
   place: any,
   travel_date: any,
-  travel_time: any
+  travel_time: any,
+  setData: (data: any) => void
 ) {
   console.log(
     "At start of handlePlaceSelect: ",
@@ -909,9 +906,13 @@ export async function handlePlaceSelect(
         },
       }
     );
-    const data = response.data;
-    console.log(data);
-    // Rest of your code...
+    const [return_date, return_time] =
+      response.data.estimated_return_time.split("T");
+    setData((prevData: any) => ({
+      ...prevData,
+      return_date: return_date,
+      return_time: return_time,
+    }));
   } catch (error) {
     console.log("Error:", error);
   }

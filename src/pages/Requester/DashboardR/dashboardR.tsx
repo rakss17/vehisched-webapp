@@ -74,11 +74,6 @@ export default function DashboardR() {
   ];
 
   useEffect(() => {
-    console.log("Updated travel_date:", data.travel_date);
-    console.log("Updated travel_time:", data.travel_time);
-  }, [data.travel_date, data.travel_time]);
-
-  useEffect(() => {
     fetchNotification(setNotifList);
   }, []);
 
@@ -116,9 +111,7 @@ export default function DashboardR() {
       data.travel_date,
       data.travel_time,
       data.return_date,
-      data.return_time,
-      data.category,
-      data.sub_category
+      data.return_time
     );
     handleButtonClick("Available Vehicle");
   };
@@ -222,8 +215,6 @@ export default function DashboardR() {
     }
   };
 
-  console.log(data);
-
   return (
     <>
       <Header />
@@ -304,6 +295,7 @@ export default function DashboardR() {
                         <AutoCompleteAddressGoogle
                           travel_date={data.travel_date}
                           travel_time={data.travel_time}
+                          setData={setData}
                         />
                       </div>
                     </>

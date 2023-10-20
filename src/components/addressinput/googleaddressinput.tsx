@@ -5,11 +5,13 @@ import { useEffect, useState, useRef } from "react";
 interface AutoCompleteAddressGoogleProps {
   travel_date: any;
   travel_time: any;
+  setData: (data: any) => void;
 }
 
 export default function AutoCompleteAddressGoogle({
   travel_date: travelDateProp,
   travel_time: travelTimeProp,
+  setData,
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
@@ -20,9 +22,9 @@ export default function AutoCompleteAddressGoogle({
   // Update the onPlaceSelectedRef callback whenever travel_date or travel_time change
   useEffect(() => {
     onPlaceSelectedRef.current = (place) => {
-      handlePlaceSelect(place, travel_date, travel_time);
+      handlePlaceSelect(place, travel_date, travel_time, setData);
     };
-  }, [travel_date, travel_time]);
+  }, [travel_date, travel_time, setData]);
 
   // Listen for changes in travel_date and travel_time props and update state
   useEffect(() => {
@@ -30,8 +32,6 @@ export default function AutoCompleteAddressGoogle({
     setTravelTime(travelTimeProp);
   }, [travelDateProp, travelTimeProp]);
 
-  console.log("autocomplete travel_date", travel_date);
-  console.log("autocomplete travel_time", travel_time);
   return (
     <Autocomplete
       options={{

@@ -57,6 +57,7 @@ export default function DashboardR() {
   const role = personalInfo?.role;
   const userName = personalInfo?.username;
   const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
+  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true)
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -148,6 +149,7 @@ export default function DashboardR() {
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {
       setIsAutocompleteDisabled(false);
+      setIsTravelDateSelected(false)
     }
   };
 
@@ -327,6 +329,9 @@ export default function DashboardR() {
                           setData={setData}
                           isDisabled={isAutocompleteDisabled}
                         />
+                        {isTravelDateSelected &&(
+                          <p>Select travel date and time first</p>
+                        )}
                       </div>
                     )}
                   </div>

@@ -892,9 +892,12 @@ export async function handlePlaceSelect(
   travel_date: any,
   travel_time: any
 ) {
-  console.log("handleplaceselect place", place);
-  console.log("handleplaceselect travel_date", travel_date);
-  console.log("handleplaceselect travel_time", travel_time);
+  console.log(
+    "At start of handlePlaceSelect: ",
+    place,
+    travel_date,
+    travel_time
+  );
   try {
     const response = await axios.get(
       `http://localhost:8000/api/v1/request/place-details/`,

@@ -74,6 +74,11 @@ export default function DashboardR() {
   ];
 
   useEffect(() => {
+    console.log("Updated travel_date:", data.travel_date);
+    console.log("Updated travel_time:", data.travel_time);
+  }, [data.travel_date, data.travel_time]);
+
+  useEffect(() => {
     fetchNotification(setNotifList);
   }, []);
 
@@ -141,6 +146,10 @@ export default function DashboardR() {
   //     return false;
   //   }
   // });
+
+  useEffect(() => {
+    setData({ ...data, category: "Round Trip" });
+  }, []);
 
   const handleButtonClick = (button: string) => {
     switch (button) {

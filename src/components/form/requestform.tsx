@@ -39,7 +39,7 @@ export default function RequestForm() {
     destination: "",
     purpose: "",
   });
-
+  const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
@@ -76,6 +76,14 @@ export default function RequestForm() {
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (distance >= 50) {
+      setIsFifthyKilometers(true);
+    } else if (distance < 50) {
+      setIsFifthyKilometers(false);
+    }
+  }, []);
 
   useEffect(() => {
     let updatedPassengerNames = [...data.passenger_names];
@@ -141,30 +149,7 @@ export default function RequestForm() {
       event.preventDefault();
     }
   };
-  const handleDownload = () => {
-    const fileUrl = "your_file_url_here";
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    link.download = "template.pdf";
-    link.click();
-  };
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
-  const handleFileUpload = (event: any) => {
-    const file = event.target.files[0];
-    if (file && file.type === "application/pdf") {
-      setSelectedFileName(file.name);
-    } else {
-      setSelectedFileName(null);
-    }
-  };
-
-  const openFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
   const handleGoBack = () => {
     navigate("/DashboardR");
   };
@@ -286,10 +271,7 @@ export default function RequestForm() {
             <div className="form-body-shadow">
               <div className="first-row">
                 <div className="requester-info-name">
-                  <p>
-                    <FontAwesomeIcon icon={faUser} />
-                    Requester's name:
-                  </p>
+                  <strong>Requester's name:</strong>
                   <p>
                     {lastName}, {firstName} {middleName}
                   </p>
@@ -320,41 +302,38 @@ export default function RequestForm() {
               </div>
               <div className="third-row">
                 <div className="vehicle-info-name">
-                  <p>
-                    <FontAwesomeIcon icon={faCar} />
-                    Vehicle:
-                  </p>
+                  <strong>Vehicle:</strong>
                   <p>
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
                 <div className="destination-info">
-                  <p>Destination: </p>
+                  <strong>Destination: </strong>
                   <p>{destination}</p>
                 </div>
 
                 <div className="kilometer-info">
-                  <p>Distance:</p>
+                  <strong>Distance:</strong>
                   <p>{distance} km</p>
                 </div>
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
-                  <p>Date of Travel:</p>
+                  <strong>Date of Travel:</strong>
                   <p>{travelDate}</p>
                 </div>
                 <div className="calendar-containerr">
-                  <p>To </p>
+                  <strong>to </strong>
                   <p>{returnDate}</p>
                 </div>
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
-                  <p>Time of Travel: </p>
+                  <strong>Time of Travel: </strong>
                   <p>{formatTime(travelTime)}</p>
                 </div>
                 <div className="calendar-containerr">
-                  <p>To </p>
+                  <strong>to </strong>
                   <p>{formatTime(returnTime)}</p>
                 </div>
               </div>
@@ -376,12 +355,16 @@ export default function RequestForm() {
               </div>
 
               <div className="seventh-row">
-                <p>
-                  Requesters traveling to destinations exceed 50 kilometers are
-                  required to provide a travel order for the vehicle's fuel and
-                  <br></br>
-                  the driver's per diem.
-                </p>
+                {!isFifthyKilometers && (
+                  <p>
+                    Note: Requesters traveling to destinations exceed 50
+                    kilometers are required to provide a travel order for the
+                    vehicle's fuel and
+                    <br></br>
+                    the driver's per diem.
+                  </p>
+                )}
+
                 <div className="button-row-container">
                   <button onClick={handleGoBack}>Go back</button>
                   <button onClick={handleSubmit}>Submit</button>

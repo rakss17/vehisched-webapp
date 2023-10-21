@@ -43,6 +43,7 @@ export default function RequestForm() {
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
+  const capacity = location.state?.capacity || "";
   const travelDate = location.state?.data.travel_date || "";
   const travelTime = location.state?.data.travel_time || "";
   const returnDate = location.state?.data.return_date || "";
@@ -72,9 +73,11 @@ export default function RequestForm() {
     vehicle: `${plateNumber}`,
     category: category,
     sub_category: subCategory,
+    distance: distance,
   });
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [exceedsCapacity, setExceedsCapacity] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -107,6 +110,12 @@ export default function RequestForm() {
     const { value } = event.target;
     setNumPassengers(Number(value));
 
+    if (Number(value) > capacity) {
+      setExceedsCapacity(true);
+    } else {
+      setExceedsCapacity(false);
+    }
+
     // Check if all passenger names are filled
     if (
       data.passenger_names.length === numPassengers &&
@@ -123,25 +132,28 @@ export default function RequestForm() {
 
   const generatePassengerInputs = () => {
     const inputs = [];
-    for (let i = 0; i < numPassengers; i++) {
-      inputs.push(
-        <InputField
-          className="passenger_name_width"
-          value={data.passenger_names[i]}
-          key={i}
-          icon={faUser}
-          label={`Passenger ${i + 1}`}
-          placeholder={`Passenger ${i + 1}`}
-          onChange={(event) => {
-            const newPassengerNames = [...data.passenger_names];
-            newPassengerNames[i] = event.target.value;
-            setData({ ...data, passenger_names: newPassengerNames });
-          }}
-        />
-      );
+    if (numPassengers <= capacity) {
+      for (let i = 0; i < numPassengers; i++) {
+        inputs.push(
+          <InputField
+            className="passenger_name_width"
+            value={data.passenger_names[i]}
+            key={i}
+            icon={faUser}
+            label={`Passenger ${i + 1}`}
+            placeholder={`Passenger ${i + 1}`}
+            onChange={(event) => {
+              const newPassengerNames = [...data.passenger_names];
+              newPassengerNames[i] = event.target.value;
+              setData({ ...data, passenger_names: newPassengerNames });
+            }}
+          />
+        );
+      }
     }
     return inputs;
   };
+
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
@@ -287,15 +299,19 @@ export default function RequestForm() {
                     setFormErrors({ ...formErrors, office_or_dept: "" }); // Clear the error
                   }}
                 />
-
-                <InputField
-                  icon={faUsers}
-                  onKeyDown={handleKeyDown}
-                  label="No. of passengers"
-                  value={numPassengers}
-                  onChange={handlePassengerChange}
-                  type="number"
-                />
+                <div className="input-passenger-number">
+                  <InputField
+                    icon={faUsers}
+                    onKeyDown={handleKeyDown}
+                    label="No. of passengers"
+                    value={numPassengers}
+                    onChange={handlePassengerChange}
+                    type="number"
+                  />
+                  {exceedsCapacity && (
+                    <p>Exceeds seating capacity of the vehicle</p>
+                  )}
+                </div>
               </div>
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
@@ -337,7 +353,16 @@ export default function RequestForm() {
                   <p>{formatTime(returnTime)}</p>
                 </div>
               </div>
-
+              <div className="forth-row">
+                <div className="calendar-containerr">
+                  <strong>Travel Type:</strong>
+                  <p>{category}</p>
+                </div>
+                <div className="calendar-containerr">
+                  <strong>Sub type: </strong>
+                  <p>{subCategory}</p>
+                </div>
+              </div>
               <div className="sixth-row">
                 <div className="purpose-row">
                   <InputField
@@ -355,7 +380,7 @@ export default function RequestForm() {
               </div>
 
               <div className="seventh-row">
-                {!isFifthyKilometers && (
+                {isFifthyKilometers && (
                   <p>
                     Note: Requesters traveling to destinations exceed 50
                     kilometers are required to provide a travel order for the

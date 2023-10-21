@@ -215,13 +215,31 @@
   white-space: nowrap;
 }
 .request-form-container div:nth-child(7) {
+  display: flex;
   flex-direction: row;
   margin-top: 0vh;
-  padding-left: 4vw;
+  padding-left: 2vw;
   align-items: center;
-  display: flex;
   height: 5vh;
   width: 50vw;
+  gap: 0vw;
+}
+.request-form-container div:nth-child(7) div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 30vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(7) div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 5vh;
+  width: 12vw;
   gap: 1vw;
 }
 .request-form-container div:nth-child(7) h2 {
@@ -233,7 +251,26 @@
   color: black;
   font-size: 1.1rem;
 }
-.request-form-container div:nth-child(7) .dropdown-custom {
+.request-form-container div:nth-child(8) {
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 4vw;
+  align-items: center;
+  display: flex;
+  height: 5vh;
+  width: 50vw;
+  gap: 1vw;
+}
+.request-form-container div:nth-child(8) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container div:nth-child(8) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.request-form-container div:nth-child(8) .dropdown-custom {
   position: relative;
   display: inline-block;
   width: 12vw;
@@ -242,7 +279,7 @@
   border-radius: 5px;
 }
 
-.request-form-container div:nth-child(7) .toggle-custom {
+.request-form-container div:nth-child(8) .toggle-custom {
   cursor: pointer;
   padding: 0px;
   background: green;
@@ -253,7 +290,7 @@
   font-size: 1rem;
 }
 
-.request-form-container div:nth-child(8) {
+.request-form-container div:nth-child(9) {
   display: flex;
   flex-direction: row;
   margin-top: 5vh;
@@ -262,14 +299,8 @@
   width: 50vw;
   justify-content: space-around;
 }
-.request-form-container div:nth-child(8) button:nth-child(1) {
-  width: 8vw;
-  height: 6vh;
-  background-color: transparent;
-  color: black;
-  border: 1px solid #060e57;
-}
-.request-form-container div:nth-child(8) button:nth-child(2) {
+
+.request-form-container div:nth-child(9) button {
   width: 8vw;
   height: 6vh;
   background-color: #060e57;

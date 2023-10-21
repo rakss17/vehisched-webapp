@@ -102,6 +102,7 @@ export interface RequestFormProps {
   driver_name?: any;
   category?: any;
   sub_category?: any;
+  distance?: any;
 }
 
 export interface RequestFormDetailsProps {

@@ -47,6 +47,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       setSelectedDriverId(selectedDriver.id);
     }
   };
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
 
   return (
     <>
@@ -69,7 +73,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               </p>
             </div>
             <div>
-              <h2>Office/Dept: </h2> <p>CITC</p>
+              <h2>Office/Dept: </h2> <p>{selectedRequest.office_or_dept}</p>
             </div>
           </div>
           <div>
@@ -91,7 +95,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <p>{selectedRequest.destination}</p>
             </div>
             <div>
-              <h2>Kilometers: </h2> <p></p>
+              <h2>Distance: </h2> <p>{selectedRequest.distance} km</p>
             </div>
           </div>
           <div>
@@ -103,9 +107,18 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </div>
             <div>
               <h2>Time:</h2>
-              <p>{selectedRequest.travel_time}</p>
+              <p>{formatTime(selectedRequest.travel_time)}</p>
               <h2>to:</h2>
-              <p>{selectedRequest.return_time}</p>
+              <p>{formatTime(selectedRequest.return_time)}</p>
+            </div>
+          </div>
+          <div>
+            <div>
+              <h2>Travel type: </h2>
+              <p>{selectedRequest.category}</p>
+            </div>
+            <div>
+              <h2>Sub type: </h2> <p>{selectedRequest.sub_category}</p>
             </div>
           </div>
           {selectedRequest.status !== "Pending" && (
@@ -128,7 +141,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             {showButtons && (
               <>
-                <button>Attachments</button>
                 <button onClick={() => onApprove(selectedDriverId)}>
                   Approve
                 </button>

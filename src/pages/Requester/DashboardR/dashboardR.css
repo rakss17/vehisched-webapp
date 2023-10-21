@@ -84,7 +84,7 @@
 }
 .requester-schedule-container div {
   background-color: #d9d9d9;
-  height: 50vh;
+  height: 55vh;
   width: 40vw;
   padding-top: 1.5vh;
 }
@@ -166,8 +166,7 @@
   flex-direction: row;
   margin-top: 2vh;
   padding-left: 2vw;
-  align-items: center;
-  height: 5vh;
+  height: 10vh;
   gap: 1vw;
   overflow: hidden;
 }
@@ -474,7 +473,6 @@
   justify-content: space-around;
   width: 25vw;
   height: 5vh;
-  
 }
 .trip-destination p {
   color: #060e57;
@@ -493,7 +491,7 @@
   align-items: center;
   justify-content: center;
 }
-.trip-destination-autocomplete-oneway p{ 
+.trip-destination-autocomplete-oneway p {
   color: red;
   font-size: 0.8rem;
   margin-left: 0vw;

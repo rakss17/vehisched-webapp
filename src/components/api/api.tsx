@@ -888,7 +888,8 @@ export async function handlePlaceSelect(
   travel_date: any,
   travel_time: any,
   setData: (data: any) => void,
-  setAddressData: (addressData: any) => void
+  setAddressData: (addressData: any) => void,
+  category: any
 ) {
   console.log(
     "At start of handlePlaceSelect: ",
@@ -904,35 +905,54 @@ export async function handlePlaceSelect(
         travel_time: travel_time,
       },
     });
-    console.log(response.data);
-    const distanceString = response.data.distance;
-    const distance = parseFloat(distanceString);
-    console.log("string distance", distanceString);
-    console.log("converted distance", distance);
-    const addressComponents = response.data.result.address_components.map(
-      (component: any) => ({
-        short_name: component.short_name,
-      })
-    );
-    const addressName = response.data.result.name;
-    const fullAddress =
-      addressName +
-      ", " +
-      addressComponents
-        .map((component: any) => component.short_name)
-        .join(", ");
-    const [return_date, return_time] =
-      response.data.estimated_return_time.split("T");
-    setData((prevData: any) => ({
-      ...prevData,
-      return_date: return_date,
-      return_time: return_time,
-    }));
-    setAddressData((prevData: any) => ({
-      ...prevData,
-      distance: distance,
-      destination: fullAddress,
-    }));
+    if (category === "Round Trip") {
+      const distanceString = response.data.distance;
+      const distance = parseFloat(distanceString);
+      const addressComponents = response.data.result.address_components.map(
+        (component: any) => ({
+          short_name: component.short_name,
+        })
+      );
+      const addressName = response.data.result.name;
+      const fullAddress =
+        addressName +
+        ", " +
+        addressComponents
+          .map((component: any) => component.short_name)
+          .join(", ");
+      setAddressData((prevData: any) => ({
+        ...prevData,
+        distance: distance,
+        destination: fullAddress,
+      }));
+    } else if (category === "One-way") {
+      const [return_date, return_time] =
+        response.data.estimated_return_time.split("T");
+      setData((prevData: any) => ({
+        ...prevData,
+        return_date: return_date,
+        return_time: return_time,
+      }));
+      const distanceString = response.data.distance;
+      const distance = parseFloat(distanceString);
+      const addressComponents = response.data.result.address_components.map(
+        (component: any) => ({
+          short_name: component.short_name,
+        })
+      );
+      const addressName = response.data.result.name;
+      const fullAddress =
+        addressName +
+        ", " +
+        addressComponents
+          .map((component: any) => component.short_name)
+          .join(", ");
+      setAddressData((prevData: any) => ({
+        ...prevData,
+        distance: distance,
+        destination: fullAddress,
+      }));
+    }
   } catch (error) {
     console.log("Error:", error);
   }

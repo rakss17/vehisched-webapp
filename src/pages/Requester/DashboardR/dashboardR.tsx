@@ -132,9 +132,13 @@ export default function DashboardR() {
       event.preventDefault();
     }
   };
-  const openRequestForm = (plateNumber: string, vehicleName: string) => {
+  const openRequestForm = (
+    plateNumber: string,
+    vehicleName: string,
+    capacity: any
+  ) => {
     navigate("/RequestForm", {
-      state: { plateNumber, vehicleName, data, addressData },
+      state: { plateNumber, vehicleName, capacity, data, addressData },
     });
   };
 
@@ -326,6 +330,7 @@ export default function DashboardR() {
                           setData={setData}
                           isDisabled={isAutocompleteDisabled}
                           setAddressData={setAddressData}
+                          category={data.category}
                         />
                       </div>
                     ) : (
@@ -336,6 +341,7 @@ export default function DashboardR() {
                           setData={setData}
                           isDisabled={isAutocompleteDisabled}
                           setAddressData={setAddressData}
+                          category={data.category}
                         />
                         {isTravelDateSelected && (
                           <p>Select travel date and time first</p>
@@ -451,7 +457,8 @@ export default function DashboardR() {
                         onClick={() =>
                           openRequestForm(
                             vehicle.plate_number,
-                            vehicle.vehicle_name
+                            vehicle.vehicle_name,
+                            vehicle.capacity
                           )
                         }
                         className="vehicle-card"

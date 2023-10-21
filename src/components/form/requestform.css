@@ -75,6 +75,14 @@
 
   align-items: center;
 }
+.input-passenger-number {
+  display: flex;
+  flex-direction: column;
+}
+.input-passenger-number p {
+  margin-top: -2vh;
+  color: red;
+}
 .passenger_name_width {
   width: 12vw;
 }

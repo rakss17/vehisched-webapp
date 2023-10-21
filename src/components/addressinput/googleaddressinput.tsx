@@ -9,6 +9,7 @@ interface AutoCompleteAddressGoogleProps {
   setData: (data: any) => void;
   setAddressData: (addressData: any) => void;
   isDisabled: any;
+  category: any;
 }
 
 export default function AutoCompleteAddressGoogle({
@@ -17,6 +18,7 @@ export default function AutoCompleteAddressGoogle({
   setData,
   setAddressData,
   isDisabled,
+  category,
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
@@ -32,10 +34,11 @@ export default function AutoCompleteAddressGoogle({
         travel_date,
         travel_time,
         setData,
-        setAddressData
+        setAddressData,
+        category
       );
     };
-  }, [travel_date, travel_time, setData, setAddressData]);
+  }, [travel_date, travel_time, setData, setAddressData, category]);
 
   // Listen for changes in travel_date and travel_time props and update state
   useEffect(() => {

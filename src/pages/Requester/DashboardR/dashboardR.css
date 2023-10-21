@@ -238,7 +238,7 @@
 }
 .requester-pending-schedule-container div {
   background-color: #d9d9d9;
-  height: 30vh;
+  height: 40vh;
   width: 40vw;
   padding-top: 1.5vh;
 }
@@ -279,18 +279,37 @@
 .requester-pending-schedule-container div div:nth-child(3) {
   display: flex;
   flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 2vw;
+  height: 10vh;
+  gap: 1vw;
+  padding-top: 0vh;
+  overflow: hidden;
+}
+.requester-pending-schedule-container div div:nth-child(3) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.requester-pending-schedule-container div div:nth-child(3) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-pending-schedule-container div div:nth-child(4) {
+  display: flex;
+  flex-direction: row;
   margin-top: 2vh;
   padding-left: 15vw;
   align-items: center;
   height: 5vh;
   gap: 0.5vw;
 }
-.requester-pending-schedule-container div div:nth-child(3) p:nth-child(1) {
+.requester-pending-schedule-container div div:nth-child(4) p:nth-child(1) {
   color: black;
   font-size: 1.2rem;
   font-weight: bold;
 }
-.requester-pending-schedule-container div div:nth-child(3) p:nth-child(2) {
+.requester-pending-schedule-container div div:nth-child(4) p:nth-child(2) {
   color: black;
   font-size: 1.4rem;
   font-weight: bold;
@@ -420,7 +439,7 @@
 }
 
 .date-from-roundtrip {
-  margin-top: 1vw;
+  margin-top: 2vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -428,7 +447,7 @@
   height: 10vh;
 }
 .date-from-oneway {
-  margin-top: 3vw;
+  margin-top: 2vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -485,11 +504,10 @@
 }
 
 .trip-destination-autocomplete-oneway {
-  height: 10vh;
+  height: 8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 .trip-destination-autocomplete-oneway p {
   color: red;

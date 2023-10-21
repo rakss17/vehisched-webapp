@@ -51,7 +51,7 @@ export default function DashboardR() {
     travel_time: null,
     return_date: null,
     return_time: null,
-    category: "",
+    category: "Round Trip",
     sub_category: "N/A",
   });
   const [addressData, setAddressData] = useState<any>({
@@ -191,11 +191,12 @@ export default function DashboardR() {
     switch (button) {
       case "Round Trip":
         setIsOneWayClick(false);
-        setIsAutocompleteDisabled(false);
+        setIsAutocompleteDisabled(true);
         break;
       case "One-way":
         setIsAutocompleteDisabled(true);
         setIsOneWayClick(true);
+        setIsTravelDateSelected(true);
         break;
       default:
         break;
@@ -203,6 +204,10 @@ export default function DashboardR() {
     setData({ ...data, category: button });
     setSelectedTripButton(button);
   };
+
+  useEffect(() => {
+    handleButtonClickTrip("Round Trip");
+  }, []);
   useEffect(() => {
     handleButtonClick("Set Trip Schedule");
   }, []);
@@ -215,9 +220,8 @@ export default function DashboardR() {
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
-    if (selectedTripButton === "One-way") {
-      checkAutocompleteDisability();
-    }
+
+    checkAutocompleteDisability();
   };
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
@@ -227,9 +231,8 @@ export default function DashboardR() {
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, travel_time: time });
-      if (selectedTripButton === "One-way") {
-        checkAutocompleteDisability();
-      }
+
+      checkAutocompleteDisability();
     } else {
       console.log("No time selected.");
     }
@@ -241,7 +244,9 @@ export default function DashboardR() {
       console.log("No time selected.");
     }
   };
-  console.log("dashboard address data", addressData);
+
+  pendingSchedule.reverse();
+  schedule.reverse();
   return (
     <>
       <Header />
@@ -322,32 +327,20 @@ export default function DashboardR() {
                   )}
                   <div className="trip-destination">
                     <p>Destination: </p>
-                    {selectedTripButton === "Round Trip" ? (
-                      <div className="trip-destination-autocomplete-roundtrip">
-                        <AutoCompleteAddressGoogle
-                          travel_date={data.travel_date}
-                          travel_time={data.travel_time}
-                          setData={setData}
-                          isDisabled={isAutocompleteDisabled}
-                          setAddressData={setAddressData}
-                          category={data.category}
-                        />
-                      </div>
-                    ) : (
-                      <div className="trip-destination-autocomplete-oneway">
-                        <AutoCompleteAddressGoogle
-                          travel_date={data.travel_date}
-                          travel_time={data.travel_time}
-                          setData={setData}
-                          isDisabled={isAutocompleteDisabled}
-                          setAddressData={setAddressData}
-                          category={data.category}
-                        />
-                        {isTravelDateSelected && (
-                          <p>Select travel date and time first</p>
-                        )}
-                      </div>
-                    )}
+
+                    <div className="trip-destination-autocomplete-oneway">
+                      <AutoCompleteAddressGoogle
+                        travel_date={data.travel_date}
+                        travel_time={data.travel_time}
+                        setData={setData}
+                        isDisabled={isAutocompleteDisabled}
+                        setAddressData={setAddressData}
+                        category={data.category}
+                      />
+                      {isTravelDateSelected && (
+                        <p>Select travel date and time first</p>
+                      )}
+                    </div>
                   </div>
                   {selectedTripButton === "Round Trip" ? (
                     <div className="date-from-roundtrip">
@@ -493,86 +486,102 @@ export default function DashboardR() {
           )}
           {isOngoingScheduleClick && (
             <>
-              {hasPendingSchedule ? (
-                <>
-                  <div className="requester-pending-schedule-container">
-                    <div>
-                      <div>
-                        <h1>Schedule no. </h1>{" "}
-                        <h2>{pendingSchedule[0]?.request_id}</h2>
-                      </div>
-                      <div>
-                        <h2>Travel date and time: </h2>{" "}
-                        <p>
-                          {pendingSchedule[0]?.travel_date},{" "}
-                          {formatTime(pendingSchedule[0]?.travel_time)}{" "}
-                        </p>
-                      </div>
-                      <div>
-                        <p>Waiting for office staff's approval</p>
-                        <p className="loading-dots"></p>
-                      </div>
-                    </div>
-                  </div>
-                </>
+              {pendingSchedule.length === 0 ? (
+                <p className="vehicles-null">No pending schedules ongoing</p>
               ) : (
                 <>
-                  {schedule.length === 0 ? (
-                    <p className="vehicles-null">No schedules ongoing</p>
-                  ) : (
-                    <div className="requester-schedule-container">
+                  {pendingSchedule.map((pendingSched) => (
+                    <div
+                      key={pendingSched.request_id}
+                      className="requester-pending-schedule-container"
+                    >
                       <div>
                         <div>
-                          <div>
-                            <h1>Schedule no. </h1>{" "}
-                            <h2>{schedule[0]?.tripticket_id}</h2>
-                          </div>
-                          <div>
-                            <Countdown
-                              travelDate={schedule[0]?.travel_date}
-                              travelTime={schedule[0]?.travel_time}
-                            />
-                          </div>
+                          <h1>Schedule no. </h1>{" "}
+                          <h2>{pendingSched.request_id}</h2>
                         </div>
                         <div>
                           <h2>Travel date and time: </h2>{" "}
                           <p>
-                            {schedule[0]?.travel_date},{" "}
-                            {formatTime(schedule[0]?.travel_time)}
-                            <strong> to </strong>
-                            {schedule[0]?.return_date},{" "}
-                            {formatTime(schedule[0]?.return_time)}
+                            {pendingSched.travel_date},{" "}
+                            {formatTime(pendingSched.travel_time)}{" "}
                           </p>
                         </div>
                         <div>
-                          <div>
-                            <h2>Driver: </h2> <p>{schedule[0]?.driver}</p>
-                          </div>
-                          <div>
-                            <h2>Contact No.: </h2>{" "}
-                            <p>{schedule[0]?.contact_no_of_driver}</p>
-                          </div>
-                        </div>
-                        <div>
                           <h2>Destination: </h2>{" "}
-                          <p>{schedule[0]?.destination}</p>
+                          <p>{pendingSched.destination}, </p>
                         </div>
                         <div>
-                          <div>
-                            <h2>Vehicle: </h2> <p>{schedule[0]?.vehicle}</p>
-                          </div>
-                          <div>
-                            <h2>Status: </h2> <p>{schedule[0]?.status}</p>
-                          </div>
-                        </div>
-                        <div>
-                          <button>View more info</button>
+                          <p>Waiting for office staff's approval</p>
+                          <p className="loading-dots"></p>
                         </div>
                       </div>
                     </div>
-                  )}
+                  ))}
                 </>
               )}
+              <>
+                {schedule.length === 0 ? (
+                  <p className="vehicles-null">No schedules ongoing</p>
+                ) : (
+                  <>
+                    {schedule.map((schedule) => (
+                      <div
+                        key={schedule.tripticket_id}
+                        className="requester-schedule-container"
+                      >
+                        <div>
+                          <div>
+                            <div>
+                              <h1>Schedule no. </h1>{" "}
+                              <h2>{schedule.tripticket_id}</h2>
+                            </div>
+                            <div>
+                              <Countdown
+                                travelDate={schedule.travel_date}
+                                travelTime={schedule.travel_time}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <h2>Travel date and time: </h2>{" "}
+                            <p>
+                              {schedule.travel_date},{" "}
+                              {formatTime(schedule.travel_time)}
+                              <strong> to </strong>
+                              {schedule.return_date},{" "}
+                              {formatTime(schedule.return_time)}
+                            </p>
+                          </div>
+                          <div>
+                            <div>
+                              <h2>Driver: </h2> <p>{schedule.driver}</p>
+                            </div>
+                            <div>
+                              <h2>Contact No.: </h2>{" "}
+                              <p>{schedule.contact_no_of_driver}</p>
+                            </div>
+                          </div>
+                          <div>
+                            <h2>Destination: </h2> <p>{schedule.destination}</p>
+                          </div>
+                          <div>
+                            <div>
+                              <h2>Vehicle: </h2> <p>{schedule.vehicle}</p>
+                            </div>
+                            <div>
+                              <h2>Status: </h2> <p>{schedule.status}</p>
+                            </div>
+                          </div>
+                          <div>
+                            <button>View more info</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
             </>
           )}
         </div>

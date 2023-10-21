@@ -887,7 +887,8 @@ export async function handlePlaceSelect(
   place: any,
   travel_date: any,
   travel_time: any,
-  setData: (data: any) => void
+  setData: (data: any) => void,
+  setAddressData: (addressData: any) => void
 ) {
   console.log(
     "At start of handlePlaceSelect: ",
@@ -896,22 +897,41 @@ export async function handlePlaceSelect(
     travel_time
   );
   try {
-    const response = await axios.get(
-      `http://localhost:8000/api/v1/request/place-details/`,
-      {
-        params: {
-          place_id: place.place_id,
-          travel_date: travel_date,
-          travel_time: travel_time,
-        },
-      }
+    const response = await api.get("api/v1/request/place-details/", {
+      params: {
+        place_id: place.place_id,
+        travel_date: travel_date,
+        travel_time: travel_time,
+      },
+    });
+    console.log(response.data);
+    const distanceString = response.data.distance;
+    const distance = parseFloat(distanceString);
+    console.log("string distance", distanceString);
+    console.log("converted distance", distance);
+    const addressComponents = response.data.result.address_components.map(
+      (component: any) => ({
+        short_name: component.short_name,
+      })
     );
+    const addressName = response.data.result.name;
+    const fullAddress =
+      addressName +
+      ", " +
+      addressComponents
+        .map((component: any) => component.short_name)
+        .join(", ");
     const [return_date, return_time] =
       response.data.estimated_return_time.split("T");
     setData((prevData: any) => ({
       ...prevData,
       return_date: return_date,
       return_time: return_time,
+    }));
+    setAddressData((prevData: any) => ({
+      ...prevData,
+      distance: distance,
+      destination: fullAddress,
     }));
   } catch (error) {
     console.log("Error:", error);

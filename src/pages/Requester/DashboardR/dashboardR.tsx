@@ -54,10 +54,14 @@ export default function DashboardR() {
     category: "",
     sub_category: "N/A",
   });
+  const [addressData, setAddressData] = useState<any>({
+    destination: "",
+    distance: null,
+  });
   const role = personalInfo?.role;
   const userName = personalInfo?.username;
   const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
-  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true)
+  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -129,7 +133,9 @@ export default function DashboardR() {
     }
   };
   const openRequestForm = (plateNumber: string, vehicleName: string) => {
-    navigate("/RequestForm", { state: { plateNumber, vehicleName, data } });
+    navigate("/RequestForm", {
+      state: { plateNumber, vehicleName, data, addressData },
+    });
   };
 
   // const availableVehicles = vehiclesData.filter((vehicle) => {
@@ -149,7 +155,7 @@ export default function DashboardR() {
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {
       setIsAutocompleteDisabled(false);
-      setIsTravelDateSelected(false)
+      setIsTravelDateSelected(false);
     }
   };
 
@@ -231,7 +237,7 @@ export default function DashboardR() {
       console.log("No time selected.");
     }
   };
-
+  console.log("dashboard address data", addressData);
   return (
     <>
       <Header />
@@ -319,6 +325,7 @@ export default function DashboardR() {
                           travel_time={data.travel_time}
                           setData={setData}
                           isDisabled={isAutocompleteDisabled}
+                          setAddressData={setAddressData}
                         />
                       </div>
                     ) : (
@@ -328,8 +335,9 @@ export default function DashboardR() {
                           travel_time={data.travel_time}
                           setData={setData}
                           isDisabled={isAutocompleteDisabled}
+                          setAddressData={setAddressData}
                         />
-                        {isTravelDateSelected &&(
+                        {isTravelDateSelected && (
                           <p>Select travel date and time first</p>
                         )}
                       </div>

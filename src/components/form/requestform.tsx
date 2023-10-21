@@ -49,6 +49,8 @@ export default function RequestForm() {
   const returnTime = location.state?.data.return_time || "";
   const category = location.state?.data.category || "";
   const subCategory = location.state?.data.sub_category || "";
+  const distance = location.state?.addressData.distance || "";
+  const destination = location.state?.addressData.destination || "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -66,7 +68,7 @@ export default function RequestForm() {
     travel_time: travelTime,
     return_date: returnDate,
     return_time: returnTime,
-    destination: "",
+    destination: destination,
     vehicle: `${plateNumber}`,
     category: category,
     sub_category: subCategory,
@@ -222,15 +224,15 @@ export default function RequestForm() {
       }
     }
     // Validate 'destination'
-    //  if (!data.destination) {
-    //   setFormErrors((prevErrors) => ({
-    //     ...prevErrors,
-    //     destination: "Please input destination",
-    //   }));
-    //   valid = false;
-    // } else {
-    //   setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
-    // }
+    if (!data.destination) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        destination: "Please input destination",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
+    }
 
     // Validate 'purpose'
     if (!data.purpose) {
@@ -283,7 +285,7 @@ export default function RequestForm() {
 
             <div className="form-body-shadow">
               <div className="first-row">
-                <div className="vehicle-info-name">
+                <div className="requester-info-name">
                   <p>
                     <FontAwesomeIcon icon={faUser} />
                     Requester's name:
@@ -326,12 +328,14 @@ export default function RequestForm() {
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
-                {/* FURTHER DEBUGGING LATER */}
-                <AddressInput />
+                <div className="destination-info">
+                  <p>Destination: </p>
+                  <p>{destination}</p>
+                </div>
 
                 <div className="kilometer-info">
-                  <p>Kilometer{"(s)"}:</p>
-                  <p>10</p>
+                  <p>Distance:</p>
+                  <p>{distance} km</p>
                 </div>
               </div>
               <div className="forth-row">
@@ -379,25 +383,6 @@ export default function RequestForm() {
                   the driver's per diem.
                 </p>
                 <div className="button-row-container">
-                  <button onClick={handleDownload}>
-                    Download Template
-                    <FontAwesomeIcon className="iconn" icon={faDownload} />
-                  </button>
-                  <label>
-                    <input
-                      type="file"
-                      style={{ display: "none" }}
-                      onChange={handleFileUpload}
-                      ref={fileInputRef}
-                      accept="application/pdf"
-                    />
-                    <button onClick={openFileInput}>
-                      {selectedFileName
-                        ? selectedFileName
-                        : "Upload Travel Order"}
-                      <FontAwesomeIcon className="iconn" icon={faUpload} />
-                    </button>
-                  </label>
                   <button onClick={handleGoBack}>Go back</button>
                   <button onClick={handleSubmit}>Submit</button>
                 </div>

@@ -61,6 +61,17 @@
   flex-direction: row;
   justify-content: space-around;
 }
+.requester-info-name {
+  margin-top: 0vw;
+  display: flex;
+  flex-direction: row;
+  margin-left: 0vh;
+  width: 14vw;
+  color: black;
+  white-space: nowrap;
+  gap: 1vw;
+  background-color: green;
+}
 .passenger_name_width {
   width: 12vw;
 }
@@ -78,17 +89,18 @@
 .third-row {
   display: flex;
   flex-direction: row;
-  margin-top: 2vw;
+  margin-top: 3vw;
   justify-content: space-around;
+  width: 70vw;
 }
 .vehicle-info-name {
-  margin-top: 1vw;
+  margin-top: 0vw;
   display: flex;
   flex-direction: row;
   margin-left: 0vh;
   width: 14vw;
   color: black;
-  align-items: center;
+  white-space: nowrap;
 }
 
 .vehicle-info-name p:nth-child(1) {
@@ -96,10 +108,22 @@
   margin-right: 2vh;
   gap: 5%;
   font-size: 1rem;
-  align-items: center;
+  text-align: center;
+  background-color: green;
+}
+.destination-info {
+  width: 30vw;
+  height: 10vh;
+  display: flex;
+  flex-direction: row;
+  gap: 1vw;
+}
+.destination-info p:nth-child(1) {
+  white-space: nowrap;
+  font-size: 1rem;
 }
 .kilometer-info {
-  margin-top: 1vw;
+  margin-top: 0vw;
   display: flex;
   flex-direction: row;
   width: 14vw;
@@ -218,7 +242,7 @@
 .red-label {
   color: red;
 }
-.form-errors{
+.form-errors {
   flex-direction: column;
   margin-top: -50vh;
   margin-right: 2vw;

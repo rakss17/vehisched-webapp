@@ -62,7 +62,7 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
                 data.travel_date ? new Date(data.travel_date) : null
               }
               onChange={handleStartDateChange}
-              disableDaysBefore={2}
+              disableDaysBefore={0}
             />
             <br></br>
             <TimeInput
@@ -80,7 +80,7 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
                 data.return_date ? new Date(data.return_date) : null
               }
               onChange={handleEndDateChange}
-              disableDaysBefore={2}
+              disableDaysBefore={0}
             />
             <br></br>
             <TimeInput

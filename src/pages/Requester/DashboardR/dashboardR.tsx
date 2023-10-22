@@ -364,7 +364,7 @@ export default function DashboardR() {
                             data.travel_date ? new Date(data.travel_date) : null
                           }
                           onChange={handleStartDateChange}
-                          disableDaysBefore={2}
+                          disableDaysBefore={3}
                         />
 
                         <div className="separate-time">
@@ -389,7 +389,7 @@ export default function DashboardR() {
                             data.travel_date ? new Date(data.travel_date) : null
                           }
                           onChange={handleStartDateChange}
-                          disableDaysBefore={2}
+                          disableDaysBefore={3}
                         />
 
                         <div className="separate-time">
@@ -412,7 +412,7 @@ export default function DashboardR() {
                             data.return_date ? new Date(data.return_date) : null
                           }
                           onChange={handleEndDateChange}
-                          disableDaysBefore={2}
+                          disableDaysBefore={3}
                         />
                         <div className="separate-time">
                           {" "}

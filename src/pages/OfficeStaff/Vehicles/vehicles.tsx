@@ -46,7 +46,8 @@ export default function Vehicles() {
   const [isConfirmationOpenUnavailable, setIsConfirmationOpenUnavailable] =
     useState(false);
   const [isVehicleCalendarOpen, setIsVehiclCalendarOpen] = useState(false);
-  const [isVehicleMaintenanceOpen, setIsVehicleMaintenanceOpen] = useState(true)
+  const [isVehicleMaintenanceOpen, setIsVehicleMaintenanceOpen] =
+    useState(true);
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const dispatch = useDispatch();
@@ -104,6 +105,8 @@ export default function Vehicles() {
     setSelectedVehicle(vehicle);
     if (category === "View Schedules") {
       setIsVehiclCalendarOpen(true);
+    } else if (category === "Schedule a maintenance") {
+      setIsVehicleMaintenanceOpen(true);
     }
   };
 
@@ -138,6 +141,7 @@ export default function Vehicles() {
     setIsAvailableOpen(false);
     setIsUnavailableOpen(false);
     setIsVehiclCalendarOpen(false);
+    setIsVehicleMaintenanceOpen(false);
   };
 
   const getStatusColor = (status: any) => {
@@ -246,7 +250,11 @@ export default function Vehicles() {
         selectedSchedule={vehicleSchedulesData}
         onRequestClose={handleClose}
       />
-      <VehicleMaintenance isOpen={isVehicleMaintenanceOpen}/>
+      <VehicleMaintenance
+        isOpen={isVehicleMaintenanceOpen}
+        onRequestClose={handleClose}
+        selectedVehicle={selectedVehicle}
+      />
     </>
   );
 }

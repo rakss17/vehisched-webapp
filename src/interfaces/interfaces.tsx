@@ -133,4 +133,12 @@ export interface ModalProps {
   buttonText2?: string;
   onRequestClose?: () => void;
   onRequestDelete?: () => void;
+  selectedVehicle?: any;
+}
+
+export interface ButtonProps {
+  onClick?: () => void;
+  text?: any;
+  primaryStyle?: any;
+  secondaryStyle?: any;
 }

@@ -88,13 +88,14 @@
   height: 20vh;
   position: absolute;
   top: 0%;
-  left: 75%
-  
+  left: 75%;
+  text-align: center;
 }
-.next-schedule-container strong{ 
+.next-schedule-container strong {
   color: black;
+  width: 12vw;
 }
-.next-schedule-container p{ 
+.next-schedule-container p {
   color: black;
 }
 .requester-schedule-container {
@@ -132,7 +133,6 @@
   padding-left: 0vw;
   padding-top: 0vh;
   margin-left: 4vw;
-  
 }
 .requester-schedule-container-div div:nth-child(1) h1 {
   color: black;

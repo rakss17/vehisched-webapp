@@ -39,6 +39,7 @@ export default function DashboardR() {
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
   const [isRoundTripClick, setIsRoundTripClick] = useState(false);
   const [isOneWayClick, setIsOneWayClick] = useState(false);
+  const [isFetchSelect, setIsFetchSelect] = useState(false);
   const [selectedButton, setSelectedButton] =
     useState<string>("Set Trip Schedule");
   const [selectedTripButton, setSelectedTripButton] =
@@ -84,12 +85,13 @@ export default function DashboardR() {
     fetchNotification(setNotifList);
   }, []);
   useEffect(() => {
-    fetchSchedule(setSchedule, setNextSchedule, setIsOngoingScheduleClick, handleButtonClick);
-    
+    fetchSchedule(
+      setSchedule,
+      setNextSchedule,
+      setIsOngoingScheduleClick,
+      handleButtonClick
+    );
   }, []);
-
-  
-  
 
   useEffect(() => {
     fetchPendingRequestAPI((data: any) => {
@@ -312,6 +314,13 @@ export default function DashboardR() {
                               ...data,
                               sub_category: event.target.value,
                             });
+                            if (event.target.value === "Fetch") {
+                              setIsFetchSelect(true);
+                            } else if (event.target.value === "Drop") {
+                              setIsFetchSelect(false);
+                            } else {
+                              setIsFetchSelect(false);
+                            }
                           }}
                         >
                           <option>--------- Select Type --------</option>
@@ -322,7 +331,11 @@ export default function DashboardR() {
                     </>
                   )}
                   <div className="trip-destination">
-                    <p>Destination: </p>
+                    {!isFetchSelect ? (
+                      <p>Destination: </p>
+                    ) : (
+                      <p>Your Location: </p>
+                    )}
 
                     <div className="trip-destination-autocomplete-oneway">
                       <AutoCompleteAddressGoogle
@@ -573,18 +586,28 @@ export default function DashboardR() {
                             <button>View more info</button>
                           </div>
                         </div>
-                        {nextSchedule.filter(nextSched => nextSched.previous_tripticket_id === schedule.tripticket_id).map((nextSched) => (
-                          <div className="next-schedule-container">
-                            
-                            <strong>Next trip will start at</strong>
-                            <p>{nextSched.next_schedule_travel_date}</p>
-                            <p>{formatTime(nextSched.next_schedule_travel_time)}</p>
-                          </div>
-                        ))}
-
+                        {nextSchedule
+                          .filter(
+                            (nextSched) =>
+                              nextSched.previous_tripticket_id ===
+                              schedule.tripticket_id
+                          )
+                          .map((nextSched) => (
+                            <div className="next-schedule-container">
+                              <strong>
+                                The next scheduled user of this vehicle will
+                                commence at
+                              </strong>
+                              <p>{nextSched.next_schedule_travel_date}</p>
+                              <p>
+                                {formatTime(
+                                  nextSched.next_schedule_travel_time
+                                )}
+                              </p>
+                            </div>
+                          ))}
                       </div>
                     ))}
-                    
                   </>
                 )}
               </>

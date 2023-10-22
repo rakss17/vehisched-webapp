@@ -31,6 +31,7 @@ import { NotificationCreatedCancelWebsocket } from "../../../components/api/webs
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CalendarModal from "../../../components/calendar/calendarmodal";
+import VehicleMaintenance from "../../../components/maintenance/vehicle";
 
 export default function Vehicles() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -45,6 +46,7 @@ export default function Vehicles() {
   const [isConfirmationOpenUnavailable, setIsConfirmationOpenUnavailable] =
     useState(false);
   const [isVehicleCalendarOpen, setIsVehiclCalendarOpen] = useState(false);
+  const [isVehicleMaintenanceOpen, setIsVehicleMaintenanceOpen] = useState(true)
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const dispatch = useDispatch();
@@ -205,7 +207,7 @@ export default function Vehicles() {
                       onCategoryChange={(category) =>
                         handleEllipsisMenu(category, vehicle)
                       }
-                      status={["View Schedules"]}
+                      status={["View Schedules", "Schedule a maintenance"]}
                     />
                   </div>
                 </div>
@@ -244,6 +246,7 @@ export default function Vehicles() {
         selectedSchedule={vehicleSchedulesData}
         onRequestClose={handleClose}
       />
+      <VehicleMaintenance isOpen={isVehicleMaintenanceOpen}/>
     </>
   );
 }

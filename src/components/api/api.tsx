@@ -822,8 +822,6 @@ export function fetchSchedule(setSchedule: any, setNextSchedule: any, setIsOngoi
         setIsOngoingScheduleClick(true);
           handleButtonClick("Ongoing Schedule");
       }
-
-      console.log(response.data)
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

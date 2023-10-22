@@ -125,3 +125,12 @@ export interface CalendarInputProps {
   disableDaysBefore?: any;
   selectedDate?: Date | null;
 }
+
+export interface ModalProps {
+  isOpen: boolean;
+  content?: string;
+  buttonText1?: string;
+  buttonText2?: string;
+  onRequestClose?: () => void;
+  onRequestDelete?: () => void;
+}

@@ -1,0 +1,56 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+.vehicle-maintenance-modal {
+    margin-top: 30vh;
+    margin-left: 35vw;
+    background-color: #d9d9d9;
+    width: 35vw;
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.vehicle-maintenance-container{ 
+    width: 35vw;
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh
+}
+.maintenance-from{ 
+    width: 20vw;
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}
+.maintenance-from p{ 
+    color: #060e57;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.separate-time {
+    margin-top: 1vw
+    
+}
+.maintenance-to{ 
+    width: 20vw;
+    height: 15vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.maintenance-to p{ 
+    color: #060e57;
+    font-size: 1rem;
+    font-weight: bold;
+}

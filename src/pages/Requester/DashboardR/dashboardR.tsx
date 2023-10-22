@@ -243,10 +243,6 @@ export default function DashboardR() {
 
   pendingSchedule.reverse();
   schedule.reverse();
-  const tripTicketIds = schedule.map((schedule) => schedule.tripticket_id);
-  console.log("tripticket ids", tripTicketIds)
-  const nextScheduleFiltered =  nextSchedule.filter(nextSched => tripTicketIds.includes(nextSched.previous_tripticket_id)).map((nextSched)=> nextSched.previous_tripticket_id)
-  console.log("nextScheduleFiltered", nextScheduleFiltered)
   return (
     <>
       <Header />

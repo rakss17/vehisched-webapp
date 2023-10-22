@@ -75,20 +75,43 @@
   font-size: 1.1rem;
   font-weight: bold;
 }
+.schedule-container-relative {
+  position: relative;
+}
+.next-schedule-container {
+  background-color: #d9d9d9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 15vw;
+  height: 20vh;
+  position: absolute;
+  top: 0%;
+  left: 75%
+  
+}
+.next-schedule-container strong{ 
+  color: black;
+}
+.next-schedule-container p{ 
+  color: black;
+}
 .requester-schedule-container {
   height: 50vh;
   width: 88vw;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
-.requester-schedule-container div {
+.requester-schedule-container-div {
   background-color: #d9d9d9;
-  height: 55vh;
+  height: 50vh;
   width: 40vw;
   padding-top: 1.5vh;
 }
-.requester-schedule-container div div:nth-child(1) {
+.requester-schedule-container-div div:nth-child(1) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -98,26 +121,28 @@
   gap: 0.5vw;
 }
 
-.requester-schedule-container div div:nth-child(1) div:nth-child(1) {
+.requester-schedule-container-div div:nth-child(1) div:nth-child(1) {
   padding-left: 0vw;
   padding-top: 0vh;
 }
-.requester-schedule-container div div:nth-child(1) div:nth-child(2) {
+.requester-schedule-container-div div:nth-child(1) div:nth-child(2) {
   display: flex;
-  justify-content: flex-start;
-  width: 48vw;
+  justify-content: center;
+  width: 22vw;
   padding-left: 0vw;
   padding-top: 0vh;
+  margin-left: 4vw;
+  
 }
-.requester-schedule-container div div:nth-child(1) h1 {
+.requester-schedule-container-div div:nth-child(1) h1 {
   color: black;
   font-size: 1.5rem;
 }
-.requester-schedule-container div div:nth-child(1) h2 {
+.requester-schedule-container-div div:nth-child(1) h2 {
   color: black;
   font-size: 1.5rem;
 }
-.requester-schedule-container div div:nth-child(2) {
+.requester-schedule-container-div div:nth-child(2) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -126,15 +151,15 @@
   height: 5vh;
   gap: 1vw;
 }
-.requester-schedule-container div div:nth-child(2) h2 {
+.requester-schedule-container-div div:nth-child(2) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(2) p {
+.requester-schedule-container-div div:nth-child(2) p {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(3) {
+.requester-schedule-container-div div:nth-child(3) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -143,7 +168,7 @@
   height: 5vh;
   gap: 0vw;
 }
-.requester-schedule-container div div:nth-child(3) div {
+.requester-schedule-container-div div:nth-child(3) div {
   display: flex;
   flex-direction: row;
   margin-top: 0vh;
@@ -153,15 +178,15 @@
   width: 18vw;
   gap: 1vw;
 }
-.requester-schedule-container div div:nth-child(3) h2 {
+.requester-schedule-container-div div:nth-child(3) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(3) p {
+.requester-schedule-container-div div:nth-child(3) p {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(4) {
+.requester-schedule-container-div div:nth-child(4) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -170,16 +195,16 @@
   gap: 1vw;
   overflow: hidden;
 }
-.requester-schedule-container div div:nth-child(4) h2 {
+.requester-schedule-container-div div:nth-child(4) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(4) p {
+.requester-schedule-container-div div:nth-child(4) p {
   color: black;
   font-size: 1.1rem;
 }
 
-.requester-schedule-container div div:nth-child(5) {
+.requester-schedule-container-div div:nth-child(5) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -188,7 +213,7 @@
   height: 5vh;
   gap: 0vw;
 }
-.requester-schedule-container div div:nth-child(5) div {
+.requester-schedule-container-div div:nth-child(5) div {
   display: flex;
   flex-direction: row;
   margin-top: 0vh;
@@ -198,34 +223,34 @@
   width: 18vw;
   gap: 1vw;
 }
-.requester-schedule-container div div:nth-child(5) h2 {
+.requester-schedule-container-div div:nth-child(5) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(5) p {
+.requester-schedule-container-div div:nth-child(5) p {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(5) div:nth-child(2) p {
+.requester-schedule-container-div div:nth-child(5) div:nth-child(2) p {
   color: #060e57;
 }
-.requester-schedule-container div div:nth-child(6) {
+.requester-schedule-container-div div:nth-child(6) {
   display: flex;
   flex-direction: row;
-  margin-top: 3vh;
+  margin-top: 1vh;
   padding-right: 4vw;
   align-items: center;
   justify-content: flex-end;
   height: 5vh;
 }
-.requester-schedule-container div div:nth-child(6) button {
+.requester-schedule-container-div div:nth-child(6) button {
   background-color: transparent;
   font-weight: bold;
   font-size: 1rem;
   color: black;
   border: 2px solid #060e57;
 }
-.requester-schedule-container div div:nth-child(6) button:nth-child(1):hover {
+.requester-schedule-container-div div:nth-child(6) button:nth-child(1):hover {
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }

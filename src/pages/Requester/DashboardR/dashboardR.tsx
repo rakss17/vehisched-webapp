@@ -32,6 +32,7 @@ export default function DashboardR() {
   const [hasSchedule, setHasSchedule] = useState(false);
   const [hasPendingSchedule, setHasPendingSchedule] = useState(true);
   const [schedule, setSchedule] = useState<any[]>([]);
+  const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
   const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
@@ -82,18 +83,13 @@ export default function DashboardR() {
   useEffect(() => {
     fetchNotification(setNotifList);
   }, []);
-
   useEffect(() => {
-    fetchSchedule((data: any) => {
-      setSchedule(data);
-      if (data.length > 0) {
-        setHasSchedule(true);
-        setHasPendingSchedule(false);
-        setIsOngoingScheduleClick(true);
-        handleButtonClick("Ongoing Schedule");
-      }
-    });
+    fetchSchedule(setSchedule, setNextSchedule, setIsOngoingScheduleClick, handleButtonClick);
+    
   }, []);
+
+  
+  
 
   useEffect(() => {
     fetchPendingRequestAPI((data: any) => {
@@ -247,6 +243,10 @@ export default function DashboardR() {
 
   pendingSchedule.reverse();
   schedule.reverse();
+  const tripTicketIds = schedule.map((schedule) => schedule.tripticket_id);
+  console.log("tripticket ids", tripTicketIds)
+  const nextScheduleFiltered =  nextSchedule.filter(nextSched => tripTicketIds.includes(nextSched.previous_tripticket_id)).map((nextSched)=> nextSched.previous_tripticket_id)
+  console.log("nextScheduleFiltered", nextScheduleFiltered)
   return (
     <>
       <Header />
@@ -530,7 +530,7 @@ export default function DashboardR() {
                         key={schedule.tripticket_id}
                         className="requester-schedule-container"
                       >
-                        <div>
+                        <div className="requester-schedule-container-div">
                           <div>
                             <div>
                               <h1>Schedule no. </h1>{" "}
@@ -577,8 +577,18 @@ export default function DashboardR() {
                             <button>View more info</button>
                           </div>
                         </div>
+                        {nextSchedule.filter(nextSched => nextSched.previous_tripticket_id === schedule.tripticket_id).map((nextSched) => (
+                          <div className="next-schedule-container">
+                            
+                            <strong>Next trip will start at</strong>
+                            <p>{nextSched.next_schedule_travel_date}</p>
+                            <p>{formatTime(nextSched.next_schedule_travel_time)}</p>
+                          </div>
+                        ))}
+
                       </div>
                     ))}
+                    
                   </>
                 )}
               </>

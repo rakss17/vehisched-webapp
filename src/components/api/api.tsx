@@ -803,7 +803,7 @@ export function checkVehicleAvailability(
     });
 }
 
-export function fetchSchedule(setSchedule: any) {
+export function fetchSchedule(setSchedule: any, setNextSchedule: any, setIsOngoingScheduleClick: any, handleButtonClick: any) {
   const token = localStorage.getItem("token");
   api
     .get("api/v1/tripticket/fetch-requester/", {
@@ -813,12 +813,23 @@ export function fetchSchedule(setSchedule: any) {
       },
     })
     .then((response) => {
-      setSchedule(response.data);
+      const scheduleData = response.data.filter((item: any) => !item.next_schedule_travel_date);
+      const nextScheduleData = response.data.filter((item: any) => item.next_schedule_travel_date);
+
+      setSchedule(scheduleData);
+      setNextSchedule(nextScheduleData);
+      if (scheduleData.length > 0) { 
+        setIsOngoingScheduleClick(true);
+          handleButtonClick("Ongoing Schedule");
+      }
+
+      console.log(response.data)
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);
     });
 }
+
 
 export async function fetchScheduleOfficeStaff(setSchedule: any) {
   const token = localStorage.getItem("token");

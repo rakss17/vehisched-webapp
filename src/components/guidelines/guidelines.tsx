@@ -20,7 +20,7 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
   return (
     <div className="modal-guidelines">
       <h2>Reservation Guidelines</h2>
-      <div className="modal-content">
+      
       <div className="modal-content">
         <h4>Reservation Eligibility for All Stakeholders:</h4>
         <p>All stakeholders, including students, faculty, and staff, have the opportunity to reserve vehicles for trips, provided that the trip’s purpose is official and aligns with the institution’s policies.</p>
@@ -46,7 +46,7 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
         <h4>Completion of Trip Ticket Information:</h4>
         <p>Passengers are required to provide essential information on the trip ticket. This record is essential for monitoring vehicle usage and maintaining accountability throughout the trip.</p>
       </div>
-      </div>
+    
         <div className='guidelines-footer'>
         <label className='modal-checkbox'>
             <input
@@ -54,7 +54,7 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
             checked={isChecked}
             onChange={handleCheckboxChange}
             />
-            I agree with the Vehicle Reservation Guidelines
+              I agree with the Vehicle Reservation Guidelines
         </label>
 
         <button

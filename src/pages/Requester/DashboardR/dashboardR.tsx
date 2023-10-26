@@ -26,6 +26,7 @@ import {
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
 import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
+import Guidelines from "../../../components/guidelines/guidelines";
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
@@ -243,10 +244,29 @@ export default function DashboardR() {
     }
   };
 
+  const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is logging in (you can adjust this condition as per your authentication logic)
+    const userIsLoggedIn = true; // For example, assuming the user is logged in
+
+    if (userIsLoggedIn) {
+      // Open the Guidelines modal when the user logs in
+      setIsGuidelinesModalOpen(true);
+    }
+  }, []);
+
   pendingSchedule.reverse();
   schedule.reverse();
   return (
     <>
+      <Modal
+        className="guidelines-modal"
+        isOpen={isGuidelinesModalOpen}
+        contentLabel="Guidelines"
+      >
+        <Guidelines guidelinescloseModal={() => setIsGuidelinesModalOpen(false)} />
+      </Modal>
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
@@ -619,7 +639,9 @@ export default function DashboardR() {
             </>
           )}
         </div>
+
       </Container>
+      
       {/* <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
         
       </Modal> */}

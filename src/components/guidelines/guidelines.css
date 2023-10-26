@@ -31,13 +31,20 @@
     display: flex;
     flex-direction: row;
     text-align: justify;
+  }
 
+  .validation{
+    display: flex;
+    flex-direction: column;
   }
   
   .modal-checkbox {
     color: #060E57;
-    margin: auto;
     margin-left: -0.1vw;
+  }
+  .alert-text{
+    color: red;
+    
   }
   
   .next-button {
@@ -49,5 +56,8 @@
     cursor: pointer;
     margin: auto;
     margin-right: -0.1vw;
+    margin-bottom: -0.1vh;
   }
+
+
   

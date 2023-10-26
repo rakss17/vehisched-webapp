@@ -50,28 +50,26 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
       </div>
      
       <div className='guidelines-footer'>
-          <label className='modal-checkbox'>
-            <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={handleCheckboxChange}
-            />
-            I agree with the Vehicle Reservation Guidelines
-          </label>
-
+          <div className='validation'>
+            <label className='modal-checkbox'>
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+              />
+              I agree with the Vehicle Reservation Guidelines
+            </label>
+            {showAlert && (
+              <p className="alert-text">Please agree to the guidelines before proceeding.</p>
+            )}
+          </div>
         <button
           className="next-button"
           onClick={handleNextClick}
-          disabled={!isChecked}
         >
           Next
         </button> 
       </div>
-     
-      {showAlert && (
-        <p className="alert-text">Please agree to the guidelines before proceeding.</p>
-      )}
-
     </div>
   );
 }

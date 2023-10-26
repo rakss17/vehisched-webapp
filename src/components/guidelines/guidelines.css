@@ -30,11 +30,14 @@
     margin-top: 2%;
     display: flex;
     flex-direction: row;
+    text-align: justify;
+
   }
   
   .modal-checkbox {
     color: #060E57;
-    margin-right: 65%;
+    margin: auto;
+    margin-left: -0.1vw;
   }
   
   .next-button {
@@ -44,5 +47,7 @@
     padding: 10px 30px;
     color: #060E57;
     cursor: pointer;
+    margin: auto;
+    margin-right: -0.1vw;
   }
   

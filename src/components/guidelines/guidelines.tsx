@@ -3,20 +3,21 @@ import './guidelines.css';
 
 const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void }) => {
   const [isChecked, setIsChecked] = useState(false);
+  const [showAlert, setShowAlert] = useState(false); // Set showAlert to true by default
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
+    setShowAlert(false); // Hide the alert when the checkbox is checked
   }
 
   const handleNextClick = () => {
-    if (isChecked) {
-      // Close the modal
+    if (!isChecked) {
+      setShowAlert(true); // Show the alert
+    } if (isChecked) {
       guidelinescloseModal();
-      console.log('Next button clicked, and the checkbox is checked.');
-    } else {
-      alert('Please agree to the Vehicle Reservation Guidelines before proceeding.');
     }
   }
+
   return (
     <div className="modal-guidelines">
       <h2>Reservation Guidelines</h2>
@@ -46,25 +47,29 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
         <h4>Completion of Trip Ticket Information:</h4>
         <p>Passengers are required to provide essential information on the trip ticket. This record is essential for monitoring vehicle usage and maintaining accountability throughout the trip.</p>
       </div>
-    
-        <div className='guidelines-footer'>
-        <label className='modal-checkbox'>
+     
+      <div className='guidelines-footer'>
+          <label className='modal-checkbox'>
             <input
-            type="checkbox"
-            checked={isChecked}
-            onChange={handleCheckboxChange}
+              type="checkbox"
+              checked={isChecked}
+              onChange={handleCheckboxChange}
             />
-              I agree with the Vehicle Reservation Guidelines
-        </label>
+            I agree with the Vehicle Reservation Guidelines
+          </label>
 
         <button
-            className="next-button"
-            onClick={handleNextClick}
-            disabled={!isChecked}
+          className="next-button"
+          onClick={handleNextClick}
+          disabled={!isChecked}
         >
-            Next
-        </button>
-        </div>
+          Next
+        </button> 
+      </div>
+     
+     {showAlert && (
+            <p className="alert-text">Please agree to the guidelines before proceeding.</p>
+          )}
     </div>
   );
 }

@@ -3,20 +3,21 @@ import './guidelines.css';
 
 const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void }) => {
   const [isChecked, setIsChecked] = useState(false);
-  const [showAlert, setShowAlert] = useState(false); // Set showAlert to true by default
+  const [showAlert, setShowAlert] = useState(false); 
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    setShowAlert(false); // Hide the alert when the checkbox is checked
+    setShowAlert(false); 
   }
 
   const handleNextClick = () => {
     if (!isChecked) {
-      setShowAlert(true); // Show the alert
-    } if (isChecked) {
+      setShowAlert(true); 
+    } else {
       guidelinescloseModal();
     }
   }
+  
 
   return (
     <div className="modal-guidelines">
@@ -67,9 +68,10 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
         </button> 
       </div>
      
-     {showAlert && (
-            <p className="alert-text">Please agree to the guidelines before proceeding.</p>
-          )}
+      {showAlert && (
+        <p className="alert-text">Please agree to the guidelines before proceeding.</p>
+      )}
+
     </div>
   );
 }

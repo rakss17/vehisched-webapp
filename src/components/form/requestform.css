@@ -147,8 +147,8 @@
 }
 .forth-row {
   display: flex;
-  margin-top: 1vw;
-  margin-left: 0vh;
+  margin-top: 1vh;
+  margin-left: 0vw;
   flex-direction: row;
   justify-content: space-evenly;
 }
@@ -166,22 +166,16 @@
 }
 
 .fifth-row {
-  margin-top: 1.5vw;
-  margin-left: 9vh;
   display: flex;
+  margin-top: 1vh;
+  margin-left: 3vw;
   flex-direction: row;
-  align-items: center;
-  gap: 5%;
 }
-.fifth-row div:nth-child(2) {
-  display: flex;
-  width: 4vw;
-  gap: 10%;
-}
-.fifth-row div:nth-child(3) {
-  display: flex;
-  width: 4vw;
-  gap: 10%;
+
+.fifth-row strong {
+  white-space: nowrap;
+  font-size: 1rem;
+  color: black;
 }
 
 .kilometer-info p:nth-child(1) {

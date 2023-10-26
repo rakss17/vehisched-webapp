@@ -33,9 +33,9 @@ export default function RequestForm() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
 
   const [formErrors, setFormErrors] = useState({
-    office_or_dept: "",
+    office: "",
     number_of_passengers: "",
-    passenger_names: "",
+    passenger_name: "",
     destination: "",
     purpose: "",
   });
@@ -49,7 +49,6 @@ export default function RequestForm() {
   const returnDate = location.state?.data.return_date || "";
   const returnTime = location.state?.data.return_time || "";
   const category = location.state?.data.category || "";
-  const subCategory = location.state?.data.sub_category || "";
   const distance = location.state?.addressData.distance || "";
   const destination = location.state?.addressData.destination || "";
   const personalInfo = useSelector(
@@ -61,18 +60,17 @@ export default function RequestForm() {
   const userID = personalInfo?.id;
   const [data, setData] = useState<RequestFormProps>({
     requester_name: userID,
-    office_or_dept: "",
+    office: "",
     purpose: "",
     number_of_passenger: null,
-    passenger_names: [],
+    passenger_name: [],
     travel_date: travelDate,
     travel_time: travelTime,
     return_date: returnDate,
     return_time: returnTime,
     destination: destination,
     vehicle: `${plateNumber}`,
-    category: category,
-    sub_category: subCategory,
+    type: category,
     distance: distance,
   });
   const [numPassengers, setNumPassengers] = useState(0);
@@ -89,19 +87,19 @@ export default function RequestForm() {
   }, []);
 
   useEffect(() => {
-    let updatedPassengerNames = [...data.passenger_names];
-    if (numPassengers > data.passenger_names.length) {
+    let updatedPassengerNames = [...data.passenger_name];
+    if (numPassengers > data.passenger_name.length) {
       const additionalPassengers = new Array(
-        numPassengers - data.passenger_names.length
+        numPassengers - data.passenger_name.length
       ).fill("");
       updatedPassengerNames =
         updatedPassengerNames.concat(additionalPassengers);
-    } else if (numPassengers < data.passenger_names.length) {
+    } else if (numPassengers < data.passenger_name.length) {
       updatedPassengerNames = updatedPassengerNames.slice(0, numPassengers);
     }
     setData({
       ...data,
-      passenger_names: updatedPassengerNames,
+      passenger_name: updatedPassengerNames,
       number_of_passenger: numPassengers,
     });
   }, [numPassengers]);
@@ -118,11 +116,11 @@ export default function RequestForm() {
 
     // Check if all passenger names are filled
     if (
-      data.passenger_names.length === numPassengers &&
-      data.passenger_names.every((name) => name.trim() !== "")
+      data.passenger_name.length === numPassengers &&
+      data.passenger_name.every((name) => name.trim() !== "")
     ) {
-      // Clear the passenger_names error when all names are entered
-      setFormErrors((prevErrors) => ({ ...prevErrors, passenger_names: "" }));
+      // Clear the passenger_name error when all names are entered
+      setFormErrors((prevErrors) => ({ ...prevErrors, passenger_name: "" }));
     }
   };
 
@@ -137,15 +135,15 @@ export default function RequestForm() {
         inputs.push(
           <InputField
             className="passenger_name_width"
-            value={data.passenger_names[i]}
+            value={data.passenger_name[i]}
             key={i}
             icon={faUser}
             label={`Passenger ${i + 1}`}
             placeholder={`Passenger ${i + 1}`}
             onChange={(event) => {
-              const newPassengerNames = [...data.passenger_names];
+              const newPassengerNames = [...data.passenger_name];
               newPassengerNames[i] = event.target.value;
-              setData({ ...data, passenger_names: newPassengerNames });
+              setData({ ...data, passenger_name: newPassengerNames });
             }}
           />
         );
@@ -185,14 +183,14 @@ export default function RequestForm() {
     let valid = true;
 
     // Validate 'office_or_dept'
-    if (!data.office_or_dept) {
+    if (!data.office) {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
-        office_or_dept: "Please input office or dept",
+        office: "Please input office or dept",
       }));
       valid = false;
     } else {
-      setFormErrors((prevErrors) => ({ ...prevErrors, office_or_dept: "" }));
+      setFormErrors((prevErrors) => ({ ...prevErrors, office: "" }));
     }
 
     // Validate 'number_of_passengers'
@@ -209,27 +207,27 @@ export default function RequestForm() {
       }));
     }
 
-    // Validate 'passenger_names'
+    // Validate 'passenger_name'
     for (let i = 0; i < numPassengers; i++) {
-      if (!data.passenger_names[i]) {
+      if (!data.passenger_name[i]) {
         setFormErrors((prevErrors) => ({
           ...prevErrors,
-          passenger_names: "Please input all passenger names",
+          passenger_name: "Please input all passenger names",
         }));
         valid = false;
         break;
       }
     }
     // Validate 'destination'
-    if (!data.destination) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        destination: "Please input destination",
-      }));
-      valid = false;
-    } else {
-      setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
-    }
+    // if (!data.destination) {
+    //   setFormErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     destination: "Please input destination",
+    //   }));
+    //   valid = false;
+    // } else {
+    //   setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
+    // }
 
     // Validate 'purpose'
     if (!data.purpose) {
@@ -291,12 +289,12 @@ export default function RequestForm() {
 
                 <InputField
                   icon={faBuilding}
-                  value={data.office_or_dept}
+                  value={data.office}
                   label="Office/dept"
                   placeholder="Office/dept"
                   onChange={(event) => {
-                    setData({ ...data, office_or_dept: event.target.value });
-                    setFormErrors({ ...formErrors, office_or_dept: "" }); // Clear the error
+                    setData({ ...data, office: event.target.value });
+                    setFormErrors({ ...formErrors, office: "" });
                   }}
                 />
                 <div className="input-passenger-number">
@@ -353,14 +351,10 @@ export default function RequestForm() {
                   <p>{formatTime(returnTime)}</p>
                 </div>
               </div>
-              <div className="forth-row">
+              <div className="fifth-row">
                 <div className="calendar-containerr">
                   <strong>Travel Type:</strong>
                   <p>{category}</p>
-                </div>
-                <div className="calendar-containerr">
-                  <strong>Sub type: </strong>
-                  <p>{subCategory}</p>
                 </div>
               </div>
               <div className="sixth-row">

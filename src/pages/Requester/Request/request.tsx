@@ -273,11 +273,17 @@ export default function Request() {
                           </div>
                           {/* second child */}
                           <div className="request-more-info-second-child">
-                            <strong>Date of Travel: </strong>
-                            <p>
-                              {request.travel_date},{" "}
-                              {formatTime(request.travel_time)}
-                            </p>
+                            <div>
+                              <strong>Date of Travel: </strong>
+                              <p>
+                                {request.travel_date},{" "}
+                                {formatTime(request.travel_time)}
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Travel type: </strong>
+                              <p>{request.type}</p>
+                            </div>
                           </div>
                           {/* third child */}
                           <div className="request-more-info-third-child">
@@ -294,17 +300,17 @@ export default function Request() {
                                   wordBreak: "break-word",
                                 }}
                               >
-                                {request.passenger_names}
+                                {request.passenger_name}
                               </p>
                             </div>
                             <div className="request-more-info-third-child-driver">
                               <div>
                                 <strong>Driver: </strong>
-                                <p>{request.driver_name}</p>
+                                <p>{request.driver_full_name}</p>
                               </div>
                               <div>
                                 <strong>Contact No.: </strong>
-                                <p>099321312312312</p>
+                                <p>{request.driver_mobile_number}</p>
                               </div>
                             </div>
                           </div>

@@ -66,18 +66,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             <div>
               <h2>Request's name:</h2>
-              <p>
-                {selectedRequest.requester_last_name},{" "}
-                {selectedRequest.requester_first_name}{" "}
-                {selectedRequest.requester_middle_name}
-              </p>
+              <p>{selectedRequest.requester_full_name}</p>
             </div>
             <div>
-              <h2>Office/Dept: </h2> <p>{selectedRequest.office_or_dept}</p>
+              <h2>Office/Dept: </h2> <p>{selectedRequest.office}</p>
             </div>
           </div>
           <div>
-            <h2>Passenger's name: </h2> <p>{selectedRequest.passenger_names}</p>
+            <h2>Passenger's name: </h2> <p>{selectedRequest.passenger_name}</p>
           </div>
           <div>
             <div>
@@ -115,16 +111,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             <div>
               <h2>Travel type: </h2>
-              <p>{selectedRequest.category}</p>
-            </div>
-            <div>
-              <h2>Sub type: </h2> <p>{selectedRequest.sub_category}</p>
+              <p>{selectedRequest.type}</p>
             </div>
           </div>
           {selectedRequest.status !== "Pending" && (
             <div>
               <h2>Driver:</h2>
-              <p>{selectedRequest.driver_name}</p>
+              <p>{selectedRequest.driver_full_name}</p>
             </div>
           )}
           {selectedRequest.status === "Pending" && (

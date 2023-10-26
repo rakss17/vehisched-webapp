@@ -38,11 +38,11 @@ const CalendarModal: React.FC<any> = ({
           </div>
           <div className="schedule-info-container">
             {selectedSchedule.map((schedule: any, index: number) => (
-              <div key={schedule.tripticket_id} className="schedule-card">
+              <div key={schedule.trip_id} className="schedule-card">
                 <div className="main-info">
                   <div>
                     <strong>Trip No.: </strong>
-                    <p>{schedule.tripticket_id || undefined}</p>
+                    <p>{schedule.trip_id || undefined}</p>
                   </div>
                   <div className="date-and-time-modal">
                     <strong>Date and time: </strong>
@@ -65,7 +65,7 @@ const CalendarModal: React.FC<any> = ({
                   )}
                 </div>
                 {selectedScheduleIndex === index && (
-                  <div key={schedule.tripticket_id} className="additional-info">
+                  <div key={schedule.trip_id} className="additional-info">
                     <div>
                       <strong>Vehicle: </strong>
                       <p>{schedule.vehicle}</p>

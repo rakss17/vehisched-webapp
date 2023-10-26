@@ -111,7 +111,7 @@ export function fetchDriversScheduleAPI(
 ) {
   const token = localStorage.getItem("token");
   api
-    .get("/api/v1/tripticket/check-driver-availability/", {
+    .get("/api/v1/trip/check-driver-availability/", {
       params: {
         preferred_start_travel_date: travel_date,
         preferred_start_travel_time: travel_time,
@@ -413,7 +413,7 @@ export function postRequestFromAPI(
   const token = localStorage.getItem("token");
   const requestData = {
     ...data,
-    passenger_names: JSON.stringify(data.passenger_names),
+    passenger_name: JSON.stringify(data.passenger_name),
   };
   api
     .post("api/v1/request/fetch-post/", requestData, {
@@ -476,10 +476,10 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
         : [response.data];
       console.log(response.data);
       const updatedData = responseData.map((item) => {
-        if (item.passenger_names) {
-          const validJson = item.passenger_names.replace(/'/g, '"');
+        if (item.passenger_name) {
+          const validJson = item.passenger_name.replace(/'/g, '"');
           const passengerNamesArray = JSON.parse(validJson);
-          item.passenger_names = passengerNamesArray.join(", ");
+          item.passenger_name = passengerNamesArray.join(", ");
         }
         return item;
       });
@@ -526,10 +526,10 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
         : [response.data];
 
       const updatedData = responseData.map((item) => {
-        if (item.passenger_names) {
-          const validJson = item.passenger_names.replace(/'/g, '"');
+        if (item.passenger_name) {
+          const validJson = item.passenger_name.replace(/'/g, '"');
           const passengerNamesArray = JSON.parse(validJson);
-          item.passenger_names = passengerNamesArray.join(", ");
+          item.passenger_name = passengerNamesArray.join(", ");
         }
         return item;
       });
@@ -783,7 +783,7 @@ export function checkVehicleAvailability(
 ) {
   const token = localStorage.getItem("token");
   api
-    .get("/api/v1/tripticket/check-vehicle-availability/", {
+    .get("/api/v1/trip/check-vehicle-availability/", {
       params: {
         preferred_start_travel_date: preferred_start_travel_date,
         preferred_start_travel_time: preferred_start_travel_time,
@@ -803,24 +803,34 @@ export function checkVehicleAvailability(
     });
 }
 
-export function fetchSchedule(setSchedule: any, setNextSchedule: any, setIsOngoingScheduleClick: any, handleButtonClick: any) {
+export function fetchSchedule(
+  setSchedule: any,
+  setNextSchedule: any,
+  setIsOngoingScheduleClick: any,
+  handleButtonClick: any
+) {
   const token = localStorage.getItem("token");
   api
-    .get("api/v1/tripticket/fetch-requester/", {
+    .get("api/v1/trip/fetch-requester/", {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
     })
     .then((response) => {
-      const scheduleData = response.data.filter((item: any) => !item.next_schedule_travel_date);
-      const nextScheduleData = response.data.filter((item: any) => item.next_schedule_travel_date);
+      console.log("schedylee", response.data);
+      const scheduleData = response.data.filter(
+        (item: any) => !item.next_schedule_travel_date
+      );
+      const nextScheduleData = response.data.filter(
+        (item: any) => item.next_schedule_travel_date
+      );
 
       setSchedule(scheduleData);
       setNextSchedule(nextScheduleData);
-      if (scheduleData.length > 0) { 
+      if (scheduleData.length > 0) {
         setIsOngoingScheduleClick(true);
-          handleButtonClick("Ongoing Schedule");
+        handleButtonClick("Ongoing Schedule");
       }
     })
     .catch((error) => {
@@ -828,11 +838,10 @@ export function fetchSchedule(setSchedule: any, setNextSchedule: any, setIsOngoi
     });
 }
 
-
 export async function fetchScheduleOfficeStaff(setSchedule: any) {
   const token = localStorage.getItem("token");
   return api
-    .get("api/v1/tripticket/fetch-office-staff/", {
+    .get("api/v1/trip/fetch-office-staff/", {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
@@ -852,7 +861,7 @@ export async function fetchVehicleSchedules(
 ) {
   const token = localStorage.getItem("token");
   return api
-    .get("api/v1/tripticket/vehicle-schedules/", {
+    .get("api/v1/trip/vehicle-schedules/", {
       params: {
         plate_number: vehicleId,
       },
@@ -875,7 +884,7 @@ export async function fetchDriverSchedules(
 ) {
   const token = localStorage.getItem("token");
   return api
-    .get("api/v1/tripticket/driver-schedules/", {
+    .get("api/v1/trip/driver-schedules/", {
       params: {
         driver_id: driverId,
       },
@@ -934,7 +943,12 @@ export async function handlePlaceSelect(
         distance: distance,
         destination: fullAddress,
       }));
-    } else if (category === "One-way") {
+    } else if (
+      category === "One-way - Drop" ||
+      category === "One-way - Fetch" ||
+      category === "One-way"
+    ) {
+      console.log("one-way estimate return date", response.data);
       const [return_date, return_time] =
         response.data.estimated_return_time.split("T");
       setData((prevData: any) => ({

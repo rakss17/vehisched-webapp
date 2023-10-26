@@ -147,8 +147,14 @@
   flex-direction: row;
   width: 80vw;
   padding-left: 4vw;
+  gap: 26.8vw;
+}
+.request-more-info-second-child div {
+  display: flex;
+  flex-direction: row;
   gap: 1vw;
 }
+
 .request-more-info-third-child {
   display: flex;
   flex-direction: row;

@@ -76,37 +76,19 @@ export default function Requests() {
 
     const isSearchMatch =
       searchTerm === "" ||
-      request.requester_last_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      request.requester_first_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      request.requester_middle_name
+      request.requester_full_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (selectedCategory === "Logs" &&
-        (request.requester_last_name
+        (request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-          request.requester_first_name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          request.requester_middle_name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
           request.travel_date
             .toLowerCase()
             .includes(searchTerm.toLowerCase()))) ||
       (selectedCategory !== "Logs" &&
-        request.requester_last_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        request.requester_first_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        request.requester_middle_name
+        request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) &&
         request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -210,11 +192,7 @@ export default function Requests() {
                       onClick={() => handleOpenRequestForm(request)}
                     >
                       <td>{request.request_id}</td>
-                      <td>
-                        {request.requester_last_name},{" "}
-                        {request.requester_first_name}{" "}
-                        {request.requester_middle_name}
-                      </td>
+                      <td>{request.requester_full_name}</td>
                       <td>{request.travel_date}</td>
                       <td>{request.status}</td>
                     </tr>

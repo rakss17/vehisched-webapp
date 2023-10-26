@@ -83,9 +83,9 @@ export interface AddressInputProps {
 }
 
 export interface RequestFormProps {
-  office_or_dept?: any;
+  office?: any;
   purpose?: any;
-  passenger_names: string[];
+  passenger_name: string[];
   vehicle?: any;
   destination?: any;
   travel_date?: any;
@@ -95,14 +95,13 @@ export interface RequestFormProps {
   number_of_passenger?: any;
   status?: any;
   request_id?: any;
-  requester_last_name?: any;
-  requester_first_name?: any;
-  requester_middle_name?: any;
+  requester_full_name?: any;
   requester_name?: any;
-  driver_name?: any;
+  driver_full_name?: any;
   category?: any;
   sub_category?: any;
   distance?: any;
+  type?: any;
 }
 
 export interface RequestFormDetailsProps {

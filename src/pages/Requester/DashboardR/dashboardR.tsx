@@ -54,7 +54,6 @@ export default function DashboardR() {
     return_date: null,
     return_time: null,
     category: "Round Trip",
-    sub_category: "N/A",
   });
   const [addressData, setAddressData] = useState<any>({
     destination: "",
@@ -118,6 +117,7 @@ export default function DashboardR() {
       data.return_time
     );
     handleButtonClick("Available Vehicle");
+    console.log("set trip", data);
   };
 
   const handleCancelTripModal = () => {
@@ -310,13 +310,20 @@ export default function DashboardR() {
                         <select
                           value={data.sub_category}
                           onChange={(event) => {
-                            setData({
-                              ...data,
-                              sub_category: event.target.value,
-                            });
-                            if (event.target.value === "Fetch") {
+                            const selectedValue = event.target.value;
+
+                            setData((prevData: any) => ({
+                              ...prevData,
+                              category:
+                                selectedValue === "Drop"
+                                  ? "One-way - Drop"
+                                  : selectedValue === "Fetch"
+                                  ? "One-way - Fetch"
+                                  : "One-way",
+                            }));
+                            if (selectedValue === "Fetch") {
                               setIsFetchSelect(true);
-                            } else if (event.target.value === "Drop") {
+                            } else if (selectedValue === "Drop") {
                               setIsFetchSelect(false);
                             } else {
                               setIsFetchSelect(false);
@@ -459,7 +466,7 @@ export default function DashboardR() {
                         onClick={() =>
                           openRequestForm(
                             vehicle.plate_number,
-                            vehicle.vehicle_name,
+                            vehicle.model,
                             vehicle.capacity
                           )
                         }
@@ -471,19 +478,19 @@ export default function DashboardR() {
                             <p className="vehicle-name">
                               {vehicle.plate_number}
                               <br />
-                              {vehicle.vehicle_name}
+                              {vehicle.model}
                             </p>
                             <p className="vehicle-detail">
                               Seating Capacity: {vehicle.capacity}
                             </p>
                             <p className="vehicle-detail">
-                              Type: {vehicle.vehicle_type}
+                              Type: {vehicle.type}
                             </p>
                           </div>
                           <img
                             className="vehicle-image"
-                            src={serverSideUrl + vehicle.vehicle_image}
-                            alt={vehicle.vehicle_name}
+                            src={serverSideUrl + vehicle.image}
+                            alt={vehicle.model}
                           />
                         </div>
                       </a>
@@ -536,14 +543,13 @@ export default function DashboardR() {
                   <>
                     {schedule.map((schedule) => (
                       <div
-                        key={schedule.tripticket_id}
+                        key={schedule.trip_id}
                         className="requester-schedule-container"
                       >
                         <div className="requester-schedule-container-div">
                           <div>
                             <div>
-                              <h1>Schedule no. </h1>{" "}
-                              <h2>{schedule.tripticket_id}</h2>
+                              <h1>Schedule no. </h1> <h2>{schedule.trip_id}</h2>
                             </div>
                             <div>
                               <Countdown
@@ -589,8 +595,7 @@ export default function DashboardR() {
                         {nextSchedule
                           .filter(
                             (nextSched) =>
-                              nextSched.previous_tripticket_id ===
-                              schedule.tripticket_id
+                              nextSched.previous_trip_id === schedule.trip_id
                           )
                           .map((nextSched) => (
                             <div className="next-schedule-container">

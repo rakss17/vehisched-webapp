@@ -105,8 +105,10 @@ export default function Vehicles() {
     setSelectedVehicle(vehicle);
     if (category === "View Schedules") {
       setIsVehiclCalendarOpen(true);
+      setIsVehicleMaintenanceOpen(false);
     } else if (category === "Schedule a maintenance") {
       setIsVehicleMaintenanceOpen(true);
+      setIsVehiclCalendarOpen(false);
     }
   };
 
@@ -188,14 +190,12 @@ export default function Vehicles() {
                   <div className="vehicle-column">
                     <p className="vehicle-name">
                       {vehicle.plate_number}
-                      <br></br> {vehicle.vehicle_name}
+                      <br></br> {vehicle.model}
                     </p>
                     <p className="vehicle-detail">
                       Seating Capacity: {vehicle.capacity}
                     </p>
-                    <p className="vehicle-detail">
-                      Type: {vehicle.vehicle_type}
-                    </p>
+                    <p className="vehicle-detail">Type: {vehicle.type}</p>
                     <p
                       className="vehicle-status"
                       style={{
@@ -205,7 +205,7 @@ export default function Vehicles() {
                       {vehicle.status}
                     </p>
                   </div>
-                  <img className="vehicle-image" src={vehicle.vehicle_image} />
+                  <img className="vehicle-image" src={vehicle.image} />
                   <div className="ellipsis-container">
                     <Ellipsis
                       onCategoryChange={(category) =>

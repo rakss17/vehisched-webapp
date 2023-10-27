@@ -67,12 +67,19 @@ const CalendarModal: React.FC<any> = ({
                 {selectedScheduleIndex === index && (
                   <div key={schedule.trip_id} className="additional-info">
                     <div>
+                    <div>
                       <strong>Vehicle: </strong>
                       <p>{schedule.vehicle}</p>
                     </div>
                     <div>
                       <strong>Driver: </strong>
                       <p>{schedule.driver}</p>
+                    </div>
+                    </div>
+                    
+                    <div>
+                      <strong>Destination: </strong>
+                      <p>{schedule.destination}</p>
                     </div>
                   </div>
                 )}

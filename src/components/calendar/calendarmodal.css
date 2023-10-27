@@ -103,7 +103,7 @@
 
 .additional-info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: 8vh;
   background-color: #eeeaea;
   color: #060e57;
@@ -112,16 +112,15 @@
 .additional-info div:nth-child(1) {
   height: 8vh;
   display: flex;
-  flex-direction: column;
-  width: 10vw;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
+  width: 28vw;
+  gap: 1vw;
 }
 .additional-info div:nth-child(2) {
-  height: 8vh;
   display: flex;
-  flex-direction: column;
-  width: 10vw;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
+  height: 8vh;
+  background-color: #eeeaea;
+  width: 28vw;
+  gap: 1vw
 }

@@ -13,10 +13,10 @@ import { getTimeElapsed } from "../functions/getTimeElapsed";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const serverSideUrl = "http://localhost:8000/media/";
+export const serverSideUrl = "http://192.168.1.121:8000/media/";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "http://192.168.1.121:8000/",
 });
 
 export async function SigninAPI(

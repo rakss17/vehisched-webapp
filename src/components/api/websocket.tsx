@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   useEffect(() => {
     const newSocket = new WebSocket(
-      `ws://localhost:8000/ws/notification/approval_schedule-reminder/?requester_name=${userName}`
+      `ws://192.168.1.121:8000/ws/notification/approval_schedule-reminder/?requester_name=${userName}`
     );
 
     newSocket.onopen = (event) => {
@@ -56,7 +56,7 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
 
 export function NotificationCreatedCancelWebsocket() {
   const newSocket = new WebSocket(
-    "ws://localhost:8000/ws/notification/created_cancel/"
+    "ws://192.168.1.121:8000/ws/notification/created_cancel/"
   );
 
   newSocket.onopen = (event) => {

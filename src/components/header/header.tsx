@@ -30,6 +30,7 @@ export default function Header() {
     } else if (option === "signout") {
       setLoadingBarProgress(20);
       localStorage.removeItem("token");
+      localStorage.removeItem("guidelines");
       setLoadingBarProgress(50);
       dispatch(clearUserData());
       setLoadingBarProgress(70);

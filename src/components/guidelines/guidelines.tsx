@@ -7,10 +7,12 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    setShowAlert(false); 
+    setShowAlert(false);
+    
   }
 
   const handleNextClick = () => {
+    localStorage.setItem("guidelines", `${isChecked}`);
     if (!isChecked) {
       setShowAlert(true); 
     } else {

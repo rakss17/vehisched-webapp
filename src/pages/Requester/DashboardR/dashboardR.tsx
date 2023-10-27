@@ -247,12 +247,18 @@ export default function DashboardR() {
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
 
   useEffect(() => {
-    // Check if the user is logging in (you can adjust this condition as per your authentication logic)
-    const userIsLoggedIn = true; // For example, assuming the user is logged in
+  
+    const userIsLoggedIn = true;
 
     if (userIsLoggedIn) {
-      // Open the Guidelines modal when the user logs in
-      setIsGuidelinesModalOpen(true);
+      const isChecked = localStorage.getItem("guidelines")
+      if(isChecked === "true") {
+        setIsGuidelinesModalOpen(false);
+      }
+      else {
+        setIsGuidelinesModalOpen(true);
+      }
+      
     }
   }, []);
 

@@ -24,6 +24,10 @@
   .modal-guidelines p {
     margin: 10px 0;
     text-align: justify;
+    color: black
+  }
+  .modal-guidelines h4 {
+    color: black
   }
   
   .guidelines-footer {

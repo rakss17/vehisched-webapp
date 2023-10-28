@@ -38,7 +38,6 @@ export default function Vehicles() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [vehicleSchedulesData, setVehicleSchedules] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState<any>();
   const [isAvailableOpen, setIsAvailableOpen] = useState(false);
   const [isUnavailableOpen, setIsUnavailableOpen] = useState(false);
@@ -87,20 +86,14 @@ export default function Vehicles() {
   };
 
   const filteredVehicleList = vehiclesData.filter((vehicle) => {
-    const isCategoryMatch =
-      selectedCategory === null || vehicle.status === selectedCategory;
-
     const isSearchMatch =
       searchTerm === "" ||
-      vehicle.vehicle_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.vehicle_type.toLowerCase().includes(searchTerm.toLowerCase());
+      vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      vehicle.type.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return isCategoryMatch && isSearchMatch;
+    return isSearchMatch;
   });
 
-  const handleCategoryChange = (status: string) => {
-    setSelectedCategory(status === "All" ? null : status);
-  };
   const handleEllipsisMenu = (category: string, vehicle: any) => {
     setSelectedVehicle(vehicle);
     if (category === "View Schedules") {
@@ -175,10 +168,6 @@ export default function Vehicles() {
         </div>
         <div className="vehicles-row">
           <SearchBar onSearchChange={handleSearchChange} />
-          <Dropdown
-            status={["All", "Available", "On Trip", "Reserved", "Unavailable"]}
-            onCategoryChange={handleCategoryChange}
-          />
         </div>
         <div className="vehicles-container">
           {filteredVehicleList.length === 0 ? (

@@ -909,12 +909,6 @@ export async function handlePlaceSelect(
   setAddressData: (addressData: any) => void,
   category: any
 ) {
-  console.log(
-    "At start of handlePlaceSelect: ",
-    place,
-    travel_date,
-    travel_time
-  );
   try {
     const response = await api.get("api/v1/request/place-details/", {
       params: {

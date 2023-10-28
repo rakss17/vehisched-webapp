@@ -10,6 +10,7 @@ interface AutoCompleteAddressGoogleProps {
   setAddressData: (addressData: any) => void;
   isDisabled: any;
   category: any;
+  removeDestinationError: () => void;
 }
 
 export default function AutoCompleteAddressGoogle({
@@ -19,6 +20,7 @@ export default function AutoCompleteAddressGoogle({
   setAddressData,
   isDisabled,
   category,
+  removeDestinationError,
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
@@ -26,7 +28,6 @@ export default function AutoCompleteAddressGoogle({
 
   const onPlaceSelectedRef = useRef<(place: any) => void>(() => {});
 
-  // Update the onPlaceSelectedRef callback whenever travel_date or travel_time change
   useEffect(() => {
     onPlaceSelectedRef.current = (place) => {
       handlePlaceSelect(
@@ -37,10 +38,17 @@ export default function AutoCompleteAddressGoogle({
         setAddressData,
         category
       );
+      removeDestinationError();
     };
-  }, [travel_date, travel_time, setData, setAddressData, category]);
+  }, [
+    travel_date,
+    travel_time,
+    setData,
+    setAddressData,
+    category,
+    removeDestinationError,
+  ]);
 
-  // Listen for changes in travel_date and travel_time props and update state
   useEffect(() => {
     setTravelDate(travelDateProp);
     setTravelTime(travelTimeProp);

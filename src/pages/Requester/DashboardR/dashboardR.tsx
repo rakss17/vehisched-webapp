@@ -27,6 +27,7 @@ import { NotificationApprovalScheduleReminderWebsocket } from "../../../componen
 import { format } from "date-fns";
 import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 import Guidelines from "../../../components/guidelines/guidelines";
+import CommonButton from "../../../components/button/commonbutton";
 
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
@@ -61,7 +62,7 @@ export default function DashboardR() {
     destination: "",
     distance: null,
   });
-  const role = personalInfo?.role;
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const userName = personalInfo?.username;
   const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
@@ -111,15 +112,86 @@ export default function DashboardR() {
   NotificationApprovalScheduleReminderWebsocket(userName);
 
   const handleSetTripModal = () => {
-    checkVehicleAvailability(
-      setVehiclesData,
-      data.travel_date,
-      data.travel_time,
-      data.return_date,
-      data.return_time
-    );
-    handleButtonClick("Available Vehicle");
-    console.log("set trip", data);
+    let validationErrors: { [key: string]: string } = {};
+    if (data.category === "Round Trip") {
+      const allFieldsBlank =
+        !data.travel_date &&
+        !data.travel_time &&
+        !data.return_date &&
+        !data.return_time &&
+        !addressData.destination;
+
+      if (allFieldsBlank) {
+        validationErrors.all = "Required all fields!";
+      } else {
+        if (!data.travel_date) {
+          validationErrors.travelDateError = "This field is required";
+        }
+        if (!data.travel_time) {
+          validationErrors.travelTimeError = "This field is required";
+        }
+
+        if (!data.return_date) {
+          validationErrors.returnDateError = "This field is required";
+        }
+
+        if (!data.return_time) {
+          validationErrors.returnTimeError = "This field is required";
+        }
+
+        if (!addressData.destination) {
+          validationErrors.destinationError = "This field is required";
+        }
+      }
+    } else if (
+      data.category === "One-way" ||
+      data.category === "One-way - Fetch" ||
+      data.category === "One-way - Drop"
+    ) {
+      const allFieldsBlank =
+        !data.travel_date &&
+        !data.travel_time &&
+        data.category !== "One-way - Fetch" &&
+        data.category !== "One-way - Drop";
+      !data.category && !addressData.destination;
+
+      if (allFieldsBlank) {
+        validationErrors.all = "Required all fields!";
+      } else {
+        if (!data.travel_date) {
+          validationErrors.travelDateOnewayError = "This field is required";
+        }
+        if (!data.travel_time) {
+          validationErrors.travelTimeOnewayError = "This field is required";
+        }
+
+        if (
+          data.category !== "One-way - Fetch" &&
+          data.category !== "One-way - Drop"
+        ) {
+          validationErrors.categoryError = "This field is required";
+        }
+
+        if (!addressData.destination) {
+          validationErrors.destinationError = "This field is required";
+        }
+      }
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+
+    if (Object.keys(validationErrors).length === 0) {
+      checkVehicleAvailability(
+        setVehiclesData,
+        data.travel_date,
+        data.travel_time,
+        data.return_date,
+        data.return_time
+      );
+      handleButtonClick("Available Vehicle");
+    }
   };
 
   const handleCancelTripModal = () => {
@@ -188,16 +260,46 @@ export default function DashboardR() {
     setSelectedButton(button);
   };
   const handleButtonClickTrip = (button: string) => {
+    const updatedErrors = { ...errorMessages };
+
     switch (button) {
       case "Round Trip":
         setIsOneWayClick(false);
         setIsAutocompleteDisabled(true);
+        delete updatedErrors[0];
+        setErrorMessages(updatedErrors);
+        setData({
+          travel_date: null,
+          travel_time: null,
+          return_date: null,
+          return_time: null,
+          category: "",
+        });
+        setAddressData({
+          destination: "",
+          distance: null,
+        });
         break;
+
       case "One-way":
         setIsAutocompleteDisabled(true);
         setIsOneWayClick(true);
         setIsTravelDateSelected(true);
+        delete updatedErrors[0];
+        setErrorMessages(updatedErrors);
+        setData({
+          travel_date: null,
+          travel_time: null,
+          return_date: null,
+          return_time: null,
+          category: "",
+        });
+        setAddressData({
+          destination: "",
+          distance: null,
+        });
         break;
+
       default:
         break;
     }
@@ -220,18 +322,46 @@ export default function DashboardR() {
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
+    if (data.category === "Round Trip") {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelDateError;
+      setErrorMessages(updatedErrors);
+    } else if (
+      data.category === "One-way" ||
+      data.category === "One-way - Fetch" ||
+      data.category === "One-way - Drop"
+    ) {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelDateOnewayError;
+      setErrorMessages(updatedErrors);
+    }
 
     checkAutocompleteDisability();
   };
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, return_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.returnDateError;
+    setErrorMessages(updatedErrors);
   };
 
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, travel_time: time });
-
+      if (data.category === "Round Trip") {
+        const updatedErrors = { ...errorMessages };
+        delete updatedErrors[0]?.travelTimeError;
+        setErrorMessages(updatedErrors);
+      } else if (
+        data.category === "One-way" ||
+        data.category === "One-way - Fetch" ||
+        data.category === "One-way - Drop"
+      ) {
+        const updatedErrors = { ...errorMessages };
+        delete updatedErrors[0]?.travelTimeOnewayError;
+        setErrorMessages(updatedErrors);
+      }
       checkAutocompleteDisability();
     } else {
       console.log("No time selected.");
@@ -240,9 +370,18 @@ export default function DashboardR() {
   const handleEndTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, return_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.returnTimeError;
+      setErrorMessages(updatedErrors);
     } else {
       console.log("No time selected.");
     }
+  };
+
+  const removeDestinationError = () => {
+    const updatedErrors = [...errorMessages];
+    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
+    setErrorMessages(updatedErrors);
   };
 
   useEffect(() => {
@@ -306,6 +445,7 @@ export default function DashboardR() {
               <div className="modal-set-trip">
                 <div className="modal-set-trip-body">
                   <h1>Set Trip</h1>
+                  <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
                   <div className="trip-category">
                     <p>Category: </p>
                     <div>
@@ -331,33 +471,44 @@ export default function DashboardR() {
                     <>
                       <div className="one-way-sub-category">
                         <p>Type: </p>
-                        <select
-                          value={data.sub_category}
-                          onChange={(event) => {
-                            const selectedValue = event.target.value;
+                        <div>
+                          <select
+                            value={data.sub_category}
+                            onChange={(event) => {
+                              const selectedValue = event.target.value;
 
-                            setData((prevData: any) => ({
-                              ...prevData,
-                              category:
-                                selectedValue === "Drop"
-                                  ? "One-way - Drop"
-                                  : selectedValue === "Fetch"
-                                  ? "One-way - Fetch"
-                                  : "One-way",
-                            }));
-                            if (selectedValue === "Fetch") {
-                              setIsFetchSelect(true);
-                            } else if (selectedValue === "Drop") {
-                              setIsFetchSelect(false);
-                            } else {
-                              setIsFetchSelect(false);
-                            }
-                          }}
-                        >
-                          <option>--------- Select Type --------</option>
-                          <option value="Drop">Drop</option>
-                          <option value="Fetch">Fetch</option>
-                        </select>
+                              setData((prevData: any) => ({
+                                ...prevData,
+                                category:
+                                  selectedValue === "Drop"
+                                    ? "One-way - Drop"
+                                    : selectedValue === "Fetch"
+                                    ? "One-way - Fetch"
+                                    : "One-way",
+                              }));
+                              if (selectedValue === "Fetch") {
+                                setIsFetchSelect(true);
+                                const updatedErrors = { ...errorMessages };
+                                delete updatedErrors[0]?.categoryError;
+                                setErrorMessages(updatedErrors);
+                              } else if (selectedValue === "Drop") {
+                                setIsFetchSelect(false);
+                                const updatedErrors = { ...errorMessages };
+                                delete updatedErrors[0]?.categoryError;
+                                setErrorMessages(updatedErrors);
+                              } else {
+                                setIsFetchSelect(false);
+                              }
+                            }}
+                          >
+                            <option>--------- Select Type --------</option>
+                            <option value="Drop">Drop</option>
+                            <option value="Fetch">Fetch</option>
+                          </select>
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.categoryError}
+                          </p>
+                        </div>
                       </div>
                     </>
                   )}
@@ -376,12 +527,17 @@ export default function DashboardR() {
                         isDisabled={isAutocompleteDisabled}
                         setAddressData={setAddressData}
                         category={data.category}
+                        removeDestinationError={removeDestinationError}
                       />
-                      {isTravelDateSelected && (
+
+                      {isTravelDateSelected ? (
                         <p>Select travel date and time first</p>
+                      ) : (
+                        <p>{errorMessages[0]?.destinationError}</p>
                       )}
                     </div>
                   </div>
+
                   {selectedTripButton === "Round Trip" ? (
                     <div className="date-from-roundtrip">
                       {!isOneWayClick ? (
@@ -390,13 +546,20 @@ export default function DashboardR() {
                         <p className="travel-datee">Travel Date: </p>
                       )}
                       <div>
-                        <CalendarInput
-                          selectedDate={
-                            data.travel_date ? new Date(data.travel_date) : null
-                          }
-                          onChange={handleStartDateChange}
-                          disableDaysBefore={3}
-                        />
+                        <div className="separate-date">
+                          <CalendarInput
+                            selectedDate={
+                              data.travel_date
+                                ? new Date(data.travel_date)
+                                : null
+                            }
+                            onChange={handleStartDateChange}
+                            disableDaysBefore={3}
+                          />
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.travelDateError}
+                          </p>
+                        </div>
 
                         <div className="separate-time">
                           <TimeInput
@@ -404,6 +567,9 @@ export default function DashboardR() {
                             selectedDate={data.travel_date}
                             handleDateChange={handleStartDateChange}
                           />
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.travelTimeError}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -415,13 +581,20 @@ export default function DashboardR() {
                         <p className="travel-datee">Travel Date: </p>
                       )}
                       <div>
-                        <CalendarInput
-                          selectedDate={
-                            data.travel_date ? new Date(data.travel_date) : null
-                          }
-                          onChange={handleStartDateChange}
-                          disableDaysBefore={3}
-                        />
+                        <div className="separate-date">
+                          <CalendarInput
+                            selectedDate={
+                              data.travel_date
+                                ? new Date(data.travel_date)
+                                : null
+                            }
+                            onChange={handleStartDateChange}
+                            disableDaysBefore={3}
+                          />
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.travelDateOnewayError}
+                          </p>
+                        </div>
 
                         <div className="separate-time">
                           <TimeInput
@@ -429,6 +602,9 @@ export default function DashboardR() {
                             selectedDate={data.travel_date}
                             handleDateChange={handleStartDateChange}
                           />
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.travelTimeOnewayError}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -438,20 +614,30 @@ export default function DashboardR() {
                     <div className="date-to">
                       <p>To: </p>
                       <div>
-                        <CalendarInput
-                          selectedDate={
-                            data.return_date ? new Date(data.return_date) : null
-                          }
-                          onChange={handleEndDateChange}
-                          disableDaysBefore={3}
-                        />
+                        <div className="separate-date">
+                          <CalendarInput
+                            selectedDate={
+                              data.return_date
+                                ? new Date(data.return_date)
+                                : null
+                            }
+                            onChange={handleEndDateChange}
+                            disableDaysBefore={3}
+                          />
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.returnDateError}
+                          </p>
+                        </div>
+
                         <div className="separate-time">
-                          {" "}
                           <TimeInput
                             onChange={handleEndTimeChange}
                             selectedDate={data.return_date}
                             handleDateChange={handleEndDateChange}
                           />
+                          <p className="set-trip-text-error">
+                            {errorMessages[0]?.returnTimeError}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -464,7 +650,11 @@ export default function DashboardR() {
                     <input type="number" onKeyDown={handleKeyDown}></input>
                   </div> */}
                   <div className="modal-button-container">
-                    <button onClick={handleSetTripModal}>Set Trip</button>
+                    <CommonButton
+                      onClick={handleSetTripModal}
+                      text="Set Trip"
+                      primaryStyle
+                    />
                   </div>
                 </div>
               </div>

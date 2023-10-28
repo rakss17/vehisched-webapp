@@ -15,13 +15,16 @@ const TimeInput: React.FC<TimeInputProps> = ({
 
   const handleTimeChange = (time: string | null) => {
     if (time) {
-      const selectedTime = new Date(time);
-      console.log("Time received in RequestForm:", selectedTime);
+      const [hours, minutes] = time.split(":");
+      const selectedTimee = new Date(selectedTime);
+      selectedTimee.setHours(parseInt(hours));
+      selectedTimee.setMinutes(parseInt(minutes));
+      setSelectedTime(selectedTimee);
+      onChange(format(selectedTimee, "HH:mm"));
     } else {
       console.log("No time selected.");
     }
   };
-
   const handleHourIncrement = () => {
     if (selectedTime) {
       const incrementedTime = new Date(selectedTime);
@@ -64,52 +67,29 @@ const TimeInput: React.FC<TimeInputProps> = ({
     }
   };
 
-  const handleMinuteIncrement = () => {
+  const handleAmPmIncrement = () => {
     if (selectedTime) {
-      const incrementedTime = new Date(selectedTime);
-      incrementedTime.setMinutes(incrementedTime.getMinutes() + 1);
-      setSelectedTime(incrementedTime);
-      onChange(format(incrementedTime, "HH:mm"));
+      const currentHour = getHours(selectedTime);
+      const newTime = setHours(
+        selectedTime,
+        currentHour >= 12 ? currentHour - 12 : currentHour + 12
+      );
 
-      0;
-      if (
-        incrementedTime.getHours() === 0 &&
-        incrementedTime.getMinutes() === 0
-      ) {
-        if (selectedDate) {
-          const currentDate = new Date(selectedDate);
-
-          currentDate.setDate(currentDate.getDate() + 1);
-
-          if (handleDateChange) {
-            handleDateChange(currentDate);
-          }
-        }
-      }
+      setSelectedTime(newTime);
+      onChange(format(newTime, "HH:mm"));
     }
   };
 
-  const handleMinuteDecrement = () => {
+  const handleAmPmDecrement = () => {
     if (selectedTime) {
-      const decrementedTime = new Date(selectedTime);
-      decrementedTime.setMinutes(decrementedTime.getMinutes() - 1);
-      setSelectedTime(decrementedTime);
-      onChange(format(decrementedTime, "HH:mm"));
+      const currentHour = getHours(selectedTime);
+      const newTime = setHours(
+        selectedTime,
+        currentHour >= 12 ? currentHour - 12 : currentHour + 12
+      );
 
-      if (
-        decrementedTime.getHours() === 23 &&
-        decrementedTime.getMinutes() === 59
-      ) {
-        if (selectedDate) {
-          const currentDate = new Date(selectedDate);
-
-          currentDate.setDate(currentDate.getDate() - 1);
-
-          if (handleDateChange) {
-            handleDateChange(currentDate);
-          }
-        }
-      }
+      setSelectedTime(newTime);
+      onChange(format(newTime, "HH:mm"));
     }
   };
 
@@ -142,11 +122,11 @@ const TimeInput: React.FC<TimeInputProps> = ({
       </div>
       <div className="am-pm-container">{renderAMPM()}</div>
       <div className="arrow-buttons-ampm">
-        <button onClick={handleMinuteIncrement}>
+        <button onClick={handleAmPmIncrement}>
           <FontAwesomeIcon icon={faAngleUp} />
         </button>
 
-        <button onClick={handleMinuteDecrement}>
+        <button onClick={handleAmPmDecrement}>
           <FontAwesomeIcon icon={faAngleDown} />
         </button>
       </div>

@@ -45,6 +45,7 @@ export default function DashboardR() {
     useState<string>("Set Trip Schedule");
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
+  const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -244,21 +245,16 @@ export default function DashboardR() {
     }
   };
 
-  const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
-
   useEffect(() => {
-  
     const userIsLoggedIn = true;
 
     if (userIsLoggedIn) {
-      const isChecked = localStorage.getItem("guidelines")
-      if(isChecked === "true") {
+      const isChecked = localStorage.getItem("guidelines");
+      if (isChecked === "true") {
         setIsGuidelinesModalOpen(false);
-      }
-      else {
+      } else {
         setIsGuidelinesModalOpen(true);
       }
-      
     }
   }, []);
 
@@ -271,7 +267,9 @@ export default function DashboardR() {
         isOpen={isGuidelinesModalOpen}
         contentLabel="Guidelines"
       >
-        <Guidelines guidelinescloseModal={() => setIsGuidelinesModalOpen(false)} />
+        <Guidelines
+          guidelinescloseModal={() => setIsGuidelinesModalOpen(false)}
+        />
       </Modal>
       <Header />
       <Sidebar sidebarData={sidebarData} />
@@ -645,9 +643,8 @@ export default function DashboardR() {
             </>
           )}
         </div>
-
       </Container>
-      
+
       {/* <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
         
       </Modal> */}

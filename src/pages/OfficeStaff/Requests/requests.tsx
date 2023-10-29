@@ -70,10 +70,17 @@ export default function Requests() {
 
   const filteredRequestList = requestList.filter((request) => {
     const isCategoryMatch =
-      selectedCategory === null ||
+      selectedCategory === "All" ||
+      request.status === selectedCategory ||
       selectedCategory === "Logs" ||
-      request.status === selectedCategory;
+      selectedCategory === null;
 
+    if (isCategoryMatch && selectedCategory === "Logs") {
+      const [year, month, day] = request.travel_date.split("-");
+      const [hours, minutes] = request.travel_time.split(":");
+      const requestDate = new Date(year, month - 1, day, hours, minutes);
+      return requestDate < currentDate;
+    }
     const isSearchMatch =
       searchTerm === "" ||
       request.requester_full_name
@@ -90,23 +97,15 @@ export default function Requests() {
       (selectedCategory !== "Logs" &&
         request.requester_full_name
           .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()));
+          .includes(searchTerm.toLowerCase())) ||
+      request.request_id.toString().includes(searchTerm.toLowerCase()) ||
+      request.travel_date.toLowerCase().includes(searchTerm.toLowerCase());
 
     return isCategoryMatch && isSearchMatch;
   });
 
   const handleCategoryChange = (status: string) => {
-    setSelectedCategory(status === "All" ? null : status);
-
-    if (status === "Logs") {
-      const filteredList = requestList.filter(
-        (request) => new Date(request.travel_date) < currentDate
-      );
-      setRequestList(filteredList);
-    } else {
-      setRequestList(requestList);
-    }
+    setSelectedCategory(status);
   };
 
   const handleOpenRequestForm = (request: RequestFormProps) => {
@@ -125,7 +124,6 @@ export default function Requests() {
     setIsRequestFormOpen(false);
   };
   const handleConfirmationApprove = (selectedDriverId: any) => {
-    console.log("driver iddddd", selectedDriverId);
     approveRequestAPI(
       requestId,
       selectedDriverId,

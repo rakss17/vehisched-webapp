@@ -5,6 +5,7 @@ import {
   faCar,
   faCalendarAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -19,7 +20,7 @@ import {
   fetchNotification,
   fetchDriverSchedules,
 } from "../../../components/api/api";
-import { NotificationWebsocket } from "../../../components/api/websocket";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CalendarModal from "../../../components/calendar/calendarmodal";
@@ -28,7 +29,6 @@ import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 export default function Drivers() {
   const [driversData, setDriversData] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [notifList, setNotifList] = useState<any[]>([]);
   const [isDriverCalendarOpen, setIsDriverCalendarOpen] = useState(false);
   const [driverSchedulesData, setDriverSchedules] = useState<any[]>([]);
@@ -45,6 +45,7 @@ export default function Drivers() {
     { icon: faCar, text: "Vehicles", path: "/Vehicles" },
     { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
     { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
   useEffect(() => {
     fetchNotification(setNotifList);
@@ -55,7 +56,7 @@ export default function Drivers() {
   }, []);
 
   useEffect(() => {
-    NotificationWebsocket();
+    NotificationCreatedCancelWebsocket();
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -63,19 +64,13 @@ export default function Drivers() {
   };
 
   const filteredDriverList = driversData.filter((driver) => {
-    const isCategoryMatch =
-      selectedCategory === null || driver.status === selectedCategory;
-
     const isSearchMatch =
       searchTerm === "" ||
-      driver.user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.user.middle_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      driver.status.toLowerCase().includes(searchTerm.toLowerCase());
+      driver.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.middle_name.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return isCategoryMatch && isSearchMatch;
+    return isSearchMatch;
   });
 
   const handleEllipsisMenu = (category: string, vehicle: any) => {
@@ -90,9 +85,6 @@ export default function Drivers() {
       fetchDriverSchedules(setDriverSchedules, selectedDriver.id);
     }
   }, [selectedDriver, isDriverCalendarOpen]);
-  const handleCategoryChange = (status: string) => {
-    setSelectedCategory(status === "All" ? null : status);
-  };
 
   const handleClose = () => {
     setIsDriverCalendarOpen(false);
@@ -109,10 +101,6 @@ export default function Drivers() {
         </div>
         <div className="drivers-row">
           <SearchBar onSearchChange={handleSearchChange} />
-          <Dropdown
-            status={["All", "Available", "On Trip", "Unavailable"]}
-            onCategoryChange={handleCategoryChange}
-          />
         </div>
         <div className="drivers-container">
           {filteredDriverList.length === 0 ? (

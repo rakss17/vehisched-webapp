@@ -47,6 +47,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       setSelectedDriverId(selectedDriver.id);
     }
   };
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
 
   return (
     <>
@@ -62,18 +66,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             <div>
               <h2>Request's name:</h2>
-              <p>
-                {selectedRequest.requester_last_name},{" "}
-                {selectedRequest.requester_first_name}{" "}
-                {selectedRequest.requester_middle_name}
-              </p>
+              <p>{selectedRequest.requester_full_name}</p>
             </div>
             <div>
-              <h2>Office/Dept: </h2> <p>CITC</p>
+              <h2>Office/Dept: </h2> <p>{selectedRequest.office}</p>
             </div>
           </div>
           <div>
-            <h2>Passenger's name: </h2> <p>{selectedRequest.passenger_names}</p>
+            <h2>Passenger's name: </h2> <p>{selectedRequest.passenger_name}</p>
           </div>
           <div>
             <div>
@@ -91,7 +91,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <p>{selectedRequest.destination}</p>
             </div>
             <div>
-              <h2>Kilometers: </h2> <p></p>
+              <h2>Distance: </h2> <p>{selectedRequest.distance} km</p>
             </div>
           </div>
           <div>
@@ -103,15 +103,21 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </div>
             <div>
               <h2>Time:</h2>
-              <p>{selectedRequest.travel_time}</p>
+              <p>{formatTime(selectedRequest.travel_time)}</p>
               <h2>to:</h2>
-              <p>{selectedRequest.return_time}</p>
+              <p>{formatTime(selectedRequest.return_time)}</p>
+            </div>
+          </div>
+          <div>
+            <div>
+              <h2>Travel type: </h2>
+              <p>{selectedRequest.type}</p>
             </div>
           </div>
           {selectedRequest.status !== "Pending" && (
             <div>
-              <h2>Driver: </h2>
-              <p>{selectedRequest.driver_name}</p>
+              <h2>Driver:</h2>
+              <p>{selectedRequest.driver_full_name}</p>
             </div>
           )}
           {selectedRequest.status === "Pending" && (
@@ -128,7 +134,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             {showButtons && (
               <>
-                <button>Attachments</button>
                 <button onClick={() => onApprove(selectedDriverId)}>
                   Approve
                 </button>

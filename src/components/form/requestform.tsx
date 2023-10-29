@@ -31,9 +31,26 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function RequestForm() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
+
+  const [formErrors, setFormErrors] = useState({
+    office: "",
+    number_of_passengers: "",
+    passenger_name: "",
+    destination: "",
+    purpose: "",
+  });
+  const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
+  const capacity = location.state?.capacity || "";
+  const travelDate = location.state?.data.travel_date || "";
+  const travelTime = location.state?.data.travel_time || "";
+  const returnDate = location.state?.data.return_date || "";
+  const returnTime = location.state?.data.return_time || "";
+  const category = location.state?.data.category || "";
+  const distance = location.state?.addressData.distance || "";
+  const destination = location.state?.addressData.destination || "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -43,35 +60,46 @@ export default function RequestForm() {
   const userID = personalInfo?.id;
   const [data, setData] = useState<RequestFormProps>({
     requester_name: userID,
-    office_or_dept: "",
+    office: "",
     purpose: "",
     number_of_passenger: null,
-    passenger_names: [],
-    travel_date: null,
-    travel_time: null,
-    return_date: null,
-    return_time: null,
-    destination: "",
+    passenger_name: [],
+    travel_date: travelDate,
+    travel_time: travelTime,
+    return_date: returnDate,
+    return_time: returnTime,
+    destination: destination,
     vehicle: `${plateNumber}`,
+    type: category,
+    distance: distance,
   });
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [exceedsCapacity, setExceedsCapacity] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    let updatedPassengerNames = [...data.passenger_names];
-    if (numPassengers > data.passenger_names.length) {
+    if (distance >= 50) {
+      setIsFifthyKilometers(true);
+    } else if (distance < 50) {
+      setIsFifthyKilometers(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let updatedPassengerNames = [...data.passenger_name];
+    if (numPassengers > data.passenger_name.length) {
       const additionalPassengers = new Array(
-        numPassengers - data.passenger_names.length
+        numPassengers - data.passenger_name.length
       ).fill("");
       updatedPassengerNames =
         updatedPassengerNames.concat(additionalPassengers);
-    } else if (numPassengers < data.passenger_names.length) {
+    } else if (numPassengers < data.passenger_name.length) {
       updatedPassengerNames = updatedPassengerNames.slice(0, numPassengers);
     }
     setData({
       ...data,
-      passenger_names: updatedPassengerNames,
+      passenger_name: updatedPassengerNames,
       number_of_passenger: numPassengers,
     });
   }, [numPassengers]);
@@ -79,29 +107,51 @@ export default function RequestForm() {
   const handlePassengerChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setNumPassengers(Number(value));
+
+    if (Number(value) > capacity) {
+      setExceedsCapacity(true);
+    } else {
+      setExceedsCapacity(false);
+    }
+
+    // Check if all passenger names are filled
+    if (
+      data.passenger_name.length === numPassengers &&
+      data.passenger_name.every((name) => name.trim() !== "")
+    ) {
+      // Clear the passenger_name error when all names are entered
+      setFormErrors((prevErrors) => ({ ...prevErrors, passenger_name: "" }));
+    }
+  };
+
+  const clearDestinationError = () => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
   };
 
   const generatePassengerInputs = () => {
     const inputs = [];
-    for (let i = 0; i < numPassengers; i++) {
-      inputs.push(
-        <InputField
-          className="passenger_name_width"
-          value={data.passenger_names[i]}
-          key={i}
-          icon={faUser}
-          label={`Passenger ${i + 1}`}
-          placeholder={`Passenger ${i + 1}`}
-          onChange={(event) => {
-            const newPassengerNames = [...data.passenger_names];
-            newPassengerNames[i] = event.target.value;
-            setData({ ...data, passenger_names: newPassengerNames });
-          }}
-        />
-      );
+    if (numPassengers <= capacity) {
+      for (let i = 0; i < numPassengers; i++) {
+        inputs.push(
+          <InputField
+            className="passenger_name_width"
+            value={data.passenger_name[i]}
+            key={i}
+            icon={faUser}
+            label={`Passenger ${i + 1}`}
+            placeholder={`Passenger ${i + 1}`}
+            onChange={(event) => {
+              const newPassengerNames = [...data.passenger_name];
+              newPassengerNames[i] = event.target.value;
+              setData({ ...data, passenger_name: newPassengerNames });
+            }}
+          />
+        );
+      }
     }
     return inputs;
   };
+
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
@@ -109,65 +159,93 @@ export default function RequestForm() {
       event.preventDefault();
     }
   };
-  const handleDownload = () => {
-    const fileUrl = "your_file_url_here";
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    link.download = "template.pdf";
-    link.click();
-  };
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
-  const handleFileUpload = (event: any) => {
-    const file = event.target.files[0];
-    if (file && file.type === "application/pdf") {
-      setSelectedFileName(file.name);
-    } else {
-      setSelectedFileName(null);
-    }
-  };
-
-  const openFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
   const handleGoBack = () => {
     navigate("/DashboardR");
   };
 
   const handleSubmit = () => {
-    setLoadingBarProgress(20);
-    postRequestFromAPI(
-      data,
-      setIsConfirmationOpen,
-      navigate,
-      setLoadingBarProgress
-    );
-  };
-  const handleStartDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, travel_date: formattedDate });
-  };
-  const handleEndDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, return_date: formattedDate });
+    // Check for validation errors before submitting
+    if (validateForm()) {
+      setLoadingBarProgress(20);
+      postRequestFromAPI(
+        data,
+        setIsConfirmationOpen,
+        navigate,
+        setLoadingBarProgress
+      );
+    } else {
+      // Handle validation errors, e.g., display an error message or scroll to the first error
+    }
   };
 
-  const handleStartTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, travel_time: time });
+  const validateForm = () => {
+    let valid = true;
+
+    // Validate 'office_or_dept'
+    if (!data.office) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        office: "Please input office or dept",
+      }));
+      valid = false;
     } else {
-      console.log("No time selected.");
+      setFormErrors((prevErrors) => ({ ...prevErrors, office: "" }));
     }
+
+    // Validate 'number_of_passengers'
+    if (numPassengers <= 0) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        number_of_passengers: "Number of passengers must be greater than 0",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        number_of_passengers: "",
+      }));
+    }
+
+    // Validate 'passenger_name'
+    for (let i = 0; i < numPassengers; i++) {
+      if (!data.passenger_name[i]) {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          passenger_name: "Please input all passenger names",
+        }));
+        valid = false;
+        break;
+      }
+    }
+    // Validate 'destination'
+    // if (!data.destination) {
+    //   setFormErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     destination: "Please input destination",
+    //   }));
+    //   valid = false;
+    // } else {
+    //   setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
+    // }
+
+    // Validate 'purpose'
+    if (!data.purpose) {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        purpose: "Please input purpose",
+      }));
+      valid = false;
+    } else {
+      setFormErrors((prevErrors) => ({ ...prevErrors, purpose: "" }));
+    }
+
+    return valid;
   };
-  const handleEndTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, return_time: time });
-    } else {
-      console.log("No time selected.");
-    }
+
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
   return (
     <>
@@ -186,13 +264,24 @@ export default function RequestForm() {
             <img src={DocumentCode} alt="Document Code" />
           </div>
           <div className="form-body">
+            {/* Add a new section for form errors */}
+            <div className="form-errors">
+              {Object.values(formErrors).map((error, index) => {
+                if (error) {
+                  return (
+                    <div key={index} className="error-message">
+                      {error}
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
             <div className="form-body-shadow">
               <div className="first-row">
-                <div className="vehicle-info-name">
-                  <p>
-                    <FontAwesomeIcon icon={faUser} />
-                    Requester's name:
-                  </p>
+                <div className="requester-info-name">
+                  <strong>Requester's name:</strong>
                   <p>
                     {lastName}, {firstName} {middleName}
                   </p>
@@ -200,69 +289,74 @@ export default function RequestForm() {
 
                 <InputField
                   icon={faBuilding}
-                  value={data.office_or_dept}
+                  value={data.office}
                   label="Office/dept"
                   placeholder="Office/dept"
                   onChange={(event) => {
-                    setData({ ...data, office_or_dept: event.target.value });
+                    setData({ ...data, office: event.target.value });
+                    setFormErrors({ ...formErrors, office: "" });
                   }}
                 />
-                <InputField
-                  icon={faUsers}
-                  onKeyDown={handleKeyDown}
-                  label="No. of passengers"
-                  value={numPassengers}
-                  onChange={handlePassengerChange}
-                  type="number"
-                />
+                <div className="input-passenger-number">
+                  <InputField
+                    icon={faUsers}
+                    onKeyDown={handleKeyDown}
+                    label="No. of passengers"
+                    value={numPassengers}
+                    onChange={handlePassengerChange}
+                    type="number"
+                  />
+                  {exceedsCapacity && (
+                    <p>Exceeds seating capacity of the vehicle</p>
+                  )}
+                </div>
               </div>
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
               </div>
               <div className="third-row">
                 <div className="vehicle-info-name">
-                  <p>
-                    <FontAwesomeIcon icon={faCar} />
-                    Vehicle:
-                  </p>
+                  <strong>Vehicle:</strong>
                   <p>
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
-                {/* FURTHER DEBUGGING LATER */}
-                <AddressInput />
-                <div className="kilometer-info">
-                  <p>Kilometer{"(s)"}:</p>
-                  <p>10</p>
+                <div className="destination-info">
+                  <strong>Destination: </strong>
+                  <p>{destination}</p>
                 </div>
-              </div>
-              <div className="forth-row">
-                <div className="calendar-containerr">
-                  <p>Date of Travel: </p>
-                  <CalendarInput
-                    className="customize-calendar"
-                    onChange={handleStartDateChange}
-                  />
-                </div>
-                <div className="calendar-containerr">
-                  <p>To </p>
-                  <CalendarInput
-                    className="customize-calendar"
-                    onChange={handleEndDateChange}
-                  />
-                </div>
-              </div>
-              <div className="forth-row">
-                <div className="calendar-containerr">
-                  <p>Time of Travel: </p>
-                  <TimeInput onChange={handleStartTimeChange} />
-                </div>
-                <div className="calendar-containerr">
-                  <p>To </p>
-                  <TimeInput onChange={handleEndTimeChange} />
-                </div>
-              </div>
 
+                <div className="kilometer-info">
+                  <strong>Distance:</strong>
+                  <p>{distance} km</p>
+                </div>
+              </div>
+              <div className="forth-row">
+                <div className="calendar-containerr">
+                  <strong>Date of Travel:</strong>
+                  <p>{travelDate}</p>
+                </div>
+                <div className="calendar-containerr">
+                  <strong>to </strong>
+                  <p>{returnDate}</p>
+                </div>
+              </div>
+              <div className="forth-row">
+                <div className="calendar-containerr">
+                  <strong>Time of Travel: </strong>
+                  <p>{formatTime(travelTime)}</p>
+                </div>
+                <div className="calendar-containerr">
+                  <strong>to </strong>
+                  <p>{formatTime(returnTime)}</p>
+                </div>
+              </div>
+              <div className="fifth-row">
+                <div className="calendar-containerr">
+                  <strong>Travel Type:</strong>
+                  <p>{category}</p>
+                </div>
+              </div>
               <div className="sixth-row">
                 <div className="purpose-row">
                   <InputField
@@ -273,38 +367,24 @@ export default function RequestForm() {
                     placeholder="Purpose"
                     onChange={(event) => {
                       setData({ ...data, purpose: event.target.value });
+                      setFormErrors({ ...formErrors, purpose: "" }); // Clear the error
                     }}
                   />
                 </div>
               </div>
 
               <div className="seventh-row">
-                <p>
-                  Requesters traveling to destinations exceed 50 kilometers are
-                  required to provide a travel order for the vehicle's fuel and
-                  <br></br>
-                  the driver's per diem.
-                </p>
+                {isFifthyKilometers && (
+                  <p>
+                    Note: Requesters traveling to destinations exceed 50
+                    kilometers are required to provide a travel order for the
+                    vehicle's fuel and
+                    <br></br>
+                    the driver's per diem.
+                  </p>
+                )}
+
                 <div className="button-row-container">
-                  <button onClick={handleDownload}>
-                    Download Template
-                    <FontAwesomeIcon className="iconn" icon={faDownload} />
-                  </button>
-                  <label>
-                    <input
-                      type="file"
-                      style={{ display: "none" }}
-                      onChange={handleFileUpload}
-                      ref={fileInputRef}
-                      accept="application/pdf"
-                    />
-                    <button onClick={openFileInput}>
-                      {selectedFileName
-                        ? selectedFileName
-                        : "Upload Travel Order"}
-                      <FontAwesomeIcon className="iconn" icon={faUpload} />
-                    </button>
-                  </label>
                   <button onClick={handleGoBack}>Go back</button>
                   <button onClick={handleSubmit}>Submit</button>
                 </div>

@@ -75,20 +75,74 @@
   font-size: 1.1rem;
   font-weight: bold;
 }
+.schedule-container-relative {
+  position: relative;
+}
+.next-schedule-container {
+  background-color: #d9d9d9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 15vw;
+  height: 20vh;
+  position: absolute;
+  top: 0%;
+  left: 75%;
+  text-align: center;
+}
+.next-schedule-container strong {
+  color: black;
+  width: 12vw;
+}
+.next-schedule-container p {
+  color: black;
+}
 .requester-schedule-container {
   height: 50vh;
   width: 88vw;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
-.requester-schedule-container div {
+.requester-schedule-container-div {
   background-color: #d9d9d9;
   height: 50vh;
   width: 40vw;
   padding-top: 1.5vh;
 }
-.requester-schedule-container div div:nth-child(1) {
+.requester-schedule-container-div div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 0.5vw;
+}
+
+.requester-schedule-container-div div:nth-child(1) div:nth-child(1) {
+  padding-left: 0vw;
+  padding-top: 0vh;
+}
+.requester-schedule-container-div div:nth-child(1) div:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  width: 22vw;
+  padding-left: 0vw;
+  padding-top: 0vh;
+  margin-left: 4vw;
+}
+.requester-schedule-container-div div:nth-child(1) h1 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-schedule-container-div div:nth-child(1) h2 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-schedule-container-div div:nth-child(2) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -97,32 +151,15 @@
   height: 5vh;
   gap: 1vw;
 }
-.requester-schedule-container div div:nth-child(1) h1 {
-  color: black;
-  font-size: 1.5rem;
-}
-.requester-schedule-container div div:nth-child(1) h2 {
-  color: black;
-  font-size: 1.5rem;
-}
-.requester-schedule-container div div:nth-child(2) {
-  display: flex;
-  flex-direction: row;
-  margin-top: 2vh;
-  padding-left: 2vw;
-  align-items: center;
-  height: 5vh;
-  gap: 1vw;
-}
-.requester-schedule-container div div:nth-child(2) h2 {
+.requester-schedule-container-div div:nth-child(2) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(2) p {
+.requester-schedule-container-div div:nth-child(2) p {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(3) {
+.requester-schedule-container-div div:nth-child(3) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -131,7 +168,7 @@
   height: 5vh;
   gap: 0vw;
 }
-.requester-schedule-container div div:nth-child(3) div {
+.requester-schedule-container-div div:nth-child(3) div {
   display: flex;
   flex-direction: row;
   margin-top: 0vh;
@@ -141,34 +178,33 @@
   width: 18vw;
   gap: 1vw;
 }
-.requester-schedule-container div div:nth-child(3) h2 {
+.requester-schedule-container-div div:nth-child(3) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(3) p {
+.requester-schedule-container-div div:nth-child(3) p {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(4) {
+.requester-schedule-container-div div:nth-child(4) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
   padding-left: 2vw;
-  align-items: center;
-  height: 5vh;
+  height: 10vh;
   gap: 1vw;
   overflow: hidden;
 }
-.requester-schedule-container div div:nth-child(4) h2 {
+.requester-schedule-container-div div:nth-child(4) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(4) p {
+.requester-schedule-container-div div:nth-child(4) p {
   color: black;
   font-size: 1.1rem;
 }
 
-.requester-schedule-container div div:nth-child(5) {
+.requester-schedule-container-div div:nth-child(5) {
   display: flex;
   flex-direction: row;
   margin-top: 2vh;
@@ -177,7 +213,7 @@
   height: 5vh;
   gap: 0vw;
 }
-.requester-schedule-container div div:nth-child(5) div {
+.requester-schedule-container-div div:nth-child(5) div {
   display: flex;
   flex-direction: row;
   margin-top: 0vh;
@@ -187,34 +223,34 @@
   width: 18vw;
   gap: 1vw;
 }
-.requester-schedule-container div div:nth-child(5) h2 {
+.requester-schedule-container-div div:nth-child(5) h2 {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(5) p {
+.requester-schedule-container-div div:nth-child(5) p {
   color: black;
   font-size: 1.1rem;
 }
-.requester-schedule-container div div:nth-child(5) div:nth-child(2) p {
+.requester-schedule-container-div div:nth-child(5) div:nth-child(2) p {
   color: #060e57;
 }
-.requester-schedule-container div div:nth-child(6) {
+.requester-schedule-container-div div:nth-child(6) {
   display: flex;
   flex-direction: row;
-  margin-top: 3vh;
+  margin-top: 1vh;
   padding-right: 4vw;
   align-items: center;
   justify-content: flex-end;
   height: 5vh;
 }
-.requester-schedule-container div div:nth-child(6) button {
+.requester-schedule-container-div div:nth-child(6) button {
   background-color: transparent;
   font-weight: bold;
   font-size: 1rem;
   color: black;
   border: 2px solid #060e57;
 }
-.requester-schedule-container div div:nth-child(6) button:nth-child(1):hover {
+.requester-schedule-container-div div:nth-child(6) button:nth-child(1):hover {
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
@@ -227,7 +263,7 @@
 }
 .requester-pending-schedule-container div {
   background-color: #d9d9d9;
-  height: 30vh;
+  height: 40vh;
   width: 40vw;
   padding-top: 1.5vh;
 }
@@ -268,18 +304,37 @@
 .requester-pending-schedule-container div div:nth-child(3) {
   display: flex;
   flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 2vw;
+  height: 10vh;
+  gap: 1vw;
+  padding-top: 0vh;
+  overflow: hidden;
+}
+.requester-pending-schedule-container div div:nth-child(3) h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.requester-pending-schedule-container div div:nth-child(3) p {
+  color: black;
+  font-size: 1.1rem;
+}
+.requester-pending-schedule-container div div:nth-child(4) {
+  display: flex;
+  flex-direction: row;
   margin-top: 2vh;
   padding-left: 15vw;
   align-items: center;
   height: 5vh;
   gap: 0.5vw;
 }
-.requester-pending-schedule-container div div:nth-child(3) p:nth-child(1) {
+.requester-pending-schedule-container div div:nth-child(4) p:nth-child(1) {
   color: black;
   font-size: 1.2rem;
   font-weight: bold;
 }
-.requester-pending-schedule-container div div:nth-child(3) p:nth-child(2) {
+.requester-pending-schedule-container div div:nth-child(4) p:nth-child(2) {
   color: black;
   font-size: 1.4rem;
   font-weight: bold;
@@ -316,55 +371,145 @@
   flex-direction: column;
   background-color: #d9d9d9;
   width: 30vw;
-  height: 55vh;
+  height: auto;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
+  padding-bottom: 2vh;
 }
 
 .modal-set-trip-body h1 {
-  margin-top: 1vw;
+  margin-top: 2vh;
   color: #060e57;
   font-size: 1.5rem;
   text-align: center;
 }
+.modal-set-trip-body .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
 .modal-button-container {
+  margin-top: 1vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trip-category {
+  margin-top: 1vw;
+  width: 25vw;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.trip-category div {
+  width: 20vw;
+  display: flex;
+  padding-left: 2vw;
+  justify-content: space-evenly;
+}
+.trip-category button {
+  width: 7vw;
+  height: 5vh;
+  font-size: 0.9rem;
+  text-align: center;
+  white-space: nowrap;
+  background-color: transparent;
+  color: #060e57;
+  border: 2px solid #060e57;
+  font-weight: bold;
+}
+.trip-category button.active {
+  background-color: #060e57;
+  color: white;
+}
+
+.trip-category p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+/* .travel-date-container {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+} */
+.one-way-sub-category {
+  margin-top: 1vw;
+  width: 25vw;
+  display: flex;
+  justify-content: space-around;
+}
+.one-way-sub-category p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.one-way-sub-category select {
+  width: 15vw;
+  border-radius: 1px;
+  background-color: white;
+}
+.one-way-sub-category .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
+  text-align: center;
+}
+.date-from-roundtrip {
   margin-top: 2vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  width: 25vw;
+  height: auto;
 }
-/* .modal-button-container button:nth-child(1) {
-  background-color: transparent;
-  font-weight: bold;
-  font-size: 1rem;
-  color: black;
-  border: 2px solid #060e57;
+.date-and-time-container {
+  display: flex;
+  flex-direction: column;
+  height: 30vh;
 }
-.modal-button-container button:nth-child(1):hover {
-  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-  border: 1px solid #cccccc;
-} */
-
-.modal-button-container button:nth-child(1) {
-  background-color: #060e57;
-  font-size: 1rem;
-  font-weight: bold;
+.date-from-roundtrip .separate-date {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
 }
-
-.modal-button-container button:nth-child(1):hover {
-  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
-  border: 1px solid #cccccc;
+.date-from-roundtrip .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
+  text-align: center;
 }
-.date-from {
-  margin-top: 1vw;
+.date-from-oneway .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
+  text-align: center;
+}
+.date-from-oneway {
+  margin-top: 2vw;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-
   width: 25vw;
-  height: 10vh;
+  height: auto;
 }
-.date-from p {
+.date-from-oneway .separate-date {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+.travel-datee {
+  margin-left: -3vw;
+}
+.date-from-roundtrip p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.date-from-oneway p {
   color: #060e57;
   font-size: 1rem;
   font-weight: bold;
@@ -373,10 +518,14 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin-top: 2vw;
-
+  margin-top: 2vh;
   width: 25vw;
-  height: 10vh;
+  height: auto;
+}
+.date-to .separate-date {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
 }
 .date-to p {
   color: #060e57;
@@ -384,8 +533,45 @@
   font-weight: bold;
   margin-left: 3vh;
 }
+.date-to .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
+  text-align: center;
+}
 .separate-time {
-  margin-top: 1vw;
+  margin-top: 1vh;
+  display: flex;
+  flex-direction: column;
+}
+.trip-destination {
+  margin-top: 0.5vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 25vw;
+  height: 5vh;
+}
+.trip-destination p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: -3vw;
+}
+.trip-destination-autocomplete-roundtrip {
+  height: 5vh;
+}
+
+.trip-destination-autocomplete-oneway {
+  height: 8vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.trip-destination-autocomplete-oneway p {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
 }
 
 .number-of-pass {
@@ -411,6 +597,14 @@
   font-size: 1rem;
   padding: 0.5rem;
   text-align: center;
+}
+
+.guidelines-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
 @media screen and (max-width: 768px) {

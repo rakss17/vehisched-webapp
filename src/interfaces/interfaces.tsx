@@ -83,9 +83,9 @@ export interface AddressInputProps {
 }
 
 export interface RequestFormProps {
-  office_or_dept?: any;
+  office?: any;
   purpose?: any;
-  passenger_names: string[];
+  passenger_name: string[];
   vehicle?: any;
   destination?: any;
   travel_date?: any;
@@ -95,11 +95,13 @@ export interface RequestFormProps {
   number_of_passenger?: any;
   status?: any;
   request_id?: any;
-  requester_last_name?: any;
-  requester_first_name?: any;
-  requester_middle_name?: any;
+  requester_full_name?: any;
   requester_name?: any;
-  driver_name?: any;
+  driver_full_name?: any;
+  category?: any;
+  sub_category?: any;
+  distance?: any;
+  type?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -112,9 +114,30 @@ export interface RequestFormDetailsProps {
 
 export interface TimeInputProps {
   onChange: (time: string | null) => void;
+  selectedDate?: string | null;
+  handleDateChange?: (date: Date | null) => void;
 }
 
 export interface CalendarInputProps {
   className?: string;
   onChange: (date: Date | null) => void;
+  disableDaysBefore?: any;
+  selectedDate?: Date | null;
+}
+
+export interface ModalProps {
+  isOpen: boolean;
+  content?: string;
+  buttonText1?: string;
+  buttonText2?: string;
+  onRequestClose?: () => void;
+  onRequestDelete?: () => void;
+  selectedVehicle?: any;
+}
+
+export interface ButtonProps {
+  onClick?: () => void;
+  text?: any;
+  primaryStyle?: any;
+  secondaryStyle?: any;
 }

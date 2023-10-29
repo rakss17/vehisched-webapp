@@ -56,7 +56,7 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
   }, [schedulesData]);
 
   const events: Event[] = startDates.map((startDate, index) => ({
-    title: `Trip ${schedulesData[index].tripticket_id}`,
+    title: `Trip ${schedulesData[index].trip_id}`,
     start: startDate,
     end: endDates[index],
   }));

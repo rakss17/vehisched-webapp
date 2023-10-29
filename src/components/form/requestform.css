@@ -57,15 +57,37 @@
 }
 .first-row {
   display: flex;
-  margin-top: 2vw;
+  margin-top: 3vw;
   flex-direction: row;
-  justify-content: space-around;
+  gap: 2vw;
+  width: 60vw;
+  margin-left: 3vw;
+}
+.requester-info-name {
+  margin-top: 0vw;
+  display: flex;
+  flex-direction: row;
+  margin-left: 0vh;
+  width: 20vw;
+  color: black;
+  white-space: nowrap;
+  gap: 1vw;
+
+  align-items: center;
+}
+.input-passenger-number {
+  display: flex;
+  flex-direction: column;
+}
+.input-passenger-number p {
+  margin-top: -2vh;
+  color: red;
 }
 .passenger_name_width {
   width: 12vw;
 }
 .passengers-name-row {
-  margin-top: -2vw;
+  margin-top: 0vw;
   padding: 0px;
   margin-left: 0vh;
   display: flex;
@@ -78,74 +100,82 @@
 .third-row {
   display: flex;
   flex-direction: row;
-  margin-top: 2vw;
-  justify-content: space-around;
+  margin-top: 1vw;
+  margin-left: 3vw;
+  gap: 4vw;
+  width: 60vw;
 }
 .vehicle-info-name {
-  margin-top: 1vw;
+  margin-top: 0vw;
   display: flex;
   flex-direction: row;
   margin-left: 0vh;
   width: 14vw;
   color: black;
-  align-items: center;
+  white-space: nowrap;
+  gap: 1vw;
 }
 
-.vehicle-info-name p:nth-child(1) {
-  display: flex;
-  margin-right: 2vh;
-  gap: 5%;
+.vehicle-info-name strong {
   font-size: 1rem;
-  align-items: center;
+  white-space: nowrap;
+  color: black;
+}
+.destination-info {
+  width: 30vw;
+  height: 10vh;
+  display: flex;
+  flex-direction: row;
+  gap: 1vw;
+}
+.destination-info strong {
+  white-space: nowrap;
+  font-size: 1rem;
+  color: black;
 }
 .kilometer-info {
-  margin-top: 1vw;
+  margin-top: 0vw;
   display: flex;
   flex-direction: row;
   width: 14vw;
+  gap: 1vw;
 }
-
-.kilometer-info p:nth-child(2) {
-  margin-left: 1vh;
+.kilometer-info strong {
+  font-size: 1rem;
+  white-space: nowrap;
+  color: black;
 }
 .forth-row {
   display: flex;
-  margin-top: 1vw;
-  margin-left: 10vh;
+  margin-top: 1vh;
+  margin-left: 0vw;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
+}
+.forth-row strong {
+  white-space: nowrap;
+  font-size: 1rem;
+  color: black;
 }
 .calendar-containerr {
-  margin-left: -7vh;
+  margin-left: 0vh;
   width: 30vw;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  gap: 1vw;
 }
-.calendar-containerr p {
-}
-.customize-calendar {
-  background-color: transparent;
-  color: black;
-  font-size: 1.2rem;
-}
+
 .fifth-row {
-  margin-top: 1.5vw;
-  margin-left: 9vh;
   display: flex;
+  margin-top: 1vh;
+  margin-left: 3vw;
   flex-direction: row;
-  align-items: center;
-  gap: 5%;
 }
-.fifth-row div:nth-child(2) {
-  display: flex;
-  width: 4vw;
-  gap: 10%;
-}
-.fifth-row div:nth-child(3) {
-  display: flex;
-  width: 4vw;
-  gap: 10%;
+
+.fifth-row strong {
+  white-space: nowrap;
+  font-size: 1rem;
+  color: black;
 }
 
 .kilometer-info p:nth-child(1) {
@@ -155,17 +185,17 @@
 }
 
 .sixth-row {
-  margin-top: 2vw;
+  margin-top: 1.5vw;
   display: flex;
   flex-direction: column;
-  margin-left: 8vh;
+  margin-left: 6vh;
 }
 .sixth-row p {
   font-weight: bold;
 }
 .purpose-row {
   display: flex;
-  margin-top: 1vw;
+  margin-top: 0vw;
 }
 .purpose-width {
   width: 60vw;
@@ -175,31 +205,22 @@
   flex-direction: column;
   flex-wrap: wrap;
   margin-left: 8vh;
+  width: 60vw;
 }
 .seventh-row p {
   font-weight: bold;
 }
-.seventh-row button {
-  display: flex;
-  flex-direction: row;
-  gap: 5%;
-  height: 5vh;
-  width: 13vw;
-  justify-content: center;
-  background-color: #d9d9d9;
-  color: black;
-  text-align: center;
-}
-.seventh-row button:nth-child(3) {
-  width: 7vw;
+
+.seventh-row button:nth-child(1) {
+  width: 10vw;
   background-color: transparent;
   margin-left: 30vh;
   color: black;
   border: 2px solid #060e57;
   align-items: center;
 }
-.seventh-row button:nth-child(4) {
-  width: 8vw;
+.seventh-row button:nth-child(2) {
+  width: 10vw;
   border: none;
   background: linear-gradient(120deg, #fdb316, #060e57 60%);
   color: white;
@@ -210,10 +231,20 @@
   display: flex;
   flex-direction: row;
   gap: 2%;
+  margin-left: 20vw;
 }
 
 .iconn {
   color: #060e57;
+}
+.red-label {
+  color: red;
+}
+.form-errors {
+  flex-direction: column;
+  margin-top: -50vh;
+  margin-right: 2vw;
+  color: red;
 }
 
 @media screen and (max-width: 768px) {

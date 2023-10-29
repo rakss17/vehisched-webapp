@@ -85,20 +85,20 @@ export default function Admin() {
   });
   const [vehicleData, setVehicleData] = useState<Vehicle>({
     plate_number: "",
-    vehicle_name: "",
-    vehicle_type: "",
+    model: "",
+    type: "",
     capacity: null,
     is_vip: false,
-    vehicle_image: null,
+    image: null,
   });
   const [vehicleUpdate, setVehicleUpdate] = useState<Vehicle>({
     plate_number: "",
-    vehicle_name: "",
-    vehicle_type: "",
+    model: "",
+    type: "",
     capacity: null,
     status: "",
     is_vip: false,
-    vehicle_image: null,
+    image: null,
   });
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.usersInfo.data);
@@ -128,7 +128,7 @@ export default function Admin() {
       const selectedFile = event.target.files[0];
       setVehicleData({
         ...vehicleData,
-        vehicle_image: selectedFile,
+        image: selectedFile,
       });
     }
   };
@@ -139,7 +139,7 @@ export default function Admin() {
       const selectedFile = event.target.files[0];
       setVehicleUpdate({
         ...vehicleUpdate,
-        vehicle_image: selectedFile,
+        image: selectedFile,
       });
     }
   };
@@ -238,12 +238,8 @@ export default function Admin() {
   const filteredVehicleList = vehiclesData.filter((vehicle) => {
     const isSearchMatch =
       searchVehicleTerm === "" ||
-      vehicle.vehicle_name
-        ?.toLowerCase()
-        .includes(searchVehicleTerm.toLowerCase()) ||
-      vehicle.vehicle_type
-        ?.toLowerCase()
-        .includes(searchVehicleTerm.toLowerCase()) ||
+      vehicle.model?.toLowerCase().includes(searchVehicleTerm.toLowerCase()) ||
+      vehicle.type?.toLowerCase().includes(searchVehicleTerm.toLowerCase()) ||
       vehicle.status?.toLowerCase().includes(searchVehicleTerm.toLowerCase());
 
     return isSearchMatch;
@@ -381,10 +377,10 @@ export default function Admin() {
 
     const allFieldsBlank =
       !vehicleData.plate_number &&
-      !vehicleData.vehicle_name &&
+      !vehicleData.model &&
       !vehicleData.capacity &&
-      !vehicleData.vehicle_type &&
-      !vehicleData.vehicle_image;
+      !vehicleData.type &&
+      !vehicleData.image;
 
     if (allFieldsBlank) {
       vehicleValidationErrors.push("Required all fields!");
@@ -393,7 +389,7 @@ export default function Admin() {
         vehicleValidationErrors.push("Please enter plate number");
       }
 
-      if (!vehicleData.vehicle_name) {
+      if (!vehicleData.model) {
         vehicleValidationErrors.push("Please enter vehicle name");
       }
 
@@ -401,11 +397,11 @@ export default function Admin() {
         vehicleValidationErrors.push("Please enter seating capacity");
       }
 
-      if (!vehicleData.vehicle_type) {
+      if (!vehicleData.type) {
         vehicleValidationErrors.push("Please enter vehilce type");
       }
 
-      if (!vehicleData.vehicle_image) {
+      if (!vehicleData.image) {
         vehicleValidationErrors.push("Please upload image");
       }
     }
@@ -429,14 +425,12 @@ export default function Admin() {
     const updatedVehicleData = {
       plate_number:
         vehicleUpdate.plate_number || (selectedVehicle?.plate_number ?? ""),
-      vehicle_name:
-        vehicleUpdate.vehicle_name || (selectedVehicle?.vehicle_name ?? ""),
+      model: vehicleUpdate.model || (selectedVehicle?.model ?? ""),
       capacity: vehicleUpdate.capacity || (selectedVehicle?.capacity ?? ""),
       status: vehicleUpdate.status || (selectedVehicle?.status ?? ""),
-      vehicle_type:
-        vehicleUpdate.vehicle_type || (selectedVehicle?.vehicle_type ?? ""),
+      type: vehicleUpdate.type || (selectedVehicle?.type ?? ""),
       is_vip: vehicleUpdate.is_vip || (selectedVehicle?.is_vip ?? ""),
-      vehicle_image: vehicleUpdate.vehicle_image,
+      image: vehicleUpdate.image,
     };
     updateVehicleAPI(
       updatedVehicleData,
@@ -668,14 +662,12 @@ export default function Admin() {
                       <div className="vehicle-column">
                         <p className="vehicle-name">
                           {vehicle.plate_number}
-                          <br></br> {vehicle.vehicle_name}
+                          <br></br> {vehicle.model}
                         </p>
                         <p className="vehicle-detail">
                           Seating Capacity: {vehicle.capacity}
                         </p>
-                        <p className="vehicle-detail">
-                          Type: {vehicle.vehicle_type}
-                        </p>
+                        <p className="vehicle-detail">Type: {vehicle.type}</p>
                         <p
                           className="vehicle-status"
                           style={{
@@ -685,10 +677,7 @@ export default function Admin() {
                           {vehicle.status}
                         </p>
                       </div>
-                      <img
-                        className="vehicle-image"
-                        src={vehicle.vehicle_image}
-                      />
+                      <img className="vehicle-image" src={vehicle.image} />
                       <div className="ellipsis-container">
                         <Ellipsis
                           onCategoryChange={(category) =>
@@ -831,9 +820,9 @@ export default function Admin() {
           onChange: (event) =>
             setVehicleData({
               ...vehicleData,
-              vehicle_name: event.target.value,
+              model: event.target.value,
             }),
-          value: vehicleData.vehicle_name,
+          value: vehicleData.model,
           placeholder: "Vehicle Name",
           type: "text",
         }}
@@ -848,10 +837,10 @@ export default function Admin() {
           onChange: (event) =>
             setVehicleData({
               ...vehicleData,
-              vehicle_type: event.target.value,
+              type: event.target.value,
             }),
           placeholder: "Type",
-          value: vehicleData.vehicle_type,
+          value: vehicleData.type,
           type: "text",
         }}
         vipProps={{
@@ -891,10 +880,10 @@ export default function Admin() {
           onChange: (event) =>
             setVehicleUpdate({
               ...vehicleUpdate,
-              vehicle_name: event.target.value,
+              model: event.target.value,
             }),
-          value: vehicleUpdate.vehicle_name,
-          placeholder: selectedVehicle?.vehicle_name ?? "",
+          value: vehicleUpdate.model,
+          placeholder: selectedVehicle?.model ?? "",
           type: "text",
         }}
         seatingCapacityProps={{
@@ -911,10 +900,10 @@ export default function Admin() {
           onChange: (event) =>
             setVehicleUpdate({
               ...vehicleUpdate,
-              vehicle_type: event.target.value,
+              type: event.target.value,
             }),
-          placeholder: selectedVehicle?.vehicle_type ?? "",
-          value: vehicleUpdate.vehicle_type,
+          placeholder: selectedVehicle?.type ?? "",
+          value: vehicleUpdate.type,
           type: "text",
         }}
         vipProps={{

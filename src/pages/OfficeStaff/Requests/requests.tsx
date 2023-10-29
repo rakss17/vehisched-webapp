@@ -5,6 +5,7 @@ import {
   faCar,
   faCalendarAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -22,7 +23,7 @@ import {
   fetchRequestOfficeStaffAPI,
   fetchNotification,
 } from "../../../components/api/api";
-import { NotificationWebsocket } from "../../../components/api/websocket";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -49,13 +50,14 @@ export default function Requests() {
     { icon: faCar, text: "Vehicles", path: "/Vehicles" },
     { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
     { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
   useEffect(() => {
     fetchNotification(setNotifList);
   }, []);
 
   useEffect(() => {
-    NotificationWebsocket();
+    NotificationCreatedCancelWebsocket();
   }, []);
 
   useEffect(() => {
@@ -68,61 +70,42 @@ export default function Requests() {
 
   const filteredRequestList = requestList.filter((request) => {
     const isCategoryMatch =
-      selectedCategory === null ||
+      selectedCategory === "All" ||
+      request.status === selectedCategory ||
       selectedCategory === "Logs" ||
-      request.status === selectedCategory;
+      selectedCategory === null;
 
+    if (isCategoryMatch && selectedCategory === "Logs") {
+      const [year, month, day] = request.travel_date.split("-");
+      const [hours, minutes] = request.travel_time.split(":");
+      const requestDate = new Date(year, month - 1, day, hours, minutes);
+      return requestDate < currentDate;
+    }
     const isSearchMatch =
       searchTerm === "" ||
-      request.requester_last_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      request.requester_first_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      request.requester_middle_name
+      request.requester_full_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (selectedCategory === "Logs" &&
-        (request.requester_last_name
+        (request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-          request.requester_first_name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          request.requester_middle_name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
           request.travel_date
             .toLowerCase()
             .includes(searchTerm.toLowerCase()))) ||
       (selectedCategory !== "Logs" &&
-        request.requester_last_name
+        request.requester_full_name
           .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        request.requester_first_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        request.requester_middle_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) &&
-        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()));
+          .includes(searchTerm.toLowerCase())) ||
+      request.request_id.toString().includes(searchTerm.toLowerCase()) ||
+      request.travel_date.toLowerCase().includes(searchTerm.toLowerCase());
 
     return isCategoryMatch && isSearchMatch;
   });
 
   const handleCategoryChange = (status: string) => {
-    setSelectedCategory(status === "All" ? null : status);
-
-    if (status === "Logs") {
-      const filteredList = requestList.filter(
-        (request) => new Date(request.travel_date) < currentDate
-      );
-      setRequestList(filteredList);
-    } else {
-      setRequestList(requestList);
-    }
+    setSelectedCategory(status);
   };
 
   const handleOpenRequestForm = (request: RequestFormProps) => {
@@ -141,7 +124,6 @@ export default function Requests() {
     setIsRequestFormOpen(false);
   };
   const handleConfirmationApprove = (selectedDriverId: any) => {
-    console.log("driver iddddd", selectedDriverId);
     approveRequestAPI(
       requestId,
       selectedDriverId,
@@ -208,11 +190,7 @@ export default function Requests() {
                       onClick={() => handleOpenRequestForm(request)}
                     >
                       <td>{request.request_id}</td>
-                      <td>
-                        {request.requester_last_name},{" "}
-                        {request.requester_first_name}{" "}
-                        {request.requester_middle_name}
-                      </td>
+                      <td>{request.requester_full_name}</td>
                       <td>{request.travel_date}</td>
                       <td>{request.status}</td>
                     </tr>

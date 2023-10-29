@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import CalendarSchedule from "./calendar";
 import "./calendarmodal.css";
@@ -10,19 +10,19 @@ const CalendarModal: React.FC<any> = ({
   selectedSchedule,
   onRequestClose,
 }) => {
-  const [showMore, setShowMore] = useState(false);
-  console.log("selectedschedule", selectedSchedule);
+  const [selectedScheduleIndex, setSelectedScheduleIndex] = useState<
+    number | null
+  >(null);
 
-  const handleShowMore = () => {
-    setShowMore(true);
-  };
-  const handleHide = () => {
-    setShowMore(false);
-  };
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
+
+  const handleShowMore = (index: number) => {
+    setSelectedScheduleIndex(index);
+  };
+
   return (
     <>
       <Modal className="calendar-modal" isOpen={isOpen}>
@@ -37,12 +37,12 @@ const CalendarModal: React.FC<any> = ({
             <CalendarSchedule schedulesData={selectedSchedule} />
           </div>
           <div className="schedule-info-container">
-            {selectedSchedule.map((schedule: any) => (
-              <div key={schedule.tripticket_id} className="schedule-card">
+            {selectedSchedule.map((schedule: any, index: number) => (
+              <div key={schedule.trip_id} className="schedule-card">
                 <div className="main-info">
                   <div>
                     <strong>Trip No.: </strong>
-                    <p>{schedule.tripticket_id}</p>
+                    <p>{schedule.trip_id || undefined}</p>
                   </div>
                   <div className="date-and-time-modal">
                     <strong>Date and time: </strong>
@@ -52,18 +52,21 @@ const CalendarModal: React.FC<any> = ({
                       {formatTime(schedule.return_time)}
                     </p>
                   </div>
-                  {!showMore ? (
+                  {selectedScheduleIndex !== index ? (
                     <div>
-                      <strong onClick={handleShowMore}>Show more...</strong>
+                      <strong onClick={() => handleShowMore(index)}>
+                        Show more...
+                      </strong>
                     </div>
                   ) : (
                     <div>
-                      <strong onClick={handleHide}>Hide</strong>
+                      <strong onClick={() => handleShowMore(null)}>Hide</strong>
                     </div>
                   )}
                 </div>
-                {showMore && (
-                  <div className="additional-info">
+                {selectedScheduleIndex === index && (
+                  <div key={schedule.trip_id} className="additional-info">
+                    <div>
                     <div>
                       <strong>Vehicle: </strong>
                       <p>{schedule.vehicle}</p>
@@ -71,6 +74,12 @@ const CalendarModal: React.FC<any> = ({
                     <div>
                       <strong>Driver: </strong>
                       <p>{schedule.driver}</p>
+                    </div>
+                    </div>
+                    
+                    <div>
+                      <strong>Destination: </strong>
+                      <p>{schedule.destination}</p>
                     </div>
                   </div>
                 )}

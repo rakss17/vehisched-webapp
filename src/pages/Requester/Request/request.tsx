@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import {
+  faColumns,
+  faClipboardList,
+  faAngleDown,
+  faAngleUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LoadingBar from "react-top-loading-bar";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -11,10 +17,11 @@ import Confirmation from "../../../components/confirmation/confirmation";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import { SidebarItem } from "../../../interfaces/interfaces";
 import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
-import { RequestApproveWebsocket } from "../../../components/api/websocket";
+import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { ToastContainer, toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { useSpring, animated } from "@react-spring/web";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
@@ -33,17 +40,22 @@ export default function Request() {
   const [selectedRequest, setSelectedRequest] = useState<any>();
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState(null);
+  const [expandedRequestIndex, setExpandedRequestIndex] = useState(null);
   const requestId = selectedRequest?.request_id ?? "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
   const userName = personalInfo?.username;
+  const springProps = useSpring({
+    height: expandedRequestIndex ? "40vh" : "0vh",
+  });
 
   useEffect(() => {
     fetchRequestAPI(setRequestFilteredData);
   }, []);
 
-  RequestApproveWebsocket(userName);
+  NotificationApprovalScheduleReminderWebsocket(userName);
 
   const handleButtonClick = (status: string) => {
     let filteredData = [];
@@ -116,6 +128,18 @@ export default function Request() {
     (request) => request.status === selectedStatus
   );
 
+  const onHandleAngleDown = (index: any) => {
+    setExpandedRequestIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
+    setSelectedRequestIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
+  };
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
   return (
     <>
       <LoadingBar
@@ -166,32 +190,156 @@ export default function Request() {
             >
               <thead>
                 <tr>
-                  <th style={{ fontWeight: "normal" }}>Request No.</th>
-                  <th style={{ fontWeight: "normal" }}>Travel Date</th>
-                  <th style={{ fontWeight: "normal" }}>Vehicle</th>
+                  <th></th>
+                  <th>Request No.</th>
+                  <th></th>
+                  <th>Travel Date</th>
+                  <th></th>
+                  <th>Vehicle</th>
+                  <th></th>
                 </tr>
               </thead>
               {filteredData.length === 0 ? (
-                <p>No request available.</p>
+                <p style={{ position: "absolute" }}>No request available.</p>
               ) : (
                 <tbody>
                   {filteredData.map((request, index) => (
-                    <tr key={index}>
-                      <td>{request.request_id}</td>
-                      <td>{request.travel_date}</td>
-                      <td>{request.vehicle}</td>
-                      <td className="ellipsis-cell">
-                        {selectedStatus === "Pending" ||
-                        selectedStatus === "Approved" ? (
-                          <Ellipsis
-                            onCategoryChange={(category) =>
-                              onHandleEllipsis(category, request)
-                            }
-                            status={["Cancel Request"]}
-                          />
-                        ) : null}
-                      </td>
-                    </tr>
+                    <>
+                      <tr
+                        key={request.request_id}
+                        className={
+                          selectedRequestIndex === request.request_id
+                            ? "selected-request"
+                            : ""
+                        }
+                      >
+                        <td className="angle-down">
+                          {expandedRequestIndex === request.request_id ? (
+                            <FontAwesomeIcon
+                              icon={faAngleUp}
+                              style={{ fontSize: "24px" }}
+                              onClick={() =>
+                                onHandleAngleDown(request.request_id)
+                              }
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faAngleDown}
+                              style={{ fontSize: "24px" }}
+                              onClick={() =>
+                                onHandleAngleDown(request.request_id)
+                              }
+                            />
+                          )}
+                        </td>
+
+                        <td>{request.request_id}</td>
+                        <td></td>
+                        <td>{request.travel_date}</td>
+                        <td></td>
+                        <td>{request.vehicle}</td>
+                        <td></td>
+                        <td className="ellipsis-cell">
+                          {selectedStatus === "Pending" ||
+                          selectedStatus === "Approved" ? (
+                            <Ellipsis
+                              onCategoryChange={(category) =>
+                                onHandleEllipsis(category, request)
+                              }
+                              status={["Cancel Request"]}
+                            />
+                          ) : null}
+                        </td>
+                      </tr>
+                      {selectedRequestIndex === request.request_id && (
+                        <animated.div
+                          style={springProps}
+                          className={`request-more-info ${
+                            selectedRequestIndex === request.request_id
+                              ? "show"
+                              : ""
+                          }`}
+                        >
+                          {/* first child */}
+                          <div className="request-more-info-first-child">
+                            <div>
+                              <strong>Destination:</strong>
+                              <p>{request.destination}</p>
+                            </div>
+                            <div>
+                              <strong>Vehicle: </strong>
+                              {request.vehicle}
+                            </div>
+                          </div>
+                          {/* second child */}
+                          <div className="request-more-info-second-child">
+                            <div>
+                              <strong>Date of Travel: </strong>
+                              <p>
+                                {request.travel_date},{" "}
+                                {formatTime(request.travel_time)}
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Travel type: </strong>
+                              <p>{request.type}</p>
+                            </div>
+                          </div>
+                          {/* third child */}
+                          <div className="request-more-info-third-child">
+                            <div className="request-more-info-third-child-passengers">
+                              <strong
+                                style={{
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Passengers:{" "}
+                              </strong>
+                              <p
+                                style={{
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {request.passenger_name}
+                              </p>
+                            </div>
+                            <div className="request-more-info-third-child-driver">
+                              <div>
+                                <strong>Driver: </strong>
+                                <p>{request.driver_full_name}</p>
+                              </div>
+                              <div>
+                                <strong>Contact No.: </strong>
+                                <p>{request.driver_mobile_number}</p>
+                              </div>
+                            </div>
+                          </div>
+                          {/* fourth child */}
+                          <div className="request-more-info-fourth-child">
+                            <div className="request-more-info-fourth-child-purpose">
+                              <strong
+                                style={{
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Purpose:{" "}
+                              </strong>
+                              <p
+                                style={{
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {request.purpose}
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Status: </strong>
+                              <p>{request.status}</p>
+                            </div>
+                          </div>
+                        </animated.div>
+                      )}
+                    </>
                   ))}
                 </tbody>
               )}

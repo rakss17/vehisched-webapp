@@ -9,8 +9,8 @@ import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
 import { fetchVehiclesData } from "../../redux/slices/vehiclesDataSlices";
-import { fetchDriversData } from "../../redux/slices/driversDataSlices";
-import { ToastContainer, toast } from "react-toastify";
+import { getTimeElapsed } from "../functions/getTimeElapsed";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const serverSideUrl = "http://localhost:8000/media/";
@@ -95,8 +95,7 @@ export function fetchUsersAPI() {
           "Content-Type": "application/json",
         },
       });
-
-      dispatch(fetchUsersInfo(response.data.results));
+      dispatch(fetchUsersInfo(response.data));
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -112,7 +111,7 @@ export function fetchDriversScheduleAPI(
 ) {
   const token = localStorage.getItem("token");
   api
-    .get("/api/v1/tripticket/check-driver-availability/", {
+    .get("/api/v1/trip/check-driver-availability/", {
       params: {
         preferred_start_travel_date: travel_date,
         preferred_start_travel_time: travel_time,
@@ -292,8 +291,6 @@ export function fetchVehiclesAPI() {
           "Content-Type": "application/json",
         },
       });
-      console.log(response.data);
-
       dispatch(fetchVehiclesData(response.data));
     } catch (error) {
       console.error("Error fetching user list:", error);
@@ -416,7 +413,7 @@ export function postRequestFromAPI(
   const token = localStorage.getItem("token");
   const requestData = {
     ...data,
-    passenger_names: JSON.stringify(data.passenger_names),
+    passenger_name: JSON.stringify(data.passenger_name),
   };
   api
     .post("api/v1/request/fetch-post/", requestData, {
@@ -435,13 +432,26 @@ export function postRequestFromAPI(
       }, 3000);
     })
     .catch((error) => {
-      console.log(error);
       if (error.response && error.response.data) {
-        const errorMessage = error.response.data.error || "An error occurred.";
-        toast.error(errorMessage, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: false,
-        });
+        if (error.response.data.type === "Approved") {
+          setLoadingBarProgress(50);
+          setLoadingBarProgress(100);
+          const errorMessage =
+            error.response.data.error || "An error occurred.";
+          toast.error(errorMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (error.response.data.type === "Pending") {
+          setLoadingBarProgress(50);
+          setLoadingBarProgress(100);
+          const errorMessage =
+            error.response.data.error || "An error occurred.";
+          toast.error(errorMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        }
       } else {
         toast.error("An unknown error occurred.", {
           position: toast.POSITION.TOP_CENTER,
@@ -461,12 +471,26 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       },
     })
     .then((response) => {
-      setRequestFilteredData(response.data);
+      const responseData = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+      console.log(response.data);
+      const updatedData = responseData.map((item) => {
+        if (item.passenger_name) {
+          const validJson = item.passenger_name.replace(/'/g, '"');
+          const passengerNamesArray = JSON.parse(validJson);
+          item.passenger_name = passengerNamesArray.join(", ");
+        }
+        return item;
+      });
+
+      setRequestFilteredData(updatedData);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);
     });
 }
+
 export function fetchPendingRequestAPI(setPendingSchedule: any) {
   const token = localStorage.getItem("token");
   api
@@ -497,8 +521,19 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
       },
     })
     .then((response) => {
-      setRequestList(response.data);
-      console.log(response.data);
+      const responseData = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
+      const updatedData = responseData.map((item) => {
+        if (item.passenger_name) {
+          const validJson = item.passenger_name.replace(/'/g, '"');
+          const passengerNamesArray = JSON.parse(validJson);
+          item.passenger_name = passengerNamesArray.join(", ");
+        }
+        return item;
+      });
+      setRequestList(updatedData);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);
@@ -629,15 +664,105 @@ export function fetchNotification(setNotifList: any) {
         (notification: any) => !notification.read_status
       );
       unreadNotifications.forEach((notification: any) => {
-        console.log("Subject:", notification.subject);
-
         if (notification.subject.includes("has been created")) {
-          toast.success(notification.subject, {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.success(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("has been approved")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.success(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("1 hour")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("12 hours")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("24 hours")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
             position: toast.POSITION.TOP_CENTER,
             autoClose: false,
           });
         } else if (notification.subject.includes("has been canceled")) {
-          toast.info(notification.subject, {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.info(message, {
             position: toast.POSITION.TOP_CENTER,
             autoClose: false,
           });
@@ -658,7 +783,7 @@ export function checkVehicleAvailability(
 ) {
   const token = localStorage.getItem("token");
   api
-    .get("/api/v1/tripticket/check-vehicle-availability/", {
+    .get("/api/v1/trip/check-vehicle-availability/", {
       params: {
         preferred_start_travel_date: preferred_start_travel_date,
         preferred_start_travel_time: preferred_start_travel_time,
@@ -672,24 +797,41 @@ export function checkVehicleAvailability(
     })
     .then((response) => {
       setVehiclesData(response.data);
-      console.log("kni", response.data);
     })
     .catch((error) => {
       console.error("Error fetching vehicle list:", error);
     });
 }
 
-export function fetchSchedule(setSchedule: any) {
+export function fetchSchedule(
+  setSchedule: any,
+  setNextSchedule: any,
+  setIsOngoingScheduleClick: any,
+  handleButtonClick: any
+) {
   const token = localStorage.getItem("token");
   api
-    .get("api/v1/tripticket/fetch-requester/", {
+    .get("api/v1/trip/fetch-requester/", {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
     })
     .then((response) => {
-      setSchedule(response.data);
+      console.log("schedylee", response.data);
+      const scheduleData = response.data.filter(
+        (item: any) => !item.next_schedule_travel_date
+      );
+      const nextScheduleData = response.data.filter(
+        (item: any) => item.next_schedule_travel_date
+      );
+
+      setSchedule(scheduleData);
+      setNextSchedule(nextScheduleData);
+      if (scheduleData.length > 0) {
+        setIsOngoingScheduleClick(true);
+        handleButtonClick("Ongoing Schedule");
+      }
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);
@@ -699,7 +841,7 @@ export function fetchSchedule(setSchedule: any) {
 export async function fetchScheduleOfficeStaff(setSchedule: any) {
   const token = localStorage.getItem("token");
   return api
-    .get("api/v1/tripticket/fetch-office-staff/", {
+    .get("api/v1/trip/fetch-office-staff/", {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
@@ -719,7 +861,7 @@ export async function fetchVehicleSchedules(
 ) {
   const token = localStorage.getItem("token");
   return api
-    .get("api/v1/tripticket/vehicle-schedules/", {
+    .get("api/v1/trip/vehicle-schedules/", {
       params: {
         plate_number: vehicleId,
       },
@@ -742,7 +884,7 @@ export async function fetchDriverSchedules(
 ) {
   const token = localStorage.getItem("token");
   return api
-    .get("api/v1/tripticket/driver-schedules/", {
+    .get("api/v1/trip/driver-schedules/", {
       params: {
         driver_id: driverId,
       },
@@ -757,4 +899,78 @@ export async function fetchDriverSchedules(
     .catch((error) => {
       console.error("Error fetching schedule list:", error);
     });
+}
+
+export async function handlePlaceSelect(
+  place: any,
+  travel_date: any,
+  travel_time: any,
+  setData: (data: any) => void,
+  setAddressData: (addressData: any) => void,
+  category: any
+) {
+  try {
+    const response = await api.get("api/v1/request/place-details/", {
+      params: {
+        place_id: place.place_id,
+        travel_date: travel_date,
+        travel_time: travel_time,
+      },
+    });
+    if (category === "Round Trip") {
+      const distanceString = response.data.distance;
+      const distance = parseFloat(distanceString);
+      const addressComponents = response.data.result.address_components.map(
+        (component: any) => ({
+          short_name: component.short_name,
+        })
+      );
+      const addressName = response.data.result.name;
+      const fullAddress =
+        addressName +
+        ", " +
+        addressComponents
+          .map((component: any) => component.short_name)
+          .join(", ");
+      setAddressData((prevData: any) => ({
+        ...prevData,
+        distance: distance,
+        destination: fullAddress,
+      }));
+    } else if (
+      category === "One-way - Drop" ||
+      category === "One-way - Fetch" ||
+      category === "One-way"
+    ) {
+      console.log("one-way estimate return date", response.data);
+      const [return_date, return_time] =
+        response.data.estimated_return_time.split("T");
+      setData((prevData: any) => ({
+        ...prevData,
+        return_date: return_date,
+        return_time: return_time,
+      }));
+      const distanceString = response.data.distance;
+      const distance = parseFloat(distanceString);
+      const addressComponents = response.data.result.address_components.map(
+        (component: any) => ({
+          short_name: component.short_name,
+        })
+      );
+      const addressName = response.data.result.name;
+      const fullAddress =
+        addressName +
+        ", " +
+        addressComponents
+          .map((component: any) => component.short_name)
+          .join(", ");
+      setAddressData((prevData: any) => ({
+        ...prevData,
+        distance: distance,
+        destination: fullAddress,
+      }));
+    }
+  } catch (error) {
+    console.log("Error:", error);
+  }
 }

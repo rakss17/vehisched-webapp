@@ -1,17 +1,9 @@
 import React from "react";
 import Modal from "react-modal";
 import "./promptdialog.css";
+import { ModalProps } from "../../interfaces/interfaces";
 
-interface PromptDialogProps {
-  isOpen: boolean;
-  content: string;
-  buttonText1: string;
-  buttonText2: string;
-  onRequestClose: () => void;
-  onRequestDelete: () => void;
-}
-
-const PromptDialog: React.FC<PromptDialogProps> = ({
+const PromptDialog: React.FC<ModalProps> = ({
   isOpen,
   content,
   buttonText1,

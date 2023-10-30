@@ -46,6 +46,8 @@ export default function DashboardR() {
   const [isFetchSelect, setIsFetchSelect] = useState(false);
   const [selectedButton, setSelectedButton] =
     useState<string>("Set Trip Schedule");
+  const [selectedVehicleRecommendation, setSelectedVehicleRecommendation] =
+    useState<string>("");
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
@@ -419,7 +421,7 @@ export default function DashboardR() {
       items: 1,
     },
   };
-
+  console.log("selected", selectedVehicleRecommendation);
   pendingSchedule.reverse();
   schedule.reverse();
   return (
@@ -765,62 +767,55 @@ export default function DashboardR() {
                       swipeable={true}
                       draggable={true}
                       responsive={responsive}
-                      // containerClass="recommend-vehicle-carousel"
+                      containerClass="recommend-vehicle-carousel"
                       itemClass="carousel-item"
                       infinite={true}
                     >
                       {recommend.vehicle_data_recommendation.map(
-                        (vehicle: any) => (
+                        (vehicle: any, index: any) => (
                           <a
                             key={vehicle.vehicle_recommendation_plate_number}
-                            className="recommended-vehicle-card"
+                            // className="recommended-vehicle-card"
+                            className={`recommended-vehicle-card ${
+                              selectedVehicleRecommendation ===
+                              vehicle.vehicle_recommendation_plate_number
+                                ? "active"
+                                : ""
+                            }`}
+                            onClick={() => {
+                              setSelectedVehicleRecommendation(
+                                vehicle.vehicle_recommendation_plate_number
+                              );
+                              console.log(
+                                vehicle.vehicle_recommendation_plate_number
+                              );
+                            }}
                           >
-                            {/* <div className="recommended-vehicle-row"> */}
-                            {/* <div className="recommended-vehicle-column"> */}
-                            <p className="recommended-vehicle-name">
-                              {vehicle.vehicle_recommendation_plate_number}
-                              <br></br> {vehicle.vehicle_recommendation_model}
+                            <img
+                              src={
+                                serverSideUrl +
+                                vehicle.vehicle_recommendation_image
+                              }
+                            />
+
+                            <p>
+                              {vehicle.vehicle_recommendation_plate_number}{" "}
+                              {vehicle.vehicle_recommendation_model}
                             </p>
-                            <p className="recommended-vehicle-detail">
+
+                            <p>
                               Seating Capacity:{" "}
                               {vehicle.vehicle_recommendation_capacity}
                             </p>
-                            <p className="recommended-vehicle-detail">
-                              Type: {vehicle.vehicle_recommendation_type}
-                            </p>
-                            {/* </div> */}
-                            <img
-                              className="recommended-vehicle-image"
-                              src={vehicle.vehicle_recommendation_image}
-                            />
-                            {/* </div> */}
+                            <p>Type: {vehicle.vehicle_recommendation_type}</p>
                           </a>
                         )
                       )}
                     </Carousel>
-                    {/* <div>
-                      <div>
-                        <h2>Driver: </h2> <p>{recommend.driver}</p>
-                      </div>
-                      <div>
-                        <h2>Contact No.: </h2>{" "}
-                        <p>{recommend.contact_no_of_driver}</p>
-                      </div>
-                    </div>
                     <div>
-                      <h2>Destination: </h2> <p>{recommend.destination}</p>
+                      <CommonButton text="Cancel" secondaryStyle />
+                      <CommonButton text="Accept" primaryStyle />
                     </div>
-                    <div>
-                      <div>
-                        <h2>Vehicle: </h2> <p>{recommend.vehicle}</p>
-                      </div>
-                      <div>
-                        <h2>Status: </h2> <p>{recommend.status}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <button>View more info</button>
-                    </div> */}
                   </div>
                 </div>
               ))}

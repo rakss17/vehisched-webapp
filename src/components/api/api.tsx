@@ -825,6 +825,7 @@ export function fetchSchedule(
         (item: any) => item.next_schedule_travel_date
       );
       setVehicleRecommendation(response.data.vehicle_recommendation);
+
       setSchedule(scheduleData);
       setNextSchedule(nextScheduleData);
       if (

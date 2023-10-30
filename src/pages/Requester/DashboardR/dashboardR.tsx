@@ -54,6 +54,7 @@ export default function DashboardR() {
     useState<string>("Set Trip Schedule");
   const [selectedVehicleRecommendation, setSelectedVehicleRecommendation] =
     useState<string>("");
+  const [selectedTrip, setSelectedTrip] = useState<string>("");
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
@@ -412,15 +413,28 @@ export default function DashboardR() {
     }
   }, []);
 
-  const handleAccept = (recommend_request_id: any) => {
-    acceptVehicleAPI(
-      recommend_request_id,
-      selectedVehicleRecommendation,
-      setIsConfirmationAcceptOpen,
-      setLoadingBarProgress
-    );
-  };
+  const handleAccept = (recommend_request_id: any, recommend_trip_id: any) => {
+    setSelectedTrip(recommend_trip_id);
+    let validationErrors: { [key: string]: string } = {};
 
+    if (!selectedVehicleRecommendation) {
+      validationErrors.selectedVehicleRecommendationError =
+        "Please select vehicle";
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+
+    if (Object.keys(validationErrors).length === 0) {
+      acceptVehicleAPI(
+        recommend_request_id,
+        selectedVehicleRecommendation,
+        setIsConfirmationAcceptOpen,
+        setLoadingBarProgress
+      );
+    }
+  };
   const handleCancel = (recommend_request_id: any) => {
     cancelRequestAPI(
       recommend_request_id,
@@ -764,7 +778,6 @@ export default function DashboardR() {
                       </div>
                     </div>
                     <div>
-                      {/* <h2>Travel date and time: </h2>{" "} */}
                       <p>
                         We regret to inform you that the vehicle you reserved
                         for the date{" "}
@@ -795,10 +808,10 @@ export default function DashboardR() {
                         (vehicle: any) => (
                           <a
                             key={vehicle.vehicle_recommendation_plate_number}
-                            // className="recommended-vehicle-card"
                             className={`recommended-vehicle-card ${
                               selectedVehicleRecommendation ===
-                              vehicle.vehicle_recommendation_plate_number
+                                vehicle.vehicle_recommendation_plate_number &&
+                              selectedTrip === recommend.trip_id
                                 ? "active"
                                 : ""
                             }`}
@@ -806,6 +819,11 @@ export default function DashboardR() {
                               setSelectedVehicleRecommendation(
                                 vehicle.vehicle_recommendation_plate_number
                               );
+                              setSelectedTrip(recommend.trip_id);
+                              const updatedErrors = { ...errorMessages };
+                              delete updatedErrors[0]
+                                ?.selectedVehicleRecommendationError;
+                              setErrorMessages(updatedErrors);
                             }}
                           >
                             <img
@@ -830,6 +848,14 @@ export default function DashboardR() {
                       )}
                     </Carousel>
                     <div>
+                      {selectedTrip === recommend.trip_id ? (
+                        <p>
+                          {errorMessages[0]?.selectedVehicleRecommendationError}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div>
                       <CommonButton
                         text="Cancel"
                         secondaryStyle
@@ -838,7 +864,9 @@ export default function DashboardR() {
                       <CommonButton
                         text="Accept"
                         primaryStyle
-                        onClick={() => handleAccept(recommend.request_id)}
+                        onClick={() =>
+                          handleAccept(recommend.request_id, recommend.trip_id)
+                        }
                       />
                     </div>
                   </div>

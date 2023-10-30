@@ -1002,16 +1002,7 @@ export function vehicleMaintenanceAPI(
     })
     .catch((error) => {
       if (error.response && error.response.data) {
-        if (error.response.data.type === "Approved") {
-          setLoadingBarProgress(50);
-          setLoadingBarProgress(100);
-          const errorMessage =
-            error.response.data.error || "An error occurred.";
-          toast.error(errorMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (error.response.data.type === "Pending") {
+        if (error.response.data.type === "Maintenance") {
           setLoadingBarProgress(50);
           setLoadingBarProgress(100);
           const errorMessage =

@@ -133,6 +133,9 @@ export interface ModalProps {
   onRequestClose?: () => void;
   onRequestDelete?: () => void;
   selectedVehicle?: any;
+  setIsVehicleMaintenanceOpen?: any;
+  setIsConfirmationOpenVehicleMaintenance?: any;
+  setLoadingBarProgress?: any;
 }
 
 export interface ButtonProps {

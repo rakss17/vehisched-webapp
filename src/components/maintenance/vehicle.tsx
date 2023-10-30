@@ -6,11 +6,16 @@ import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import CommonButton from "../button/commonbutton";
 import { format } from "date-fns";
+import { vehicleMaintenanceAPI } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
 const VehicleMaintenance: React.FC<ModalProps> = ({
   isOpen,
   onRequestClose,
   selectedVehicle,
+  setIsVehicleMaintenanceOpen,
+  setLoadingBarProgress,
+  setIsConfirmationOpenVehicleMaintenance,
 }) => {
   if (!selectedVehicle) return null;
   const [data, setData] = useState<any>({
@@ -20,7 +25,7 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
     return_time: null,
     plate_number: selectedVehicle.plate_number,
   });
-
+  const navigate = useNavigate();
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
@@ -44,7 +49,16 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
       console.log("No time selected.");
     }
   };
-  const handleProceed = () => {};
+  const handleProceed = () => {
+    setIsVehicleMaintenanceOpen(false);
+    setLoadingBarProgress(20);
+    vehicleMaintenanceAPI(
+      data,
+      setIsConfirmationOpenVehicleMaintenance,
+      navigate,
+      setLoadingBarProgress
+    );
+  };
   return (
     <Modal className="vehicle-maintenance-modal" isOpen={isOpen}>
       <div className="vehicle-maintenance-container">

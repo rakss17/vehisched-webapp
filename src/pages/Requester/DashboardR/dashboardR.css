@@ -254,6 +254,98 @@
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
 }
+
+.requester-recommendation-container-div {
+  background-color: #d9d9d9;
+  height: 50vh;
+  width: 40vw;
+  padding-top: 1.5vh;
+}
+.requester-recommendation-container-div div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 2vw;
+  align-items: center;
+  height: 5vh;
+  gap: 0.5vw;
+}
+.requester-recommendation-container-div div:nth-child(1) h1 {
+  color: black;
+  font-size: 1.5rem;
+}
+
+.requester-recommendation-container-div div:nth-child(1) h2 {
+  color: black;
+  font-size: 1.5rem;
+}
+.requester-recommendation-container-div div:nth-child(2) {
+  margin-top: 1vh;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40vw;
+  text-align: left;
+  padding: 5%;
+  height: 12vh;
+  font-size: 1rem;
+  font-weight: bold;
+}
+/* .recommended-vehicle-container {
+  height: 15vh;
+  width: auto;
+} */
+.recommended-vehicle-card {
+  background-color: white;
+  width: 15vw;
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+}
+.recommended-vehicle-card:hover {
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #cccccc;
+}
+/* .recommended-vehicle-row {
+  justify-content: center;
+  background-color: green;
+  width: 10vw;
+  height: 20vh;
+}
+.recommended-vehicle-column {
+  display: flex;
+  flex-direction: column;
+  width: 5vw;
+  height: 5vh;
+  background-color: aquamarine;
+} */
+.recommended-vehicle-image {
+  width: 10vw;
+  height: 5vh;
+}
+.recommended-vehicle-name {
+  font-size: 0.8rem;
+  color: black;
+  font-weight: bold;
+  text-align: center;
+}
+.carousel-item {
+  margin-left: 3vw;
+  background-color: aquamarine;
+}
+.recommended-vehicle-detail {
+  font-size: 0.8rem;
+  color: black;
+  text-align: center;
+}
+.recommend-vehicle-carousel {
+  background-color: aquamarine;
+  height: 20vh;
+}
 .requester-pending-schedule-container {
   height: 50vh;
   width: 88vw;

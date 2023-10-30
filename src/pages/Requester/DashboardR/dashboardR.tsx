@@ -28,7 +28,8 @@ import { format } from "date-fns";
 import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 import Guidelines from "../../../components/guidelines/guidelines";
 import CommonButton from "../../../components/button/commonbutton";
-
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [hasSchedule, setHasSchedule] = useState(false);
@@ -36,6 +37,7 @@ export default function DashboardR() {
   const [schedule, setSchedule] = useState<any[]>([]);
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
+  const [vehicleRecommendation, setVehicleRecommendation] = useState<any[]>([]);
   const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
@@ -91,7 +93,8 @@ export default function DashboardR() {
       setSchedule,
       setNextSchedule,
       setIsOngoingScheduleClick,
-      handleButtonClick
+      handleButtonClick,
+      setVehicleRecommendation
     );
   }, []);
 
@@ -396,6 +399,26 @@ export default function DashboardR() {
       }
     }
   }, []);
+
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
 
   pendingSchedule.reverse();
   schedule.reverse();
@@ -716,119 +739,208 @@ export default function DashboardR() {
           )}
           {isOngoingScheduleClick && (
             <>
-              {pendingSchedule.length === 0 ? (
-                <p className="vehicles-null">No pending schedules ongoing</p>
-              ) : (
-                <>
-                  {pendingSchedule.map((pendingSched) => (
-                    <div
-                      key={pendingSched.request_id}
-                      className="requester-pending-schedule-container"
-                    >
+              {vehicleRecommendation.map((recommend) => (
+                <div
+                  key={recommend.trip_id}
+                  className="requester-schedule-container"
+                >
+                  <div className="requester-recommendation-container-div">
+                    <div>
                       <div>
-                        <div>
-                          <h1>Schedule no. </h1>{" "}
-                          <h2>{pendingSched.request_id}</h2>
-                        </div>
-                        <div>
-                          <h2>Travel date and time: </h2>{" "}
-                          <p>
-                            {pendingSched.travel_date},{" "}
-                            {formatTime(pendingSched.travel_time)}{" "}
-                          </p>
-                        </div>
-                        <div>
-                          <h2>Destination: </h2>{" "}
-                          <p>{pendingSched.destination}, </p>
-                        </div>
-                        <div>
-                          <p>Waiting for office staff's approval</p>
-                          <p className="loading-dots"></p>
-                        </div>
+                        <h1>Schedule no. </h1> <h2>{recommend.trip_id}</h2>
                       </div>
                     </div>
-                  ))}
-                </>
-              )}
+                    <div>
+                      {/* <h2>Travel date and time: </h2>{" "} */}
+                      <p>
+                        We regret to inform you that the vehicle you reserved
+                        for the date {recommend.travel_date},{" "}
+                        {formatTime(recommend.travel_time)} is currently
+                        undergoing unexpected maintenance. We apologize for any
+                        inconvenience this may cause. We recommend alternative
+                        vehicles based on your preferences.
+                      </p>
+                    </div>
+                    <Carousel
+                      swipeable={true}
+                      draggable={true}
+                      responsive={responsive}
+                      // containerClass="recommend-vehicle-carousel"
+                      itemClass="carousel-item"
+                      infinite={true}
+                    >
+                      {recommend.vehicle_data_recommendation.map(
+                        (vehicle: any) => (
+                          <a
+                            key={vehicle.vehicle_recommendation_plate_number}
+                            className="recommended-vehicle-card"
+                          >
+                            {/* <div className="recommended-vehicle-row"> */}
+                            {/* <div className="recommended-vehicle-column"> */}
+                            <p className="recommended-vehicle-name">
+                              {vehicle.vehicle_recommendation_plate_number}
+                              <br></br> {vehicle.vehicle_recommendation_model}
+                            </p>
+                            <p className="recommended-vehicle-detail">
+                              Seating Capacity:{" "}
+                              {vehicle.vehicle_recommendation_capacity}
+                            </p>
+                            <p className="recommended-vehicle-detail">
+                              Type: {vehicle.vehicle_recommendation_type}
+                            </p>
+                            {/* </div> */}
+                            <img
+                              className="recommended-vehicle-image"
+                              src={vehicle.vehicle_recommendation_image}
+                            />
+                            {/* </div> */}
+                          </a>
+                        )
+                      )}
+                    </Carousel>
+                    {/* <div>
+                      <div>
+                        <h2>Driver: </h2> <p>{recommend.driver}</p>
+                      </div>
+                      <div>
+                        <h2>Contact No.: </h2>{" "}
+                        <p>{recommend.contact_no_of_driver}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h2>Destination: </h2> <p>{recommend.destination}</p>
+                    </div>
+                    <div>
+                      <div>
+                        <h2>Vehicle: </h2> <p>{recommend.vehicle}</p>
+                      </div>
+                      <div>
+                        <h2>Status: </h2> <p>{recommend.status}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <button>View more info</button>
+                    </div> */}
+                  </div>
+                </div>
+              ))}
               <>
-                {schedule.length === 0 ? (
-                  <p className="vehicles-null">No schedules ongoing</p>
+                {pendingSchedule.length === 0 ? (
+                  <p className="vehicles-null">No pending schedules ongoing</p>
                 ) : (
                   <>
-                    {schedule.map((schedule) => (
+                    {pendingSchedule.map((pendingSched) => (
                       <div
-                        key={schedule.trip_id}
-                        className="requester-schedule-container"
+                        key={pendingSched.request_id}
+                        className="requester-pending-schedule-container"
                       >
-                        <div className="requester-schedule-container-div">
+                        <div>
                           <div>
-                            <div>
-                              <h1>Schedule no. </h1> <h2>{schedule.trip_id}</h2>
-                            </div>
-                            <div>
-                              <Countdown
-                                travelDate={schedule.travel_date}
-                                travelTime={schedule.travel_time}
-                              />
-                            </div>
+                            <h1>Schedule no. </h1>{" "}
+                            <h2>{pendingSched.request_id}</h2>
                           </div>
                           <div>
                             <h2>Travel date and time: </h2>{" "}
                             <p>
-                              {schedule.travel_date},{" "}
-                              {formatTime(schedule.travel_time)}
-                              <strong> to </strong>
-                              {schedule.return_date},{" "}
-                              {formatTime(schedule.return_time)}
+                              {pendingSched.travel_date},{" "}
+                              {formatTime(pendingSched.travel_time)}{" "}
                             </p>
                           </div>
                           <div>
-                            <div>
-                              <h2>Driver: </h2> <p>{schedule.driver}</p>
-                            </div>
-                            <div>
-                              <h2>Contact No.: </h2>{" "}
-                              <p>{schedule.contact_no_of_driver}</p>
-                            </div>
+                            <h2>Destination: </h2>{" "}
+                            <p>{pendingSched.destination}, </p>
                           </div>
                           <div>
-                            <h2>Destination: </h2> <p>{schedule.destination}</p>
-                          </div>
-                          <div>
-                            <div>
-                              <h2>Vehicle: </h2> <p>{schedule.vehicle}</p>
-                            </div>
-                            <div>
-                              <h2>Status: </h2> <p>{schedule.status}</p>
-                            </div>
-                          </div>
-                          <div>
-                            <button>View more info</button>
+                            <p>Waiting for office staff's approval</p>
+                            <p className="loading-dots"></p>
                           </div>
                         </div>
-                        {nextSchedule
-                          .filter(
-                            (nextSched) =>
-                              nextSched.previous_trip_id === schedule.trip_id
-                          )
-                          .map((nextSched) => (
-                            <div className="next-schedule-container">
-                              <strong>
-                                The next scheduled user of this vehicle will
-                                commence at
-                              </strong>
-                              <p>{nextSched.next_schedule_travel_date}</p>
-                              <p>
-                                {formatTime(
-                                  nextSched.next_schedule_travel_time
-                                )}
-                              </p>
-                            </div>
-                          ))}
                       </div>
                     ))}
                   </>
                 )}
+                <>
+                  {schedule.length === 0 ? (
+                    <p className="vehicles-null">No schedules ongoing</p>
+                  ) : (
+                    <>
+                      {schedule.map((schedule) => (
+                        <div
+                          key={schedule.trip_id}
+                          className="requester-schedule-container"
+                        >
+                          <div className="requester-schedule-container-div">
+                            <div>
+                              <div>
+                                <h1>Schedule no. </h1>{" "}
+                                <h2>{schedule.trip_id}</h2>
+                              </div>
+                              <div>
+                                <Countdown
+                                  travelDate={schedule.travel_date}
+                                  travelTime={schedule.travel_time}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <h2>Travel date and time: </h2>{" "}
+                              <p>
+                                {schedule.travel_date},{" "}
+                                {formatTime(schedule.travel_time)}
+                                <strong> to </strong>
+                                {schedule.return_date},{" "}
+                                {formatTime(schedule.return_time)}
+                              </p>
+                            </div>
+                            <div>
+                              <div>
+                                <h2>Driver: </h2> <p>{schedule.driver}</p>
+                              </div>
+                              <div>
+                                <h2>Contact No.: </h2>{" "}
+                                <p>{schedule.contact_no_of_driver}</p>
+                              </div>
+                            </div>
+                            <div>
+                              <h2>Destination: </h2>{" "}
+                              <p>{schedule.destination}</p>
+                            </div>
+                            <div>
+                              <div>
+                                <h2>Vehicle: </h2> <p>{schedule.vehicle}</p>
+                              </div>
+                              <div>
+                                <h2>Status: </h2> <p>{schedule.status}</p>
+                              </div>
+                            </div>
+                            <div>
+                              <button>View more info</button>
+                            </div>
+                          </div>
+                          {nextSchedule
+                            .filter(
+                              (nextSched) =>
+                                nextSched.previous_trip_id === schedule.trip_id
+                            )
+                            .map((nextSched) => (
+                              <div className="next-schedule-container">
+                                <strong>
+                                  The next scheduled user of this vehicle will
+                                  commence at
+                                </strong>
+                                <p>{nextSched.next_schedule_travel_date}</p>
+                                <p>
+                                  {formatTime(
+                                    nextSched.next_schedule_travel_time
+                                  )}
+                                </p>
+                              </div>
+                            ))}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </>
               </>
             </>
           )}

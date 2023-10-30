@@ -807,7 +807,8 @@ export function fetchSchedule(
   setSchedule: any,
   setNextSchedule: any,
   setIsOngoingScheduleClick: any,
-  handleButtonClick: any
+  handleButtonClick: any,
+  setVehicleRecommendation: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -819,13 +820,13 @@ export function fetchSchedule(
     })
     .then((response) => {
       console.log("schedylee", response.data);
-      const scheduleData = response.data.filter(
+      const scheduleData = response.data.trip_data.filter(
         (item: any) => !item.next_schedule_travel_date
       );
-      const nextScheduleData = response.data.filter(
+      const nextScheduleData = response.data.trip_data.filter(
         (item: any) => item.next_schedule_travel_date
       );
-
+      setVehicleRecommendation(response.data.vehicle_recommendation);
       setSchedule(scheduleData);
       setNextSchedule(nextScheduleData);
       if (scheduleData.length > 0) {
@@ -973,4 +974,57 @@ export async function handlePlaceSelect(
   } catch (error) {
     console.log("Error:", error);
   }
+}
+
+export function vehicleMaintenanceAPI(
+  data: any,
+  setIsConfirmationOpenVehicleMaintenance: any,
+  navigate: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post("api/v1/request/vehicle-maintenance/", data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setLoadingBarProgress(50);
+      setIsConfirmationOpenVehicleMaintenance(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationOpenVehicleMaintenance(false);
+        navigate("/Vehicles");
+      }, 3000);
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        if (error.response.data.type === "Approved") {
+          setLoadingBarProgress(50);
+          setLoadingBarProgress(100);
+          const errorMessage =
+            error.response.data.error || "An error occurred.";
+          toast.error(errorMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (error.response.data.type === "Pending") {
+          setLoadingBarProgress(50);
+          setLoadingBarProgress(100);
+          const errorMessage =
+            error.response.data.error || "An error occurred.";
+          toast.error(errorMessage, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        }
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
 }

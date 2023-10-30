@@ -42,6 +42,10 @@ export default function Vehicles() {
   const [isAvailableOpen, setIsAvailableOpen] = useState(false);
   const [isUnavailableOpen, setIsUnavailableOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [
+    isConfirmationOpenVehicleMaintenance,
+    setIsConfirmationOpenVehicleMaintenance,
+  ] = useState(false);
   const [isConfirmationOpenUnavailable, setIsConfirmationOpenUnavailable] =
     useState(false);
   const [isVehicleCalendarOpen, setIsVehiclCalendarOpen] = useState(false);
@@ -221,6 +225,10 @@ export default function Vehicles() {
         isOpen={isConfirmationOpen}
         header="Vehicle status set to available!"
       />
+      <Confirmation
+        isOpen={isConfirmationOpenVehicleMaintenance}
+        header="Vehicle maintenance successfully!"
+      />
 
       <PromptDialog
         isOpen={isUnavailableOpen}
@@ -243,6 +251,11 @@ export default function Vehicles() {
         isOpen={isVehicleMaintenanceOpen}
         onRequestClose={handleClose}
         selectedVehicle={selectedVehicle}
+        setIsVehicleMaintenanceOpen={setIsVehicleMaintenanceOpen}
+        setIsConfirmationOpenVehicleMaintenance={
+          setIsConfirmationOpenVehicleMaintenance
+        }
+        setLoadingBarProgress={setLoadingBarProgress}
       />
     </>
   );

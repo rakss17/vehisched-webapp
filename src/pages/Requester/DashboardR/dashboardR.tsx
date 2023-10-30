@@ -21,15 +21,18 @@ import {
   fetchSchedule,
   fetchPendingRequestAPI,
   checkVehicleAvailability,
-  handlePlaceSelect,
+  acceptVehicleAPI,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
+import { responsive } from "../../../components/functions/getTimeElapsed";
 import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 import Guidelines from "../../../components/guidelines/guidelines";
 import CommonButton from "../../../components/button/commonbutton";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import Confirmation from "../../../components/confirmation/confirmation";
+
 export default function DashboardR() {
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [hasSchedule, setHasSchedule] = useState(false);
@@ -55,6 +58,8 @@ export default function DashboardR() {
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
+  const [isConfirmationAcceptOpen, setIsConfirmationAcceptOpen] =
+    useState(false);
   const [data, setData] = useState<any>({
     travel_date: null,
     travel_time: null,
@@ -402,26 +407,14 @@ export default function DashboardR() {
     }
   }, []);
 
-  const responsive = {
-    superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
+  const handleAccept = (recommend_request_id: any) => {
+    acceptVehicleAPI(
+      recommend_request_id,
+      selectedVehicleRecommendation,
+      setIsConfirmationAcceptOpen
+    );
   };
-  console.log("selected", selectedVehicleRecommendation);
+
   pendingSchedule.reverse();
   schedule.reverse();
   return (
@@ -756,11 +749,20 @@ export default function DashboardR() {
                       {/* <h2>Travel date and time: </h2>{" "} */}
                       <p>
                         We regret to inform you that the vehicle you reserved
-                        for the date {recommend.travel_date},{" "}
-                        {formatTime(recommend.travel_time)} is currently
-                        undergoing unexpected maintenance. We apologize for any
-                        inconvenience this may cause. We recommend alternative
-                        vehicles based on your preferences.
+                        for the date{" "}
+                        <span>
+                          {recommend.travel_date},{" "}
+                          {formatTime(recommend.travel_time)}
+                        </span>{" "}
+                        to{" "}
+                        <span>
+                          {recommend.return_date},{" "}
+                          {formatTime(recommend.return_time)}
+                        </span>{" "}
+                        is currently undergoing unexpected maintenance. We
+                        apologize for any inconvenience this may cause. We
+                        recommend alternative vehicles based on your
+                        preferences.
                       </p>
                     </div>
                     <Carousel
@@ -772,7 +774,7 @@ export default function DashboardR() {
                       infinite={true}
                     >
                       {recommend.vehicle_data_recommendation.map(
-                        (vehicle: any, index: any) => (
+                        (vehicle: any) => (
                           <a
                             key={vehicle.vehicle_recommendation_plate_number}
                             // className="recommended-vehicle-card"
@@ -784,9 +786,6 @@ export default function DashboardR() {
                             }`}
                             onClick={() => {
                               setSelectedVehicleRecommendation(
-                                vehicle.vehicle_recommendation_plate_number
-                              );
-                              console.log(
                                 vehicle.vehicle_recommendation_plate_number
                               );
                             }}
@@ -814,13 +813,17 @@ export default function DashboardR() {
                     </Carousel>
                     <div>
                       <CommonButton text="Cancel" secondaryStyle />
-                      <CommonButton text="Accept" primaryStyle />
+                      <CommonButton
+                        text="Accept"
+                        primaryStyle
+                        onClick={() => handleAccept(recommend.request_id)}
+                      />
                     </div>
                   </div>
                 </div>
               ))}
               <>
-                {pendingSchedule.length === 0 ? (
+                {pendingSchedule.length === 0 && schedule.length === 0 ? (
                   <p className="vehicles-null">No pending schedules ongoing</p>
                 ) : (
                   <>
@@ -855,7 +858,7 @@ export default function DashboardR() {
                   </>
                 )}
                 <>
-                  {schedule.length === 0 ? (
+                  {pendingSchedule.length === 0 && schedule.length === 0 ? (
                     <p className="vehicles-null">No schedules ongoing</p>
                   ) : (
                     <>
@@ -941,10 +944,10 @@ export default function DashboardR() {
           )}
         </div>
       </Container>
-
-      {/* <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
-        
-      </Modal> */}
+      <Confirmation
+        isOpen={isConfirmationAcceptOpen}
+        header="Vehicle Recommendation Accepted!"
+      />
     </>
   );
 }

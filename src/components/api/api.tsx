@@ -823,6 +823,7 @@ export function fetchSchedule(
       const scheduleData = response.data.trip_data.filter(
         (item: any) => !item.next_schedule_travel_date
       );
+
       const nextScheduleData = response.data.trip_data.filter(
         (item: any) => item.next_schedule_travel_date
       );
@@ -1026,5 +1027,37 @@ export function vehicleMaintenanceAPI(
           autoClose: false,
         });
       }
+    });
+}
+
+export function acceptVehicleAPI(
+  requestId: any,
+  selectedVehicleRecommendation: any,
+  setIsConfirmationAcceptOpen: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .patch(
+      `/api/v1/trip/accept-vehicle/${requestId}/`,
+      {
+        plate_number: selectedVehicleRecommendation,
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsConfirmationAcceptOpen(true);
+
+      setTimeout(() => {
+        setIsConfirmationAcceptOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }

@@ -22,6 +22,7 @@ import {
   fetchPendingRequestAPI,
   checkVehicleAvailability,
   acceptVehicleAPI,
+  cancelRequestAPI,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
@@ -32,8 +33,10 @@ import CommonButton from "../../../components/button/commonbutton";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import Confirmation from "../../../components/confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
 export default function DashboardR() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [hasSchedule, setHasSchedule] = useState(false);
   const [hasPendingSchedule, setHasPendingSchedule] = useState(true);
@@ -59,6 +62,8 @@ export default function DashboardR() {
     (state: RootState) => state.personalInfo.data
   );
   const [isConfirmationAcceptOpen, setIsConfirmationAcceptOpen] =
+    useState(false);
+  const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
     useState(false);
   const [data, setData] = useState<any>({
     travel_date: null,
@@ -411,10 +416,18 @@ export default function DashboardR() {
     acceptVehicleAPI(
       recommend_request_id,
       selectedVehicleRecommendation,
-      setIsConfirmationAcceptOpen
+      setIsConfirmationAcceptOpen,
+      setLoadingBarProgress
     );
   };
 
+  const handleCancel = (recommend_request_id: any) => {
+    cancelRequestAPI(
+      recommend_request_id,
+      setIsConfirmationCancelOpen,
+      setLoadingBarProgress
+    );
+  };
   pendingSchedule.reverse();
   schedule.reverse();
   return (
@@ -429,6 +442,11 @@ export default function DashboardR() {
         />
       </Modal>
       <Header />
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Sidebar sidebarData={sidebarData} />
       <Container>
         <ToastContainer />
@@ -812,7 +830,11 @@ export default function DashboardR() {
                       )}
                     </Carousel>
                     <div>
-                      <CommonButton text="Cancel" secondaryStyle />
+                      <CommonButton
+                        text="Cancel"
+                        secondaryStyle
+                        onClick={() => handleCancel(recommend.request_id)}
+                      />
                       <CommonButton
                         text="Accept"
                         primaryStyle
@@ -947,6 +969,10 @@ export default function DashboardR() {
       <Confirmation
         isOpen={isConfirmationAcceptOpen}
         header="Vehicle Recommendation Accepted!"
+      />
+      <Confirmation
+        isOpen={isConfirmationCancelOpen}
+        header="Vehicle Recommendation Canceled!"
       />
     </>
   );

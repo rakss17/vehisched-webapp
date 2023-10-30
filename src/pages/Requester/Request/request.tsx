@@ -109,12 +109,7 @@ export default function Request() {
   const handleCancelButton = () => {
     setLoadingBarProgress(20);
     setIsCancelOpen(false);
-    cancelRequestAPI(
-      requestId,
-      setIsConfirmationOpen,
-      setLoadingBarProgress,
-      selectedStatus
-    );
+    cancelRequestAPI(requestId, setIsConfirmationOpen, setLoadingBarProgress);
   };
 
   const handleClose = () => {

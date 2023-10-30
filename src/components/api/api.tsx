@@ -579,8 +579,7 @@ export function approveRequestAPI(
 export function cancelRequestAPI(
   requestId: any,
   setIsConfirmationOpen: any,
-  setLoadingBarProgress: (progress: number) => void,
-  selectedStatus: any
+  setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
 
@@ -589,7 +588,6 @@ export function cancelRequestAPI(
       `/api/v1/request/cancel/${requestId}/`,
       {
         status: "Canceled",
-        selected_status: selectedStatus,
       },
       {
         headers: {
@@ -819,7 +817,6 @@ export function fetchSchedule(
       },
     })
     .then((response) => {
-      console.log("schedylee", response.data);
       const scheduleData = response.data.trip_data.filter(
         (item: any) => !item.next_schedule_travel_date
       );
@@ -830,7 +827,10 @@ export function fetchSchedule(
       setVehicleRecommendation(response.data.vehicle_recommendation);
       setSchedule(scheduleData);
       setNextSchedule(nextScheduleData);
-      if (scheduleData.length > 0) {
+      if (
+        scheduleData.length > 0 ||
+        response.data.vehicle_recommendation.length > 0
+      ) {
         setIsOngoingScheduleClick(true);
         handleButtonClick("Ongoing Schedule");
       }
@@ -1033,7 +1033,8 @@ export function vehicleMaintenanceAPI(
 export function acceptVehicleAPI(
   requestId: any,
   selectedVehicleRecommendation: any,
-  setIsConfirmationAcceptOpen: any
+  setIsConfirmationAcceptOpen: any,
+  setLoadingBarProgress: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -1051,13 +1052,14 @@ export function acceptVehicleAPI(
     )
     .then((response) => {
       setIsConfirmationAcceptOpen(true);
-
+      setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationAcceptOpen(false);
         window.location.reload();
       }, 3000);
     })
     .catch((error) => {
+      setLoadingBarProgress(100);
       console.log(error);
     });
 }

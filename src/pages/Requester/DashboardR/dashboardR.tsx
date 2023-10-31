@@ -791,9 +791,8 @@ export default function DashboardR() {
                           {formatTime(recommend.return_time)}
                         </span>{" "}
                         is currently undergoing unexpected maintenance. We
-                        apologize for any inconvenience this may cause. We
-                        recommend alternative vehicles based on your
-                        preferences.
+                        apologize for any inconvenience this may cause.{" "}
+                        {recommend.message}
                       </p>
                     </div>
                     <Carousel
@@ -819,6 +818,9 @@ export default function DashboardR() {
                               setSelectedVehicleRecommendation(
                                 vehicle.vehicle_recommendation_plate_number
                               );
+                              if (selectedVehicleRecommendation) {
+                                setSelectedVehicleRecommendation("");
+                              }
                               setSelectedTrip(recommend.trip_id);
                               const updatedErrors = { ...errorMessages };
                               delete updatedErrors[0]
@@ -861,13 +863,20 @@ export default function DashboardR() {
                         secondaryStyle
                         onClick={() => handleCancel(recommend.request_id)}
                       />
-                      <CommonButton
-                        text="Accept"
-                        primaryStyle
-                        onClick={() =>
-                          handleAccept(recommend.request_id, recommend.trip_id)
-                        }
-                      />
+                      {recommend.message.includes(
+                        "We recommend alternative"
+                      ) ? (
+                        <CommonButton
+                          text="Accept"
+                          primaryStyle
+                          onClick={() =>
+                            handleAccept(
+                              recommend.request_id,
+                              recommend.trip_id
+                            )
+                          }
+                        />
+                      ) : null}
                     </div>
                   </div>
                 </div>

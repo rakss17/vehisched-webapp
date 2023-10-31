@@ -67,7 +67,7 @@
   flex-wrap: wrap;
   height: 55vh;
   width: 88vw;
-  gap: 0%;
+  gap: 5%;
   padding-left: 5vh;
 }
 .date-available-range {
@@ -287,8 +287,9 @@
   align-items: center;
   width: 40vw;
   text-align: left;
-  padding: 5%;
-  height: 12vh;
+  height: auto;
+  padding-left: 5%;
+  padding-right: 5%;
   font-size: 1rem;
   font-weight: bold;
 }

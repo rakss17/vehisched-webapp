@@ -474,7 +474,7 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       const responseData = Array.isArray(response.data)
         ? response.data
         : [response.data];
-      console.log(response.data);
+
       const updatedData = responseData.map((item) => {
         if (item.passenger_name) {
           const validJson = item.passenger_name.replace(/'/g, '"');

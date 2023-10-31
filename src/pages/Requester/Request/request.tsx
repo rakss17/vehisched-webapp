@@ -63,12 +63,16 @@ export default function Request() {
     switch (status) {
       case "Pending":
         filteredData = requestFilteredData.filter(
-          (request) => request.status === "Pending"
+          (request) =>
+            request.status === "Pending" ||
+            request.status === "Awaiting Vehicle Alteration"
         );
         break;
       case "Approved":
         filteredData = requestFilteredData.filter(
-          (request) => request.status === "Approved"
+          (request) =>
+            request.status === "Approved" ||
+            request.status === "Approved - Alterate Vehicle"
         );
         break;
       case "Canceled":
@@ -94,7 +98,9 @@ export default function Request() {
   let filteredStatus: any[] = [];
   useEffect(() => {
     filteredStatus = requestFilteredData.filter(
-      (request) => request.status === "Pending"
+      (request) =>
+        request.status === "Pending" ||
+        request.status === "Awaiting Vehicle Alteration"
     );
     setRequestData(filteredStatus);
   }, [requestFilteredData]);
@@ -119,10 +125,6 @@ export default function Request() {
     }, 3000);
   };
 
-  const filteredData = requestData.filter(
-    (request) => request.status === selectedStatus
-  );
-
   const onHandleAngleDown = (index: any) => {
     setExpandedRequestIndex((prevIndex) =>
       prevIndex === index ? null : index
@@ -135,6 +137,7 @@ export default function Request() {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
+
   return (
     <>
       <LoadingBar
@@ -194,11 +197,11 @@ export default function Request() {
                   <th></th>
                 </tr>
               </thead>
-              {filteredData.length === 0 ? (
+              {requestData.length === 0 ? (
                 <p style={{ position: "absolute" }}>No request available.</p>
               ) : (
                 <tbody>
-                  {filteredData.map((request, index) => (
+                  {requestData.map((request, index) => (
                     <>
                       <tr
                         key={request.request_id}

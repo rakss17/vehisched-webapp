@@ -72,6 +72,7 @@ export default function DashboardR() {
     return_date: null,
     return_time: null,
     category: "Round Trip",
+    capacity: null,
   });
   const [addressData, setAddressData] = useState<any>({
     destination: "",
@@ -135,6 +136,7 @@ export default function DashboardR() {
         !data.travel_time &&
         !data.return_date &&
         !data.return_time &&
+        !data.capacity &&
         !addressData.destination;
 
       if (allFieldsBlank) {
@@ -154,6 +156,9 @@ export default function DashboardR() {
         if (!data.return_time) {
           validationErrors.returnTimeError = "This field is required";
         }
+        if (!data.capacity) {
+          validationErrors.capacityError = "This field is required";
+        }
 
         if (!addressData.destination) {
           validationErrors.destinationError = "This field is required";
@@ -167,6 +172,7 @@ export default function DashboardR() {
       const allFieldsBlank =
         !data.travel_date &&
         !data.travel_time &&
+        !data.capacity &&
         data.category !== "One-way - Fetch" &&
         data.category !== "One-way - Drop";
       !data.category && !addressData.destination;
@@ -179,6 +185,9 @@ export default function DashboardR() {
         }
         if (!data.travel_time) {
           validationErrors.travelTimeOnewayError = "This field is required";
+        }
+        if (!data.capacity) {
+          validationErrors.capacityError = "This field is required";
         }
 
         if (
@@ -204,7 +213,8 @@ export default function DashboardR() {
         data.travel_date,
         data.travel_time,
         data.return_date,
-        data.return_time
+        data.return_time,
+        data.capacity
       );
       handleButtonClick("Available Vehicle");
     }
@@ -693,12 +703,29 @@ export default function DashboardR() {
                     </div>
                   )}
 
-                  {/* <div className="number-of-pass">
+                  <div className="number-of-pass">
                     <p>
                       Number of Passenger{"("}s{"):"}
                     </p>
-                    <input type="number" onKeyDown={handleKeyDown}></input>
-                  </div> */}
+                    <div>
+                      <input
+                        value={data.capacity}
+                        onChange={(event) => {
+                          setData({ ...data, capacity: event.target.value });
+                          if (event.target.value) {
+                            const updatedErrors = { ...errorMessages };
+                            delete updatedErrors[0]?.capacityError;
+                            setErrorMessages(updatedErrors);
+                          }
+                        }}
+                        type="number"
+                        onKeyDown={handleKeyDown}
+                      />
+                      <p className="set-trip-text-error">
+                        {errorMessages[0]?.capacityError}
+                      </p>
+                    </div>
+                  </div>
                   <div className="modal-button-container">
                     <CommonButton
                       onClick={handleSetTripModal}

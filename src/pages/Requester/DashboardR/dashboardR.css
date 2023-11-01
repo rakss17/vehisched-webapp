@@ -32,6 +32,7 @@
   font-size: 1.4rem;
   text-align: center;
   border: none;
+  margin-top: 0vh;
 }
 .requester-row button.active {
   border-bottom: 5px solid #060e57;
@@ -50,11 +51,11 @@
   overflow-y: auto;
   flex-wrap: wrap;
   max-height: 70vh;
-  padding: 3rem;
+  padding: 2%;
   height: 68vh;
   width: 88vw;
-  margin-left: 15vh;
-  margin-top: 0.5vw;
+  margin-left: 8vw;
+  margin-top: 1vh;
   border-top: 8px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
@@ -491,7 +492,7 @@
   text-align: center;
 }
 .modal-button-container {
-  margin-top: 1vw;
+  margin-top: 4vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -679,8 +680,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  align-items: center;
-  margin-top: 2vw;
+
+  margin-top: 2vh;
+  width: 25vw;
+  height: 5vh;
+  padding-right: 0.8vw;
 }
 .number-of-pass p {
   color: #060e57;
@@ -692,20 +696,28 @@
   background-color: white;
   color: black;
   border: none;
-  width: 5vw;
+  width: 8vw;
   height: 5vh;
   border-radius: 5px;
   font-size: 1rem;
   padding: 0.5rem;
-  text-align: center;
 }
-
+.number-of-pass div {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
 .guidelines-modal {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 999;
+}
+.number-of-pass .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
 }
 
 @media screen and (max-width: 768px) {

@@ -58,10 +58,17 @@
 .first-row {
   display: flex;
   margin-top: 3vw;
+  flex-direction: column;
+  width: 60vw;
+  margin-left: 3vw;
+  align-items: center;
+}
+.first-row-column {
+  display: flex;
   flex-direction: row;
   gap: 2vw;
   width: 60vw;
-  margin-left: 3vw;
+  align-items: center;
 }
 .requester-info-name {
   margin-top: 0vw;
@@ -72,16 +79,37 @@
   color: black;
   white-space: nowrap;
   gap: 1vw;
-
   align-items: center;
+}
+.requester-office {
+  display: flex;
+  gap: 1vw;
+  color: black;
+  width: 18vw;
+}
+.first-row .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
 }
 .input-passenger-number {
   display: flex;
   flex-direction: column;
+  height: auto;
 }
-.input-passenger-number p {
-  margin-top: -2vh;
+.input-passenger-number .maximum-capacity-note {
+  font-size: 1rem;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 0.5vh;
+}
+.input-passenger-number .set-trip-text-error {
   color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
+  margin-top: -1vh;
+  font-weight: bold;
 }
 .passenger_name_width {
   width: 12vw;
@@ -97,6 +125,18 @@
   justify-content: center;
   gap: 1%;
 }
+.passenger-name-column {
+  display: flex;
+  flex-direction: column;
+}
+.passenger-name-column .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 0vw;
+  margin-top: -2vh;
+  font-weight: bold;
+  text-align: center;
+}
 .third-row {
   display: flex;
   flex-direction: row;
@@ -110,7 +150,7 @@
   display: flex;
   flex-direction: row;
   margin-left: 0vh;
-  width: 14vw;
+  width: 18vw;
   color: black;
   white-space: nowrap;
   gap: 1vw;
@@ -196,6 +236,13 @@
 .purpose-row {
   display: flex;
   margin-top: 0vw;
+  flex-direction: column;
+}
+.purpose-row .set-trip-text-error {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 1vw;
+  margin-top: -2vh;
 }
 .purpose-width {
   width: 60vw;
@@ -204,8 +251,9 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  margin-left: 8vh;
+  margin-left: 3vw;
   width: 60vw;
+  margin-top: 1vh;
 }
 .seventh-row p {
   font-weight: bold;
@@ -238,12 +286,6 @@
   color: #060e57;
 }
 .red-label {
-  color: red;
-}
-.form-errors {
-  flex-direction: column;
-  margin-top: -50vh;
-  margin-right: 2vw;
   color: red;
 }
 

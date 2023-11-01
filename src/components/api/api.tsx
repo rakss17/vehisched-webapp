@@ -777,7 +777,8 @@ export function checkVehicleAvailability(
   preferred_start_travel_date: any,
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
-  preferred_end_travel_time: any
+  preferred_end_travel_time: any,
+  preferred_capacity: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -787,6 +788,7 @@ export function checkVehicleAvailability(
         preferred_start_travel_time: preferred_start_travel_time,
         preferred_end_travel_date: preferred_end_travel_date,
         preferred_end_travel_time: preferred_end_travel_time,
+        preferred_capacity: preferred_capacity,
       },
       headers: {
         Authorization: `Token ${token}`,

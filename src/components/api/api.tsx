@@ -340,7 +340,7 @@ export async function updateVehicleAPI(
 ) {
   const formData = new FormData();
   Object.keys(updatedVehicleData).forEach((key) => {
-    if (key === "vehicle_image" && updatedVehicleData[key] === null) {
+    if (key === "image" && updatedVehicleData[key] === null) {
       return;
     }
     formData.append(key, updatedVehicleData[key]);
@@ -433,7 +433,6 @@ export function postRequestFromAPI(
     })
     .catch((error) => {
       if (error.response && error.response.data) {
-        // if (error.response.data.type === "Approved") {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
         const errorMessage = error.response.data.error || "An error occurred.";
@@ -441,16 +440,6 @@ export function postRequestFromAPI(
           position: toast.POSITION.TOP_CENTER,
           autoClose: false,
         });
-        // } else if (error.response.data.type === "Pending") {
-        //   setLoadingBarProgress(50);
-        //   setLoadingBarProgress(100);
-        //   const errorMessage =
-        //     error.response.data.error || "An error occurred.";
-        //   toast.error(errorMessage, {
-        //     position: toast.POSITION.TOP_CENTER,
-        //     autoClose: false,
-        //   });
-        // }
       } else {
         toast.error("An unknown error occurred.", {
           position: toast.POSITION.TOP_CENTER,
@@ -946,7 +935,6 @@ export async function handlePlaceSelect(
       category === "One-way - Fetch" ||
       category === "One-way"
     ) {
-      console.log("one-way estimate return date", response.data);
       const [return_date, return_time] =
         response.data.estimated_return_time.split("T");
       setData((prevData: any) => ({

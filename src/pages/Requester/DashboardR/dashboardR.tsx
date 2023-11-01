@@ -845,7 +845,10 @@ export default function DashboardR() {
                               setSelectedVehicleRecommendation(
                                 vehicle.vehicle_recommendation_plate_number
                               );
-                              if (selectedVehicleRecommendation) {
+                              if (
+                                selectedVehicleRecommendation ===
+                                vehicle.vehicle_recommendation_plate_number
+                              ) {
                                 setSelectedVehicleRecommendation("");
                               }
                               setSelectedTrip(recommend.trip_id);

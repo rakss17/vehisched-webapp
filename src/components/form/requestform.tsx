@@ -209,7 +209,6 @@ export default function RequestForm() {
       validationErrors.numberOfPassengersExceedError.length === 0 &&
       validationErrors.all.length === 0
     ) {
-      console.log("triggered");
       setLoadingBarProgress(20);
       postRequestFromAPI(
         data,

@@ -50,7 +50,7 @@ export default function Vehicles() {
     useState(false);
   const [isVehicleCalendarOpen, setIsVehiclCalendarOpen] = useState(false);
   const [isVehicleMaintenanceOpen, setIsVehicleMaintenanceOpen] =
-    useState(true);
+    useState(false);
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const dispatch = useDispatch();

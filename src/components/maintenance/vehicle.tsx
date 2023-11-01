@@ -50,13 +50,13 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
     }
   };
   const handleProceed = () => {
-    setIsVehicleMaintenanceOpen(false);
     setLoadingBarProgress(20);
     vehicleMaintenanceAPI(
       data,
       setIsConfirmationOpenVehicleMaintenance,
       navigate,
-      setLoadingBarProgress
+      setLoadingBarProgress,
+      setIsVehicleMaintenanceOpen
     );
   };
   return (

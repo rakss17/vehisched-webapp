@@ -433,25 +433,24 @@ export function postRequestFromAPI(
     })
     .catch((error) => {
       if (error.response && error.response.data) {
-        if (error.response.data.type === "Approved") {
-          setLoadingBarProgress(50);
-          setLoadingBarProgress(100);
-          const errorMessage =
-            error.response.data.error || "An error occurred.";
-          toast.error(errorMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (error.response.data.type === "Pending") {
-          setLoadingBarProgress(50);
-          setLoadingBarProgress(100);
-          const errorMessage =
-            error.response.data.error || "An error occurred.";
-          toast.error(errorMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        }
+        // if (error.response.data.type === "Approved") {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+        // } else if (error.response.data.type === "Pending") {
+        //   setLoadingBarProgress(50);
+        //   setLoadingBarProgress(100);
+        //   const errorMessage =
+        //     error.response.data.error || "An error occurred.";
+        //   toast.error(errorMessage, {
+        //     position: toast.POSITION.TOP_CENTER,
+        //     autoClose: false,
+        //   });
+        // }
       } else {
         toast.error("An unknown error occurred.", {
           position: toast.POSITION.TOP_CENTER,
@@ -984,7 +983,8 @@ export function vehicleMaintenanceAPI(
   data: any,
   setIsConfirmationOpenVehicleMaintenance: any,
   navigate: any,
-  setLoadingBarProgress: (progress: number) => void
+  setLoadingBarProgress: (progress: number) => void,
+  setIsVehicleMaintenanceOpen: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -996,25 +996,22 @@ export function vehicleMaintenanceAPI(
     })
     .then((response) => {
       setLoadingBarProgress(50);
+      setIsVehicleMaintenanceOpen(false);
       setIsConfirmationOpenVehicleMaintenance(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpenVehicleMaintenance(false);
-        navigate("/Vehicles");
       }, 3000);
     })
     .catch((error) => {
       if (error.response && error.response.data) {
-        if (error.response.data.type === "Maintenance") {
-          setLoadingBarProgress(50);
-          setLoadingBarProgress(100);
-          const errorMessage =
-            error.response.data.error || "An error occurred.";
-          toast.error(errorMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        }
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
       } else {
         toast.error("An unknown error occurred.", {
           position: toast.POSITION.TOP_CENTER,

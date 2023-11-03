@@ -25,10 +25,10 @@ interface DropdownProps {
 
 export interface AddEditProps {
   isOpen: boolean;
-  onRequestClose: () => void;
-  header: string;
-  buttonText: string;
-  onRequestAddEdit: () => void;
+  onRequestClose?: () => void;
+  header?: string;
+  buttonText?: string;
+  onRequestAddEdit?: () => void;
   lastNameProps?: InputProps;
   firstNameProps?: InputProps;
   middleNameProps?: InputProps;

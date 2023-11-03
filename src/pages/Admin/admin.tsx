@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
 import CommonButton from "../../components/button/commonbutton";
+import AddOfficeRole from "../../components/admin/user/addofficerole";
 
 export default function Admin() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -42,6 +43,7 @@ export default function Admin() {
   const [searchAccountTerm, setSearchAccountTerm] = useState("");
   const [searchVehicleTerm, setSearchVehicleTerm] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isAddOfficeRoleOpen, setIsAddOfficeRoleOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
   const [isEditVehicleOpen, setIsEditVehicleOpen] = useState(false);
@@ -340,7 +342,9 @@ export default function Admin() {
       SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
     }
   };
-
+  const handleAddOfficeRole = () => {
+    setIsAddOfficeRoleOpen(true)
+  }
   const handleEditUserButton = () => {
     setIsEditOpen(false);
     setLoadingBarProgress(20);
@@ -541,7 +545,7 @@ export default function Admin() {
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchAccount} />
               <div className="accounts-row-button">
-              <CommonButton width={12} height={7} secondaryStyle text="+ Add Office/Role"/>
+              <CommonButton width={12} height={7} secondaryStyle onClick={handleAddOfficeRole} text="+ Add Office/Role"/>
               <CommonButton width={10} height={7} primaryStyle onClick={handleAddUser} text="+ Add User"/>
               </div>
               
@@ -927,6 +931,7 @@ export default function Admin() {
             handleImageUpdateChange(event),
         }}
       />
+      <AddOfficeRole isOpen={isAddOfficeRoleOpen}/>
       <PromptDialog
         isOpen={isDeleteOpen}
         content="Are you sure you want to delete this user?"

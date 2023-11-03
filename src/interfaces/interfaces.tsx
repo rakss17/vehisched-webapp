@@ -144,4 +144,6 @@ export interface ButtonProps {
   text?: any;
   primaryStyle?: any;
   secondaryStyle?: any;
+  width?: any;
+  height?: any;
 }

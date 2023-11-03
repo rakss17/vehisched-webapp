@@ -50,12 +50,15 @@
   margin-left: 19vh;
   display: flex;
   flex-direction: row;
-  gap: 30%;
+  gap: 20%;
 }
-.accounts-row button {
-  background-color: #060e57;
-  width: 10vw;
+.accounts-row .accounts-row-button {
+  height: 7vh;
+  width: 25vw;
+  justify-content: space-between;
+  display: flex;
 }
+
 .usertype-button-row {
   margin-top: 1vw;
   display: flex;

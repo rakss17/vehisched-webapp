@@ -26,6 +26,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
+import CommonButton from "../../components/button/commonbutton";
 
 export default function Admin() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -539,7 +540,11 @@ export default function Admin() {
           <div className="display-accounts-container">
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchAccount} />
-              <button onClick={handleAddUser}>Add User {""}+</button>
+              <div className="accounts-row-button">
+              <CommonButton width={12} height={7} secondaryStyle text="+ Add Office/Role"/>
+              <CommonButton width={10} height={7} primaryStyle onClick={handleAddUser} text="+ Add User"/>
+              </div>
+              
             </div>
             <div className="usertype-button-row">
               <button
@@ -650,7 +655,7 @@ export default function Admin() {
           <>
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchVehicle} />
-              <button onClick={handleAddVehicle}>Add Vehicle {""}+</button>
+              <CommonButton width={10} height={7} primaryStyle text="+ Add Vehicle" onClick={handleAddVehicle}/>
             </div>
             <div className="vehicles-container">
               {filteredVehicleList.length === 0 ? (

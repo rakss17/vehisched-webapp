@@ -4,13 +4,15 @@ import "./dropdownmenu.css";
 interface DropdownProps {
   onChange: (selectedOption: string) => void;
   selectedAccount?: { role: string };
+  options: string[];
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({
   onChange,
   selectedAccount,
+  options,
 }) => {
-  const options = ["requester", "vip", "driver", "gate guard", "office staff"];
+  // const options = ["requester", "vip", "driver", "gate guard", "office staff"];
 
   // Initialize selectedOption based on the presence of selectedAccount
   const initialSelectedOption = selectedAccount

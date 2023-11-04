@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
 import DropdownMenu from "../dropdownmenu";
 import { AddEditProps } from "../../../interfaces/interfaces";
+import { fetchOfficeAPI } from "../../api/api";
 
 const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
@@ -17,12 +18,18 @@ const AddEdit: React.FC<AddEditProps> = ({
   usernameProps,
   contactNumberProps,
   roleDropdownProps,
+  officeDropdownProps,
   errorMessages = [],
 }) => {
+  const [officeData, setOfficeData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchOfficeAPI(setOfficeData);
+  }, []);
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
-    if (key !== "Backspace" && isNaN(key)) {
+    if (key !== "Backspace" && key !== "Tab" && isNaN(key)) {
       event.preventDefault();
     }
   };
@@ -93,12 +100,25 @@ const AddEdit: React.FC<AddEditProps> = ({
           <input {...middleNameProps} />
         </div>
         <div>
+          <label>Office: </label>
+          <DropdownMenu options={officeData} {...officeDropdownProps} />
+        </div>
+        <div>
           <label>Mobile Number: </label>
           <input {...contactNumberProps} onKeyDown={handleKeyDown} />
         </div>
         <div>
           <label>Role: </label>
-          <DropdownMenu {...roleDropdownProps} />
+          <DropdownMenu
+            options={[
+              "requester",
+              "vip",
+              "driver",
+              "gate guard",
+              "office staff",
+            ]}
+            {...roleDropdownProps}
+          />
         </div>
         <div>
           <button onClick={onRequestClose}>Cancel</button>

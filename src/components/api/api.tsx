@@ -81,8 +81,72 @@ export function SignupAPI(
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setLoadingBarProgress(100);
-      console.log(error.message);
+      console.log(error);
     });
+}
+export function addOffice(
+  name: any,
+  setIsConfirmationOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post(
+      "api/v1/accounts/create-list-office/",
+      { name: name },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
+      setIsConfirmationOpen(true);
+      setLoadingBarProgress(70);
+      setTimeout(() => {
+        setLoadingBarProgress(90);
+        setIsConfirmationOpen(false);
+        setLoadingBarProgress(100);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
+      setLoadingBarProgress(100);
+      if (error.response && error.response.data) {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
+}
+export async function fetchOfficeAPI(setOfficeData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/create-list-office/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const officeData = response.data.map((office: any) => office.name);
+    setOfficeData(officeData);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function fetchUsersAPI() {

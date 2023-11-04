@@ -37,6 +37,7 @@ export interface AddEditProps {
   contactNumberProps?: InputProps;
   roleDropdownProps: DropdownProps;
   errorMessages?: string[];
+  officeDropdownProps: DropdownProps;
 }
 export interface AddEditVehicleProps {
   isOpen: boolean;
@@ -70,6 +71,7 @@ export interface SignupParams {
   status?: any;
   user?: any;
   office?: any;
+  office_id?: any;
 }
 
 export type SidebarItem = {

@@ -119,7 +119,7 @@ export default function Landing() {
                   setUserData({ ...userData, username: event.target.value });
                 }}
                 onKeyDown={handleKeyDown}
-              ></input>
+              />
             </div>
 
             <div className="password-container">

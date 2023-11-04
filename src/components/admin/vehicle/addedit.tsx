@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
 import { AddEditVehicleProps } from "../../../interfaces/interfaces";
@@ -20,7 +20,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
-    if (key !== "Backspace" && isNaN(key)) {
+    if (key !== "Backspace" && key !== "Tab" && isNaN(key)) {
       event.preventDefault();
     }
   };

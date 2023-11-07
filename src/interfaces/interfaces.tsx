@@ -70,8 +70,7 @@ export interface SignupParams {
   role: any;
   status?: any;
   user?: any;
-  office?: any;
-  office_id?: any;
+  office: any;
 }
 
 export type SidebarItem = {

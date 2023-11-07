@@ -101,7 +101,11 @@ const AddEdit: React.FC<AddEditProps> = ({
         </div>
         <div>
           <label>Office: </label>
-          <DropdownMenu options={officeData} {...officeDropdownProps} />
+          <DropdownMenu
+            options={officeData}
+            selectedKey="office"
+            {...officeDropdownProps}
+          />
         </div>
         <div>
           <label>Mobile Number: </label>
@@ -117,6 +121,7 @@ const AddEdit: React.FC<AddEditProps> = ({
               "gate guard",
               "office staff",
             ]}
+            selectedKey="role"
             {...roleDropdownProps}
           />
         </div>

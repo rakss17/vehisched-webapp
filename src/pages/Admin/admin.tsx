@@ -76,7 +76,7 @@ export default function Admin() {
     email: "",
     mobile_number: null,
     role: "",
-    office_id: "",
+    office: "",
   });
   const [userUpdate, setUserUpdate] = useState<SignupParams>({
     username: "",
@@ -86,7 +86,7 @@ export default function Admin() {
     email: "",
     mobile_number: null,
     role: "",
-    office_id: "",
+    office: "",
   });
   const [vehicleData, setVehicleData] = useState<Vehicle>({
     plate_number: "",
@@ -131,7 +131,13 @@ export default function Admin() {
   const handleDropdownChange3 = (selectedOption: string) => {
     setUserData((prevUserData) => ({
       ...prevUserData,
-      office_id: selectedOption,
+      office: selectedOption,
+    }));
+  };
+  const handleDropdownChange4 = (selectedOption: string) => {
+    setUserUpdate((prevUserData) => ({
+      ...prevUserData,
+      office: selectedOption,
     }));
   };
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -301,7 +307,8 @@ export default function Admin() {
       !userData.middle_name &&
       !userData.last_name &&
       !userData.mobile_number &&
-      !userData.role;
+      !userData.role &&
+      !userData.office;
 
     if (allFieldsBlank) {
       validationErrors.push("Required all fields!");
@@ -339,6 +346,9 @@ export default function Admin() {
       if (!userData.role) {
         validationErrors.push("Please choose a role");
       }
+      if (!userData.office) {
+        validationErrors.push("Please choose an office");
+      }
     }
 
     setErrorMessages(validationErrors);
@@ -366,6 +376,7 @@ export default function Admin() {
       last_name: userUpdate.last_name || (selectedAccount?.last_name ?? ""),
       mobile_number:
         userUpdate.mobile_number || (selectedAccount?.mobile_number ?? ""),
+      office: userUpdate.office || (selectedAccount?.office ?? ""),
       role_name: null,
     };
 
@@ -828,7 +839,8 @@ export default function Admin() {
           type: "text",
         }}
         officeDropdownProps={{
-          onChange: handleDropdownChange,
+          onChange: handleDropdownChange4,
+          selectedAccount: selectedAccount,
         }}
         contactNumberProps={{
           onChange: (event) =>

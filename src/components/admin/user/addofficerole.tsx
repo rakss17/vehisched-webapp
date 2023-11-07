@@ -52,7 +52,6 @@ const AddOfficeRole: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
 
   const handleAddOffice = () => {
     addOffice(name, setIsConfirmationOpen, setLoadingBarProgress);
-    console.log(name);
   };
 
   return (

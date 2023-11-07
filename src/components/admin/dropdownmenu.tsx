@@ -3,20 +3,19 @@ import "./dropdownmenu.css";
 
 interface DropdownProps {
   onChange: (selectedOption: string) => void;
-  selectedAccount?: { role: string };
+  selectedAccount?: { role: string; office: string };
   options: string[];
+  selectedKey: "role" | "office";
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({
   onChange,
   selectedAccount,
   options,
+  selectedKey,
 }) => {
-  // const options = ["requester", "vip", "driver", "gate guard", "office staff"];
-
-  // Initialize selectedOption based on the presence of selectedAccount
   const initialSelectedOption = selectedAccount
-    ? selectedAccount.role
+    ? selectedAccount[selectedKey]
     : "------------Select------------";
 
   const [selectedOption, setSelectedOption] = useState<string>(
@@ -24,7 +23,7 @@ const DropdownMenu: React.FC<DropdownProps> = ({
   );
 
   useEffect(() => {
-    setSelectedOption(selectedAccount ? selectedAccount.role : "");
+    setSelectedOption(selectedAccount ? selectedAccount[selectedKey] : "");
   }, [selectedAccount]);
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

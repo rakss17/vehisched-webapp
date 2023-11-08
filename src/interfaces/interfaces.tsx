@@ -25,10 +25,10 @@ interface DropdownProps {
 
 export interface AddEditProps {
   isOpen: boolean;
-  onRequestClose: () => void;
-  header: string;
-  buttonText: string;
-  onRequestAddEdit: () => void;
+  onRequestClose?: () => void;
+  header?: string;
+  buttonText?: string;
+  onRequestAddEdit?: () => void;
   lastNameProps?: InputProps;
   firstNameProps?: InputProps;
   middleNameProps?: InputProps;
@@ -37,6 +37,7 @@ export interface AddEditProps {
   contactNumberProps?: InputProps;
   roleDropdownProps: DropdownProps;
   errorMessages?: string[];
+  officeDropdownProps: DropdownProps;
 }
 export interface AddEditVehicleProps {
   isOpen: boolean;
@@ -69,6 +70,7 @@ export interface SignupParams {
   role: any;
   status?: any;
   user?: any;
+  office: any;
 }
 
 export type SidebarItem = {
@@ -133,6 +135,9 @@ export interface ModalProps {
   onRequestClose?: () => void;
   onRequestDelete?: () => void;
   selectedVehicle?: any;
+  setIsVehicleMaintenanceOpen?: any;
+  setIsConfirmationOpenVehicleMaintenance?: any;
+  setLoadingBarProgress?: any;
 }
 
 export interface ButtonProps {
@@ -140,4 +145,6 @@ export interface ButtonProps {
   text?: any;
   primaryStyle?: any;
   secondaryStyle?: any;
+  width?: any;
+  height?: any;
 }

@@ -81,8 +81,72 @@ export function SignupAPI(
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setLoadingBarProgress(100);
-      console.log(error.message);
+      console.log(error);
     });
+}
+export function addOffice(
+  name: any,
+  setIsConfirmationOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post(
+      "api/v1/accounts/create-list-office/",
+      { name: name },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
+      setIsConfirmationOpen(true);
+      setLoadingBarProgress(70);
+      setTimeout(() => {
+        setLoadingBarProgress(90);
+        setIsConfirmationOpen(false);
+        setLoadingBarProgress(100);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      setLoadingBarProgress(20);
+      setLoadingBarProgress(50);
+      setLoadingBarProgress(100);
+      if (error.response && error.response.data) {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
+}
+export async function fetchOfficeAPI(setOfficeData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/create-list-office/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const officeData = response.data.map((office: any) => office.name);
+    setOfficeData(officeData);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function fetchUsersAPI() {
@@ -340,7 +404,7 @@ export async function updateVehicleAPI(
 ) {
   const formData = new FormData();
   Object.keys(updatedVehicleData).forEach((key) => {
-    if (key === "vehicle_image" && updatedVehicleData[key] === null) {
+    if (key === "image" && updatedVehicleData[key] === null) {
       return;
     }
     formData.append(key, updatedVehicleData[key]);
@@ -433,25 +497,13 @@ export function postRequestFromAPI(
     })
     .catch((error) => {
       if (error.response && error.response.data) {
-        if (error.response.data.type === "Approved") {
-          setLoadingBarProgress(50);
-          setLoadingBarProgress(100);
-          const errorMessage =
-            error.response.data.error || "An error occurred.";
-          toast.error(errorMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (error.response.data.type === "Pending") {
-          setLoadingBarProgress(50);
-          setLoadingBarProgress(100);
-          const errorMessage =
-            error.response.data.error || "An error occurred.";
-          toast.error(errorMessage, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        }
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
       } else {
         toast.error("An unknown error occurred.", {
           position: toast.POSITION.TOP_CENTER,
@@ -474,7 +526,7 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       const responseData = Array.isArray(response.data)
         ? response.data
         : [response.data];
-      console.log(response.data);
+
       const updatedData = responseData.map((item) => {
         if (item.passenger_name) {
           const validJson = item.passenger_name.replace(/'/g, '"');
@@ -579,8 +631,7 @@ export function approveRequestAPI(
 export function cancelRequestAPI(
   requestId: any,
   setIsConfirmationOpen: any,
-  setLoadingBarProgress: (progress: number) => void,
-  selectedStatus: any
+  setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
 
@@ -589,7 +640,6 @@ export function cancelRequestAPI(
       `/api/v1/request/cancel/${requestId}/`,
       {
         status: "Canceled",
-        selected_status: selectedStatus,
       },
       {
         headers: {
@@ -779,7 +829,8 @@ export function checkVehicleAvailability(
   preferred_start_travel_date: any,
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
-  preferred_end_travel_time: any
+  preferred_end_travel_time: any,
+  preferred_capacity: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -789,6 +840,7 @@ export function checkVehicleAvailability(
         preferred_start_travel_time: preferred_start_travel_time,
         preferred_end_travel_date: preferred_end_travel_date,
         preferred_end_travel_time: preferred_end_travel_time,
+        preferred_capacity: preferred_capacity,
       },
       headers: {
         Authorization: `Token ${token}`,
@@ -807,7 +859,8 @@ export function fetchSchedule(
   setSchedule: any,
   setNextSchedule: any,
   setIsOngoingScheduleClick: any,
-  handleButtonClick: any
+  handleButtonClick: any,
+  setVehicleRecommendation: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -818,17 +871,21 @@ export function fetchSchedule(
       },
     })
     .then((response) => {
-      console.log("schedylee", response.data);
-      const scheduleData = response.data.filter(
+      const scheduleData = response.data.trip_data.filter(
         (item: any) => !item.next_schedule_travel_date
       );
-      const nextScheduleData = response.data.filter(
+
+      const nextScheduleData = response.data.trip_data.filter(
         (item: any) => item.next_schedule_travel_date
       );
+      setVehicleRecommendation(response.data.vehicle_recommendation);
 
       setSchedule(scheduleData);
       setNextSchedule(nextScheduleData);
-      if (scheduleData.length > 0) {
+      if (
+        scheduleData.length > 0 ||
+        response.data.vehicle_recommendation.length > 0
+      ) {
         setIsOngoingScheduleClick(true);
         handleButtonClick("Ongoing Schedule");
       }
@@ -942,7 +999,6 @@ export async function handlePlaceSelect(
       category === "One-way - Fetch" ||
       category === "One-way"
     ) {
-      console.log("one-way estimate return date", response.data);
       const [return_date, return_time] =
         response.data.estimated_return_time.split("T");
       setData((prevData: any) => ({
@@ -973,4 +1029,80 @@ export async function handlePlaceSelect(
   } catch (error) {
     console.log("Error:", error);
   }
+}
+
+export function vehicleMaintenanceAPI(
+  data: any,
+  setIsConfirmationOpenVehicleMaintenance: any,
+  navigate: any,
+  setLoadingBarProgress: (progress: number) => void,
+  setIsVehicleMaintenanceOpen: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post("api/v1/request/vehicle-maintenance/", data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setLoadingBarProgress(50);
+      setIsVehicleMaintenanceOpen(false);
+      setIsConfirmationOpenVehicleMaintenance(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationOpenVehicleMaintenance(false);
+      }, 3000);
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
+}
+
+export function acceptVehicleAPI(
+  requestId: any,
+  selectedVehicleRecommendation: any,
+  setIsConfirmationAcceptOpen: any,
+  setLoadingBarProgress: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .patch(
+      `/api/v1/trip/accept-vehicle/${requestId}/`,
+      {
+        plate_number: selectedVehicleRecommendation,
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsConfirmationAcceptOpen(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationAcceptOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      setLoadingBarProgress(100);
+      console.log(error);
+    });
 }

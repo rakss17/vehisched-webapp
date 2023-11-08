@@ -21,21 +21,29 @@ import {
   fetchSchedule,
   fetchPendingRequestAPI,
   checkVehicleAvailability,
-  handlePlaceSelect,
+  acceptVehicleAPI,
+  cancelRequestAPI,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
+import { responsive } from "../../../components/functions/getTimeElapsed";
 import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 import Guidelines from "../../../components/guidelines/guidelines";
 import CommonButton from "../../../components/button/commonbutton";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import Confirmation from "../../../components/confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
 export default function DashboardR() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
   const [hasSchedule, setHasSchedule] = useState(false);
   const [hasPendingSchedule, setHasPendingSchedule] = useState(true);
   const [schedule, setSchedule] = useState<any[]>([]);
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
+  const [vehicleRecommendation, setVehicleRecommendation] = useState<any[]>([]);
   const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
@@ -44,6 +52,9 @@ export default function DashboardR() {
   const [isFetchSelect, setIsFetchSelect] = useState(false);
   const [selectedButton, setSelectedButton] =
     useState<string>("Set Trip Schedule");
+  const [selectedVehicleRecommendation, setSelectedVehicleRecommendation] =
+    useState<string>("");
+  const [selectedTrip, setSelectedTrip] = useState<string>("");
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
@@ -51,12 +62,17 @@ export default function DashboardR() {
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
+  const [isConfirmationAcceptOpen, setIsConfirmationAcceptOpen] =
+    useState(false);
+  const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
+    useState(false);
   const [data, setData] = useState<any>({
     travel_date: null,
     travel_time: null,
     return_date: null,
     return_time: null,
     category: "Round Trip",
+    capacity: null,
   });
   const [addressData, setAddressData] = useState<any>({
     destination: "",
@@ -91,7 +107,8 @@ export default function DashboardR() {
       setSchedule,
       setNextSchedule,
       setIsOngoingScheduleClick,
-      handleButtonClick
+      handleButtonClick,
+      setVehicleRecommendation
     );
   }, []);
 
@@ -119,6 +136,7 @@ export default function DashboardR() {
         !data.travel_time &&
         !data.return_date &&
         !data.return_time &&
+        !data.capacity &&
         !addressData.destination;
 
       if (allFieldsBlank) {
@@ -138,6 +156,9 @@ export default function DashboardR() {
         if (!data.return_time) {
           validationErrors.returnTimeError = "This field is required";
         }
+        if (!data.capacity) {
+          validationErrors.capacityError = "This field is required";
+        }
 
         if (!addressData.destination) {
           validationErrors.destinationError = "This field is required";
@@ -151,6 +172,7 @@ export default function DashboardR() {
       const allFieldsBlank =
         !data.travel_date &&
         !data.travel_time &&
+        !data.capacity &&
         data.category !== "One-way - Fetch" &&
         data.category !== "One-way - Drop";
       !data.category && !addressData.destination;
@@ -163,6 +185,9 @@ export default function DashboardR() {
         }
         if (!data.travel_time) {
           validationErrors.travelTimeOnewayError = "This field is required";
+        }
+        if (!data.capacity) {
+          validationErrors.capacityError = "This field is required";
         }
 
         if (
@@ -188,7 +213,8 @@ export default function DashboardR() {
         data.travel_date,
         data.travel_time,
         data.return_date,
-        data.return_time
+        data.return_time,
+        data.capacity
       );
       handleButtonClick("Available Vehicle");
     }
@@ -397,6 +423,35 @@ export default function DashboardR() {
     }
   }, []);
 
+  const handleAccept = (recommend_request_id: any, recommend_trip_id: any) => {
+    setSelectedTrip(recommend_trip_id);
+    let validationErrors: { [key: string]: string } = {};
+
+    if (!selectedVehicleRecommendation) {
+      validationErrors.selectedVehicleRecommendationError =
+        "Please select vehicle";
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+
+    if (Object.keys(validationErrors).length === 0) {
+      acceptVehicleAPI(
+        recommend_request_id,
+        selectedVehicleRecommendation,
+        setIsConfirmationAcceptOpen,
+        setLoadingBarProgress
+      );
+    }
+  };
+  const handleCancel = (recommend_request_id: any) => {
+    cancelRequestAPI(
+      recommend_request_id,
+      setIsConfirmationCancelOpen,
+      setLoadingBarProgress
+    );
+  };
   pendingSchedule.reverse();
   schedule.reverse();
   return (
@@ -411,6 +466,11 @@ export default function DashboardR() {
         />
       </Modal>
       <Header />
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Sidebar sidebarData={sidebarData} />
       <Container>
         <ToastContainer />
@@ -643,12 +703,29 @@ export default function DashboardR() {
                     </div>
                   )}
 
-                  {/* <div className="number-of-pass">
+                  <div className="number-of-pass">
                     <p>
                       Number of Passenger{"("}s{"):"}
                     </p>
-                    <input type="number" onKeyDown={handleKeyDown}></input>
-                  </div> */}
+                    <div>
+                      <input
+                        value={data.capacity}
+                        onChange={(event) => {
+                          setData({ ...data, capacity: event.target.value });
+                          if (event.target.value) {
+                            const updatedErrors = { ...errorMessages };
+                            delete updatedErrors[0]?.capacityError;
+                            setErrorMessages(updatedErrors);
+                          }
+                        }}
+                        type="number"
+                        onKeyDown={handleKeyDown}
+                      />
+                      <p className="set-trip-text-error">
+                        {errorMessages[0]?.capacityError}
+                      </p>
+                    </div>
+                  </div>
                   <div className="modal-button-container">
                     <CommonButton
                       onClick={handleSetTripModal}
@@ -716,128 +793,254 @@ export default function DashboardR() {
           )}
           {isOngoingScheduleClick && (
             <>
-              {pendingSchedule.length === 0 ? (
-                <p className="vehicles-null">No pending schedules ongoing</p>
-              ) : (
-                <>
-                  {pendingSchedule.map((pendingSched) => (
-                    <div
-                      key={pendingSched.request_id}
-                      className="requester-pending-schedule-container"
-                    >
+              {vehicleRecommendation.map((recommend) => (
+                <div
+                  key={recommend.trip_id}
+                  className="requester-schedule-container"
+                >
+                  <div className="requester-recommendation-container-div">
+                    <div>
                       <div>
-                        <div>
-                          <h1>Schedule no. </h1>{" "}
-                          <h2>{pendingSched.request_id}</h2>
-                        </div>
-                        <div>
-                          <h2>Travel date and time: </h2>{" "}
-                          <p>
-                            {pendingSched.travel_date},{" "}
-                            {formatTime(pendingSched.travel_time)}{" "}
-                          </p>
-                        </div>
-                        <div>
-                          <h2>Destination: </h2>{" "}
-                          <p>{pendingSched.destination}, </p>
-                        </div>
-                        <div>
-                          <p>Waiting for office staff's approval</p>
-                          <p className="loading-dots"></p>
-                        </div>
+                        <h1>Schedule no. </h1> <h2>{recommend.trip_id}</h2>
                       </div>
                     </div>
-                  ))}
-                </>
-              )}
+                    <div>
+                      <p>
+                        We regret to inform you that the vehicle you reserved
+                        for the date{" "}
+                        <span>
+                          {recommend.travel_date},{" "}
+                          {formatTime(recommend.travel_time)}
+                        </span>{" "}
+                        to{" "}
+                        <span>
+                          {recommend.return_date},{" "}
+                          {formatTime(recommend.return_time)}
+                        </span>{" "}
+                        is currently undergoing unexpected maintenance. We
+                        apologize for any inconvenience this may cause.{" "}
+                        {recommend.message}
+                      </p>
+                    </div>
+                    <Carousel
+                      swipeable={true}
+                      draggable={true}
+                      responsive={responsive}
+                      containerClass="recommend-vehicle-carousel"
+                      itemClass="carousel-item"
+                      infinite={true}
+                    >
+                      {recommend.vehicle_data_recommendation.map(
+                        (vehicle: any) => (
+                          <a
+                            key={vehicle.vehicle_recommendation_plate_number}
+                            className={`recommended-vehicle-card ${
+                              selectedVehicleRecommendation ===
+                                vehicle.vehicle_recommendation_plate_number &&
+                              selectedTrip === recommend.trip_id
+                                ? "active"
+                                : ""
+                            }`}
+                            onClick={() => {
+                              setSelectedVehicleRecommendation(
+                                vehicle.vehicle_recommendation_plate_number
+                              );
+                              if (
+                                selectedVehicleRecommendation ===
+                                vehicle.vehicle_recommendation_plate_number
+                              ) {
+                                setSelectedVehicleRecommendation("");
+                              }
+                              setSelectedTrip(recommend.trip_id);
+                              const updatedErrors = { ...errorMessages };
+                              delete updatedErrors[0]
+                                ?.selectedVehicleRecommendationError;
+                              setErrorMessages(updatedErrors);
+                            }}
+                          >
+                            <img
+                              src={
+                                serverSideUrl +
+                                vehicle.vehicle_recommendation_image
+                              }
+                            />
+
+                            <p>
+                              {vehicle.vehicle_recommendation_plate_number}{" "}
+                              {vehicle.vehicle_recommendation_model}
+                            </p>
+
+                            <p>
+                              Seating Capacity:{" "}
+                              {vehicle.vehicle_recommendation_capacity}
+                            </p>
+                            <p>Type: {vehicle.vehicle_recommendation_type}</p>
+                          </a>
+                        )
+                      )}
+                    </Carousel>
+                    <div>
+                      {selectedTrip === recommend.trip_id ? (
+                        <p>
+                          {errorMessages[0]?.selectedVehicleRecommendationError}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div>
+                      <CommonButton
+                        text="Cancel"
+                        secondaryStyle
+                        onClick={() => handleCancel(recommend.request_id)}
+                      />
+                      {recommend.message.includes(
+                        "We recommend alternative"
+                      ) ? (
+                        <CommonButton
+                          text="Accept"
+                          primaryStyle
+                          onClick={() =>
+                            handleAccept(
+                              recommend.request_id,
+                              recommend.trip_id
+                            )
+                          }
+                        />
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              ))}
               <>
-                {schedule.length === 0 ? (
-                  <p className="vehicles-null">No schedules ongoing</p>
+                {pendingSchedule.length === 0 && schedule.length === 0 ? (
+                  <p className="vehicles-null">No pending schedules ongoing</p>
                 ) : (
                   <>
-                    {schedule.map((schedule) => (
+                    {pendingSchedule.map((pendingSched) => (
                       <div
-                        key={schedule.trip_id}
-                        className="requester-schedule-container"
+                        key={pendingSched.request_id}
+                        className="requester-pending-schedule-container"
                       >
-                        <div className="requester-schedule-container-div">
+                        <div>
                           <div>
-                            <div>
-                              <h1>Schedule no. </h1> <h2>{schedule.trip_id}</h2>
-                            </div>
-                            <div>
-                              <Countdown
-                                travelDate={schedule.travel_date}
-                                travelTime={schedule.travel_time}
-                              />
-                            </div>
+                            <h1>Schedule no. </h1>{" "}
+                            <h2>{pendingSched.request_id}</h2>
                           </div>
                           <div>
                             <h2>Travel date and time: </h2>{" "}
                             <p>
-                              {schedule.travel_date},{" "}
-                              {formatTime(schedule.travel_time)}
-                              <strong> to </strong>
-                              {schedule.return_date},{" "}
-                              {formatTime(schedule.return_time)}
+                              {pendingSched.travel_date},{" "}
+                              {formatTime(pendingSched.travel_time)}{" "}
                             </p>
                           </div>
                           <div>
-                            <div>
-                              <h2>Driver: </h2> <p>{schedule.driver}</p>
-                            </div>
-                            <div>
-                              <h2>Contact No.: </h2>{" "}
-                              <p>{schedule.contact_no_of_driver}</p>
-                            </div>
+                            <h2>Destination: </h2>{" "}
+                            <p>{pendingSched.destination}, </p>
                           </div>
                           <div>
-                            <h2>Destination: </h2> <p>{schedule.destination}</p>
-                          </div>
-                          <div>
-                            <div>
-                              <h2>Vehicle: </h2> <p>{schedule.vehicle}</p>
-                            </div>
-                            <div>
-                              <h2>Status: </h2> <p>{schedule.status}</p>
-                            </div>
-                          </div>
-                          <div>
-                            <button>View more info</button>
+                            <p>Waiting for office staff's approval</p>
+                            <p className="loading-dots"></p>
                           </div>
                         </div>
-                        {nextSchedule
-                          .filter(
-                            (nextSched) =>
-                              nextSched.previous_trip_id === schedule.trip_id
-                          )
-                          .map((nextSched) => (
-                            <div className="next-schedule-container">
-                              <strong>
-                                The next scheduled user of this vehicle will
-                                commence at
-                              </strong>
-                              <p>{nextSched.next_schedule_travel_date}</p>
-                              <p>
-                                {formatTime(
-                                  nextSched.next_schedule_travel_time
-                                )}
-                              </p>
-                            </div>
-                          ))}
                       </div>
                     ))}
                   </>
                 )}
+                <>
+                  {pendingSchedule.length === 0 && schedule.length === 0 ? (
+                    <p className="vehicles-null">No schedules ongoing</p>
+                  ) : (
+                    <>
+                      {schedule.map((schedule) => (
+                        <div
+                          key={schedule.trip_id}
+                          className="requester-schedule-container"
+                        >
+                          <div className="requester-schedule-container-div">
+                            <div>
+                              <div>
+                                <h1>Schedule no. </h1>{" "}
+                                <h2>{schedule.trip_id}</h2>
+                              </div>
+                              <div>
+                                <Countdown
+                                  travelDate={schedule.travel_date}
+                                  travelTime={schedule.travel_time}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <h2>Travel date and time: </h2>{" "}
+                              <p>
+                                {schedule.travel_date},{" "}
+                                {formatTime(schedule.travel_time)}
+                                <strong> to </strong>
+                                {schedule.return_date},{" "}
+                                {formatTime(schedule.return_time)}
+                              </p>
+                            </div>
+                            <div>
+                              <div>
+                                <h2>Driver: </h2> <p>{schedule.driver}</p>
+                              </div>
+                              <div>
+                                <h2>Contact No.: </h2>{" "}
+                                <p>{schedule.contact_no_of_driver}</p>
+                              </div>
+                            </div>
+                            <div>
+                              <h2>Destination: </h2>{" "}
+                              <p>{schedule.destination}</p>
+                            </div>
+                            <div>
+                              <div>
+                                <h2>Vehicle: </h2> <p>{schedule.vehicle}</p>
+                              </div>
+                              <div>
+                                <h2>Status: </h2> <p>{schedule.status}</p>
+                              </div>
+                            </div>
+                            <div>
+                              <button>View more info</button>
+                            </div>
+                          </div>
+                          {nextSchedule
+                            .filter(
+                              (nextSched) =>
+                                nextSched.previous_trip_id === schedule.trip_id
+                            )
+                            .map((nextSched) => (
+                              <div className="next-schedule-container">
+                                <strong>
+                                  The next scheduled user of this vehicle will
+                                  commence at
+                                </strong>
+                                <p>{nextSched.next_schedule_travel_date}</p>
+                                <p>
+                                  {formatTime(
+                                    nextSched.next_schedule_travel_time
+                                  )}
+                                </p>
+                              </div>
+                            ))}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </>
               </>
             </>
           )}
         </div>
       </Container>
-
-      {/* <Modal className="modal-set-trip" isOpen={isSetTripOpen}>
-        
-      </Modal> */}
+      <Confirmation
+        isOpen={isConfirmationAcceptOpen}
+        header="Vehicle Recommendation Accepted!"
+      />
+      <Confirmation
+        isOpen={isConfirmationCancelOpen}
+        header="Vehicle Recommendation Canceled!"
+      />
     </>
   );
 }

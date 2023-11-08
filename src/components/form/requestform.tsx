@@ -31,14 +31,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function RequestForm() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
-
-  const [formErrors, setFormErrors] = useState({
-    office: "",
-    number_of_passengers: "",
-    passenger_name: "",
-    destination: "",
-    purpose: "",
-  });
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
@@ -58,9 +50,10 @@ export default function RequestForm() {
   const lastName = personalInfo?.last_name;
   const middleName = personalInfo?.middle_name;
   const userID = personalInfo?.id;
+  const office = personalInfo?.office;
   const [data, setData] = useState<RequestFormProps>({
     requester_name: userID,
-    office: "",
+    office: office,
     purpose: "",
     number_of_passenger: null,
     passenger_name: [],
@@ -77,6 +70,7 @@ export default function RequestForm() {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
   const navigate = useNavigate();
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
 
   useEffect(() => {
     if (distance >= 50) {
@@ -105,6 +99,12 @@ export default function RequestForm() {
   }, [numPassengers]);
 
   const handlePassengerChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value) {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.numberOfPassengersError;
+      delete updatedErrors[0]?.all;
+      setErrorMessages(updatedErrors);
+    }
     const { value } = event.target;
     setNumPassengers(Number(value));
 
@@ -113,19 +113,6 @@ export default function RequestForm() {
     } else {
       setExceedsCapacity(false);
     }
-
-    // Check if all passenger names are filled
-    if (
-      data.passenger_name.length === numPassengers &&
-      data.passenger_name.every((name) => name.trim() !== "")
-    ) {
-      // Clear the passenger_name error when all names are entered
-      setFormErrors((prevErrors) => ({ ...prevErrors, passenger_name: "" }));
-    }
-  };
-
-  const clearDestinationError = () => {
-    setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
   };
 
   const generatePassengerInputs = () => {
@@ -133,19 +120,30 @@ export default function RequestForm() {
     if (numPassengers <= capacity) {
       for (let i = 0; i < numPassengers; i++) {
         inputs.push(
-          <InputField
-            className="passenger_name_width"
-            value={data.passenger_name[i]}
-            key={i}
-            icon={faUser}
-            label={`Passenger ${i + 1}`}
-            placeholder={`Passenger ${i + 1}`}
-            onChange={(event) => {
-              const newPassengerNames = [...data.passenger_name];
-              newPassengerNames[i] = event.target.value;
-              setData({ ...data, passenger_name: newPassengerNames });
-            }}
-          />
+          <div className="passenger-name-column">
+            <InputField
+              className="passenger_name_width"
+              value={data.passenger_name[i]}
+              key={i}
+              icon={faUser}
+              label={`Passenger ${i + 1}`}
+              placeholder={`Passenger ${i + 1}`}
+              onChange={(event) => {
+                const newPassengerNames = [...data.passenger_name];
+                newPassengerNames[i] = event.target.value;
+                setData({ ...data, passenger_name: newPassengerNames });
+                if (newPassengerNames[i]) {
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.passengerNameError[i];
+                  delete updatedErrors[0]?.all;
+                  setErrorMessages(updatedErrors);
+                }
+              }}
+            />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.passengerNameError[i]}
+            </p>
+          </div>
         );
       }
     }
@@ -165,8 +163,52 @@ export default function RequestForm() {
   };
 
   const handleSubmit = () => {
-    // Check for validation errors before submitting
-    if (validateForm()) {
+    let validationErrors: { [key: string]: string[] } = {
+      passengerNameError: [],
+      all: [],
+      purposeError: [],
+      numberOfPassengersError: [],
+      numberOfPassengersExceedError: [],
+    };
+    const allFieldsBlank = !data.purpose && !data.number_of_passenger;
+    !data.category && !data.destination && !data.distance;
+    const semiFieldsBlank = !data.purpose && !data.number_of_passenger;
+
+    if (allFieldsBlank) {
+      validationErrors.all = ["Required all fields!"];
+    } else if (semiFieldsBlank) {
+      validationErrors.all = ["Required all fields!"];
+    } else {
+      if (!data.number_of_passenger) {
+        validationErrors.numberOfPassengersError = ["This field is required"];
+      }
+      if (!data.purpose) {
+        validationErrors.purposeError = ["This field is required"];
+      }
+      validationErrors.passengerNameError = [];
+      data.passenger_name.forEach((name, index) => {
+        if (!name || name.trim().length === 0) {
+          validationErrors.passengerNameError[index] = "This field is required";
+        }
+      });
+      if (exceedsCapacity) {
+        validationErrors.numberOfPassengersExceedError = [
+          "Exceeds seating capacity of the vehicle",
+        ];
+      }
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+
+    if (
+      validationErrors.numberOfPassengersError.length === 0 &&
+      validationErrors.passengerNameError.length === 0 &&
+      validationErrors.purposeError.length === 0 &&
+      validationErrors.numberOfPassengersExceedError.length === 0 &&
+      validationErrors.all.length === 0
+    ) {
       setLoadingBarProgress(20);
       postRequestFromAPI(
         data,
@@ -174,79 +216,13 @@ export default function RequestForm() {
         navigate,
         setLoadingBarProgress
       );
-    } else {
-      // Handle validation errors, e.g., display an error message or scroll to the first error
     }
   };
-
-  const validateForm = () => {
-    let valid = true;
-
-    // Validate 'office_or_dept'
-    if (!data.office) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        office: "Please input office or dept",
-      }));
-      valid = false;
-    } else {
-      setFormErrors((prevErrors) => ({ ...prevErrors, office: "" }));
-    }
-
-    // Validate 'number_of_passengers'
-    if (numPassengers <= 0) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        number_of_passengers: "Number of passengers must be greater than 0",
-      }));
-      valid = false;
-    } else {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        number_of_passengers: "",
-      }));
-    }
-
-    // Validate 'passenger_name'
-    for (let i = 0; i < numPassengers; i++) {
-      if (!data.passenger_name[i]) {
-        setFormErrors((prevErrors) => ({
-          ...prevErrors,
-          passenger_name: "Please input all passenger names",
-        }));
-        valid = false;
-        break;
-      }
-    }
-    // Validate 'destination'
-    // if (!data.destination) {
-    //   setFormErrors((prevErrors) => ({
-    //     ...prevErrors,
-    //     destination: "Please input destination",
-    //   }));
-    //   valid = false;
-    // } else {
-    //   setFormErrors((prevErrors) => ({ ...prevErrors, destination: "" }));
-    // }
-
-    // Validate 'purpose'
-    if (!data.purpose) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        purpose: "Please input purpose",
-      }));
-      valid = false;
-    } else {
-      setFormErrors((prevErrors) => ({ ...prevErrors, purpose: "" }));
-    }
-
-    return valid;
-  };
-
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
+
   return (
     <>
       <LoadingBar
@@ -264,51 +240,44 @@ export default function RequestForm() {
             <img src={DocumentCode} alt="Document Code" />
           </div>
           <div className="form-body">
-            {/* Add a new section for form errors */}
-            <div className="form-errors">
-              {Object.values(formErrors).map((error, index) => {
-                if (error) {
-                  return (
-                    <div key={index} className="error-message">
-                      {error}
-                    </div>
-                  );
-                }
-                return null;
-              })}
-            </div>
-
             <div className="form-body-shadow">
               <div className="first-row">
-                <div className="requester-info-name">
-                  <strong>Requester's name:</strong>
-                  <p>
-                    {lastName}, {firstName} {middleName}
-                  </p>
-                </div>
+                <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
+                <div className="first-row-column">
+                  <div className="requester-info-name">
+                    <strong>Requester's name:</strong>
+                    <p>
+                      {lastName}, {firstName} {middleName}
+                    </p>
+                  </div>
 
-                <InputField
-                  icon={faBuilding}
-                  value={data.office}
-                  label="Office/dept"
-                  placeholder="Office/dept"
-                  onChange={(event) => {
-                    setData({ ...data, office: event.target.value });
-                    setFormErrors({ ...formErrors, office: "" });
-                  }}
-                />
-                <div className="input-passenger-number">
-                  <InputField
-                    icon={faUsers}
-                    onKeyDown={handleKeyDown}
-                    label="No. of passengers"
-                    value={numPassengers}
-                    onChange={handlePassengerChange}
-                    type="number"
-                  />
-                  {exceedsCapacity && (
-                    <p>Exceeds seating capacity of the vehicle</p>
-                  )}
+                  <div className="requester-office">
+                    <strong>Office:</strong>
+                    <p>{office}</p>
+                  </div>
+
+                  <div className="input-passenger-number">
+                    <p className="maximum-capacity-note">
+                      Vehicle maximum capacity: {capacity}
+                    </p>
+                    <InputField
+                      icon={faUsers}
+                      onKeyDown={handleKeyDown}
+                      label="No. of passengers"
+                      value={numPassengers}
+                      onChange={handlePassengerChange}
+                      type="number"
+                    />
+                    <p className="set-trip-text-error">
+                      {errorMessages[0]?.numberOfPassengersError}
+                    </p>
+
+                    {exceedsCapacity && (
+                      <p className="set-trip-text-error">
+                        Exceeds seating capacity of the vehicle
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="passengers-name-row">
@@ -367,9 +336,18 @@ export default function RequestForm() {
                     placeholder="Purpose"
                     onChange={(event) => {
                       setData({ ...data, purpose: event.target.value });
-                      setFormErrors({ ...formErrors, purpose: "" }); // Clear the error
+                      if (event.target.value) {
+                        const updatedErrors = { ...errorMessages };
+                        delete updatedErrors[0]?.purposeError;
+                        delete updatedErrors[0]?.all;
+                        setErrorMessages(updatedErrors);
+                      }
                     }}
                   />
+
+                  <p className="set-trip-text-error">
+                    {errorMessages[0]?.purposeError}
+                  </p>
                 </div>
               </div>
 

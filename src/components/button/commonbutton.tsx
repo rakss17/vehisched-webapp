@@ -7,10 +7,18 @@ const CommonButton: React.FC<ButtonProps> = ({
   text,
   primaryStyle,
   secondaryStyle,
+  height,
+  width,
 }) => {
+  const buttonStyle = {
+    height: height ? `${height}vh` : "auto",
+    width: width ? `${width}vw` : "auto",
+  };
+
   return (
     <button
       onClick={onClick}
+      style={buttonStyle}
       className={
         primaryStyle ? "primary-style" : secondaryStyle ? "secondary-style" : ""
       }

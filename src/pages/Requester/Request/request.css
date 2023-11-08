@@ -106,13 +106,15 @@
 .request-more-info {
   background-color: #d9d9d9;
   padding: 1rem;
-  width: 80vw;
-  /* height: 40vh; */
+  width: 81vw;
   margin-top: -3vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-overflow: ellipsis;
 }
 .request-more-info strong {
   font-size: 1.2rem;
@@ -125,10 +127,9 @@
 .request-more-info-first-child div:nth-child(1) {
   flex-direction: row;
   width: 50vw;
-  overflow: hidden;
   padding-left: 4vw;
   display: flex;
-  height: 8vh;
+  height: auto;
   gap: 1vw;
 }
 .request-more-info-first-child div:nth-child(1) strong {
@@ -147,9 +148,14 @@
   flex-direction: row;
   width: 80vw;
   padding-left: 4vw;
-  gap: 26.8vw;
 }
-.request-more-info-second-child div {
+.request-more-info-second-child div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  gap: 1vw;
+  width: 48vw;
+}
+.request-more-info-second-child div:nth-child(2) {
   display: flex;
   flex-direction: row;
   gap: 1vw;
@@ -163,10 +169,9 @@
 .request-more-info-third-child-passengers {
   flex-direction: row;
   width: 50vw;
-  overflow: hidden;
   padding-left: 4vw;
   display: flex;
-  height: 8vh;
+  height: auto;
   gap: 1vw;
 }
 .request-more-info-third-child-driver {
@@ -200,7 +205,7 @@
   width: 50vw;
   padding-left: 4vw;
   display: flex;
-  height: 8vh;
+  height: auto;
   gap: 1vw;
 }
 /* .request-more-info-fourth-child-purpose strong {

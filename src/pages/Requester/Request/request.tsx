@@ -48,7 +48,7 @@ export default function Request() {
   );
   const userName = personalInfo?.username;
   const springProps = useSpring({
-    height: expandedRequestIndex ? "40vh" : "0vh",
+    height: expandedRequestIndex ? "35vh" : "0vh",
   });
 
   useEffect(() => {
@@ -275,7 +275,10 @@ export default function Request() {
                               <strong>Date of Travel: </strong>
                               <p>
                                 {request.travel_date},{" "}
-                                {formatTime(request.travel_time)}
+                                {formatTime(request.travel_time)}{" "}
+                                <strong>to: </strong>
+                                {request.return_date},{" "}
+                                {formatTime(request.return_time)}
                               </p>
                             </div>
                             <div>

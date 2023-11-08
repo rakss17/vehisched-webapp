@@ -12,7 +12,7 @@
   margin: 18vh 0 0 25vw;
   background-color: white;
   width: 50vw;
-  height: 70vh;
+  height: auto;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
   overflow-x: hidden;
@@ -20,11 +20,12 @@
 }
 
 .request-form-container {
-  height: 50vh;
+  height: auto;
   width: 50vw;
   display: flex;
   align-items: center;
   flex-direction: column;
+  gap: 2vh;
 }
 
 .request-form-container div:nth-child(1) {
@@ -35,7 +36,7 @@
   align-items: center;
   justify-content: space-around;
   width: 55vw;
-  height: 5vh;
+  height: auto;
   gap: 1vw;
 }
 .request-form-container div:nth-child(1) h1 {
@@ -55,7 +56,7 @@
   margin-top: 2vh;
   padding-left: 2vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   width: 50vw;
   gap: 0vw;
 }
@@ -64,7 +65,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  height: 5vh;
+  height: auto;
   width: 30vw;
   gap: 1vw;
 }
@@ -73,7 +74,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  height: 5vh;
+  height: auto;
   width: 12vw;
   gap: 1vw;
 }
@@ -89,9 +90,9 @@
 .request-form-container div:nth-child(3) {
   display: flex;
   flex-direction: row;
-  margin-top: 2vh;
+  margin-top: 0vh;
   align-items: flex-start;
-  height: 8vh;
+  height: auto;
   gap: 1vw;
   width: 50vw;
   padding-left: 4vw;
@@ -111,7 +112,7 @@
   margin-top: 0vh;
   padding-left: 4vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   width: 50vw;
   gap: 14vw;
 }
@@ -122,7 +123,7 @@
   padding-left: 0vw;
   align-items: center;
   justify-content: flex-start;
-  height: 5vh;
+  height: auto;
   width: 13vw;
   gap: 1vw;
 }
@@ -134,15 +135,14 @@
 .request-form-container div:nth-child(4) p {
   color: black;
   font-size: 1.1rem;
-  white-space: nowrap;
 }
 .request-form-container div:nth-child(5) {
   display: flex;
   flex-direction: row;
-  margin-top: 2vh;
+  margin-top: 0vh;
   padding-left: 4vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   width: 50vw;
   gap: 0.8vw;
 }
@@ -151,19 +151,20 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  height: 7vh;
+  height: auto;
+  margin-top: 0vh;
   width: 30vw;
   gap: 1vw;
   padding-left: 0vw;
-  overflow: hidden;
 }
 .request-form-container div:nth-child(5) div:nth-child(2) {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
+  margin-top: 0vh;
   padding-left: 0vw;
-  height: 7vh;
+  height: auto;
   width: 10vw;
   gap: 1vw;
 }
@@ -175,32 +176,34 @@
 .request-form-container div:nth-child(5) p {
   color: black;
   font-size: 1.1rem;
-  white-space: nowrap;
 }
 .request-form-container div:nth-child(6) {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   margin-top: 0vh;
   padding-left: 4vw;
-  height: 10vh;
+  height: auto;
   width: 50vw;
-  gap: 0vw;
+  gap: 0vh;
 }
 .request-form-container div:nth-child(6) div:nth-child(1) {
   display: flex;
   flex-direction: row;
+  justify-content: flex-start;
   margin-top: 0vh;
   padding-left: 0vw;
-  height: 5vh;
+  height: auto;
   width: 23vw;
   gap: 1vw;
 }
 .request-form-container div:nth-child(6) div:nth-child(2) {
   display: flex;
   flex-direction: row;
-  margin-top: 0vh;
+  justify-content: flex-start;
+  margin-top: 1vh;
   padding-left: 0vw;
-  height: 5vh;
+  height: auto;
   width: 20vw;
   gap: 1vw;
 }
@@ -212,33 +215,33 @@
 .request-form-container div:nth-child(6) p {
   color: black;
   font-size: 1.1rem;
-  white-space: nowrap;
 }
 .request-form-container div:nth-child(7) {
   display: flex;
   flex-direction: row;
-  margin-top: 0vh;
   padding-left: 2vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   width: 50vw;
   gap: 0vw;
 }
 .request-form-container div:nth-child(7) div:nth-child(1) {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: baseline;
   justify-content: flex-start;
-  height: 5vh;
+  margin-top: 0vh;
+  height: auto;
   width: 30vw;
   gap: 1vw;
 }
 .request-form-container div:nth-child(7) div:nth-child(2) {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: baseline;
   justify-content: flex-start;
-  height: 5vh;
+  margin-top: 0vh;
+  height: auto;
   width: 12vw;
   gap: 1vw;
 }
@@ -257,7 +260,7 @@
   padding-left: 4vw;
   align-items: center;
   display: flex;
-  height: 5vh;
+  height: auto;
   width: 50vw;
   gap: 1vw;
 }
@@ -295,7 +298,7 @@
   flex-direction: row;
   margin-top: 5vh;
   align-items: center;
-  height: 6vh;
+  height: auto;
   width: 50vw;
   justify-content: space-around;
 }

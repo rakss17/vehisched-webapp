@@ -110,6 +110,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div>
             <div>
+              <h2>Purpose: </h2>
+              <p>{selectedRequest.purpose}</p>
+            </div>
+            <div>
               <h2>Travel type: </h2>
               <p>{selectedRequest.type}</p>
             </div>

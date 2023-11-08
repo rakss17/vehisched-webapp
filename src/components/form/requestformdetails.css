@@ -9,10 +9,10 @@
   color: black;
   align-items: center;
   flex-direction: column;
-  margin: 18vh 0 0 25vw;
+  margin: 15vh 0 0 25vw;
   background-color: white;
   width: 50vw;
-  height: auto;
+  height: 70vh;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
   overflow-x: hidden;
@@ -26,6 +26,7 @@
   align-items: center;
   flex-direction: column;
   gap: 2vh;
+  padding-bottom: 5vh;
 }
 
 .request-form-container div:nth-child(1) {
@@ -75,7 +76,7 @@
   align-items: center;
   justify-content: flex-start;
   height: auto;
-  width: 12vw;
+  width: auto;
   gap: 1vw;
 }
 .request-form-container div:nth-child(2) h2 {
@@ -165,7 +166,7 @@
   margin-top: 0vh;
   padding-left: 0vw;
   height: auto;
-  width: 10vw;
+  width: auto;
   gap: 1vw;
 }
 .request-form-container div:nth-child(5) h2 {
@@ -242,7 +243,7 @@
   justify-content: flex-start;
   margin-top: 0vh;
   height: auto;
-  width: 12vw;
+  width: auto;
   gap: 1vw;
 }
 .request-form-container div:nth-child(7) h2 {

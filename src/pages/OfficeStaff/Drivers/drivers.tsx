@@ -25,8 +25,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CalendarModal from "../../../components/calendar/calendarmodal";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
+import DriverAbsence from "../../../components/maintenance/driver";
+import Confirmation from "../../../components/confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
 export default function Drivers() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [driversData, setDriversData] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [notifList, setNotifList] = useState<any[]>([]);
@@ -34,6 +38,9 @@ export default function Drivers() {
   const [driverSchedulesData, setDriverSchedules] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const [selectedDriver, setSelectedDriver] = useState<any>();
+  const [isDriverAbsenceOpen, setIsDriverAbsenceOpen] = useState(false);
+  const [isConfirmationOpenDriverAbsence, setIsConfirmationOpenDriverAbsence] =
+    useState(false);
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
     {
@@ -73,10 +80,13 @@ export default function Drivers() {
     return isSearchMatch;
   });
 
-  const handleEllipsisMenu = (category: string, vehicle: any) => {
-    setSelectedDriver(vehicle);
+  const handleEllipsisMenu = (category: string, driver: any) => {
+    setSelectedDriver(driver);
     if (category === "View Schedules") {
       setIsDriverCalendarOpen(true);
+    } else if (category === "Schedule an absence") {
+      setIsDriverAbsenceOpen(true);
+      setIsDriverCalendarOpen(false);
     }
   };
 
@@ -88,10 +98,16 @@ export default function Drivers() {
 
   const handleClose = () => {
     setIsDriverCalendarOpen(false);
+    setIsDriverAbsenceOpen(false);
   };
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
@@ -113,7 +129,7 @@ export default function Drivers() {
                     onCategoryChange={(category) =>
                       handleEllipsisMenu(category, driver)
                     }
-                    status={["View Schedules"]}
+                    status={["View Schedules", "Schedule an absence"]}
                   />
                 </div>
                 <div className="driver-card-column">
@@ -133,6 +149,18 @@ export default function Drivers() {
         isOpen={isDriverCalendarOpen}
         selectedSchedule={driverSchedulesData}
         onRequestClose={handleClose}
+      />
+      <DriverAbsence
+        isOpen={isDriverAbsenceOpen}
+        selectedDriver={selectedDriver}
+        setIsDriverAbsenceOpen={setIsDriverAbsenceOpen}
+        setIsConfirmationOpenDriverAbsence={setIsConfirmationOpenDriverAbsence}
+        onRequestClose={handleClose}
+        setLoadingBarProgress={setLoadingBarProgress}
+      />
+      <Confirmation
+        isOpen={isConfirmationOpenDriverAbsence}
+        header="Driver scheduled for absence successfully!"
       />
     </>
   );

@@ -1106,3 +1106,45 @@ export function acceptVehicleAPI(
       console.log(error);
     });
 }
+
+export function driverAbsenceAPI(
+  data: any,
+  setIsConfirmationOpenDriverAbsence: any,
+  navigate: any,
+  setLoadingBarProgress: (progress: number) => void,
+  setIsDriverAbsenceOpen: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .post("api/v1/request/driver-absence/", data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setLoadingBarProgress(50);
+      setIsDriverAbsenceOpen(false);
+      setIsConfirmationOpenDriverAbsence(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationOpenDriverAbsence(false);
+      }, 3000);
+    })
+    .catch((error) => {
+      if (error.response && error.response.data) {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
+}

@@ -138,6 +138,9 @@ export interface ModalProps {
   setIsVehicleMaintenanceOpen?: any;
   setIsConfirmationOpenVehicleMaintenance?: any;
   setLoadingBarProgress?: any;
+  setIsDriverAbsenceOpen?: any;
+  setIsConfirmationOpenDriverAbsence?: any;
+  selectedDriver?: any;
 }
 
 export interface ButtonProps {

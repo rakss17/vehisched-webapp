@@ -55,11 +55,16 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
     markDates();
   }, [schedulesData]);
 
-  const events: Event[] = startDates.map((startDate, index) => ({
-    title: `Trip ${schedulesData[index].trip_id}`,
-    start: startDate,
-    end: endDates[index],
-  }));
+  const events: Event[] = startDates.map((startDate, index) => {
+    const tripId = schedulesData[index]
+      ? schedulesData[index].trip_id
+      : "undefined";
+    return {
+      title: `Trip ${tripId}`,
+      start: startDate,
+      end: endDates[index],
+    };
+  });
 
   return (
     <div className="calendar-container-main">

@@ -72,6 +72,7 @@ export default function Requests() {
     const isCategoryMatch =
       selectedCategory === "All" ||
       request.status === selectedCategory ||
+      request.purpose === selectedCategory ||
       selectedCategory === "Logs" ||
       selectedCategory === null;
 
@@ -154,9 +155,13 @@ export default function Requests() {
             status={[
               "All",
               "Pending",
+              "Awaiting Vehicle Alteration",
               "Approved",
+              "Approved - Alterate Vehicle",
               "Canceled",
               "Rejected",
+              "Vehicle Maintenance",
+              "Driver Absence",
               "Logs",
             ]}
             onCategoryChange={handleCategoryChange}

@@ -6,9 +6,31 @@ import "./calendar.css";
 
 const localizer = momentLocalizer(moment);
 
-const eventStyleGetter = (event: Event) => {
-  const backgroundColor = "#060e57";
+interface MyEvent extends Event {
+  status?: string;
+}
+
+type CalendarScheduleProps = {
+  schedulesData: any[];
+};
+
+const eventStyleGetter = (
+  event: MyEvent,
+  start: any,
+  end: any,
+  isSelected: boolean
+) => {
+  let backgroundColor = "#060e57";
   const textColor = "white";
+
+  if (event && event.status) {
+    if (
+      event.status === "Driver Absence" ||
+      event.status === "Ongoing Vehicle Maintenance"
+    ) {
+      backgroundColor = "red";
+    }
+  }
 
   return {
     style: {
@@ -16,9 +38,6 @@ const eventStyleGetter = (event: Event) => {
       color: textColor,
     },
   };
-};
-type CalendarScheduleProps = {
-  schedulesData: any[];
 };
 
 const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
@@ -59,10 +78,14 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
     const tripId = schedulesData[index]
       ? schedulesData[index].trip_id
       : "undefined";
+    const status = schedulesData[index]
+      ? schedulesData[index].status
+      : "undefined";
     return {
       title: `Trip ${tripId}`,
       start: startDate,
       end: endDates[index],
+      status: status,
     };
   });
 

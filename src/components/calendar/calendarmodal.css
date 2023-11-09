@@ -68,6 +68,13 @@
   background-color: #d9d9d9;
   color: #060e57;
 }
+.main-info-red {
+  display: flex;
+  flex-direction: row;
+  background-color: #d9d9d9;
+  color: red;
+}
+
 .main-info div:nth-child(1) {
   width: 10vw;
   text-align: center;
@@ -80,6 +87,21 @@
   font-size: 1.1rem;
 }
 .main-info div:nth-child(1) p {
+  font-size: 1.1rem;
+}
+
+.main-info-red div:nth-child(1) {
+  width: 10vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0%;
+  height: 8vh;
+}
+.main-info-red div:nth-child(1) strong {
+  font-size: 1.1rem;
+}
+.main-info-red div:nth-child(1) p {
   font-size: 1.1rem;
 }
 .date-and-time-modal {
@@ -104,13 +126,20 @@
 .additional-info {
   display: flex;
   flex-direction: column;
-  height: 8vh;
+  height: auto;
   background-color: #eeeaea;
   color: #060e57;
 }
+.additional-info-red {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  background-color: #eeeaea;
+  color: red;
+}
 
 .additional-info div:nth-child(1) {
-  height: 8vh;
+  height: auto;
   display: flex;
   flex-direction: row;
   width: 28vw;
@@ -119,8 +148,24 @@
 .additional-info div:nth-child(2) {
   display: flex;
   flex-direction: row;
-  height: 8vh;
+  height: auto;
   background-color: #eeeaea;
   width: 28vw;
-  gap: 1vw
+  gap: 1vw;
+}
+
+.additional-info-red div:nth-child(1) {
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  width: 28vw;
+  gap: 1vw;
+}
+.additional-info-red div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  background-color: #eeeaea;
+  width: 28vw;
+  gap: 1vw;
 }

@@ -37,10 +37,10 @@
   position: absolute;
   top: 100%;
   left: 0%;
-  width: 200px;
+  width: 12vw;
   padding: 10px;
-  background-color: #d9d9d9;
-  border: 1px solid #ccc;
+  background-color: white;
+  border: 2px solid #ccc;
   border-radius: 4px;
   list-style: none;
   color: black;

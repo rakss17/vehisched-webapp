@@ -151,7 +151,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
               selectedRequest.status !== "Driver Absence" &&
-              selectedRequest.status !== "Pending" && (
+              selectedRequest.status !== "Pending" &&
+              selectedRequest.purpose !== "Vehicle Maintenance" &&
+              selectedRequest.purpose !== "Driver Absence" && (
                 <CommonButton secondaryStyle text="Download trip ticket" />
               )}
             {selectedRequest.status === "Ongoing Vehicle Maintenance" && (

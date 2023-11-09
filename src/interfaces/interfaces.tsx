@@ -110,7 +110,6 @@ export interface RequestFormDetailsProps {
   isOpen: boolean;
   onRequestClose: () => void;
   selectedRequest: RequestFormProps | null;
-  showButtons: boolean;
   onApprove: (driverId: string | null) => void;
 }
 
@@ -148,6 +147,7 @@ export interface ButtonProps {
   text?: any;
   primaryStyle?: any;
   secondaryStyle?: any;
+  tertiaryStyle?: any;
   width?: any;
   height?: any;
 }

@@ -206,7 +206,6 @@ export default function Requests() {
           isOpen={isRequestFormOpen}
           onRequestClose={handleCloseRequestForm}
           selectedRequest={selectedRequestDetails[0]}
-          showButtons={selectedRequest?.status === "Pending"}
           onApprove={(selectedDriverId) =>
             handleConfirmationApprove(selectedDriverId)
           }

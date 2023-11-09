@@ -27,6 +27,7 @@
   flex-direction: column;
   gap: 2vh;
   padding-bottom: 5vh;
+  padding-right: 1vw;
 }
 
 .request-form-container div:nth-child(1) {
@@ -261,9 +262,17 @@
   padding-left: 4vw;
   align-items: center;
   display: flex;
-  height: auto;
+  height: 5vh;
   width: 50vw;
   gap: 1vw;
+  position: relative;
+}
+.request-form-container div:nth-child(8) div {
+  background-color: #060e57;
+  position: absolute;
+  max-width: 13vw;
+  bottom: 0vh;
+  left: 2.8vw;
 }
 .request-form-container div:nth-child(8) h2 {
   color: black;
@@ -275,23 +284,22 @@
   font-size: 1.1rem;
 }
 .request-form-container div:nth-child(8) .dropdown-custom {
-  position: relative;
-  display: inline-block;
-  width: 12vw;
-  margin-left: 5rem;
+  position: absolute;
   background-color: #060e57;
   border-radius: 5px;
 }
 
-.request-form-container div:nth-child(8) .toggle-custom {
-  cursor: pointer;
-  padding: 0px;
-  background: green;
-  width: 2vw;
-  gap: 10%;
-  flex-direction: row;
-  border-radius: 0px;
-  font-size: 1rem;
+.menu-custom {
+  position: absolute;
+  top: 100%;
+  left: 22%;
+  width: 13vw;
+  padding: 10px;
+  background-color: #d9d9d9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  list-style: none;
+  color: black;
 }
 
 .request-form-container div:nth-child(9) {
@@ -302,11 +310,4 @@
   height: auto;
   width: 50vw;
   justify-content: space-around;
-}
-
-.request-form-container div:nth-child(9) button {
-  width: 8vw;
-  height: 6vh;
-  background-color: #060e57;
-  color: white;
 }

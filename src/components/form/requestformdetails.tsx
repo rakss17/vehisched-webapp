@@ -6,27 +6,27 @@ import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
 import { fetchDriversScheduleAPI } from "../api/api";
+import CommonButton from "../button/commonbutton";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
   onRequestClose,
   selectedRequest,
-  showButtons,
   onApprove,
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const [driversData, setDriversData] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetchDriversScheduleAPI(
-      setDriversData,
-      selectedRequest.travel_date,
-      selectedRequest.travel_time,
-      selectedRequest.return_date,
-      selectedRequest.return_time
-    );
-  }, []);
+  // useEffect(() => {
+  //   fetchDriversScheduleAPI(
+  //     setDriversData,
+  //     selectedRequest.travel_date,
+  //     selectedRequest.travel_time,
+  //     selectedRequest.return_date,
+  //     selectedRequest.return_time
+  //   );
+  // }, []);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -35,6 +35,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
     ),
   ];
+
+  const handleFetchDrivers = () => {
+    fetchDriversScheduleAPI(
+      setDriversData,
+      selectedRequest.travel_date,
+      selectedRequest.travel_time,
+      selectedRequest.return_date,
+      selectedRequest.return_time
+    );
+  };
 
   const handleChooseDriver = (driverName: string) => {
     const selectedDriver = driversData.find((driver) => {
@@ -127,20 +137,44 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           {selectedRequest.status === "Pending" && (
             <div>
               <h2>Assign a driver: </h2>
-              <Dropdown
-                status={dropdownDrivers}
-                onCategoryChange={handleChooseDriver}
-                dropdownClassName="dropdown-custom"
-              />
+              <div onClick={handleFetchDrivers}>
+                <Dropdown
+                  status={dropdownDrivers}
+                  onCategoryChange={handleChooseDriver}
+                  dropdownClassName="dropdown-custom"
+                  menuClassName="menu-custom"
+                />
+              </div>
             </div>
           )}
 
           <div>
-            {showButtons && (
+            {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
+              selectedRequest.status !== "Driver Absence" &&
+              selectedRequest.status !== "Pending" && (
+                <CommonButton secondaryStyle text="Download trip ticket" />
+              )}
+            {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
+              <CommonButton width={7} height={7} primaryStyle text="Done" />
+            )}
+            {selectedRequest.status === "Driver Absence" && (
+              <CommonButton width={7} height={7} primaryStyle text="Done" />
+            )}
+            {selectedRequest.status === "Pending" && (
               <>
-                <button onClick={() => onApprove(selectedDriverId)}>
-                  Approve
-                </button>
+                <CommonButton
+                  width={7}
+                  height={7}
+                  tertiaryStyle
+                  text="Decline"
+                />
+                <CommonButton
+                  width={7}
+                  height={7}
+                  primaryStyle
+                  text="Approve"
+                  onClick={() => onApprove(selectedDriverId)}
+                />
               </>
             )}
           </div>

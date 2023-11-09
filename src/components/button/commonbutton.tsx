@@ -7,6 +7,7 @@ const CommonButton: React.FC<ButtonProps> = ({
   text,
   primaryStyle,
   secondaryStyle,
+  tertiaryStyle,
   height,
   width,
 }) => {
@@ -20,7 +21,13 @@ const CommonButton: React.FC<ButtonProps> = ({
       onClick={onClick}
       style={buttonStyle}
       className={
-        primaryStyle ? "primary-style" : secondaryStyle ? "secondary-style" : ""
+        primaryStyle
+          ? "primary-style"
+          : secondaryStyle
+          ? "secondary-style"
+          : tertiaryStyle
+          ? "tertiary-style"
+          : ""
       }
     >
       {text}

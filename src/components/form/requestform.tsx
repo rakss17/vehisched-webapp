@@ -120,7 +120,7 @@ export default function RequestForm() {
     if (numPassengers <= capacity) {
       for (let i = 0; i < numPassengers; i++) {
         inputs.push(
-          <div className="passenger-name-column">
+          <div key={i} className="passenger-name-column">
             <InputField
               className="passenger_name_width"
               value={data.passenger_name[i]}

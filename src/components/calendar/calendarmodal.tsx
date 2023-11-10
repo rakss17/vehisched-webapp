@@ -39,7 +39,14 @@ const CalendarModal: React.FC<any> = ({
           <div className="schedule-info-container">
             {selectedSchedule.map((schedule: any, index: number) => (
               <div key={schedule.trip_id} className="schedule-card">
-                <div className="main-info">
+                <div
+                  className={
+                    schedule.status === "Driver Absence" ||
+                    schedule.status === "Ongoing Vehicle Maintenance"
+                      ? "main-info-red"
+                      : "main-info"
+                  }
+                >
                   <div>
                     <strong>Trip No.: </strong>
                     <p>{schedule.trip_id || undefined}</p>
@@ -65,18 +72,26 @@ const CalendarModal: React.FC<any> = ({
                   )}
                 </div>
                 {selectedScheduleIndex === index && (
-                  <div key={schedule.trip_id} className="additional-info">
+                  <div
+                    key={schedule.trip_id}
+                    className={
+                      schedule.status === "Driver Absence" ||
+                      schedule.status === "Ongoing Vehicle Maintenance"
+                        ? "additional-info-red"
+                        : "additional-info"
+                    }
+                  >
                     <div>
-                    <div>
-                      <strong>Vehicle: </strong>
-                      <p>{schedule.vehicle}</p>
+                      <div>
+                        <strong>Vehicle: </strong>
+                        <p>{schedule.vehicle}</p>
+                      </div>
+                      <div>
+                        <strong>Driver: </strong>
+                        <p>{schedule.driver}</p>
+                      </div>
                     </div>
-                    <div>
-                      <strong>Driver: </strong>
-                      <p>{schedule.driver}</p>
-                    </div>
-                    </div>
-                    
+
                     <div>
                       <strong>Destination: </strong>
                       <p>{schedule.destination}</p>

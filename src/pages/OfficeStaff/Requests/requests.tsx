@@ -22,12 +22,15 @@ import {
   approveRequestAPI,
   fetchRequestOfficeStaffAPI,
   fetchNotification,
+  maintenanceAbsenceCompletedRequestAPI,
 } from "../../../components/api/api";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingBar from "react-top-loading-bar";
 
 export default function Requests() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -35,6 +38,8 @@ export default function Requests() {
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
+    useState(false);
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
   const [notifList, setNotifList] = useState<any[]>([]);
@@ -72,6 +77,7 @@ export default function Requests() {
     const isCategoryMatch =
       selectedCategory === "All" ||
       request.status === selectedCategory ||
+      request.purpose === selectedCategory ||
       selectedCategory === "Logs" ||
       selectedCategory === null;
 
@@ -132,6 +138,15 @@ export default function Requests() {
     );
   };
 
+  const handleCompleted = () => {
+    maintenanceAbsenceCompletedRequestAPI(
+      requestId,
+      setIsConfirmationCompletedOpen,
+      setIsRequestFormOpen,
+      setLoadingBarProgress
+    );
+  };
+
   const selectedRequestDetails = selectedRequest
     ? requestList.filter(
         (request) => request.request_id === selectedRequest.request_id
@@ -141,6 +156,11 @@ export default function Requests() {
   filteredRequestList.reverse();
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
@@ -154,9 +174,13 @@ export default function Requests() {
             status={[
               "All",
               "Pending",
+              "Awaiting Vehicle Alteration",
               "Approved",
+              "Approved - Alterate Vehicle",
               "Canceled",
               "Rejected",
+              "Vehicle Maintenance",
+              "Driver Absence",
               "Logs",
             ]}
             onCategoryChange={handleCategoryChange}
@@ -201,21 +225,19 @@ export default function Requests() {
           </table>
         </div>
       </Container>
-      {isRequestFormOpen && (
-        <RequestFormDetails
-          isOpen={isRequestFormOpen}
-          onRequestClose={handleCloseRequestForm}
-          selectedRequest={selectedRequestDetails[0]}
-          showButtons={selectedRequest?.status === "Pending"}
-          onApprove={(selectedDriverId) =>
-            handleConfirmationApprove(selectedDriverId)
-          }
-        />
-      )}
 
-      {isConfirmationOpen && (
-        <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />
-      )}
+      <RequestFormDetails
+        isOpen={isRequestFormOpen}
+        onRequestClose={handleCloseRequestForm}
+        selectedRequest={selectedRequestDetails[0]}
+        onApprove={(selectedDriverId) =>
+          handleConfirmationApprove(selectedDriverId)
+        }
+        onComplete={handleCompleted}
+      />
+
+      <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />
+      <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
     </>
   );
 }

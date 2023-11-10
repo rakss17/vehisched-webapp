@@ -110,8 +110,8 @@ export interface RequestFormDetailsProps {
   isOpen: boolean;
   onRequestClose: () => void;
   selectedRequest: RequestFormProps | null;
-  showButtons: boolean;
   onApprove: (driverId: string | null) => void;
+  onComplete: () => void;
 }
 
 export interface TimeInputProps {
@@ -138,6 +138,9 @@ export interface ModalProps {
   setIsVehicleMaintenanceOpen?: any;
   setIsConfirmationOpenVehicleMaintenance?: any;
   setLoadingBarProgress?: any;
+  setIsDriverAbsenceOpen?: any;
+  setIsConfirmationOpenDriverAbsence?: any;
+  selectedDriver?: any;
 }
 
 export interface ButtonProps {
@@ -145,6 +148,7 @@ export interface ButtonProps {
   text?: any;
   primaryStyle?: any;
   secondaryStyle?: any;
+  tertiaryStyle?: any;
   width?: any;
   height?: any;
 }

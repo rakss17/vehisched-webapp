@@ -42,13 +42,14 @@ export default function Request() {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [selectedRequestIndex, setSelectedRequestIndex] = useState(null);
   const [expandedRequestIndex, setExpandedRequestIndex] = useState(null);
+  const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const requestId = selectedRequest?.request_id ?? "";
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
   const userName = personalInfo?.username;
   const springProps = useSpring({
-    height: expandedRequestIndex ? "40vh" : "0vh",
+    height: expandedRequestIndex ? "auto" : "0vh",
   });
 
   useEffect(() => {
@@ -125,13 +126,18 @@ export default function Request() {
     }, 3000);
   };
 
-  const onHandleAngleDown = (index: any) => {
+  const onHandleAngleDown = (index: any, request: any) => {
     setExpandedRequestIndex((prevIndex) =>
       prevIndex === index ? null : index
     );
     setSelectedRequestIndex((prevIndex) =>
       prevIndex === index ? null : index
     );
+    if (request.distance >= 50) {
+      setIsFifthyKilometers(true);
+    } else if (request.distance < 50) {
+      setIsFifthyKilometers(false);
+    }
   };
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
@@ -217,7 +223,7 @@ export default function Request() {
                               icon={faAngleUp}
                               style={{ fontSize: "24px" }}
                               onClick={() =>
-                                onHandleAngleDown(request.request_id)
+                                onHandleAngleDown(request.request_id, request)
                               }
                             />
                           ) : (
@@ -225,7 +231,7 @@ export default function Request() {
                               icon={faAngleDown}
                               style={{ fontSize: "24px" }}
                               onClick={() =>
-                                onHandleAngleDown(request.request_id)
+                                onHandleAngleDown(request.request_id, request)
                               }
                             />
                           )}
@@ -265,8 +271,8 @@ export default function Request() {
                               <p>{request.destination}</p>
                             </div>
                             <div>
-                              <strong>Vehicle: </strong>
-                              {request.vehicle}
+                              <strong>Distance: </strong>
+                              <p>{request.distance} km</p>
                             </div>
                           </div>
                           {/* second child */}
@@ -275,7 +281,10 @@ export default function Request() {
                               <strong>Date of Travel: </strong>
                               <p>
                                 {request.travel_date},{" "}
-                                {formatTime(request.travel_time)}
+                                {formatTime(request.travel_time)}{" "}
+                                <strong>to: </strong>
+                                {request.return_date},{" "}
+                                {formatTime(request.return_time)}
                               </p>
                             </div>
                             <div>
@@ -335,6 +344,18 @@ export default function Request() {
                               <p>{request.status}</p>
                             </div>
                           </div>
+                          {isFifthyKilometers && (
+                            <div className="request-more-info-fifth-child">
+                              <p>
+                                <strong>Note:</strong> Requesters traveling to
+                                destinations exceed 50 kilometers are required
+                                to provide a travel order for the vehicle's fuel
+                                and
+                                <br></br>
+                                the driver's per diem.
+                              </p>
+                            </div>
+                          )}
                         </animated.div>
                       )}
                     </>

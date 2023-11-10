@@ -1148,3 +1148,38 @@ export function driverAbsenceAPI(
       }
     });
 }
+
+export function maintenanceAbsenceCompletedRequestAPI(
+  requestId: any,
+  setIsConfirmationOpen: any,
+  setIsRequestFormOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+
+  api
+    .patch(
+      `/api/v1/request/maintenance-absence-completed/${requestId}/`,
+      {
+        status: "Completed",
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsRequestFormOpen(false);
+      setIsConfirmationOpen(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

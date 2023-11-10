@@ -5,7 +5,10 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
-import { fetchDriversScheduleAPI } from "../api/api";
+import {
+  fetchDriversScheduleAPI,
+  maintenanceAbsenceCompletedRequestAPI,
+} from "../api/api";
 import CommonButton from "../button/commonbutton";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
@@ -13,6 +16,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   onRequestClose,
   selectedRequest,
   onApprove,
+  onComplete,
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
@@ -157,10 +161,22 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 <CommonButton secondaryStyle text="Download trip ticket" />
               )}
             {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
-              <CommonButton width={7} height={7} primaryStyle text="Done" />
+              <CommonButton
+                width={7}
+                height={7}
+                primaryStyle
+                text="Done"
+                onClick={onComplete}
+              />
             )}
             {selectedRequest.status === "Driver Absence" && (
-              <CommonButton width={7} height={7} primaryStyle text="Done" />
+              <CommonButton
+                width={7}
+                height={7}
+                primaryStyle
+                text="Done"
+                onClick={onComplete}
+              />
             )}
             {selectedRequest.status === "Pending" && (
               <>

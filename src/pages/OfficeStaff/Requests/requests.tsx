@@ -85,31 +85,43 @@ export default function Requests() {
       selectedCategory === "Logs" ||
       selectedCategory === null;
 
-    if (isCategoryMatch && selectedCategory === "Logs") {
+    if (isCategoryMatch && selectedCategory === "Logs" && request.travel_date) {
       const [year, month, day] = request.travel_date.split("-");
       const [hours, minutes] = request.travel_time.split(":");
       const requestDate = new Date(year, month - 1, day, hours, minutes);
       return requestDate < currentDate;
     }
+
     const isSearchMatch =
       searchTerm === "" ||
       request.requester_full_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.travel_date &&
+        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (request.destination &&
+        request.destination.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (selectedCategory === "Logs" &&
         (request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-          request.travel_date
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()))) ||
+          (request.travel_date &&
+            request.travel_date
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())) ||
+          (request.destination &&
+            request.destination
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())))) ||
       (selectedCategory !== "Logs" &&
         request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase())) ||
       request.request_id.toString().includes(searchTerm.toLowerCase()) ||
-      request.travel_date.toLowerCase().includes(searchTerm.toLowerCase());
+      (request.travel_date &&
+        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (request.destination &&
+        request.destination.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return isCategoryMatch && isSearchMatch;
   });

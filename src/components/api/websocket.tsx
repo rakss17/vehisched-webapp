@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-const serverSideUrl = "localhost:8000"
+const serverSideUrl = "localhost:8000";
 
 export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   useEffect(() => {
@@ -15,7 +15,7 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
       );
       newSocket.send(
         JSON.stringify({
-          action: ["approve", "reminder"],
+          action: ["approve", "reminder", "reject"],
         })
       );
     };
@@ -28,6 +28,15 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
         data.message != "Notification message goes here"
       ) {
         toast.success(data.message, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else if (
+        data.type === "reject.notification" &&
+        data.status === "Rejected" &&
+        data.message != "Notification message goes here"
+      ) {
+        toast.error(data.message, {
           position: toast.POSITION.TOP_CENTER,
           autoClose: false,
         });

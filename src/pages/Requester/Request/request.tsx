@@ -81,9 +81,9 @@ export default function Request() {
           (request) => request.status === "Canceled"
         );
         break;
-      case "Declined":
+      case "Rejected":
         filteredData = requestFilteredData.filter(
-          (request) => request.status === "Declined"
+          (request) => request.status === "Rejected"
         );
         break;
       default:
@@ -179,10 +179,10 @@ export default function Request() {
               Canceled
             </button>
             <button
-              onClick={() => handleButtonClick("Declined")}
-              className={selectedStatus === "Declined" ? "active" : ""}
+              onClick={() => handleButtonClick("Rejected")}
+              className={selectedStatus === "Rejected" ? "active" : ""}
             >
-              Declined
+              Rejected
             </button>
           </div>
           <div className="requests-container">

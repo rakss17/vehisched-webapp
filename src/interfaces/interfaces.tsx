@@ -113,6 +113,8 @@ export interface RequestFormDetailsProps {
   onApprove: (driverId: string | null) => void;
   onComplete: () => void;
   onReject: () => void;
+  errorMessages: any[];
+  setErrorMessages: any;
 }
 
 export interface TimeInputProps {

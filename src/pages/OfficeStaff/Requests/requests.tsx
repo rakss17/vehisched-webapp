@@ -38,7 +38,7 @@ export default function Requests() {
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
-
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
     useState(false);
@@ -146,12 +146,27 @@ export default function Requests() {
     setIsRequestFormOpen(false);
   };
   const handleConfirmationApprove = (selectedDriverId: any) => {
-    approveRequestAPI(
-      requestId,
-      selectedDriverId,
-      setIsRequestFormOpen,
-      setIsConfirmationOpen
-    );
+    let validationErrors: { [key: string]: string } = {};
+
+    if (!selectedDriverId) {
+      validationErrors.driverSelectionError = "Please select a driver!";
+    }
+    console.log(selectedDriverId);
+    if (selectedDriverId === null) {
+      validationErrors.driverSelectionError = "Please select a driver!";
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+    if (Object.keys(validationErrors).length === 0) {
+      approveRequestAPI(
+        requestId,
+        selectedDriverId,
+        setIsRequestFormOpen,
+        setIsConfirmationOpen
+      );
+    }
   };
 
   const handleCompleted = () => {
@@ -260,6 +275,8 @@ export default function Requests() {
         }
         onComplete={handleCompleted}
         onReject={handleReject}
+        errorMessages={errorMessages}
+        setErrorMessages={setErrorMessages}
       />
 
       <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />

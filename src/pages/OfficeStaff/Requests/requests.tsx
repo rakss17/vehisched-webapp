@@ -23,6 +23,7 @@ import {
   fetchRequestOfficeStaffAPI,
   fetchNotification,
   maintenanceAbsenceCompletedRequestAPI,
+  rejectRequestAPI,
 } from "../../../components/api/api";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
@@ -37,8 +38,11 @@ export default function Requests() {
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
+
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
+    useState(false);
+  const [isConfirmationRejectedOpen, setIsConfirmationRejectedOpen] =
     useState(false);
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
@@ -147,6 +151,15 @@ export default function Requests() {
     );
   };
 
+  const handleReject = () => {
+    rejectRequestAPI(
+      requestId,
+      setIsConfirmationRejectedOpen,
+      setIsRequestFormOpen,
+      setLoadingBarProgress
+    );
+  };
+
   const selectedRequestDetails = selectedRequest
     ? requestList.filter(
         (request) => request.request_id === selectedRequest.request_id
@@ -234,10 +247,15 @@ export default function Requests() {
           handleConfirmationApprove(selectedDriverId)
         }
         onComplete={handleCompleted}
+        onReject={handleReject}
       />
 
       <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />
       <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
+      <Confirmation
+        isOpen={isConfirmationRejectedOpen}
+        header="Request Rejected!"
+      />
     </>
   );
 }

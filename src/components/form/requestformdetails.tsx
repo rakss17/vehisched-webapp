@@ -17,6 +17,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   selectedRequest,
   onApprove,
   onComplete,
+  onReject,
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
@@ -156,6 +157,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
               selectedRequest.status !== "Driver Absence" &&
               selectedRequest.status !== "Pending" &&
+              selectedRequest.status !== "Rejected" &&
               selectedRequest.purpose !== "Vehicle Maintenance" &&
               selectedRequest.purpose !== "Driver Absence" && (
                 <CommonButton secondaryStyle text="Download trip ticket" />
@@ -184,7 +186,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   width={7}
                   height={7}
                   tertiaryStyle
-                  text="Decline"
+                  text="Reject"
+                  onClick={onReject}
                 />
                 <CommonButton
                   width={7}

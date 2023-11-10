@@ -1151,7 +1151,7 @@ export function driverAbsenceAPI(
 
 export function maintenanceAbsenceCompletedRequestAPI(
   requestId: any,
-  setIsConfirmationOpen: any,
+  setIsConfirmationCompletedOpen: any,
   setIsRequestFormOpen: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
@@ -1172,10 +1172,45 @@ export function maintenanceAbsenceCompletedRequestAPI(
     )
     .then((response) => {
       setIsRequestFormOpen(false);
-      setIsConfirmationOpen(true);
+      setIsConfirmationCompletedOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
-        setIsConfirmationOpen(false);
+        setIsConfirmationCompletedOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export function rejectRequestAPI(
+  requestId: any,
+  setIsConfirmationRejectedOpen: any,
+  setIsRequestFormOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+
+  api
+    .patch(
+      `/api/v1/request/reject-request/${requestId}/`,
+      {
+        status: "Rejected",
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsRequestFormOpen(false);
+      setIsConfirmationRejectedOpen(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationRejectedOpen(false);
         window.location.reload();
       }, 3000);
     })

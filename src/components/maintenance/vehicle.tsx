@@ -18,6 +18,7 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
   setIsConfirmationOpenVehicleMaintenance,
 }) => {
   if (!selectedVehicle) return null;
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [data, setData] = useState<any>({
     travel_date: null,
     travel_time: null,
@@ -49,15 +50,48 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
       console.log("No time selected.");
     }
   };
+  console.log(errorMessages);
   const handleProceed = () => {
-    setLoadingBarProgress(20);
-    vehicleMaintenanceAPI(
-      data,
-      setIsConfirmationOpenVehicleMaintenance,
-      navigate,
-      setLoadingBarProgress,
-      setIsVehicleMaintenanceOpen
-    );
+    let validationErrors: { [key: string]: string } = {};
+
+    const allFieldsBlank =
+      !data.travel_date &&
+      !data.travel_time &&
+      !data.return_date &&
+      !data.return_time;
+
+    if (allFieldsBlank) {
+      validationErrors.all = "Required all fields!";
+    } else {
+      if (!data.travel_date) {
+        validationErrors.travelDateError = "This field is required";
+      }
+      if (!data.travel_time) {
+        validationErrors.travelTimeError = "This field is required";
+      }
+
+      if (!data.return_date) {
+        validationErrors.returnDateError = "This field is required";
+      }
+
+      if (!data.return_time) {
+        validationErrors.returnTimeError = "This field is required";
+      }
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+    if (Object.keys(validationErrors).length === 0) {
+      setLoadingBarProgress(20);
+      vehicleMaintenanceAPI(
+        data,
+        setIsConfirmationOpenVehicleMaintenance,
+        navigate,
+        setLoadingBarProgress,
+        setIsVehicleMaintenanceOpen
+      );
+    }
   };
   return (
     <Modal className="vehicle-maintenance-modal" isOpen={isOpen}>
@@ -67,6 +101,7 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
             You are going to have a maintenance with this vehicle{" "}
             {selectedVehicle.plate_number}
           </strong>
+          <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
         </div>
         <div className="maintenance-from">
           <p>From: </p>
@@ -78,12 +113,19 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
               onChange={handleStartDateChange}
               disableDaysBefore={0}
             />
-            <br></br>
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.travelDateError}
+            </p>
+            {!errorMessages[0]?.travelDateError && <br></br>}
+
             <TimeInput
               onChange={handleStartTimeChange}
               selectedDate={data.travel_date}
               handleDateChange={handleStartDateChange}
             />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.travelTimeError}
+            </p>
           </div>
         </div>
         <div className="maintenance-to">
@@ -96,12 +138,18 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
               onChange={handleEndDateChange}
               disableDaysBefore={0}
             />
-            <br></br>
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.returnDateError}
+            </p>
+            {!errorMessages[0]?.returnDateError && <br></br>}
             <TimeInput
               onChange={handleEndTimeChange}
               selectedDate={data.return_date}
               handleDateChange={handleEndDateChange}
             />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.returnTimeError}
+            </p>
           </div>
         </div>
         <div className="maintenance-button">

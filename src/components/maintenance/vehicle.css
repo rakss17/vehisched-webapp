@@ -5,20 +5,20 @@
 }
 
 .vehicle-maintenance-modal {
-  margin-top: 30vh;
+  margin-top: 23vh;
   margin-left: 35vw;
   background-color: #d9d9d9;
   width: 35vw;
-  height: 50vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 2%;
 }
 .vehicle-maintenance-container {
   width: 35vw;
-  height: 45vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,22 +36,40 @@
 }
 .maintenance-from {
   width: 20vw;
-  height: 15vh;
+  height: auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
 }
 .maintenance-from p {
   color: #060e57;
   font-size: 1rem;
   font-weight: bold;
 }
+.maintenance-from .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
 .maintenance-to {
   width: 20vw;
-  height: 15vh;
+  height: auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.maintenance-to .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
 }
 .maintenance-to p {
   color: #060e57;
@@ -61,7 +79,7 @@
 .maintenance-button {
   display: flex;
   width: 20vw;
-  height: 6vh;
+  height: auto;
   flex-direction: row;
   justify-content: space-between;
 }

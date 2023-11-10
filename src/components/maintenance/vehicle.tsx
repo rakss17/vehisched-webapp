@@ -30,15 +30,24 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.travelDateError;
+    setErrorMessages(updatedErrors);
   };
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, return_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.returnDateError;
+    setErrorMessages(updatedErrors);
   };
 
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, travel_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelTimeError;
+      setErrorMessages(updatedErrors);
     } else {
       console.log("No time selected.");
     }
@@ -46,11 +55,14 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
   const handleEndTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, return_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.returnTimeError;
+      setErrorMessages(updatedErrors);
     } else {
       console.log("No time selected.");
     }
   };
-  console.log(errorMessages);
+
   const handleProceed = () => {
     let validationErrors: { [key: string]: string } = {};
 

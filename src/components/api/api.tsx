@@ -1053,6 +1053,7 @@ export function vehicleMaintenanceAPI(
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpenVehicleMaintenance(false);
+        window.location.reload();
       }, 3000);
     })
     .catch((error) => {
@@ -1129,6 +1130,7 @@ export function driverAbsenceAPI(
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpenDriverAbsence(false);
+        window.location.reload();
       }, 3000);
     })
     .catch((error) => {

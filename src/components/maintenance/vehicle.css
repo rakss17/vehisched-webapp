@@ -29,6 +29,12 @@
   text-align: center;
   width: 25vw;
 }
+.vehicle-maintenance-brief-info .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
 .vehicle-maintenance-brief-info strong {
   color: #060e57;
   font-size: 1.2rem;
@@ -41,12 +47,7 @@
   flex-direction: row;
   justify-content: space-between;
 }
-.set-trip-text-error {
-  color: red;
-  font-size: 1rem;
-  margin-left: 0vw;
-  text-align: center;
-}
+
 .maintenance-from p {
   color: #060e57;
   font-size: 1rem;
@@ -59,6 +60,7 @@
   text-align: center;
 }
 .maintenance-to {
+  margin-top: 1vh;
   width: 20vw;
   height: auto;
   display: flex;
@@ -77,6 +79,7 @@
   font-weight: bold;
 }
 .maintenance-button {
+  margin-top: 1vh;
   display: flex;
   width: 20vw;
   height: auto;

@@ -74,7 +74,7 @@ export function NotificationCreatedCancelWebsocket() {
     console.log("Notification created and cancel WebSocket connection opened");
     newSocket.send(
       JSON.stringify({
-        action: ["created", "canceled"],
+        action: ["created", "canceled", "completed"],
       })
     );
   };
@@ -87,7 +87,15 @@ export function NotificationCreatedCancelWebsocket() {
       data.status === "Created" &&
       data.message != "Notification message goes here for created"
     ) {
-      console.log("createad", data);
+      toast.success(data.message, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: false,
+      });
+    } else if (
+      data.type === "notify.request_completed" &&
+      data.status === "completed" &&
+      data.message != "Notification message goes here for completed"
+    ) {
       toast.success(data.message, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: false,
@@ -96,7 +104,6 @@ export function NotificationCreatedCancelWebsocket() {
       data.type === "notify.request_canceled" &&
       data.message != "Notification message goes here for canceled"
     ) {
-      console.log("canceled", data);
       toast.info(data.message, {
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: false,

@@ -748,6 +748,23 @@ export function fetchNotification(setNotifList: any) {
             position: toast.POSITION.TOP_CENTER,
             autoClose: false,
           });
+        } else if (notification.subject.includes("A travel is on the way")) {
+          const timeElapsed = getTimeElapsed(notification.created_at);
+          let message = `${notification.subject} `;
+          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
+          for (let i = 0; i < timeUnits.length; i++) {
+            if (timeElapsed.includes(timeUnits[i])) {
+              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
+              break;
+            }
+          }
+          if (!message.endsWith("ago")) {
+            message += `${timeElapsed} ago`;
+          }
+          toast.success(message, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
         } else if (notification.subject.includes("1 hour")) {
           const timeElapsed = getTimeElapsed(notification.created_at);
           let message = `${notification.subject} `;

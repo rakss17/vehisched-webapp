@@ -830,7 +830,9 @@ export function checkVehicleAvailability(
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
   preferred_end_travel_time: any,
-  preferred_capacity: any
+  preferred_capacity: any,
+  setLoadingBarProgress: any,
+  handleButtonClick: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -848,10 +850,27 @@ export function checkVehicleAvailability(
       },
     })
     .then((response) => {
+      setLoadingBarProgress(50);
       setVehiclesData(response.data);
+      setLoadingBarProgress(100);
+      handleButtonClick("Available Vehicle");
     })
     .catch((error) => {
-      console.error("Error fetching vehicle list:", error);
+      if (error.response && error.response.data) {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching vehicle list:", error);
     });
 }
 

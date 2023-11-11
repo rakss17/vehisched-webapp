@@ -208,15 +208,17 @@ export default function DashboardR() {
     setErrorMessages(errorArray);
 
     if (Object.keys(validationErrors).length === 0) {
+      setLoadingBarProgress(20);
       checkVehicleAvailability(
         setVehiclesData,
         data.travel_date,
         data.travel_time,
         data.return_date,
         data.return_time,
-        data.capacity
+        data.capacity,
+        setLoadingBarProgress,
+        handleButtonClick
       );
-      handleButtonClick("Available Vehicle");
     }
   };
 

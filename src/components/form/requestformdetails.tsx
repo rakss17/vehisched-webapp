@@ -5,7 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
-import { fetchDriversScheduleAPI } from "../api/api";
+import { downloadTripTicketAPI, fetchDriversScheduleAPI } from "../api/api";
 import CommonButton from "../button/commonbutton";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
@@ -30,6 +30,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     ),
   ];
 
+  const handleDownloadTripTicket = () => {
+    downloadTripTicketAPI(selectedRequest.request_id);
+  };
+
   const handleFetchDrivers = () => {
     fetchDriversScheduleAPI(
       setDriversData,
@@ -46,7 +50,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       const fullName = `${first_name} ${middle_name} ${last_name}`;
       return fullName === driverName;
     });
-    console.log(selectedDriver);
+
     if (selectedDriver) {
       setSelectedDriverId(selectedDriver.id);
     }
@@ -158,7 +162,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               selectedRequest.status !== "Rejected" &&
               selectedRequest.purpose !== "Vehicle Maintenance" &&
               selectedRequest.purpose !== "Driver Absence" && (
-                <CommonButton secondaryStyle text="Download trip ticket" />
+                <CommonButton
+                  secondaryStyle
+                  text="Download trip ticket"
+                  onClick={handleDownloadTripTicket}
+                />
               )}
             {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
               <CommonButton

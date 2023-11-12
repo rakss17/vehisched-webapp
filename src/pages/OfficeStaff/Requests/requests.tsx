@@ -71,6 +71,12 @@ export default function Requests() {
 
   useEffect(() => {
     fetchRequestOfficeStaffAPI(setRequestList);
+
+    const intervalId = setInterval(() => {
+      fetchRequestOfficeStaffAPI(setRequestList);
+    }, 60000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -239,6 +245,7 @@ export default function Requests() {
                 <th>Requested by</th>
                 <th>Travel Date</th>
                 <th>Status</th>
+                <th>On Trip</th>
               </tr>
             </thead>
             <tbody>
@@ -257,6 +264,13 @@ export default function Requests() {
                       <td>{request.requester_full_name}</td>
                       <td>{request.travel_date}</td>
                       <td>{request.status}</td>
+                      <td>
+                        {request.vehicle_driver_status === "On Trip" ? (
+                          <div className="ontrip-yes"></div>
+                        ) : (
+                          <div className="ontrip-no"></div>
+                        )}
+                      </td>
                     </tr>
                   </>
                 ))

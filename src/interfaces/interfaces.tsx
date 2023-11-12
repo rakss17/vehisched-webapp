@@ -104,6 +104,7 @@ export interface RequestFormProps {
   sub_category?: any;
   distance?: any;
   type?: any;
+  vehicle_driver_status?: any;
 }
 
 export interface RequestFormDetailsProps {

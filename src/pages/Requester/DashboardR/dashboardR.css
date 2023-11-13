@@ -88,7 +88,7 @@
   width: 15vw;
   height: 20vh;
   position: absolute;
-  top: 0%;
+  top: 5%;
   left: 75%;
   text-align: center;
 }
@@ -122,13 +122,22 @@
   align-items: center;
   height: auto;
   gap: 0.5vw;
+  color: black;
 }
 
 .requester-schedule-container-div div:nth-child(1) div:nth-child(1) {
   padding-left: 0vw;
   padding-top: 0vh;
 }
-.requester-schedule-container-div div:nth-child(1) div:nth-child(2) {
+.requester-schedule-container-div div:nth-child(1) .ongoing-trip-text {
+  display: flex;
+  width: 22vw;
+  padding-left: 6vw;
+  padding-top: 0vh;
+  margin-left: 4vw;
+  font-size: 1.1rem;
+}
+.requester-schedule-container-div div:nth-child(1) .count-down {
   display: flex;
   justify-content: center;
   width: 22vw;

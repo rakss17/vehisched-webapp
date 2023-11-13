@@ -76,6 +76,11 @@ export default function Request() {
             request.status === "Approved - Alterate Vehicle"
         );
         break;
+      case "Completed":
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Completed"
+        );
+        break;
       case "Canceled":
         filteredData = requestFilteredData.filter(
           (request) => request.status === "Canceled"
@@ -173,6 +178,12 @@ export default function Request() {
               Approved
             </button>
             <button
+              onClick={() => handleButtonClick("Completed")}
+              className={selectedStatus === "Completed" ? "active" : ""}
+            >
+              Completed
+            </button>
+            <button
               onClick={() => handleButtonClick("Canceled")}
               className={selectedStatus === "Canceled" ? "active" : ""}
             >
@@ -242,7 +253,11 @@ export default function Request() {
                         <td>{request.travel_date}</td>
                         <td></td>
                         <td>{request.vehicle}</td>
-                        <td></td>
+                        {request.vehicle_driver_status === "On Trip" ? (
+                          <p className="ontrip-text">On Trip</p>
+                        ) : (
+                          <td></td>
+                        )}
                         <td className="ellipsis-cell">
                           {selectedStatus === "Pending" ||
                           selectedStatus === "Approved" ? (

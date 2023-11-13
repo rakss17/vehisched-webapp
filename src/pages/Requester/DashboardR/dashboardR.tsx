@@ -964,12 +964,19 @@ export default function DashboardR() {
                                 <h1>Schedule no. </h1>{" "}
                                 <h2>{schedule.trip_id}</h2>
                               </div>
-                              <div>
-                                <Countdown
-                                  travelDate={schedule.travel_date}
-                                  travelTime={schedule.travel_time}
-                                />
-                              </div>
+                              {schedule.vehicle_driver_status === "On Trip" ? (
+                                <div className="ongoing-trip-text">
+                                  <strong>Ongoing trip</strong>
+                                  <strong className="loading-dots"></strong>
+                                </div>
+                              ) : (
+                                <div className="count-down">
+                                  <Countdown
+                                    travelDate={schedule.travel_date}
+                                    travelTime={schedule.travel_time}
+                                  />
+                                </div>
+                              )}
                             </div>
                             <div>
                               <h2>Travel date and time: </h2>{" "}

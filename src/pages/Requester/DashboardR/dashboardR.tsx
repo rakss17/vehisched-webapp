@@ -99,9 +99,8 @@ export default function DashboardR() {
     },
   ];
 
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
+  fetchNotification(setNotifList);
+
   useEffect(() => {
     fetchSchedule(
       setSchedule,

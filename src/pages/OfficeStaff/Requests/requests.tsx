@@ -61,13 +61,10 @@ export default function Requests() {
     { icon: faUser, text: "Drivers", path: "/Drivers" },
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
 
-  useEffect(() => {
-    NotificationCreatedCancelWebsocket();
-  }, []);
+  fetchNotification(setNotifList);
+
+  NotificationCreatedCancelWebsocket();
 
   useEffect(() => {
     fetchRequestOfficeStaffAPI(setRequestList);

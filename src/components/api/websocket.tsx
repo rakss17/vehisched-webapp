@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import moment from "moment";
+import ToastContent from "../toastcontent/toastcontent";
 
 const serverSideUrl = "localhost:8000";
 
@@ -27,24 +29,31 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
         data.status === "Approved" &&
         data.message != "Notification message goes here"
       ) {
-        toast.success(data.message, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: false,
-        });
+        const justnow = "Just Now";
+        toast.success(
+          <ToastContent message={data.message} timeago={justnow} />,
+          {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          }
+        );
       } else if (
         data.type === "reject.notification" &&
         data.status === "Rejected" &&
         data.message != "Notification message goes here"
       ) {
-        toast.error(data.message, {
+        const justnow = "Just Now";
+        toast.error(<ToastContent message={data.message} timeago={justnow} />, {
           position: toast.POSITION.TOP_CENTER,
           autoClose: false,
         });
       } else if (
         data.type === "schedule.reminder" &&
+        data.status === "Reminder" &&
         data.message != "Notification message goes here"
       ) {
-        toast.info(data.message, {
+        const justnow = "Just Now";
+        toast.info(<ToastContent message={data.message} timeago={justnow} />, {
           position: toast.POSITION.TOP_CENTER,
           autoClose: false,
         });
@@ -66,56 +75,74 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
 }
 
 export function NotificationCreatedCancelWebsocket() {
-  const newSocket = new WebSocket(
-    `ws://${serverSideUrl}/ws/notification/created_cancel/`
-  );
-
-  newSocket.onopen = (event) => {
-    console.log("Notification created and cancel WebSocket connection opened");
-    newSocket.send(
-      JSON.stringify({
-        action: ["created", "canceled", "completed"],
-      })
+  useEffect(() => {
+    const newSocket = new WebSocket(
+      `ws://${serverSideUrl}/ws/notification/created_cancel/`
     );
-  };
 
-  newSocket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log(data);
-    if (
-      data.type === "notify.request_created" &&
-      data.status === "Created" &&
-      data.message != "Notification message goes here for created"
-    ) {
-      toast.success(data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: false,
-      });
-    } else if (
-      data.type === "notify.request_completed" &&
-      data.status === "completed" &&
-      data.message != "Notification message goes here for completed"
-    ) {
-      toast.success(data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: false,
-      });
-    } else if (
-      data.type === "notify.request_canceled" &&
-      data.message != "Notification message goes here for canceled"
-    ) {
-      toast.info(data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: false,
-      });
-    }
-  };
+    newSocket.onopen = (event) => {
+      console.log(
+        "Notification created and cancel WebSocket connection opened"
+      );
+      newSocket.send(
+        JSON.stringify({
+          action: ["created", "canceled", "completed"],
+        })
+      );
+    };
 
-  newSocket.onclose = (event) => {
-    console.log("Notification created and cancel WebSocket connection closed");
-  };
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data);
+      if (
+        data.type === "notify.request_created" &&
+        data.status === "Created" &&
+        data.message != "Notification message goes here for created"
+      ) {
+        const justnow = "Just Now";
+        toast.success(
+          <ToastContent message={data.message} timeago={justnow} />,
+          {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          }
+        );
+      } else if (
+        data.type === "notify.request_completed" &&
+        data.status === "Completed" &&
+        data.message != "Notification message goes here for completed"
+      ) {
+        const justnow = "Just Now";
+        toast.success(
+          <ToastContent message={data.message} timeago={justnow} />,
+          {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          }
+        );
+      } else if (
+        data.type === "notify.request_canceled" &&
+        data.status === "Canceled" &&
+        data.message != "Notification message goes here for canceled"
+      ) {
+        const justnow = "Just Now";
+        toast.info(<ToastContent message={data.message} timeago={justnow} />, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    };
 
-  return () => {
-    newSocket.close();
-  };
+    newSocket.onclose = (event) => {
+      console.log(
+        "Notification created and cancel WebSocket connection closed"
+      );
+    };
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  return null;
 }

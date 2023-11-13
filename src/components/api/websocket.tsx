@@ -93,7 +93,6 @@ export function NotificationCreatedCancelWebsocket() {
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
       if (
         data.type === "notify.request_created" &&
         data.status === "Created" &&
@@ -111,6 +110,19 @@ export function NotificationCreatedCancelWebsocket() {
         data.type === "notify.request_completed" &&
         data.status === "Completed" &&
         data.message != "Notification message goes here for completed"
+      ) {
+        const justnow = "Just Now";
+        toast.success(
+          <ToastContent message={data.message} timeago={justnow} />,
+          {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          }
+        );
+      } else if (
+        data.type === "notify.request_ontheway" &&
+        data.status === "Ontheway" &&
+        data.message != "Notification message goes here for on the way"
       ) {
         const justnow = "Just Now";
         toast.success(

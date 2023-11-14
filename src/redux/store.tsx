@@ -50,6 +50,12 @@ const store = configureStore({
     vehiclesData: persistedVehiclesDataReducer,
     driversData: persistedDriversDataReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"],
+      },
+    }),
 });
 
 const persistor = persistStore(store);

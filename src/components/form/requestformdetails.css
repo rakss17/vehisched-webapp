@@ -255,6 +255,7 @@
 .request-form-container div:nth-child(7) p {
   color: black;
   font-size: 1.1rem;
+  word-break: break-all;
 }
 .request-form-container div:nth-child(8) {
   flex-direction: row;
@@ -287,6 +288,14 @@
   position: absolute;
   background-color: #060e57;
   border-radius: 5px;
+}
+.request-form-container div:nth-child(8) .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+  margin-top: 10vh;
+  margin-left: 2vw;
 }
 
 .menu-custom {

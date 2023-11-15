@@ -23,6 +23,7 @@ import {
   fetchRequestOfficeStaffAPI,
   fetchNotification,
   maintenanceAbsenceCompletedRequestAPI,
+  rejectRequestAPI,
 } from "../../../components/api/api";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
@@ -37,8 +38,11 @@ export default function Requests() {
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
+    useState(false);
+  const [isConfirmationRejectedOpen, setIsConfirmationRejectedOpen] =
     useState(false);
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
@@ -57,16 +61,19 @@ export default function Requests() {
     { icon: faUser, text: "Drivers", path: "/Drivers" },
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
 
-  useEffect(() => {
-    NotificationCreatedCancelWebsocket();
-  }, []);
+  fetchNotification(setNotifList);
+
+  NotificationCreatedCancelWebsocket();
 
   useEffect(() => {
     fetchRequestOfficeStaffAPI(setRequestList);
+
+    const intervalId = setInterval(() => {
+      fetchRequestOfficeStaffAPI(setRequestList);
+    }, 60000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -81,31 +88,43 @@ export default function Requests() {
       selectedCategory === "Logs" ||
       selectedCategory === null;
 
-    if (isCategoryMatch && selectedCategory === "Logs") {
+    if (isCategoryMatch && selectedCategory === "Logs" && request.travel_date) {
       const [year, month, day] = request.travel_date.split("-");
       const [hours, minutes] = request.travel_time.split(":");
       const requestDate = new Date(year, month - 1, day, hours, minutes);
       return requestDate < currentDate;
     }
+
     const isSearchMatch =
       searchTerm === "" ||
       request.requester_full_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      request.travel_date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.travel_date &&
+        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (request.destination &&
+        request.destination.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (selectedCategory === "Logs" &&
         (request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-          request.travel_date
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()))) ||
+          (request.travel_date &&
+            request.travel_date
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())) ||
+          (request.destination &&
+            request.destination
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())))) ||
       (selectedCategory !== "Logs" &&
         request.requester_full_name
           .toLowerCase()
           .includes(searchTerm.toLowerCase())) ||
       request.request_id.toString().includes(searchTerm.toLowerCase()) ||
-      request.travel_date.toLowerCase().includes(searchTerm.toLowerCase());
+      (request.travel_date &&
+        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (request.destination &&
+        request.destination.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return isCategoryMatch && isSearchMatch;
   });
@@ -130,18 +149,42 @@ export default function Requests() {
     setIsRequestFormOpen(false);
   };
   const handleConfirmationApprove = (selectedDriverId: any) => {
-    approveRequestAPI(
-      requestId,
-      selectedDriverId,
-      setIsRequestFormOpen,
-      setIsConfirmationOpen
-    );
+    let validationErrors: { [key: string]: string } = {};
+
+    if (!selectedDriverId) {
+      validationErrors.driverSelectionError = "Please select a driver!";
+    }
+    console.log(selectedDriverId);
+    if (selectedDriverId === null) {
+      validationErrors.driverSelectionError = "Please select a driver!";
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+    if (Object.keys(validationErrors).length === 0) {
+      approveRequestAPI(
+        requestId,
+        selectedDriverId,
+        setIsRequestFormOpen,
+        setIsConfirmationOpen
+      );
+    }
   };
 
   const handleCompleted = () => {
     maintenanceAbsenceCompletedRequestAPI(
       requestId,
       setIsConfirmationCompletedOpen,
+      setIsRequestFormOpen,
+      setLoadingBarProgress
+    );
+  };
+
+  const handleReject = () => {
+    rejectRequestAPI(
+      requestId,
+      setIsConfirmationRejectedOpen,
       setIsRequestFormOpen,
       setLoadingBarProgress
     );
@@ -199,6 +242,7 @@ export default function Requests() {
                 <th>Requested by</th>
                 <th>Travel Date</th>
                 <th>Status</th>
+                <th>On Trip</th>
               </tr>
             </thead>
             <tbody>
@@ -217,6 +261,13 @@ export default function Requests() {
                       <td>{request.requester_full_name}</td>
                       <td>{request.travel_date}</td>
                       <td>{request.status}</td>
+                      <td>
+                        {request.vehicle_driver_status === "On Trip" ? (
+                          <div className="ontrip-yes"></div>
+                        ) : (
+                          <div className="ontrip-no"></div>
+                        )}
+                      </td>
                     </tr>
                   </>
                 ))
@@ -234,10 +285,17 @@ export default function Requests() {
           handleConfirmationApprove(selectedDriverId)
         }
         onComplete={handleCompleted}
+        onReject={handleReject}
+        errorMessages={errorMessages}
+        setErrorMessages={setErrorMessages}
       />
 
       <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />
       <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
+      <Confirmation
+        isOpen={isConfirmationRejectedOpen}
+        header="Request Rejected!"
+      />
     </>
   );
 }

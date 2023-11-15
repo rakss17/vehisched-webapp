@@ -99,9 +99,8 @@ export default function DashboardR() {
     },
   ];
 
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
+  fetchNotification(setNotifList);
+
   useEffect(() => {
     fetchSchedule(
       setSchedule,
@@ -208,15 +207,17 @@ export default function DashboardR() {
     setErrorMessages(errorArray);
 
     if (Object.keys(validationErrors).length === 0) {
+      setLoadingBarProgress(20);
       checkVehicleAvailability(
         setVehiclesData,
         data.travel_date,
         data.travel_time,
         data.return_date,
         data.return_time,
-        data.capacity
+        data.capacity,
+        setLoadingBarProgress,
+        handleButtonClick
       );
-      handleButtonClick("Available Vehicle");
     }
   };
 
@@ -962,12 +963,19 @@ export default function DashboardR() {
                                 <h1>Schedule no. </h1>{" "}
                                 <h2>{schedule.trip_id}</h2>
                               </div>
-                              <div>
-                                <Countdown
-                                  travelDate={schedule.travel_date}
-                                  travelTime={schedule.travel_time}
-                                />
-                              </div>
+                              {schedule.vehicle_driver_status === "On Trip" ? (
+                                <div className="ongoing-trip-text">
+                                  <strong>Ongoing trip</strong>
+                                  <strong className="loading-dots"></strong>
+                                </div>
+                              ) : (
+                                <div className="count-down">
+                                  <Countdown
+                                    travelDate={schedule.travel_date}
+                                    travelTime={schedule.travel_time}
+                                  />
+                                </div>
+                              )}
                             </div>
                             <div>
                               <h2>Travel date and time: </h2>{" "}

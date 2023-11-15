@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import axios from "axios";
 import {
   RequestFormProps,
@@ -9,9 +10,10 @@ import { Dispatch } from "redux";
 import { fetchUsersInfo } from "../../redux/slices/usersInfoSlices";
 import { fetchPersonalInfo } from "../../redux/slices/personalInfoSlices";
 import { fetchVehiclesData } from "../../redux/slices/vehiclesDataSlices";
-import { getTimeElapsed } from "../functions/getTimeElapsed";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import moment from "moment";
+import ToastContent from "../toastcontent/toastcontent";
 
 export const serverSideUrl = "http://localhost:8000/media/";
 
@@ -700,128 +702,101 @@ export function toggleVehicleStatusAPI(
 }
 
 export function fetchNotification(setNotifList: any) {
-  const token = localStorage.getItem("token");
-  api
-    .get("api/v1/notification/fetch/", {
-      headers: {
-        Authorization: `Token ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .then((response) => {
-      setNotifList(response.data);
-      const unreadNotifications = response.data.filter(
-        (notification: any) => !notification.read_status
-      );
-      unreadNotifications.forEach((notification: any) => {
-        if (notification.subject.includes("has been created")) {
-          const timeElapsed = getTimeElapsed(notification.created_at);
-          let message = `${notification.subject} `;
-          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
-          for (let i = 0; i < timeUnits.length; i++) {
-            if (timeElapsed.includes(timeUnits[i])) {
-              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
-              break;
-            }
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    api
+      .get("api/v1/notification/fetch/", {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setNotifList(response.data);
+        const unreadNotifications = response.data.filter(
+          (notification: any) => !notification.read_status
+        );
+        unreadNotifications.forEach((notification: any) => {
+          if (notification.subject.includes("has been created")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.success(
+              <ToastContent message={message} timeago={timeago} />,
+              {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: false,
+              }
+            );
+          } else if (notification.subject.includes("has been approved")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.success(
+              <ToastContent message={message} timeago={timeago} />,
+              {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: false,
+              }
+            );
+          } else if (notification.subject.includes("A travel is on the way")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
+          } else if (notification.subject.includes("A travel is completed")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
+          } else if (
+            notification.subject.includes("Your travel will commence now")
+          ) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
+          } else if (notification.subject.includes("1 hour")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
+          } else if (notification.subject.includes("12 hours")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
+          } else if (notification.subject.includes("24 hours")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
+          } else if (notification.subject.includes("has been canceled")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
           }
-          if (!message.endsWith("ago")) {
-            message += `${timeElapsed} ago`;
-          }
-          toast.success(message, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (notification.subject.includes("has been approved")) {
-          const timeElapsed = getTimeElapsed(notification.created_at);
-          let message = `${notification.subject} `;
-          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
-          for (let i = 0; i < timeUnits.length; i++) {
-            if (timeElapsed.includes(timeUnits[i])) {
-              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
-              break;
-            }
-          }
-          if (!message.endsWith("ago")) {
-            message += `${timeElapsed} ago`;
-          }
-          toast.success(message, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (notification.subject.includes("1 hour")) {
-          const timeElapsed = getTimeElapsed(notification.created_at);
-          let message = `${notification.subject} `;
-          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
-          for (let i = 0; i < timeUnits.length; i++) {
-            if (timeElapsed.includes(timeUnits[i])) {
-              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
-              break;
-            }
-          }
-          if (!message.endsWith("ago")) {
-            message += `${timeElapsed} ago`;
-          }
-          toast.info(message, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (notification.subject.includes("12 hours")) {
-          const timeElapsed = getTimeElapsed(notification.created_at);
-          let message = `${notification.subject} `;
-          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
-          for (let i = 0; i < timeUnits.length; i++) {
-            if (timeElapsed.includes(timeUnits[i])) {
-              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
-              break;
-            }
-          }
-          if (!message.endsWith("ago")) {
-            message += `${timeElapsed} ago`;
-          }
-          toast.info(message, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (notification.subject.includes("24 hours")) {
-          const timeElapsed = getTimeElapsed(notification.created_at);
-          let message = `${notification.subject} `;
-          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
-          for (let i = 0; i < timeUnits.length; i++) {
-            if (timeElapsed.includes(timeUnits[i])) {
-              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
-              break;
-            }
-          }
-          if (!message.endsWith("ago")) {
-            message += `${timeElapsed} ago`;
-          }
-          toast.info(message, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        } else if (notification.subject.includes("has been canceled")) {
-          const timeElapsed = getTimeElapsed(notification.created_at);
-          let message = `${notification.subject} `;
-          const timeUnits = ["minute", "hour", "day", "week", "month", "year"];
-          for (let i = 0; i < timeUnits.length; i++) {
-            if (timeElapsed.includes(timeUnits[i])) {
-              message += `${timeElapsed.split(" ")[0]} ${timeUnits[i]}s ago`;
-              break;
-            }
-          }
-          if (!message.endsWith("ago")) {
-            message += `${timeElapsed} ago`;
-          }
-          toast.info(message, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          });
-        }
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching notif list:", error);
       });
-    })
-    .catch((error) => {
-      console.error("Error fetching notif list:", error);
-    });
+  }, []);
+
+  return null;
 }
 
 export function checkVehicleAvailability(
@@ -830,7 +805,9 @@ export function checkVehicleAvailability(
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
   preferred_end_travel_time: any,
-  preferred_capacity: any
+  preferred_capacity: any,
+  setLoadingBarProgress: any,
+  handleButtonClick: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -848,10 +825,27 @@ export function checkVehicleAvailability(
       },
     })
     .then((response) => {
+      setLoadingBarProgress(50);
       setVehiclesData(response.data);
+      setLoadingBarProgress(100);
+      handleButtonClick("Available Vehicle");
     })
     .catch((error) => {
-      console.error("Error fetching vehicle list:", error);
+      if (error.response && error.response.data) {
+        setLoadingBarProgress(50);
+        setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching vehicle list:", error);
     });
 }
 
@@ -1053,6 +1047,7 @@ export function vehicleMaintenanceAPI(
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpenVehicleMaintenance(false);
+        window.location.reload();
       }, 3000);
     })
     .catch((error) => {
@@ -1129,6 +1124,7 @@ export function driverAbsenceAPI(
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpenDriverAbsence(false);
+        window.location.reload();
       }, 3000);
     })
     .catch((error) => {
@@ -1151,7 +1147,7 @@ export function driverAbsenceAPI(
 
 export function maintenanceAbsenceCompletedRequestAPI(
   requestId: any,
-  setIsConfirmationOpen: any,
+  setIsConfirmationCompletedOpen: any,
   setIsRequestFormOpen: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
@@ -1172,10 +1168,10 @@ export function maintenanceAbsenceCompletedRequestAPI(
     )
     .then((response) => {
       setIsRequestFormOpen(false);
-      setIsConfirmationOpen(true);
+      setIsConfirmationCompletedOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
-        setIsConfirmationOpen(false);
+        setIsConfirmationCompletedOpen(false);
         window.location.reload();
       }, 3000);
     })
@@ -1183,3 +1179,66 @@ export function maintenanceAbsenceCompletedRequestAPI(
       console.log(error);
     });
 }
+
+export function rejectRequestAPI(
+  requestId: any,
+  setIsConfirmationRejectedOpen: any,
+  setIsRequestFormOpen: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+
+  api
+    .patch(
+      `/api/v1/request/reject-request/${requestId}/`,
+      {
+        status: "Rejected",
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setIsRequestFormOpen(false);
+      setIsConfirmationRejectedOpen(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationRejectedOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const downloadTripTicketAPI = async (requestId: any) => {
+  try {
+    const response = await api.get(
+      `/api/v1/trip/download-tripticket/${requestId}/`,
+      {
+        responseType: "blob",
+      }
+    );
+
+    const contentDisposition = response.headers["content-disposition"] || "";
+    const match = contentDisposition.match(/filename="(.+)"/);
+    const filename = match ? match[1] : "file.pdf";
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download failed", error);
+  }
+};

@@ -54,17 +54,14 @@ export default function Drivers() {
     { icon: faUser, text: "Drivers", path: "/Drivers" },
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
+
+  fetchNotification(setNotifList);
 
   useEffect(() => {
     fetchDriversAPI(setDriversData);
   }, []);
 
-  useEffect(() => {
-    NotificationCreatedCancelWebsocket();
-  }, []);
+  NotificationCreatedCancelWebsocket();
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);

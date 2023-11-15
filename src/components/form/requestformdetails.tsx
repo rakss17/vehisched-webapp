@@ -5,10 +5,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
-import {
-  fetchDriversScheduleAPI,
-  maintenanceAbsenceCompletedRequestAPI,
-} from "../api/api";
+import { downloadTripTicketAPI, fetchDriversScheduleAPI } from "../api/api";
 import CommonButton from "../button/commonbutton";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
@@ -17,20 +14,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   selectedRequest,
   onApprove,
   onComplete,
+  onReject,
+  errorMessages,
+  setErrorMessages,
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const [driversData, setDriversData] = useState<any[]>([]);
-
-  // useEffect(() => {
-  //   fetchDriversScheduleAPI(
-  //     setDriversData,
-  //     selectedRequest.travel_date,
-  //     selectedRequest.travel_time,
-  //     selectedRequest.return_date,
-  //     selectedRequest.return_time
-  //   );
-  // }, []);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -39,6 +29,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
     ),
   ];
+
+  const handleDownloadTripTicket = () => {
+    downloadTripTicketAPI(selectedRequest.request_id);
+  };
 
   const handleFetchDrivers = () => {
     fetchDriversScheduleAPI(
@@ -60,6 +54,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     if (selectedDriver) {
       setSelectedDriverId(selectedDriver.id);
     }
+    if (driverName === "Select Driver") {
+      setSelectedDriverId(null);
+    }
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.driverSelectionError;
+    setErrorMessages(updatedErrors);
   };
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
@@ -149,6 +149,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   menuClassName="menu-custom"
                 />
               </div>
+              <p className="set-trip-text-error">
+                {errorMessages[0]?.driverSelectionError}
+              </p>
             </div>
           )}
 
@@ -156,9 +159,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
               selectedRequest.status !== "Driver Absence" &&
               selectedRequest.status !== "Pending" &&
+              selectedRequest.status !== "Rejected" &&
               selectedRequest.purpose !== "Vehicle Maintenance" &&
               selectedRequest.purpose !== "Driver Absence" && (
-                <CommonButton secondaryStyle text="Download trip ticket" />
+                <CommonButton
+                  secondaryStyle
+                  text="Download trip ticket"
+                  onClick={handleDownloadTripTicket}
+                />
               )}
             {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
               <CommonButton
@@ -184,7 +192,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   width={7}
                   height={7}
                   tertiaryStyle
-                  text="Decline"
+                  text="Reject"
+                  onClick={onReject}
                 />
                 <CommonButton
                   width={7}

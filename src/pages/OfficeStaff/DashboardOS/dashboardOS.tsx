@@ -44,12 +44,10 @@ export default function DashboardOS() {
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
   const navigate = useNavigate();
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
-  useEffect(() => {
-    NotificationCreatedCancelWebsocket();
-  }, []);
+
+  fetchNotification(setNotifList);
+
+  NotificationCreatedCancelWebsocket();
 
   useEffect(() => {
     const currentDate = format(new Date(), "yyyy-MM-dd");

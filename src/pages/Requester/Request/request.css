@@ -57,10 +57,6 @@
   /* flex-direction: column;
   align-items: center; */
 }
-/* .requests-table-container {
-  width: 100%;
-  overflow-x: auto;
-} */
 
 .requests-container p {
   font-size: 1.3rem;
@@ -75,10 +71,11 @@
   word-wrap: break-word;
 }
 
-/* .requests-container table thead th:first-child,
-.requests-container table tbody td:first-child {
-  text-align: left;
-} */
+.requests-container table tbody .ontrip-text {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+}
 
 .requests-container table tbody tr {
   text-align: center;

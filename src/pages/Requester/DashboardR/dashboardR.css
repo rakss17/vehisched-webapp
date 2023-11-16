@@ -88,7 +88,7 @@
   width: 15vw;
   height: 20vh;
   position: absolute;
-  top: 0%;
+  top: 5%;
   left: 75%;
   text-align: center;
 }
@@ -109,9 +109,10 @@
 }
 .requester-schedule-container-div {
   background-color: #d9d9d9;
-  height: 50vh;
+  height: auto;
   width: 40vw;
   padding-top: 1.5vh;
+  padding-bottom: 3vh;
 }
 .requester-schedule-container-div div:nth-child(1) {
   display: flex;
@@ -119,15 +120,24 @@
   margin-top: 2vh;
   padding-left: 2vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   gap: 0.5vw;
+  color: black;
 }
 
 .requester-schedule-container-div div:nth-child(1) div:nth-child(1) {
   padding-left: 0vw;
   padding-top: 0vh;
 }
-.requester-schedule-container-div div:nth-child(1) div:nth-child(2) {
+.requester-schedule-container-div div:nth-child(1) .ongoing-trip-text {
+  display: flex;
+  width: 22vw;
+  padding-left: 6vw;
+  padding-top: 0vh;
+  margin-left: 4vw;
+  font-size: 1.1rem;
+}
+.requester-schedule-container-div div:nth-child(1) .count-down {
   display: flex;
   justify-content: center;
   width: 22vw;
@@ -149,7 +159,7 @@
   margin-top: 2vh;
   padding-left: 2vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   gap: 1vw;
 }
 .requester-schedule-container-div div:nth-child(2) h2 {
@@ -166,7 +176,7 @@
   margin-top: 2vh;
   padding-left: 2vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   gap: 0vw;
 }
 .requester-schedule-container-div div:nth-child(3) div {
@@ -175,7 +185,7 @@
   margin-top: 0vh;
   padding-left: 0vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   width: 18vw;
   gap: 1vw;
 }
@@ -192,9 +202,9 @@
   flex-direction: row;
   margin-top: 2vh;
   padding-left: 2vw;
-  height: 10vh;
+  height: auto;
   gap: 1vw;
-  overflow: hidden;
+  padding-right: 1vw;
 }
 .requester-schedule-container-div div:nth-child(4) h2 {
   color: black;
@@ -203,6 +213,7 @@
 .requester-schedule-container-div div:nth-child(4) p {
   color: black;
   font-size: 1.1rem;
+  word-break: break-all;
 }
 
 .requester-schedule-container-div div:nth-child(5) {
@@ -211,7 +222,7 @@
   margin-top: 2vh;
   padding-left: 2vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   gap: 0vw;
 }
 .requester-schedule-container-div div:nth-child(5) div {
@@ -220,7 +231,7 @@
   margin-top: 0vh;
   padding-left: 0vw;
   align-items: center;
-  height: 5vh;
+  height: auto;
   width: 18vw;
   gap: 1vw;
 }
@@ -238,11 +249,11 @@
 .requester-schedule-container-div div:nth-child(6) {
   display: flex;
   flex-direction: row;
-  margin-top: 1vh;
+  margin-top: 2vh;
   padding-right: 4vw;
   align-items: center;
   justify-content: flex-end;
-  height: 5vh;
+  height: auto;
 }
 .requester-schedule-container-div div:nth-child(6) button {
   background-color: transparent;

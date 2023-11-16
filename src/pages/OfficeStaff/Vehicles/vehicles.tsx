@@ -69,9 +69,8 @@ export default function Vehicles() {
     { icon: faUser, text: "Drivers", path: "/Drivers" },
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
-  useEffect(() => {
-    fetchNotification(setNotifList);
-  }, []);
+
+  fetchNotification(setNotifList);
 
   useEffect(() => {
     dispatch(fetchVehiclesAPI() as any);
@@ -81,9 +80,7 @@ export default function Vehicles() {
     setVehiclesData(vehicles);
   }, [vehicles]);
 
-  useEffect(() => {
-    NotificationCreatedCancelWebsocket();
-  }, []);
+  NotificationCreatedCancelWebsocket();
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);

@@ -33,7 +33,6 @@
 .request-container table {
   width: 80vw;
   overflow: auto;
-  table-layout: fixed;
 }
 .request-container table thead {
   font-size: 1.5rem;
@@ -47,7 +46,36 @@
   color: black;
   text-align: center;
   cursor: pointer;
+  /* position: relative; */
 }
+
+.request-container table tbody tr .ontrip-yes {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: green;
+  /* position: absolute; */
+  margin-top: 0vh;
+  margin-left: 5vw;
+}
+.request-container table tbody tr .ontrip-no {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: red;
+  /* position: absolute; */
+  margin-top: 0vh;
+  margin-left: 5vw;
+}
+/* .request-container table tbody tr .ontrip-yes {
+  font-size: 1.5rem;
+  color: green;
+}
+.request-container table tbody tr .ontrip-no {
+  font-size: 1.5rem;
+  color: red;
+} */
+
 .request-container table tbody tr:hover {
   background-color: #060e57;
   color: white;

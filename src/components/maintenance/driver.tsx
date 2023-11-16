@@ -18,6 +18,7 @@ const DriverAbsence: React.FC<ModalProps> = ({
   setIsConfirmationOpenDriverAbsence,
 }) => {
   if (!selectedDriver) return null;
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [data, setData] = useState<any>({
     travel_date: null,
     travel_time: null,
@@ -29,15 +30,24 @@ const DriverAbsence: React.FC<ModalProps> = ({
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.travelDateError;
+    setErrorMessages(updatedErrors);
   };
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, return_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.returnDateError;
+    setErrorMessages(updatedErrors);
   };
 
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, travel_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelTimeError;
+      setErrorMessages(updatedErrors);
     } else {
       console.log("No time selected.");
     }
@@ -45,19 +55,54 @@ const DriverAbsence: React.FC<ModalProps> = ({
   const handleEndTimeChange = (time: string | null) => {
     if (time) {
       setData({ ...data, return_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.returnTimeError;
+      setErrorMessages(updatedErrors);
     } else {
       console.log("No time selected.");
     }
   };
   const handleProceed = () => {
-    setLoadingBarProgress(20);
-    driverAbsenceAPI(
-      data,
-      setIsConfirmationOpenDriverAbsence,
-      navigate,
-      setLoadingBarProgress,
-      setIsDriverAbsenceOpen
-    );
+    let validationErrors: { [key: string]: string } = {};
+
+    const allFieldsBlank =
+      !data.travel_date &&
+      !data.travel_time &&
+      !data.return_date &&
+      !data.return_time;
+
+    if (allFieldsBlank) {
+      validationErrors.all = "Required all fields!";
+    } else {
+      if (!data.travel_date) {
+        validationErrors.travelDateError = "This field is required";
+      }
+      if (!data.travel_time) {
+        validationErrors.travelTimeError = "This field is required";
+      }
+
+      if (!data.return_date) {
+        validationErrors.returnDateError = "This field is required";
+      }
+
+      if (!data.return_time) {
+        validationErrors.returnTimeError = "This field is required";
+      }
+    }
+
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
+    if (Object.keys(validationErrors).length === 0) {
+      setLoadingBarProgress(20);
+      driverAbsenceAPI(
+        data,
+        setIsConfirmationOpenDriverAbsence,
+        navigate,
+        setLoadingBarProgress,
+        setIsDriverAbsenceOpen
+      );
+    }
   };
   return (
     <Modal className="vehicle-maintenance-modal" isOpen={isOpen}>
@@ -67,6 +112,7 @@ const DriverAbsence: React.FC<ModalProps> = ({
             Schedule an absence for {selectedDriver.last_name},{" "}
             {selectedDriver.first_name} {selectedDriver.middle_name}
           </strong>
+          <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
         </div>
         <div className="maintenance-from">
           <p>From: </p>
@@ -78,12 +124,19 @@ const DriverAbsence: React.FC<ModalProps> = ({
               onChange={handleStartDateChange}
               disableDaysBefore={0}
             />
-            <br></br>
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.travelDateError}
+            </p>
+            {!errorMessages[0]?.travelDateError && <br></br>}
+
             <TimeInput
               onChange={handleStartTimeChange}
               selectedDate={data.travel_date}
               handleDateChange={handleStartDateChange}
             />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.travelTimeError}
+            </p>
           </div>
         </div>
         <div className="maintenance-to">
@@ -96,12 +149,18 @@ const DriverAbsence: React.FC<ModalProps> = ({
               onChange={handleEndDateChange}
               disableDaysBefore={0}
             />
-            <br></br>
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.returnDateError}
+            </p>
+            {!errorMessages[0]?.returnDateError && <br></br>}
             <TimeInput
               onChange={handleEndTimeChange}
               selectedDate={data.return_date}
               handleDateChange={handleEndDateChange}
             />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.returnTimeError}
+            </p>
           </div>
         </div>
         <div className="maintenance-button">

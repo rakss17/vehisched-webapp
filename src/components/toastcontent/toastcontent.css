@@ -1,0 +1,16 @@
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.toast-message {
+  font-weight: bold;
+  color: #060e57;
+  font-size: 1rem;
+}
+
+.toast-timeago {
+  align-self: flex-end;
+}

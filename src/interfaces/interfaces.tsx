@@ -104,6 +104,7 @@ export interface RequestFormProps {
   sub_category?: any;
   distance?: any;
   type?: any;
+  vehicle_driver_status?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -112,6 +113,9 @@ export interface RequestFormDetailsProps {
   selectedRequest: RequestFormProps | null;
   onApprove: (driverId: string | null) => void;
   onComplete: () => void;
+  onReject: () => void;
+  errorMessages: any[];
+  setErrorMessages: any;
 }
 
 export interface TimeInputProps {

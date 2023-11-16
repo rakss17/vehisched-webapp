@@ -167,42 +167,6 @@ const Part3: React.FC<Part1Props> = ({ onNext }) => {
             </div>
             <div className='survey-question'>
               <p>
-                SQD4: I easily found information about my transaction from the office or its website.
-              </p>
-            </div>
-
-            <div className='sub-choices'>
-              <div className='sub-choices-left'>
-                <div className='choices'>
-                  <input type="checkbox" />
-                  Strongly Agree
-                </div>
-                <div className='choices'>
-                  <input type="checkbox" />
-                  Agree
-                </div>
-                <div className='choices'>
-                  <input type="checkbox" />
-                  Neither Agree no Disagree
-                </div>
-              </div>
-              <div className='sub-choices-right'>
-                <div className='choices'>
-                  <input type="checkbox" />
-                  Disagree
-                </div>
-                <div className='choices'>
-                  <input type="checkbox" />
-                  Strongly Disagree
-                </div>
-                <div className='choices'>
-                  <input type="checkbox" />
-                  Not Applicable
-                </div>
-              </div>
-            </div>
-            <div className='survey-question'>
-              <p>
                 Suggestions on how we can further improve our services (optional):
               </p>
             </div>

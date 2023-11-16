@@ -187,15 +187,46 @@
     font-size: 1rem;
     padding-left: 1vh;
     padding-top: 1vw;
-    width: 30vw;
+    width: 54vw;
     height: 5vh;
+    margin-left: -1vw;
   }
   .am-pm-container {
     left: 55%;
-    top: 40%;
+    top: 50%;
     font-size: 1rem;
+    margin-left: 10px;
   }
   .time-input-wrapper {
     left: 3%;
+    
   }
+  .arrow-buttons {
+    display: flex;
+    flex-direction: column;
+    height: 5vh;
+    width: 3vw;
+    margin-top: 0px;
+    position: absolute;
+    left: 40%;
+    top: 60%;
+    transform: translateY(-50%);
+  }
+  .arrow-buttons-ampm {
+    display: flex;
+    flex-direction: column;
+    height: 5vh;
+    width: 3vw;
+    margin-top: 0px;
+    position: absolute;
+    left: 85%;
+    top: 60%;
+    transform: translateY(-50%);
+  }
+  .time-input{
+   padding: 5px;
+   padding-left: 20px;
+ }
+  
+
 }

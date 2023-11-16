@@ -99,6 +99,17 @@
 }
 
 @media screen and (max-width: 768px) {
+  .containerHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4rem;
+    background: linear-gradient(120deg, #fdb316, #060e57 60%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
   .containerHeader p {
     font-size: 1.5rem;
     white-space: nowrap;
@@ -110,6 +121,20 @@
     height: 2.5rem;
     margin-left: 1rem;
   }
+
+  .dropdown-menu-header {
+    position: absolute;
+    top: 100%;
+    left: 5%;
+    width: 200px;
+    padding: 10px;
+    background-color: #d9d9d9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    list-style: none;
+    color: black;
+  }
+
   .dropdown-header {
     position: relative;
     display: inline-block;

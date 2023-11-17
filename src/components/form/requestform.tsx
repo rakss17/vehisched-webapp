@@ -259,18 +259,18 @@ export default function RequestForm() {
               <div className="first-row">
                 <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
                 <div className="first-row-column">
-                  <div className="requester-info-name">
-                    <strong>Requester's name:</strong>
-                    <p>
-                      {lastName}, {firstName} {middleName}
-                    </p>
-                  </div>
+                    <div className="requester-info-name">
+                      <strong>Requester's name:</strong>
+                      <p>
+                        {lastName}, {firstName} {middleName}
+                      </p>
+                    </div>
 
-                  <div className="requester-office">
-                    <strong>Office:</strong>
-                    <p>{office}</p>
-                  </div>
-
+                    <div className="requester-office">
+                      <strong>Office:</strong>
+                      <p>{office}</p>
+                    </div>
+                
                   <div className="input-passenger-number">
                     <p className="maximum-capacity-note">
                       Vehicle maximum capacity: {capacity}

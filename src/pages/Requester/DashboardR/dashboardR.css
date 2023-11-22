@@ -750,10 +750,8 @@
     margin-left: 3vh;
     margin-top: 2vh;
     border-top: 4px solid #060e57;
-    gap:1rem;
   }
   .modal-set-trip {
-    
     width: 100vw;
     height: auto;
     margin-top: 3vh;
@@ -1262,8 +1260,9 @@
   }
   .requester-schedule-container {
     height: auto;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-top: 40px;
+    margin-bottom: auto;  
+    margin-bottom: -3rem;
   }
 
   .requester-schedule-container-div {
@@ -1272,6 +1271,7 @@
     width: 95%;
     padding-top: 0vh;
     padding-bottom: 3vh;
+    margin-top: 10px;
   }
   .requester-schedule-container-div div:nth-child(1) {
     display: flex;

@@ -78,7 +78,7 @@
       margin-bottom: 5%;
       overflow-y: auto; /* Add this to make the content scrollable */
       max-height: 90vh; /* Add this to limit the max height of the modal content */
-      z-index: 9999;
+      z-index: 999;
   
     }
     

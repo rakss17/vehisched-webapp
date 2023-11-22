@@ -147,6 +147,7 @@
     height: auto;
     flex-direction: column;
     background-color: #ffffff;
+    z-index: 999;
   }
   .containerSB.open .sidebar-icon {
     display: block;

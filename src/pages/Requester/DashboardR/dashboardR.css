@@ -304,6 +304,7 @@
   padding-right: 5%;
   font-size: 1rem;
   font-weight: bold;
+  text-align: justify;
 }
 .requester-recommendation-container-div div:nth-child(2) span {
   color: #060e57;
@@ -451,6 +452,9 @@
   color: black;
   font-size: 1.4rem;
   font-weight: bold;
+}
+.next-user{
+  display: none;
 }
 @keyframes loadingDots {
   0% {
@@ -730,7 +734,7 @@
   font-size: 0.8rem;
   margin-left: 0vw;
 }
-/* Cellphone */
+/* Cellphone-----------------------------------------------------Cellphone---------------------------------  */
 @media screen and (max-width: 768px) {
   .margin-top-dashboard {
     margin-top: -3rem;
@@ -1158,9 +1162,287 @@
     font-size: 0.8rem;
     font-weight: bold;
   }
+  .requester-recommendation-container-div {
+    background-color: #d9d9d9;
+    height: auto;
+    width: 95%;
+    padding-bottom: 2vh;
+    margin-top: 1rem;
+  }
+  .requester-recommendation-container-div div:nth-child(1) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1vh;
+    padding-left: 1vw;
+    align-items: center;
+    height: 5vh;
+    gap: 0.5vw;
+    margin-bottom: auto;
+    }
+  .requester-recommendation-container-div div:nth-child(1) h1 {
+    color: black;
+    font-size: 1rem;
+  }
+  
+  .requester-recommendation-container-div div:nth-child(1) h2 {
+    color: black;
+    font-size: 1rem;
+  }
+  .requester-recommendation-container-div div:nth-child(2) {
+    margin-top: 1vh;
+    font-size: 0.8rem;
+    width:100%;
+    text-align: justify;
+  }
+  .requester-recommendation-container-div div:nth-child(2) span {
+    color: #060e57;
+  }
+  .requester-recommendation-container-div div:nth-child(4) {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    margin-top: 0vh;
+  }
+  .requester-recommendation-container-div div:nth-child(4) p {
+    font-size: 0.8rem;
+    color: red;
+  }
+  .requester-recommendation-container-div div:nth-child(5) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 2vh;
+  }
+  .recommended-vehicle-card {
+    background-color: white;
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  .recommended-vehicle-card.active {
+    border: 4px solid #060e57;
+  }
+  .recommended-vehicle-card.active:hover {
+    border: 4px solid #060e57;
+  }
+  .recommended-vehicle-card:hover {
+    box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+    border: 1px solid #cccccc;
+  }
+  .recommended-vehicle-card p:nth-child(2) {
+    font-size: 0.8rem;
+    color: black;
+    font-weight: bold;
+  }
+  .recommended-vehicle-card p:nth-child(3),
+  .recommended-vehicle-card p:nth-child(4) {
+    font-size: 0.8rem;
+    color: black;
+  }
+  .recommend-vehicle-carousel {
+    margin-top: 2vh;
+  }
+  .recommended-vehicle-card img {
+    width: auto;
+    height: 8vh;
+    margin-top: 3px;
+  }
+  .carousel-item {
+    margin-left: 0vw;
+  }
+
+  .requester-schedule-container-div {
+    background-color: #d9d9d9;
+    height: auto;
+    width: 95%;
+    padding-top: 0vh;
+    padding-bottom: 3vh;
+    margin-top: 17rem;
+    margin-bottom: 10rem;
+  }
+  .requester-schedule-container-div div:nth-child(1) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 0vh;
+    padding-left: 2vw;
+    align-items: center;
+    height: auto;
+    gap: 0.5vw;
+    color: black;
+  }
+  
+  .requester-schedule-container-div div:nth-child(1) div:nth-child(1) {
+    padding-left: 0vw;
+    padding-top: 0vh;
+  }
+  .requester-schedule-container-div div:nth-child(1) .ongoing-trip-text {
+    display: flex;
+    width: 22vw;
+    padding-left: 6vw;
+    padding-top: 0vh;
+    margin-left: 4vw;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(1) .count-down {
+    display: flex;
+    justify-content: center;
+    width: 22vw;
+    padding-left: 0vw;
+    padding-top: 0vh;
+    margin-left: 4vw;
+    width: 80vw;
+    
+  }
+  .requester-schedule-container-div div:nth-child(1) h1 {
+    color: black;
+    font-size: 1rem;
+    width: 30vw;
+  }
+  .requester-schedule-container-div div:nth-child(1) h2 {
+    color: black;
+    font-size: 1rem;
+  }
+  .requester-schedule-container-div div:nth-child(2) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    padding-left: 2vw;
+    align-items: center;
+    height: auto;
+    gap: 1vw;
+    
+  }
+  .requester-schedule-container-div div:nth-child(2) h2 {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(2) p {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(3) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    padding-left: 2vw;
+    align-items: center;
+    height: auto;
+    gap: 0vw;
+  }
+  .requester-schedule-container-div div:nth-child(3) div {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0vh;
+    padding-left: 0vw;
+    align-items: center;
+    height: auto;
+    width: 40vw;
+    gap: 1vw;
+  }
+  .requester-schedule-container-div div:nth-child(3) h2 {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(3) p {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(4) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    padding-left: 2vw;
+    height: auto;
+    gap: 1vw;
+    padding-right: 1vw;
+ 
+  }
+  .requester-schedule-container-div div:nth-child(4) h2 {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(4) p {
+    color: black;
+    font-size: 0.8rem;
+    word-break: break-all;
+    
+  }
+  
+  .requester-schedule-container-div div:nth-child(5) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    padding-left: 2vw;
+    align-items: center;
+    height: auto;
+    gap: 0vw;
+
+  }
+  .requester-schedule-container-div div:nth-child(5) div {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0vh;
+    padding-left: 0vw;
+    align-items: center;
+    height: auto;
+    gap: 1vw;
+    width: 40vw;
+  }
+  .requester-schedule-container-div div:nth-child(5) h2 {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(5) p {
+    color: black;
+    font-size: 0.8rem;
+  }
+  .requester-schedule-container-div div:nth-child(5) div:nth-child(2) p {
+    color: #060e57;
+  }
+  .requester-schedule-container-div div:nth-child(6) {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    padding-right: 4vw;
+    align-items: center;
+    justify-content: flex-end;
+    height: auto;
+  }
+  .requester-schedule-container-div div:nth-child(6) button {
+    background-color: transparent;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: black;
+    border: 2px solid #060e57;
+  }
+  .requester-schedule-container-div div:nth-child(6) button:nth-child(1):hover {
+    box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
+    border: 1px solid #cccccc;
+  }
+  .next-schedule-container {
+    display: none
+  }
+  .next-user{
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    margin-top: 1.5vh;
+    margin-bottom: -1vh;
+    border: 1px solid #e8a51c;
+  }
+
 
 }
-/* Tablet */
+/* Tablet ------------------------------------Tablet-----------------------------------------Tablet----------------------*/
 @media screen and (min-width:767px) and (max-width:1023px) {
   .margin-top-dashboard {
     margin-top: -3rem;

@@ -26,29 +26,29 @@ const Part3: React.FC<Part1Props> = ({ onNext }) => {
               <div className='sub-choices-left'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Agree
+                  &nbsp;&nbsp;Strongly Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Agree
+                  &nbsp;&nbsp;Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Neither Agree no Disagree
+                  &nbsp;&nbsp;Neither Agree nor Disagree
                 </div>
               </div>
               <div className='sub-choices-right'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Disagree
+                  &nbsp;&nbsp;Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Disagree
+                  &nbsp;&nbsp;Strongly Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Not Applicable
+                  &nbsp;&nbsp;Not Applicable
                 </div>
               </div>
             </div>
@@ -62,29 +62,29 @@ const Part3: React.FC<Part1Props> = ({ onNext }) => {
               <div className='sub-choices-left'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Agree
+                  &nbsp;&nbsp;Strongly Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Agree
+                  &nbsp;&nbsp;Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Neither Agree no Disagree
+                  &nbsp;&nbsp;Neither Agree nor Disagree
                 </div>
               </div>
               <div className='sub-choices-right'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Disagree
+                  &nbsp;&nbsp;Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Disagree
+                  &nbsp;&nbsp;Strongly Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Not Applicable
+                  &nbsp;&nbsp;Not Applicable
                 </div>
               </div>
             </div>
@@ -98,29 +98,29 @@ const Part3: React.FC<Part1Props> = ({ onNext }) => {
               <div className='sub-choices-left'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Agree
+                  &nbsp;&nbsp;Strongly Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Agree
+                  &nbsp;&nbsp;Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Neither Agree no Disagree
+                  &nbsp;&nbsp;Neither Agree nor Disagree
                 </div>
               </div>
               <div className='sub-choices-right'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Disagree
+                  &nbsp;&nbsp;Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Disagree
+                  &nbsp;&nbsp;Strongly Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Not Applicable
+                  &nbsp;&nbsp;Not Applicable
                 </div>
               </div>
             </div>
@@ -139,29 +139,29 @@ const Part3: React.FC<Part1Props> = ({ onNext }) => {
               <div className='sub-choices-left'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Agree
+                  &nbsp;&nbsp;Strongly Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Agree
+                  &nbsp;&nbsp;Agree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Neither Agree no Disagree
+                  &nbsp;&nbsp;Neither Agree nor Disagree
                 </div>
               </div>
               <div className='sub-choices-right'>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Disagree
+                  &nbsp;&nbsp;Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Strongly Disagree
+                  &nbsp;&nbsp;Strongly Disagree
                 </div>
                 <div className='choices'>
                   <input type="checkbox" />
-                  Not Applicable
+                  &nbsp;&nbsp;Not Applicable
                 </div>
               </div>
             </div>

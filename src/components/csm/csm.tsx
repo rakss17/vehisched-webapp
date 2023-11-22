@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './csm.css';
 import USTPLogo from "../../assets/USTP LOGO.png";
 import CSM from "../../assets/csm.jpg";
@@ -6,7 +6,7 @@ import Part1 from './part1';
 import Part2 from './part2';
 import Part3 from './part3';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'; // Import the arrow-left and arrow-right icons
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function Csm() {
   const [currentPart, setCurrentPart] = useState(1);
@@ -22,11 +22,22 @@ export default function Csm() {
       setCurrentPart(currentPart - 1);
     }
   };
+
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  
+    const scrollTimeout = setTimeout(scrollToTop, 100); // Adjust the delay as needed
+  
+    return () => clearTimeout(scrollTimeout); // Clear the timeout on component unmount
+  }, [currentPart]);
+  
+
   const onNext = () => {
     // Define the behavior you want when the "Submit" button is clicked
     // For example, you can submit the form data or navigate to another page.
   };
-
   return (
     <div className='csm-modal'>
       <div className='csm-header'>

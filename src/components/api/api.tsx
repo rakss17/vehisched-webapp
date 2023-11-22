@@ -788,6 +788,13 @@ export function fetchNotification(setNotifList: any) {
               position: toast.POSITION.TOP_CENTER,
               autoClose: false,
             });
+          } else if (notification.subject.includes("unexpected maintenance")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
           }
         });
       })

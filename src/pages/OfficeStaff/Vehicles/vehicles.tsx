@@ -96,21 +96,16 @@ export default function Vehicles() {
   });
 
   const handleEllipsisMenu = (category: string, vehicle: any) => {
-    setSelectedVehicle(vehicle);
     if (category === "View Schedules") {
       setIsVehiclCalendarOpen(true);
       setIsVehicleMaintenanceOpen(false);
+      fetchVehicleSchedules(setVehicleSchedules, vehicle.plate_number);
     } else if (category === "Schedule a maintenance") {
+      setSelectedVehicle(vehicle);
       setIsVehicleMaintenanceOpen(true);
       setIsVehiclCalendarOpen(false);
     }
   };
-
-  useEffect(() => {
-    if (selectedVehicle && isVehicleCalendarOpen) {
-      fetchVehicleSchedules(setVehicleSchedules, selectedVehicle.plate_number);
-    }
-  }, [selectedVehicle, isVehicleCalendarOpen]);
 
   const handleAvailableButton = () => {
     setLoadingBarProgress(20);

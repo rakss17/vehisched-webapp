@@ -57,6 +57,16 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
           position: toast.POSITION.TOP_CENTER,
           autoClose: false,
         });
+      } else if (
+        data.type === "recommend.notification" &&
+        data.status === "Recommend" &&
+        data.message != "Notification message goes here"
+      ) {
+        const justnow = "Just Now";
+        toast.info(<ToastContent message={data.message} timeago={justnow} />, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
       }
     };
 

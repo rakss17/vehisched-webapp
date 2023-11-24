@@ -213,19 +213,18 @@ export default function RequestForm() {
       validationErrors.all.length === 0
     ) {
       setLoadingBarProgress(20);
-      postRequestFromAPI(
-        data,
-        () => {
-          setIsConfirmationOpen(true);
-          setIsModalOpen(true); // Open the modal after the request is successful
-        },
-        setIsConfirmationOpen,
-        setLoadingBarProgress
-      );
+      setIsModalOpen(true);
+      // postRequestFromAPI(
+      //   data,
+      //   () => {
+      //     setIsConfirmationOpen(true);
+      //     setIsModalOpen(true); // Open the modal after the request is successful
+      //   },
+      //   setIsConfirmationOpen,
+      //   setLoadingBarProgress
+      // );
     }
   };
-
-
 
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
@@ -243,11 +242,11 @@ export default function RequestForm() {
       <Header />
       <Container>
         {/* Conditionally render the CSM component as a modal */}
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <Csm />
-        </div>
-      )}
+        {isModalOpen && (
+          <div className="modal-overlay">
+            <Csm />
+          </div>
+        )}
         <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />
@@ -259,18 +258,18 @@ export default function RequestForm() {
               <div className="first-row">
                 <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
                 <div className="first-row-column">
-                    <div className="requester-info-name">
-                      <strong>Requester's name:</strong>
-                      <p>
-                        {lastName}, {firstName} {middleName}
-                      </p>
-                    </div>
+                  <div className="requester-info-name">
+                    <strong>Requester's name:</strong>
+                    <p>
+                      {lastName}, {firstName} {middleName}
+                    </p>
+                  </div>
 
-                    <div className="requester-office">
-                      <strong>Office:</strong>
-                      <p>{office}</p>
-                    </div>
-                
+                  <div className="requester-office">
+                    <strong>Office:</strong>
+                    <p>{office}</p>
+                  </div>
+
                   <div className="input-passenger-number">
                     <p className="maximum-capacity-note">
                       Vehicle maximum capacity: {capacity}
@@ -386,7 +385,7 @@ export default function RequestForm() {
           </div>
         </div>
       </Container>
-     
+
       <Confirmation
         isOpen={isConfirmationOpen}
         header="Request Submitted!"

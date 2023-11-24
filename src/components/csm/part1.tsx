@@ -1,17 +1,7 @@
 import React, { useState } from "react";
+import { QuestionProps } from "../../interfaces/interfaces";
 
-interface Part1Props {
-  onNext: () => void;
-  
-}
-
-const Part1: React.FC<Part1Props> = ({ onNext }) => {
-  const [selectedOption, setSelectedOption] = useState<string>(""); // Initialize with an empty string
-
-  const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value);
-  };
-
+const Part1: React.FC<QuestionProps> = ({ onNext, data, setData }) => {
   return (
     <div className="Parts">
       <div className="sub-title">
@@ -29,8 +19,13 @@ const Part1: React.FC<Part1Props> = ({ onNext }) => {
         <select
           id="clientType"
           name="clientType"
-          value={selectedOption}
-          onChange={handleOptionChange}
+          value={data.client_type}
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+            setData({
+              ...data,
+              client_type: event.target.value,
+            });
+          }}
           className="survey-select"
         >
           <option value="">Select an option</option>
@@ -39,9 +34,27 @@ const Part1: React.FC<Part1Props> = ({ onNext }) => {
           <option value="government">Government (employee or agency)</option>
         </select>
         <p>Region of Residence:</p>
-        <input className="survey-input"></input>
+        <input
+          value={data.region_of_residence}
+          onChange={(event) => {
+            setData({
+              ...data,
+              region_of_residence: event.target.value,
+            });
+          }}
+          className="survey-input"
+        ></input>
         <p>Service Availed:</p>
-        <input className="survey-input"></input>
+        <input
+          value={data.service_availed}
+          onChange={(event) => {
+            setData({
+              ...data,
+              service_availed: event.target.value,
+            });
+          }}
+          className="survey-input"
+        ></input>
       </div>
       <div className="instructions-part1">
         <p>
@@ -62,26 +75,29 @@ const Part1: React.FC<Part1Props> = ({ onNext }) => {
             </div>
             <div className="answer">
               <div className="choices-CC1">
-                <input type="checkbox" />&nbsp;&nbsp;I know what a CC is and I saw this
-                office’s CC.
+                <input type="checkbox" />
+                &nbsp;&nbsp;I know what a CC is and I saw this office’s CC.
               </div>
               <div className="choices-CC1">
-                <input type="checkbox" />&nbsp;&nbsp;I know what a CC is but I did NOT see
-                this office’s CC.
+                <input type="checkbox" />
+                &nbsp;&nbsp;I know what a CC is but I did NOT see this office’s
+                CC.
               </div>
               <div className="choices-CC1">
-                <input type="checkbox" />&nbsp;&nbsp;I learned of the CC only when I saw
-                this office’s CC.
+                <input type="checkbox" />
+                &nbsp;&nbsp;I learned of the CC only when I saw this office’s
+                CC.
               </div>
               <div className="choices-CC1">
-                <input type="checkbox" />&nbsp;&nbsp;I do not know what a CC is and did not
-                see one in this office. (Answers ‘N/A’ on CC2 and CC3).
+                <input type="checkbox" />
+                &nbsp;&nbsp;I do not know what a CC is and did not see one in
+                this office. (Answers ‘N/A’ on CC2 and CC3).
               </div>
             </div>
             <div className="survey-question">
               <p>
-                CC2: If aware of CC (answered 1-3 in CC1), would you say that the
-                CC of this office was...?
+                CC2: If aware of CC (answered 1-3 in CC1), would you say that
+                the CC of this office was...?
               </p>
             </div>
 
@@ -115,8 +131,8 @@ const Part1: React.FC<Part1Props> = ({ onNext }) => {
           <div className="survey-right">
             <div className="survey-question">
               <p>
-                CC3: If aware of CC (answered codes 1-3 in CC1), how much did the
-                CC help you in your transaction?
+                CC3: If aware of CC (answered codes 1-3 in CC1), how much did
+                the CC help you in your transaction?
               </p>
             </div>
 

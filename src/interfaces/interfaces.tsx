@@ -156,3 +156,21 @@ export interface ButtonProps {
   width?: any;
   height?: any;
 }
+
+export interface QuestionProps {
+  onNext: () => void;
+  data: {
+    client_type: string;
+    region_of_residence: string;
+    service_availed: string;
+    // Add other form fields here
+  };
+  setData: (
+    value: React.SetStateAction<{
+      client_type: string;
+      region_of_residence: string;
+      service_availed: string;
+      // Add other form fields here
+    }>
+  ) => void;
+}

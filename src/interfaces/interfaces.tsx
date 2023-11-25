@@ -163,14 +163,26 @@ export interface QuestionProps {
     client_type: string;
     region_of_residence: string;
     service_availed: string;
-    // Add other form fields here
+    questions: {
+      question_number: string;
+      content: string;
+      answers: {
+        content: string;
+      }[];
+    }[];
   };
   setData: (
     value: React.SetStateAction<{
       client_type: string;
       region_of_residence: string;
       service_availed: string;
-      // Add other form fields here
+      questions: {
+        question_number: string;
+        content: string;
+        answers: {
+          content: string;
+        }[];
+      }[];
     }>
   ) => void;
 }

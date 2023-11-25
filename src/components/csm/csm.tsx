@@ -14,6 +14,17 @@ export default function Csm() {
     client_type: "",
     region_of_residence: "",
     service_availed: "",
+    questions: [
+      {
+        question_number: "",
+        content: "",
+        answers: [
+          {
+            content: "",
+          },
+        ],
+      },
+    ],
   });
 
   const handleNext = () => {

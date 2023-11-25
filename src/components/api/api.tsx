@@ -1249,3 +1249,20 @@ export const downloadTripTicketAPI = async (requestId: any) => {
     console.error("Download failed", error);
   }
 };
+
+export async function fetchQuestion(setQuestions: any) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/request/questions/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setQuestions(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching questions list:", error);
+    });
+}

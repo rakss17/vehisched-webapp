@@ -1,7 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QuestionProps } from "../../interfaces/interfaces";
+import { fetchQuestion } from "../api/api";
 
 const Part1: React.FC<QuestionProps> = ({ onNext, data, setData }) => {
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [cc1, setCc1] = useState("");
+
+  useEffect(() => {
+    fetchQuestion(setQuestions);
+  }, []);
+
   return (
     <div className="Parts">
       <div className="sub-title">
@@ -67,7 +75,39 @@ const Part1: React.FC<QuestionProps> = ({ onNext, data, setData }) => {
       <div className="question-container-1">
         <div className="survey-container">
           <div className="survey-left">
-            <div className="survey-question">
+            {questions.map((question) => (
+              <div className="survey-question" key={question.question_number}>
+                <p>{question.content}</p>
+                <input
+                  type="radio"
+                  value="I know what a CC is and I saw this office’s CC."
+                  checked={
+                    cc1 === "I know what a CC is and I saw this office’s CC."
+                  }
+                  onChange={(e) => {
+                    setCc1(e.target.value);
+                    setData({
+                      ...data,
+                      questions: data.questions.map((q) => {
+                        if (q.question_number === "CC1") {
+                          return {
+                            ...q,
+                            answers: [
+                              {
+                                content: e.target.value,
+                              },
+                            ],
+                          };
+                        }
+                        return q;
+                      }),
+                    });
+                  }}
+                />
+              </div>
+            ))}
+            ;
+            {/* <div className="survey-question">
               <p>
                 CC1: Which of the following best describes your awareness of a
                 CC?
@@ -157,7 +197,7 @@ const Part1: React.FC<QuestionProps> = ({ onNext, data, setData }) => {
                   &nbsp;&nbsp;N/A
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -166,3 +206,34 @@ const Part1: React.FC<QuestionProps> = ({ onNext, data, setData }) => {
 };
 
 export default Part1;
+
+// questions.map(question => (
+//   <div key={question.question_number}>
+//     <p>{question.content}</p>
+//     <input
+//       type="radio"
+//       value="I know what a CC is and I saw this office’s CC."
+//       checked={cc1 === "I know what a CC is and I saw this office’s CC."}
+//       onChange={(e) => {
+//         setCc1(e.target.value);
+//         setData({
+//           ...data,
+//           questions: data.questions.map((q) => {
+//             if (q.question_number === 'CC1') {
+//               return {
+//                 ...q,
+//                 answers: [
+//                  {
+//                    content: e.target.value,
+//                  },
+//                 ],
+//               };
+//             }
+//             return q;
+//           }),
+//         });
+//       }}
+//     />
+//     {/* Repeat for other choices */}
+//   </div>
+//  ));

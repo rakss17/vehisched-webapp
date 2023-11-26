@@ -1266,3 +1266,18 @@ export async function fetchQuestion(setQuestions: any) {
       console.error("Error fetching questions list:", error);
     });
 }
+
+export async function postCSM(data: any) {
+  const token = localStorage.getItem("token");
+  return api
+    .post("api/v1/request/csm/37/", data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {})
+    .catch((error) => {
+      console.error("Error fetching questions list:", error);
+    });
+}

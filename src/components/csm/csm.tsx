@@ -7,25 +7,33 @@ import Part2 from "./part2";
 import Part3 from "./part3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { fetchQuestion, postCSM } from "../api/api";
 
 export default function Csm() {
   const [currentPart, setCurrentPart] = useState(1);
-  const [data, setData] = useState({
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [data, setData] = useState<{
+    client_type: string;
+    region_of_residence: string;
+    service_availed: string;
+    questions: {
+      question_number: string;
+      answers: string;
+    }[];
+    suggestions: string;
+    email_address: string;
+  }>({
     client_type: "",
     region_of_residence: "",
     service_availed: "",
-    questions: [
-      {
-        question_number: "",
-        content: "",
-        answers: [
-          {
-            content: "",
-          },
-        ],
-      },
-    ],
+    questions: [],
+    suggestions: "",
+    email_address: "",
   });
+
+  useEffect(() => {
+    fetchQuestion(setQuestions);
+  }, []);
 
   const handleNext = () => {
     if (currentPart < 3) {
@@ -50,6 +58,7 @@ export default function Csm() {
   }, [currentPart]);
 
   const handleSubmit = () => {
+    postCSM(data);
     console.log(data);
   };
   return (
@@ -69,10 +78,29 @@ export default function Csm() {
       <div></div>
       <div className="survey-container">
         {currentPart === 1 && (
-          <Part1 setData={setData} data={data} onNext={handleNext} />
+          <Part1
+            questions={questions}
+            setData={setData}
+            data={data}
+            onNext={handleNext}
+          />
         )}
-        {currentPart === 2 && <Part2 onNext={handleNext} />}
-        {currentPart === 3 && <Part3 onNext={handleNext} />}
+        {currentPart === 2 && (
+          <Part2
+            questions={questions}
+            setData={setData}
+            data={data}
+            onNext={handleNext}
+          />
+        )}
+        {currentPart === 3 && (
+          <Part3
+            questions={questions}
+            setData={setData}
+            data={data}
+            onNext={handleNext}
+          />
+        )}
       </div>
       <div className="arrow">
         {currentPart > 1 && (

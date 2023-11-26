@@ -165,11 +165,10 @@ export interface QuestionProps {
     service_availed: string;
     questions: {
       question_number: string;
-      content: string;
-      answers: {
-        content: string;
-      }[];
+      answers: string;
     }[];
+    suggestions: string;
+    email_address: string;
   };
   setData: (
     value: React.SetStateAction<{
@@ -178,11 +177,12 @@ export interface QuestionProps {
       service_availed: string;
       questions: {
         question_number: string;
-        content: string;
-        answers: {
-          content: string;
-        }[];
+        answers: string;
       }[];
+      suggestions: string;
+      email_address: string;
     }>
   ) => void;
+  questions: any[];
+  setQuestions?: (question: any) => void;
 }

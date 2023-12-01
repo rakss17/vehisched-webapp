@@ -23,6 +23,7 @@ import {
   checkVehicleAvailability,
   acceptVehicleAPI,
   cancelRequestAPI,
+  fetchVehicleVIPAPI,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
@@ -98,8 +99,15 @@ export default function DashboardR() {
       notification: notifLength >= 1 ? notifLength : undefined,
     },
   ];
+  const role = personalInfo?.role;
 
   fetchNotification(setNotifList);
+
+  useEffect(() => {
+    if (role === "vip") {
+      fetchVehicleVIPAPI(setVehiclesData, handleButtonClick)
+    }
+  }, [])
 
   useEffect(() => {
     fetchSchedule(
@@ -747,11 +755,12 @@ export default function DashboardR() {
                 </p>
               ) : (
                 <>
-                  <p className="date-available-range">
+                  {role === 'vip' ? null: (<p className="date-available-range">
                     Available vehicles from {data.travel_date},{" "}
                     {formatTime(data.travel_time)} to {data.return_date},{" "}
                     {formatTime(data.return_time)}
-                  </p>
+                  </p>)}
+                  
                   <div className="vehicle-container">
                     {vehiclesData.map((vehicle) => (
                       <a
@@ -781,7 +790,7 @@ export default function DashboardR() {
                           </div>
                           <img
                             className="vehicle-image"
-                            src={serverSideUrl + vehicle.image}
+                            src={vehicle.image}
                             alt={vehicle.model}
                           />
                         </div>

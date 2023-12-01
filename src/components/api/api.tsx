@@ -167,6 +167,25 @@ export async function fetchVIPAPI(setVIPData: any) {
   }
 }
 
+export async function fetchVehicleVIPAPI(setVehiclesData: any, handleButtonClick: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/vehicles/fetch-vehicle-vip/", {
+      params: {
+        role: 'vip'
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    
+    setVehiclesData(response.data)
+    handleButtonClick('Available Vehicle')
+  } catch (error) {
+    console.log(error);
+  }
+}
 export function fetchUsersAPI() {
   return async (dispatch: Dispatch) => {
     try {

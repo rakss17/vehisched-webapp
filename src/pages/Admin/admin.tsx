@@ -9,7 +9,7 @@ import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
-import { Vehicle } from "../../interfaces/interfaces";
+import { DropdownParams, Vehicle } from "../../interfaces/interfaces";
 import { SignupParams } from "../../interfaces/interfaces";
 import {
   SignupAPI,
@@ -65,7 +65,7 @@ export default function Admin() {
     useState(false);
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<SignupParams>();
+  const [selectedAccount, setSelectedAccount] = useState<DropdownParams>();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
@@ -94,6 +94,7 @@ export default function Admin() {
     type: "",
     capacity: null,
     is_vip: false,
+    assigned_to: "",
     image: null,
   });
   const [vehicleUpdate, setVehicleUpdate] = useState<Vehicle>({
@@ -103,6 +104,7 @@ export default function Admin() {
     capacity: null,
     status: "",
     is_vip: false,
+    assigned_to: "",
     image: null,
   });
   const dispatch = useDispatch();
@@ -138,6 +140,18 @@ export default function Admin() {
     setUserUpdate((prevUserData) => ({
       ...prevUserData,
       office: selectedOption,
+    }));
+  };
+  const handleDropdownChange5 = (selectedOption: string) => {
+    setVehicleData((prevVehicleData) => ({
+      ...prevVehicleData,
+      assigned_to: selectedOption,
+    }));
+  };
+  const handleDropdownChange6 = (selectedOption: string) => {
+    setVehicleUpdate((prevVehicleUpdate) => ({
+      ...prevVehicleUpdate,
+      assigned_to: selectedOption,
     }));
   };
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -357,7 +371,6 @@ export default function Admin() {
       setErrorMessages([]);
       setLoadingBarProgress(20);
       setIsAddOpen(false);
-      console.log(userData);
       SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
     }
   };
@@ -432,7 +445,6 @@ export default function Admin() {
     }
 
     setVehicleErrorMessages(vehicleValidationErrors);
-
     if (vehicleValidationErrors.length === 0) {
       setLoadingBarProgress(20);
       setIsAddVehicleOpen(false);
@@ -906,6 +918,9 @@ export default function Admin() {
           checked: vehicleData.is_vip,
           type: "checkbox",
         }}
+        vipDropdownProps={{
+          onChange: handleDropdownChange5,
+        }}
         uploadImageProps={{
           type: "file",
           accept: "image/*",
@@ -913,6 +928,7 @@ export default function Admin() {
             handleImageChange(event),
         }}
         vehicleErrorMessages={vehicleErrorMessages}
+        isVipProps={vehicleData.is_vip}
       />
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
@@ -966,8 +982,12 @@ export default function Admin() {
               ...vehicleUpdate,
               is_vip: event.target.checked,
             }),
-          checked: selectedVehicle?.is_vip ?? "",
+          checked: (selectedVehicle?.is_vip ?? "") || vehicleUpdate.is_vip,
           type: "checkbox",
+        }}
+        vipDropdownProps={{
+          onChange: handleDropdownChange6,
+          selectedVehicle: selectedVehicle,
         }}
         uploadImageProps={{
           type: "file",
@@ -975,6 +995,7 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageUpdateChange(event),
         }}
+        isVipProps={vehicleUpdate.is_vip}
       />
       <AddOfficeRole
         isOpen={isAddOfficeRoleOpen}

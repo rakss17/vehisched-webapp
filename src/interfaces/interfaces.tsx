@@ -7,6 +7,7 @@ export interface Vehicle {
   status?: string;
   is_vip?: any;
   vehicle_image?: any;
+  assigned_to: any;
 }
 
 interface InputProps {
@@ -18,9 +19,26 @@ interface InputProps {
   accept?: any;
 }
 
+export interface DropdownParams {
+  id?: any;
+  username: string;
+  password?: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  email: string;
+  mobile_number: any;
+  role: any;
+  status?: any;
+  user?: any;
+  office: any;
+  vip: any;
+}
+
 interface DropdownProps {
   onChange: (selectedOption: string) => void;
-  selectedAccount?: SignupParams | undefined;
+  selectedAccount?: DropdownParams | undefined;
+  selectedVehicle?: Vehicle | undefined;
 }
 
 export interface AddEditProps {
@@ -52,6 +70,8 @@ export interface AddEditVehicleProps {
   vipProps?: InputProps;
   uploadImageProps?: InputProps;
   vehicleErrorMessages?: string[];
+  vipDropdownProps: DropdownProps;
+  isVipProps?: any;
 }
 export interface SigninParams {
   username: string;

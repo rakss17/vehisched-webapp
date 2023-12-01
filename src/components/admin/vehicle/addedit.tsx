@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
 import { AddEditVehicleProps } from "../../../interfaces/interfaces";
+import { fetchVIPAPI } from "../../api/api";
+import DropdownMenu from "../dropdownmenu";
 
 const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   isOpen,
@@ -16,7 +18,15 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   vipProps,
   uploadImageProps,
   vehicleErrorMessages = [],
+  vipDropdownProps,
+  isVipProps,
 }) => {
+  const [vipData, setVIPData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchVIPAPI(setVIPData);
+  }, []);
+
   const handleKeyDown = (event: any) => {
     const key = event.key;
 
@@ -89,6 +99,17 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
           <label>VIP: </label>
           <input {...vipProps} />
         </div>
+        {isVipProps && (
+          <div>
+            <label>Assign to: </label>
+            <DropdownMenu
+              options={vipData}
+              selectedKey="assigned_to"
+              {...vipDropdownProps}
+            />
+          </div>
+        )}
+
         <div>
           <label>Upload Image: </label>
           <input {...uploadImageProps} />

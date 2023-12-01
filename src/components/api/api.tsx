@@ -151,6 +151,22 @@ export async function fetchOfficeAPI(setOfficeData: any) {
   }
 }
 
+export async function fetchVIPAPI(setVIPData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/fetch-vip/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const vipData = response.data.map((vip: any) => vip.username);
+    setVIPData(vipData);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export function fetchUsersAPI() {
   return async (dispatch: Dispatch) => {
     try {

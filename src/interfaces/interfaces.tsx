@@ -125,6 +125,7 @@ export interface RequestFormProps {
   distance?: any;
   type?: any;
   vehicle_driver_status?: any;
+  role?: any
 }
 
 export interface RequestFormDetailsProps {
@@ -145,7 +146,9 @@ export interface TimeInputProps {
 }
 
 export interface CalendarInputProps {
-  className?: string;
+  containerClassName?: string;
+  calendarClassName?: string;
+  iconClassName?: string
   onChange: (date: Date | null) => void;
   disableDaysBefore?: any;
   selectedDate?: Date | null;

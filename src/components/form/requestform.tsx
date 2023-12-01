@@ -30,11 +30,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Csm from "../csm/csm";
 import { Modal } from "@mui/material";
+import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 
 export default function RequestForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
+  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
@@ -54,24 +56,32 @@ export default function RequestForm() {
   const middleName = personalInfo?.middle_name;
   const userID = personalInfo?.id;
   const office = personalInfo?.office;
+  const role = personalInfo?.role
+  const [addressData, setAddressData] = useState<any>({
+    destination: "",
+    distance: null,
+  });
   const [data, setData] = useState<RequestFormProps>({
     requester_name: userID,
     office: office,
     purpose: "",
     number_of_passenger: null,
     passenger_name: [],
-    travel_date: travelDate,
-    travel_time: travelTime,
-    return_date: returnDate,
-    return_time: returnTime,
-    destination: destination,
+    travel_date: `${role === 'vip' ? null : travelDate }`,
+    travel_time: `${role === 'vip' ? null : travelTime }`,
+    return_date: `${role === 'vip' ? null : returnDate }`,
+    return_time: `${role === 'vip' ? null : returnTime }`,
+    destination: `${role === 'vip' ? addressData.destination : destination }`,
     vehicle: `${plateNumber}`,
     type: category,
-    distance: distance,
+    distance: `${role === 'vip' ? addressData.distance : distance }`,
+    role: role
   });
+  
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
+  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
 
@@ -204,7 +214,8 @@ export default function RequestForm() {
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-
+    console.log(data)
+    console.log(addressData)
     if (
       validationErrors.numberOfPassengersError.length === 0 &&
       validationErrors.passengerNameError.length === 0 &&
@@ -213,17 +224,89 @@ export default function RequestForm() {
       validationErrors.all.length === 0
     ) {
       setLoadingBarProgress(20);
-      setIsModalOpen(true);
-      // postRequestFromAPI(
-      //   data,
-      //   () => {
-      //     setIsConfirmationOpen(true);
-      //     setIsModalOpen(true); // Open the modal after the request is successful
-      //   },
-      //   setIsConfirmationOpen,
-      //   setLoadingBarProgress
-      // );
+      // setIsModalOpen(true);
+      postRequestFromAPI(
+        data,
+        () => {
+          setIsConfirmationOpen(true);
+          // setIsModalOpen(true); // Open the modal after the request is successful
+        },
+        setIsConfirmationOpen,
+        setLoadingBarProgress
+      );
     }
+  };
+  const checkAutocompleteDisability = () => {
+    if (data.travel_date !== null && data.travel_time !== null) {
+      setIsAutocompleteDisabled(false);
+      setIsTravelDateSelected(false);
+    }
+  };
+  const handleStartDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, travel_date: formattedDate });
+    if (data.category === "Round Trip") {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelDateError;
+      setErrorMessages(updatedErrors);
+    } else if (
+      data.category === "One-way" ||
+      data.category === "One-way - Fetch" ||
+      data.category === "One-way - Drop"
+    ) {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelDateOnewayError;
+      setErrorMessages(updatedErrors);
+    }
+
+    checkAutocompleteDisability();
+  };
+
+  const handleStartTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, travel_time: time });
+      if (data.category === "Round Trip") {
+        const updatedErrors = { ...errorMessages };
+        delete updatedErrors[0]?.travelTimeError;
+        setErrorMessages(updatedErrors);
+      } else if (
+        data.category === "One-way" ||
+        data.category === "One-way - Fetch" ||
+        data.category === "One-way - Drop"
+      ) {
+        const updatedErrors = { ...errorMessages };
+        delete updatedErrors[0]?.travelTimeOnewayError;
+        setErrorMessages(updatedErrors);
+      }
+      checkAutocompleteDisability();
+    } else {
+      console.log("No time selected.");
+    }
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, return_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.returnDateError;
+    setErrorMessages(updatedErrors);
+  };
+
+  const handleEndTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, return_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.returnTimeError;
+      setErrorMessages(updatedErrors);
+    } else {
+      console.log("No time selected.");
+    }
+  };
+
+  const removeDestinationError = () => {
+    const updatedErrors = [...errorMessages];
+    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
+    setErrorMessages(updatedErrors);
   };
 
   const formatTime = (timeString: any) => {
@@ -297,14 +380,42 @@ export default function RequestForm() {
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
               </div>
-              <div className="third-row">
+              <div className={role === "vip" ? "third-row2" : "third-row"}>
                 <div className="vehicle-info-name">
                   <strong>Vehicle:</strong>
                   <p>
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
-                <div className="destination-info">
+                {role === 'vip' ? (<>
+                  <div className="destination-info">
+                  <strong>Destination: </strong>
+                  <div className="autocomplete-container">
+                  <AutoCompleteAddressGoogle
+                        travel_date={data.travel_date}
+                        travel_time={data.travel_time}
+                        setData={setData}
+                        isDisabled={isAutocompleteDisabled}
+                        setAddressData={setAddressData}
+                        category={data.category}
+                        removeDestinationError={removeDestinationError}
+                        className="customize-autocomplete"
+                      />
+                    {isTravelDateSelected ? (
+                        <p>Select travel date and time first</p>
+                      ) : (
+                        <p>{errorMessages[0]?.destinationError}</p>
+                      )}
+                  </div>
+                  
+                </div>
+
+                <div className="kilometer-info">
+                  <strong>Distance:</strong>
+                  <p>{distance} km</p>
+                </div>
+                </>) : (<>
+                  <div className="destination-info">
                   <strong>Destination: </strong>
                   <p>{destination}</p>
                 </div>
@@ -312,9 +423,94 @@ export default function RequestForm() {
                 <div className="kilometer-info">
                   <strong>Distance:</strong>
                   <p>{distance} km</p>
+                </div></>)}
+                
+              </div>
+              {role === 'vip' ? (<>
+                <div className="forth-row">
+                <div className="calendar-containerr">
+                  <strong>Date of Travel:</strong>
+                  <CalendarInput
+                            selectedDate={
+                              data.travel_date
+                                ? new Date(data.travel_date)
+                                : null
+                            }
+                            onChange={handleStartDateChange}
+                            disableDaysBefore={3}
+                            calendarClassName="customize-calendar"
+                          />
+                </div>
+                <div className="calendar-containerr">
+                  <strong>to </strong>
+                  <CalendarInput
+                            selectedDate={
+                              data.return_date
+                                ? new Date(data.return_date)
+                                : null
+                            }
+                            onChange={handleEndDateChange}
+                            disableDaysBefore={3}
+                            calendarClassName="customize-calendar"
+                          />
                 </div>
               </div>
               <div className="forth-row">
+                <div className="calendar-containerr">
+                  <strong>Time of Travel: </strong>
+                  <TimeInput
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
+                          />
+                </div>
+                <div className="calendar-containerr">
+                  <strong>to </strong>
+                  <TimeInput
+                            onChange={handleEndTimeChange}
+                            selectedDate={data.return_date}
+                            handleDateChange={handleEndDateChange}
+                          />
+                </div>
+              </div>
+              <div className="fifth-row">
+                <div className="calendar-containerr">
+                  <strong>Travel Type:</strong>
+                  <select
+                            value={data.sub_category}
+                            onChange={(event) => {
+                              const selectedValue = event.target.value;
+                          
+                              setData((prevData: any) => ({
+                                ...prevData,
+                                category:
+                                  selectedValue === "One-way - Drop"
+                                    ? "One-way - Drop"
+                                    : selectedValue === "One-way - Fetch"
+                                    ? "One-way - Fetch"
+                                    : "One-way",
+                              }));
+                              if (selectedValue === "One-way - Fetch") {
+                                
+                                const updatedErrors = { ...errorMessages };
+                                delete updatedErrors[0]?.categoryError;
+                                setErrorMessages(updatedErrors);
+                              } else if (selectedValue === "One-way - Drop") {
+                                
+                                const updatedErrors = { ...errorMessages };
+                                delete updatedErrors[0]?.categoryError;
+                                setErrorMessages(updatedErrors);
+                              } 
+                            }}
+                          >
+                            <option>--------- Select Type --------</option>
+                            <option value="Round Trip">Round Trip</option>
+                            <option value="One-way - Drop">One-way - Drop</option>
+                            <option value="One-way - Fetch">One-way - Fetch</option>
+                          </select>
+                </div>
+              </div>
+              </>) : (<><div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Date of Travel:</strong>
                   <p>{travelDate}</p>
@@ -339,7 +535,7 @@ export default function RequestForm() {
                   <strong>Travel Type:</strong>
                   <p>{category}</p>
                 </div>
-              </div>
+              </div></>)}
               <div className="sixth-row">
                 <div className="purpose-row">
                   <InputField

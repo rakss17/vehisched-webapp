@@ -7,7 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CalendarInputProps } from "../../interfaces/interfaces";
 
 const CalendarInput: React.FC<CalendarInputProps> = ({
-  className,
+  containerClassName,
+  calendarClassName,
+  iconClassName,
   onChange,
   disableDaysBefore = 0,
   selectedDate,
@@ -28,10 +30,10 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
 
   return (
     <>
-      <div className={`calendar-container ${className}`}>
+      <div className={`calendar-container ${containerClassName}`}>
         <DatePicker
           key={date?.toString()}
-          className={`calendar-input ${className}`}
+          className={`calendar-input ${calendarClassName}`}
           selected={date}
           onChange={handleDateChange}
           minDate={minDate}
@@ -39,7 +41,7 @@ const CalendarInput: React.FC<CalendarInputProps> = ({
 
         <div className="calendar-icon-container">
           <FontAwesomeIcon
-            className={`calendar-input-icon ${className}`}
+            className={`calendar-input-icon ${iconClassName}`}
             icon={faCalendarAlt}
           />
         </div>

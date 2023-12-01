@@ -30,3 +30,12 @@
   font-weight: bold;
   font-size: 1.2rem;
 }
+
+@media screen and (max-width: 768px) {
+  .modal-confirmation {
+    margin-top: 5vh;
+    margin-left: 2vw;
+    width: 96vw;
+    height: 60vh;
+  }
+}

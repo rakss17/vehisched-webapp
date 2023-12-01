@@ -788,6 +788,13 @@ export function fetchNotification(setNotifList: any) {
               position: toast.POSITION.TOP_CENTER,
               autoClose: false,
             });
+          } else if (notification.subject.includes("unexpected maintenance")) {
+            const timeago = moment(notification.created_at).fromNow();
+            let message = `${notification.subject} `;
+            toast.info(<ToastContent message={message} timeago={timeago} />, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: false,
+            });
           }
         });
       })
@@ -1242,3 +1249,35 @@ export const downloadTripTicketAPI = async (requestId: any) => {
     console.error("Download failed", error);
   }
 };
+
+export async function fetchQuestion(setQuestions: any) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/request/questions/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setQuestions(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching questions list:", error);
+    });
+}
+
+export async function postCSM(data: any) {
+  const token = localStorage.getItem("token");
+  return api
+    .post("api/v1/request/csm/37/", data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {})
+    .catch((error) => {
+      console.error("Error fetching questions list:", error);
+    });
+}

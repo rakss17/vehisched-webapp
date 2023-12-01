@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { ModalProps } from "../../interfaces/interfaces";
 import "./vehicle.css";
@@ -24,9 +24,17 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
     travel_time: null,
     return_date: null,
     return_time: null,
-    plate_number: selectedVehicle.plate_number,
+    plate_number: "",
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setData((prevData: any) => ({
+      ...prevData,
+      plate_number: selectedVehicle.plate_number,
+    }));
+  }, []);
+
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });

@@ -156,3 +156,33 @@ export interface ButtonProps {
   width?: any;
   height?: any;
 }
+
+export interface QuestionProps {
+  onNext: () => void;
+  data: {
+    client_type: string;
+    region_of_residence: string;
+    service_availed: string;
+    questions: {
+      question_number: string;
+      answers: string;
+    }[];
+    suggestions: string;
+    email_address: string;
+  };
+  setData: (
+    value: React.SetStateAction<{
+      client_type: string;
+      region_of_residence: string;
+      service_availed: string;
+      questions: {
+        question_number: string;
+        answers: string;
+      }[];
+      suggestions: string;
+      email_address: string;
+    }>
+  ) => void;
+  questions: any[];
+  setQuestions?: (question: any) => void;
+}

@@ -1011,6 +1011,28 @@ export default function DashboardR() {
                             <div>
                               <button>View more info</button>
                             </div>
+                            <div className="next-user">
+                            {nextSchedule
+                            .filter(
+                              (nextSched) =>
+                                nextSched.previous_trip_id === schedule.trip_id
+                            )
+                            .map((nextSched) => (
+                              <div>
+                                <strong>
+                                  The next scheduled user of this vehicle will
+                                  commence at:
+                                </strong>
+                                <p>{nextSched.next_schedule_travel_date}</p>
+                                <p>
+                                  {formatTime(
+                                    nextSched.next_schedule_travel_time
+                                  )}
+                                </p>
+                              </div>
+                            ))}
+
+                            </div>
                           </div>
                           {nextSchedule
                             .filter(

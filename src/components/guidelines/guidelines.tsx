@@ -59,7 +59,7 @@ const Guidelines = ({ guidelinescloseModal }: { guidelinescloseModal: () => void
                 checked={isChecked}
                 onChange={handleCheckboxChange}
               />
-              I agree with the Vehicle Reservation Guidelines
+              &nbsp;I agree with the Vehicle Reservation Guidelines
             </label>
             {showAlert && (
               <p className="alert-text">Please agree to the guidelines before proceeding.</p>

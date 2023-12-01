@@ -28,8 +28,11 @@ import { format } from "date-fns";
 import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Csm from "../csm/csm";
+import { Modal } from "@mui/material";
 
 export default function RequestForm() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
@@ -210,14 +213,19 @@ export default function RequestForm() {
       validationErrors.all.length === 0
     ) {
       setLoadingBarProgress(20);
-      postRequestFromAPI(
-        data,
-        setIsConfirmationOpen,
-        navigate,
-        setLoadingBarProgress
-      );
+      setIsModalOpen(true);
+      // postRequestFromAPI(
+      //   data,
+      //   () => {
+      //     setIsConfirmationOpen(true);
+      //     setIsModalOpen(true); // Open the modal after the request is successful
+      //   },
+      //   setIsConfirmationOpen,
+      //   setLoadingBarProgress
+      // );
     }
   };
+
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -233,6 +241,12 @@ export default function RequestForm() {
       <ToastContainer />
       <Header />
       <Container>
+        {/* Conditionally render the CSM component as a modal */}
+        {isModalOpen && (
+          <div className="modal-overlay">
+            <Csm />
+          </div>
+        )}
         <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />
@@ -371,6 +385,7 @@ export default function RequestForm() {
           </div>
         </div>
       </Container>
+
       <Confirmation
         isOpen={isConfirmationOpen}
         header="Request Submitted!"

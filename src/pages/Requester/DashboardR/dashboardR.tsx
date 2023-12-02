@@ -855,8 +855,6 @@ export default function DashboardR() {
                           {recommend.return_date},{" "}
                           {formatTime(recommend.return_time)}
                         </span>{" "}
-                        is currently undergoing unexpected maintenance. We
-                        apologize for any inconvenience this may cause.{" "}
                         {recommend.message}
                       </p>
                     </div>

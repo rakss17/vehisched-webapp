@@ -223,11 +223,12 @@ export default function RequestForm() {
       // setIsModalOpen(true);
       postRequestFromAPI(
         data,
-        () => {
-          setIsConfirmationOpen(true);
-          // setIsModalOpen(true); // Open the modal after the request is successful
-        },
+        // () => {
+        //   setIsConfirmationOpen(true);
+        //   setIsModalOpen(true); // Open the modal after the request is successful
+        // },
         setIsConfirmationOpen,
+        navigate,
         setLoadingBarProgress
       );
     }

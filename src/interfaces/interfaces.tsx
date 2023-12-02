@@ -125,7 +125,7 @@ export interface RequestFormProps {
   distance?: any;
   type?: any;
   vehicle_driver_status?: any;
-  role?: any
+  role?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -148,7 +148,7 @@ export interface TimeInputProps {
 export interface CalendarInputProps {
   containerClassName?: string;
   calendarClassName?: string;
-  iconClassName?: string
+  iconClassName?: string;
   onChange: (date: Date | null) => void;
   disableDaysBefore?: any;
   selectedDate?: Date | null;
@@ -156,7 +156,9 @@ export interface CalendarInputProps {
 
 export interface ModalProps {
   isOpen: boolean;
+  header?: string;
   content?: string;
+  footer?: string;
   buttonText1?: string;
   buttonText2?: string;
   onRequestClose?: () => void;
@@ -168,6 +170,7 @@ export interface ModalProps {
   setIsDriverAbsenceOpen?: any;
   setIsConfirmationOpenDriverAbsence?: any;
   selectedDriver?: any;
+  onProceed?: any;
 }
 
 export interface ButtonProps {
@@ -208,4 +211,12 @@ export interface QuestionProps {
   ) => void;
   questions: any[];
   setQuestions?: (question: any) => void;
+}
+
+export interface InitialFormVipProps {
+  isOpen: any;
+  onRequestClose: any;
+  plateNumber: any;
+  vehicleName: any;
+  capacity: any;
 }

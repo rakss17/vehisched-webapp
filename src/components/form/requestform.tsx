@@ -56,28 +56,25 @@ export default function RequestForm() {
   const middleName = personalInfo?.middle_name;
   const userID = personalInfo?.id;
   const office = personalInfo?.office;
-  const role = personalInfo?.role
-  const [addressData, setAddressData] = useState<any>({
-    destination: "",
-    distance: null,
-  });
+  const role = personalInfo?.role;
+
   const [data, setData] = useState<RequestFormProps>({
     requester_name: userID,
     office: office,
     purpose: "",
     number_of_passenger: null,
     passenger_name: [],
-    travel_date: `${role === 'vip' ? null : travelDate }`,
-    travel_time: `${role === 'vip' ? null : travelTime }`,
-    return_date: `${role === 'vip' ? null : returnDate }`,
-    return_time: `${role === 'vip' ? null : returnTime }`,
-    destination: `${role === 'vip' ? addressData.destination : destination }`,
+    travel_date: travelDate,
+    travel_time: travelTime,
+    return_date: returnDate,
+    return_time: returnTime,
+    destination: destination,
     vehicle: `${plateNumber}`,
     type: category,
-    distance: `${role === 'vip' ? addressData.distance : distance }`,
-    role: role
+    distance: distance,
+    role: role,
   });
-  
+
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
@@ -214,8 +211,7 @@ export default function RequestForm() {
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-    console.log(data)
-    console.log(addressData)
+    console.log(data);
     if (
       validationErrors.numberOfPassengersError.length === 0 &&
       validationErrors.passengerNameError.length === 0 &&
@@ -244,7 +240,10 @@ export default function RequestForm() {
   };
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, travel_date: formattedDate });
+    setData({
+      ...data,
+      travel_date: formattedDate,
+    });
     if (data.category === "Round Trip") {
       const updatedErrors = { ...errorMessages };
       delete updatedErrors[0]?.travelDateError;
@@ -264,7 +263,10 @@ export default function RequestForm() {
 
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
-      setData({ ...data, travel_time: time });
+      setData({
+        ...data,
+        travel_time: time,
+      });
       if (data.category === "Round Trip") {
         const updatedErrors = { ...errorMessages };
         delete updatedErrors[0]?.travelTimeError;
@@ -286,7 +288,10 @@ export default function RequestForm() {
 
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, return_date: formattedDate });
+    setData({
+      ...data,
+      return_date: formattedDate,
+    });
     const updatedErrors = { ...errorMessages };
     delete updatedErrors[0]?.returnDateError;
     setErrorMessages(updatedErrors);
@@ -294,7 +299,10 @@ export default function RequestForm() {
 
   const handleEndTimeChange = (time: string | null) => {
     if (time) {
-      setData({ ...data, return_time: time });
+      setData({
+        ...data,
+        return_time: time,
+      });
       const updatedErrors = { ...errorMessages };
       delete updatedErrors[0]?.returnTimeError;
       setErrorMessages(updatedErrors);
@@ -387,35 +395,8 @@ export default function RequestForm() {
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
-                {role === 'vip' ? (<>
-                  <div className="destination-info">
-                  <strong>Destination: </strong>
-                  <div className="autocomplete-container">
-                  <AutoCompleteAddressGoogle
-                        travel_date={data.travel_date}
-                        travel_time={data.travel_time}
-                        setData={setData}
-                        isDisabled={isAutocompleteDisabled}
-                        setAddressData={setAddressData}
-                        category={data.category}
-                        removeDestinationError={removeDestinationError}
-                        className="customize-autocomplete"
-                      />
-                    {isTravelDateSelected ? (
-                        <p>Select travel date and time first</p>
-                      ) : (
-                        <p>{errorMessages[0]?.destinationError}</p>
-                      )}
-                  </div>
-                  
-                </div>
 
-                <div className="kilometer-info">
-                  <strong>Distance:</strong>
-                  <p>{distance} km</p>
-                </div>
-                </>) : (<>
-                  <div className="destination-info">
+                <div className="destination-info">
                   <strong>Destination: </strong>
                   <p>{destination}</p>
                 </div>
@@ -423,94 +404,10 @@ export default function RequestForm() {
                 <div className="kilometer-info">
                   <strong>Distance:</strong>
                   <p>{distance} km</p>
-                </div></>)}
-                
-              </div>
-              {role === 'vip' ? (<>
-                <div className="forth-row">
-                <div className="calendar-containerr">
-                  <strong>Date of Travel:</strong>
-                  <CalendarInput
-                            selectedDate={
-                              data.travel_date
-                                ? new Date(data.travel_date)
-                                : null
-                            }
-                            onChange={handleStartDateChange}
-                            disableDaysBefore={3}
-                            calendarClassName="customize-calendar"
-                          />
-                </div>
-                <div className="calendar-containerr">
-                  <strong>to </strong>
-                  <CalendarInput
-                            selectedDate={
-                              data.return_date
-                                ? new Date(data.return_date)
-                                : null
-                            }
-                            onChange={handleEndDateChange}
-                            disableDaysBefore={3}
-                            calendarClassName="customize-calendar"
-                          />
                 </div>
               </div>
+
               <div className="forth-row">
-                <div className="calendar-containerr">
-                  <strong>Time of Travel: </strong>
-                  <TimeInput
-                            onChange={handleStartTimeChange}
-                            selectedDate={data.travel_date}
-                            handleDateChange={handleStartDateChange}
-                          />
-                </div>
-                <div className="calendar-containerr">
-                  <strong>to </strong>
-                  <TimeInput
-                            onChange={handleEndTimeChange}
-                            selectedDate={data.return_date}
-                            handleDateChange={handleEndDateChange}
-                          />
-                </div>
-              </div>
-              <div className="fifth-row">
-                <div className="calendar-containerr">
-                  <strong>Travel Type:</strong>
-                  <select
-                            value={data.sub_category}
-                            onChange={(event) => {
-                              const selectedValue = event.target.value;
-                          
-                              setData((prevData: any) => ({
-                                ...prevData,
-                                category:
-                                  selectedValue === "One-way - Drop"
-                                    ? "One-way - Drop"
-                                    : selectedValue === "One-way - Fetch"
-                                    ? "One-way - Fetch"
-                                    : "One-way",
-                              }));
-                              if (selectedValue === "One-way - Fetch") {
-                                
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.categoryError;
-                                setErrorMessages(updatedErrors);
-                              } else if (selectedValue === "One-way - Drop") {
-                                
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.categoryError;
-                                setErrorMessages(updatedErrors);
-                              } 
-                            }}
-                          >
-                            <option>--------- Select Type --------</option>
-                            <option value="Round Trip">Round Trip</option>
-                            <option value="One-way - Drop">One-way - Drop</option>
-                            <option value="One-way - Fetch">One-way - Fetch</option>
-                          </select>
-                </div>
-              </div>
-              </>) : (<><div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Date of Travel:</strong>
                   <p>{travelDate}</p>
@@ -535,7 +432,8 @@ export default function RequestForm() {
                   <strong>Travel Type:</strong>
                   <p>{category}</p>
                 </div>
-              </div></>)}
+              </div>
+
               <div className="sixth-row">
                 <div className="purpose-row">
                   <InputField

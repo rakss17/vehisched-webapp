@@ -35,6 +35,8 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import Confirmation from "../../../components/confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
+import InitialFormVip from "../../../components/form/initialformvip";
+import PromptDialog from "../../../components/promptdialog/prompdialog";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -59,7 +61,9 @@ export default function DashboardR() {
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
+  const [isInitialFormVIPOpen, setIsInitialFormVIPOpen] = useState(false);
   const [isSetTripOpen, setIsSetTripOpen] = useState(false);
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -83,6 +87,9 @@ export default function DashboardR() {
   const userName = personalInfo?.username;
   const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
+  const [plateNumber, setSelectedPlateNumber] = useState("");
+  const [vehicleName, setSelectedModel] = useState("");
+  const [capacity, setSelectedCapacity] = useState("");
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -105,9 +112,9 @@ export default function DashboardR() {
 
   useEffect(() => {
     if (role === "vip") {
-      fetchVehicleVIPAPI(setVehiclesData, handleButtonClick)
+      fetchVehicleVIPAPI(setVehiclesData, handleButtonClick);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     fetchSchedule(
@@ -229,8 +236,15 @@ export default function DashboardR() {
     }
   };
 
-  const handleCancelTripModal = () => {
-    setIsSetTripOpen(false);
+  const handleOpenRequestFormForVIP = () => {
+    navigate("/RequestForm", {
+      state: { plateNumber, vehicleName, capacity, data, addressData },
+    });
+  };
+
+  const handleClose = () => {
+    setIsInitialFormVIPOpen(false);
+    setIsDisclaimerOpen(false);
   };
   const handleKeyDown = (event: React.KeyboardEvent) => {
     const key = event.key;
@@ -755,22 +769,36 @@ export default function DashboardR() {
                 </p>
               ) : (
                 <>
-                  {role === 'vip' ? null: (<p className="date-available-range">
-                    Available vehicles from {data.travel_date},{" "}
-                    {formatTime(data.travel_time)} to {data.return_date},{" "}
-                    {formatTime(data.return_time)}
-                  </p>)}
-                  
+                  {role === "vip" ? null : (
+                    <p className="date-available-range">
+                      Available vehicles from {data.travel_date},{" "}
+                      {formatTime(data.travel_time)} to {data.return_date},{" "}
+                      {formatTime(data.return_time)}
+                    </p>
+                  )}
+
                   <div className="vehicle-container">
                     {vehiclesData.map((vehicle) => (
                       <a
-                        onClick={() =>
-                          openRequestForm(
-                            vehicle.plate_number,
-                            vehicle.model,
-                            vehicle.capacity
-                          )
-                        }
+                        onClick={() => {
+                          {
+                            role === "vip"
+                              ? (setIsInitialFormVIPOpen(true),
+                                setSelectedPlateNumber(vehicle.plate_number),
+                                setSelectedModel(vehicle.model),
+                                setSelectedCapacity(vehicle.capacity))
+                              : vehicle.is_vip === true
+                              ? (setIsDisclaimerOpen(true),
+                                setSelectedPlateNumber(vehicle.plate_number),
+                                setSelectedModel(vehicle.model),
+                                setSelectedCapacity(vehicle.capacity))
+                              : openRequestForm(
+                                  vehicle.plate_number,
+                                  vehicle.model,
+                                  vehicle.capacity
+                                );
+                          }
+                        }}
                         className="vehicle-card"
                         key={vehicle.plate_number}
                       >
@@ -1021,26 +1049,26 @@ export default function DashboardR() {
                               <button>View more info</button>
                             </div>
                             <div className="next-user">
-                            {nextSchedule
-                            .filter(
-                              (nextSched) =>
-                                nextSched.previous_trip_id === schedule.trip_id
-                            )
-                            .map((nextSched) => (
-                              <div>
-                                <strong>
-                                  The next scheduled user of this vehicle will
-                                  commence at:
-                                </strong>
-                                <p>{nextSched.next_schedule_travel_date}</p>
-                                <p>
-                                  {formatTime(
-                                    nextSched.next_schedule_travel_time
-                                  )}
-                                </p>
-                              </div>
-                            ))}
-
+                              {nextSchedule
+                                .filter(
+                                  (nextSched) =>
+                                    nextSched.previous_trip_id ===
+                                    schedule.trip_id
+                                )
+                                .map((nextSched) => (
+                                  <div>
+                                    <strong>
+                                      The next scheduled user of this vehicle
+                                      will commence at:
+                                    </strong>
+                                    <p>{nextSched.next_schedule_travel_date}</p>
+                                    <p>
+                                      {formatTime(
+                                        nextSched.next_schedule_travel_time
+                                      )}
+                                    </p>
+                                  </div>
+                                ))}
                             </div>
                           </div>
                           {nextSchedule
@@ -1079,6 +1107,24 @@ export default function DashboardR() {
       <Confirmation
         isOpen={isConfirmationCancelOpen}
         header="Vehicle Recommendation Canceled!"
+      />
+      <InitialFormVip
+        isOpen={isInitialFormVIPOpen}
+        onRequestClose={handleClose}
+        plateNumber={plateNumber}
+        vehicleName={vehicleName}
+        capacity={capacity}
+      />
+      <PromptDialog
+        isOpen={isDisclaimerOpen}
+        header="Disclaimer"
+        content="This vehicle is prioritized for the higher official, and your reservation will be canceled once the higher official 
+      uses it during your trip."
+        footer="Are you sure you want to use this vehicle?"
+        onProceed={handleOpenRequestFormForVIP}
+        onRequestClose={handleClose}
+        buttonText1="Proceed"
+        buttonText2="Cancel"
       />
     </>
   );

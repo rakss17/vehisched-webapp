@@ -13,6 +13,8 @@ import { SigninParams } from "../../interfaces/interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
+import Signup from "../../components/signup/signup";
+import Modal from 'react-modal';
 
 export default function Landing() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -91,6 +93,18 @@ export default function Landing() {
       setRememberMe(true);
     }
   }, []);
+
+  const [isSignupOpen, setSignupOpen] = useState(false);
+
+  const handleSignup = () => {
+    setSignupOpen(true);
+  };
+
+  const handleCloseSignup = () => {
+    setSignupOpen(false);
+  };
+
+
   return (
     <>
       <LoadingBar
@@ -156,9 +170,12 @@ export default function Landing() {
             </div>
             <button onClick={handleSignin}>Signin</button>
           </div>
-
+          <div className="create-account">
+            <a className="create-account" onClick={handleSignup}>Create an Account</a>
+          </div>
           <div className="line"></div>
         </div>
+        {isSignupOpen && <Signup onCloseSignup={handleCloseSignup}/>}
       </div>
     </>
   );

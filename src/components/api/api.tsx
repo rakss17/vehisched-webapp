@@ -15,10 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-export const serverSideUrl = "http://localhost:8000/media/";
+export const serverSideUrl = "http://192.168.1.8:8000/media/";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "http://192.168.1.8:8000/",
 });
 
 export async function SigninAPI(

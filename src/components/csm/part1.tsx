@@ -24,7 +24,7 @@ const Part1: React.FC<QuestionProps> = ({
         Personal information shared will be kept confidential, and you always
         have the option not to answer this form.
       </h4>
-      <div className="question">
+      {/*<div className="question">
         <label htmlFor="clientType">Select Client Type: </label>
         <select
           id="clientType"
@@ -65,7 +65,7 @@ const Part1: React.FC<QuestionProps> = ({
           }}
           className="survey-input"
         ></input>
-      </div>
+      </div>*/}
       <div className="instructions-part1">
         <p>
           INSTRUCTIONS: Check mark(✔) your answer to the Citizen’s Charter (CC)

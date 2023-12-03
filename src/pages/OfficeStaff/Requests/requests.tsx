@@ -262,11 +262,14 @@ export default function Requests() {
                       <td>{request.travel_date}</td>
                       <td>{request.status}</td>
                       <td>
-                        {request.vehicle_driver_status === "On Trip" ? (
+                        
+                        {request.status === "Completed" || request.status === "Canceled" || request.status === "Rejected"   ? (<div className="ontrip-completed"></div>) : (<>
+                          {request.vehicle_driver_status === "On Trip" ? (
                           <div className="ontrip-yes"></div>
                         ) : (
                           <div className="ontrip-no"></div>
                         )}
+                        </>)}
                       </td>
                     </tr>
                   </>

@@ -67,6 +67,15 @@
   margin-top: 0vh;
   margin-left: 5vw;
 }
+.request-container table tbody tr .ontrip-completed {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: gray;
+  /* position: absolute; */
+  margin-top: 0vh;
+  margin-left: 5vw;
+}
 /* .request-container table tbody tr .ontrip-yes {
   font-size: 1.5rem;
   color: green;

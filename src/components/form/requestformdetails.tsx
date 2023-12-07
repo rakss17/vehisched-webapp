@@ -5,7 +5,12 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
-import { downloadTripTicketAPI, fetchDriversScheduleAPI } from "../api/api";
+import {
+  downloadTripTicketAPI,
+  fetchDriversScheduleAPI,
+  fetchRequestAPI,
+  fetchRequestersAPI,
+} from "../api/api";
 import CommonButton from "../button/commonbutton";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
@@ -22,6 +27,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const [driversData, setDriversData] = useState<any[]>([]);
+  const [requestersData, setRequestersData] = useState<any[]>([]);
   const [isMergeTripOpen, setIsMergeTripOpen] = useState(false);
 
   const dropdownDrivers = [
@@ -29,6 +35,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     ...driversData.map(
       (driver) =>
         `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
+    ),
+  ];
+
+  const dropdownRequesters = [
+    "Select Requester",
+    ...requestersData.map(
+      (requester) =>
+        `${requester.first_name} ${requester.middle_name} ${requester.last_name}`
     ),
   ];
 
@@ -44,6 +58,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       selectedRequest.return_date,
       selectedRequest.return_time
     );
+  };
+
+  const handleFetchRequester = () => {
+    fetchRequestersAPI(setRequestersData);
   };
 
   const handleChooseDriver = (driverName: string) => {
@@ -237,9 +255,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       <Modal className="merge-trip-modal" isOpen={isMergeTripOpen}>
         <div className="merge-trip-modal-container">
           <h1>Choose requester to merge with</h1>
-          <div>
+          <div onClick={handleFetchRequester}>
             <Dropdown
-              status={dropdownDrivers}
+              status={dropdownRequesters}
               onCategoryChange={handleChooseDriver}
               dropdownClassName="dropdown-custom"
               menuClassName="menu-custom"

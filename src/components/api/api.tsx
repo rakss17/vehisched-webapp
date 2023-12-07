@@ -250,6 +250,21 @@ export async function fetchDriversAPI(setDriversData: any) {
   }
 }
 
+export async function fetchRequestersAPI(setRequestersData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/requesters/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    setRequestersData(response.data);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+}
+
 export async function updateUserAPI(
   userUpdate: any,
   userId: any,

@@ -17,10 +17,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   onReject,
   errorMessages,
   setErrorMessages,
+  setIsOpen,
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const [driversData, setDriversData] = useState<any[]>([]);
+  const [isMergeTripOpen, setIsMergeTripOpen] = useState(false);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -64,6 +66,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
+  const onCancelMergeTrip = () => {
+    setIsMergeTripOpen(false);
+    setIsOpen(true);
+  };
+  const onMergeTripOpen = () => {
+    onRequestClose();
+    setIsMergeTripOpen(true);
   };
 
   return (
@@ -162,11 +172,28 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               selectedRequest.status !== "Rejected" &&
               selectedRequest.purpose !== "Vehicle Maintenance" &&
               selectedRequest.purpose !== "Driver Absence" && (
-                <CommonButton
-                  secondaryStyle
-                  text="Download trip ticket"
-                  onClick={handleDownloadTripTicket}
-                />
+                <>
+                  <CommonButton
+                    width={6}
+                    height={6}
+                    tertiaryStyle
+                    text="Cancel"
+                  />
+                  <CommonButton
+                    width={8}
+                    height={6}
+                    secondaryStyle
+                    text="Merge trip"
+                    onClick={onMergeTripOpen}
+                  />
+                  <CommonButton
+                    width={12}
+                    height={6}
+                    primaryStyle
+                    text="Download trip ticket"
+                    onClick={handleDownloadTripTicket}
+                  />
+                </>
               )}
             {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
               <CommonButton
@@ -204,6 +231,29 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 />
               </>
             )}
+          </div>
+        </div>
+      </Modal>
+      <Modal className="merge-trip-modal" isOpen={isMergeTripOpen}>
+        <div className="merge-trip-modal-container">
+          <h1>Choose requester to merge with</h1>
+          <div>
+            <Dropdown
+              status={dropdownDrivers}
+              onCategoryChange={handleChooseDriver}
+              dropdownClassName="dropdown-custom"
+              menuClassName="menu-custom"
+            />
+          </div>
+          <div className="merge-trip-modal-button-container">
+            <CommonButton
+              width={7}
+              height={6}
+              secondaryStyle
+              text="Cancel"
+              onClick={onCancelMergeTrip}
+            />
+            <CommonButton width={7} height={6} primaryStyle text="Proceed" />
           </div>
         </div>
       </Modal>

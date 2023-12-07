@@ -137,6 +137,7 @@ export interface RequestFormDetailsProps {
   onReject: () => void;
   errorMessages: any[];
   setErrorMessages: any;
+  setIsOpen: any;
 }
 
 export interface TimeInputProps {

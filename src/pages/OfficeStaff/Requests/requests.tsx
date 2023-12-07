@@ -262,14 +262,19 @@ export default function Requests() {
                       <td>{request.travel_date}</td>
                       <td>{request.status}</td>
                       <td>
-                        
-                        {request.status === "Completed" || request.status === "Canceled" || request.status === "Rejected"   ? (<div className="ontrip-completed"></div>) : (<>
-                          {request.vehicle_driver_status === "On Trip" ? (
-                          <div className="ontrip-yes"></div>
+                        {request.status === "Completed" ||
+                        request.status === "Canceled" ||
+                        request.status === "Rejected" ? (
+                          <div className="ontrip-completed"></div>
                         ) : (
-                          <div className="ontrip-no"></div>
+                          <>
+                            {request.vehicle_driver_status === "On Trip" ? (
+                              <div className="ontrip-yes"></div>
+                            ) : (
+                              <div className="ontrip-no"></div>
+                            )}
+                          </>
                         )}
-                        </>)}
                       </td>
                     </tr>
                   </>
@@ -282,6 +287,7 @@ export default function Requests() {
 
       <RequestFormDetails
         isOpen={isRequestFormOpen}
+        setIsOpen={setIsRequestFormOpen}
         onRequestClose={handleCloseRequestForm}
         selectedRequest={selectedRequestDetails[0]}
         onApprove={(selectedDriverId) =>

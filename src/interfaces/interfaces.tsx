@@ -8,6 +8,7 @@ export interface Vehicle {
   is_vip?: any;
   vehicle_image?: any;
   assigned_to: any;
+  merge_trip?: any;
 }
 
 interface InputProps {
@@ -126,6 +127,7 @@ export interface RequestFormProps {
   type?: any;
   vehicle_driver_status?: any;
   role?: any;
+  merge_trip?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -220,4 +222,10 @@ export interface InitialFormVipProps {
   plateNumber: any;
   vehicleName: any;
   capacity: any;
+}
+
+export interface RequesterTripMergingFormProps {
+  isOpen: any;
+  onRequestClose: any;
+  given_capacity?: any;
 }

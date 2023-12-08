@@ -1023,7 +1023,7 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleActivateUserButton}
+        onProceed={handleActivateUserButton}
       />
       <PromptDialog
         isOpen={isDeleteVehicleOpen}

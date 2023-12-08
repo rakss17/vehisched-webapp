@@ -10,8 +10,11 @@ import {
   fetchDriversScheduleAPI,
   fetchRequestAPI,
   fetchRequestersAPI,
+  postRequestFromAPI,
 } from "../api/api";
 import CommonButton from "../button/commonbutton";
+import LoadingBar from "react-top-loading-bar";
+import Confirmation from "../confirmation/confirmation";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -26,9 +29,28 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
+  const [selectedRequesterId, setSelectedRequesterId] = useState<string | null>(
+    null
+  );
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [driversData, setDriversData] = useState<any[]>([]);
   const [requestersData, setRequestersData] = useState<any[]>([]);
   const [isMergeTripOpen, setIsMergeTripOpen] = useState(false);
+  const [mergeTripData, setMergeTripData] = useState({
+    requester_name: "",
+    travel_date: selectedRequest.travel_date,
+    travel_time: selectedRequest.travel_time,
+    return_date: selectedRequest.return_date,
+    return_time: selectedRequest.return_time,
+    destination: selectedRequest.destination,
+    number_of_passenger: selectedRequest.number_of_passenger,
+    vehicle: selectedRequest.vehicle,
+    type: selectedRequest.type,
+    distance: selectedRequest.distance,
+    merge_trip: true,
+    role: null,
+  });
 
   const dropdownDrivers = [
     "Select Driver",
@@ -81,21 +103,66 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     delete updatedErrors[0]?.driverSelectionError;
     setErrorMessages(updatedErrors);
   };
+
+  const handleChooseRequester = (requesterName: string) => {
+    const selectedRequester = requestersData.find((requester) => {
+      const { first_name, middle_name, last_name } = requester;
+      const fullName = `${first_name} ${middle_name} ${last_name}`;
+      return fullName === requesterName;
+    });
+
+    if (selectedRequester) {
+      setSelectedRequesterId(selectedRequester.id);
+    }
+    if (requesterName === "Select requester") {
+      setSelectedRequesterId(null);
+    }
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.requesterSelectionError;
+    setErrorMessages(updatedErrors);
+
+    setMergeTripData({
+      ...mergeTripData,
+      requester_name: selectedRequester.id,
+    });
+  };
+
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
+
   const onCancelMergeTrip = () => {
     setIsMergeTripOpen(false);
     setIsOpen(true);
   };
+
   const onMergeTripOpen = () => {
     onRequestClose();
     setIsMergeTripOpen(true);
   };
 
+  const handleMergeTrip = () => {
+    setLoadingBarProgress(20);
+    postRequestFromAPI(
+      mergeTripData,
+      // () => {
+      //   setIsConfirmationOpen(true);
+      //   setIsModalOpen(true); // Open the modal after the request is successful
+      // },
+      setIsConfirmationOpen,
+      () => {},
+      setLoadingBarProgress
+    );
+  };
+
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Modal className="modal-request-form" isOpen={isOpen}>
         <div className="request-form-container">
           <div>
@@ -258,7 +325,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div onClick={handleFetchRequester}>
             <Dropdown
               status={dropdownRequesters}
-              onCategoryChange={handleChooseDriver}
+              onCategoryChange={handleChooseRequester}
               dropdownClassName="dropdown-custom"
               menuClassName="menu-custom"
             />
@@ -271,10 +338,17 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               text="Cancel"
               onClick={onCancelMergeTrip}
             />
-            <CommonButton width={7} height={6} primaryStyle text="Proceed" />
+            <CommonButton
+              width={7}
+              height={6}
+              primaryStyle
+              text="Proceed"
+              onClick={handleMergeTrip}
+            />
           </div>
         </div>
       </Modal>
+      <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
     </>
   );
 };

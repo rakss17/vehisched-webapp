@@ -524,7 +524,7 @@ export async function deleteVehicleAPI(
 }
 
 export function postRequestFromAPI(
-  data: RequestFormProps,
+  data: any,
   setIsConfirmationOpen: any,
   navigate: any,
   setLoadingBarProgress: (progress: number) => void
@@ -532,8 +532,14 @@ export function postRequestFromAPI(
   const token = localStorage.getItem("token");
   const requestData = {
     ...data,
-    passenger_name: JSON.stringify(data.passenger_name),
   };
+
+  if (data.passenger_name) {
+    requestData.passenger_name = JSON.stringify(data.passenger_name);
+  } else {
+    requestData.passenger_name = JSON.stringify([]);
+  }
+
   api
     .post("api/v1/request/fetch-post/", requestData, {
       headers: {
@@ -551,6 +557,7 @@ export function postRequestFromAPI(
       }, 3000);
     })
     .catch((error) => {
+      console.log(error);
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
@@ -612,6 +619,7 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
         (trip: any) => trip.status === "Pending"
       );
       setPendingSchedule(pendingScheduleTrips);
+      console.log(response.data);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);

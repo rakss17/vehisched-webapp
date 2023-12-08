@@ -73,6 +73,7 @@ export default function RequestForm() {
     type: category,
     distance: distance,
     role: role,
+    merge_trip: false,
   });
 
   const [numPassengers, setNumPassengers] = useState(0);
@@ -232,90 +233,6 @@ export default function RequestForm() {
         setLoadingBarProgress
       );
     }
-  };
-  const checkAutocompleteDisability = () => {
-    if (data.travel_date !== null && data.travel_time !== null) {
-      setIsAutocompleteDisabled(false);
-      setIsTravelDateSelected(false);
-    }
-  };
-  const handleStartDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({
-      ...data,
-      travel_date: formattedDate,
-    });
-    if (data.category === "Round Trip") {
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.travelDateError;
-      setErrorMessages(updatedErrors);
-    } else if (
-      data.category === "One-way" ||
-      data.category === "One-way - Fetch" ||
-      data.category === "One-way - Drop"
-    ) {
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.travelDateOnewayError;
-      setErrorMessages(updatedErrors);
-    }
-
-    checkAutocompleteDisability();
-  };
-
-  const handleStartTimeChange = (time: string | null) => {
-    if (time) {
-      setData({
-        ...data,
-        travel_time: time,
-      });
-      if (data.category === "Round Trip") {
-        const updatedErrors = { ...errorMessages };
-        delete updatedErrors[0]?.travelTimeError;
-        setErrorMessages(updatedErrors);
-      } else if (
-        data.category === "One-way" ||
-        data.category === "One-way - Fetch" ||
-        data.category === "One-way - Drop"
-      ) {
-        const updatedErrors = { ...errorMessages };
-        delete updatedErrors[0]?.travelTimeOnewayError;
-        setErrorMessages(updatedErrors);
-      }
-      checkAutocompleteDisability();
-    } else {
-      console.log("No time selected.");
-    }
-  };
-
-  const handleEndDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({
-      ...data,
-      return_date: formattedDate,
-    });
-    const updatedErrors = { ...errorMessages };
-    delete updatedErrors[0]?.returnDateError;
-    setErrorMessages(updatedErrors);
-  };
-
-  const handleEndTimeChange = (time: string | null) => {
-    if (time) {
-      setData({
-        ...data,
-        return_time: time,
-      });
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.returnTimeError;
-      setErrorMessages(updatedErrors);
-    } else {
-      console.log("No time selected.");
-    }
-  };
-
-  const removeDestinationError = () => {
-    const updatedErrors = [...errorMessages];
-    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
-    setErrorMessages(updatedErrors);
   };
 
   const formatTime = (timeString: any) => {

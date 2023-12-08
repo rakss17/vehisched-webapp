@@ -37,6 +37,8 @@ import Confirmation from "../../../components/confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
 import InitialFormVip from "../../../components/form/initialformvip";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
+import RequesterTripMergingForm from "../../../components/form/requestertripmerging";
+import { tr } from "date-fns/locale";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -62,7 +64,9 @@ export default function DashboardR() {
     useState<string>("Round Trip");
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
   const [isInitialFormVIPOpen, setIsInitialFormVIPOpen] = useState(false);
-  const [isSetTripOpen, setIsSetTripOpen] = useState(false);
+  const [isRequesterTripMergingFormOpen, setIsRequesterTripMergingFormOpen] =
+    useState(false);
+  const [givenCapacity, setGivenCapacity] = useState(0);
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
@@ -137,8 +141,39 @@ export default function DashboardR() {
       } else {
         setHasPendingSchedule(false);
       }
+
+      const vehicles = data
+        .filter(
+          (request: any) => request.purpose === null && request.vehicle_details
+        )
+        .map((request: any) => request.vehicle_details);
+      const vehiclesCapacity = vehicles.map((vehicle: any) => vehicle.capacity);
+
+      if (vehicles.length > 0) {
+        setVehiclesData(vehicles);
+        const firstVehicleRequest = data.find(
+          (request: any) => request.purpose === null && request.vehicle_details
+        );
+        const vacant_capacity =
+          vehiclesCapacity - firstVehicleRequest.number_of_passenger;
+        setGivenCapacity(vacant_capacity);
+        // if (firstVehicleRequest) {
+        //   setData({
+        //     travel_date: firstVehicleRequest.travel_date,
+        //     travel_time: firstVehicleRequest.travel_time,
+        //     return_date: firstVehicleRequest.return_date,
+        //     return_time: firstVehicleRequest.return_time,
+        //     category: firstVehicleRequest.type,
+        //   });
+        //   setAddressData({
+        //     destination: firstVehicleRequest.destination,
+        //     distance: firstVehicleRequest.distance,
+        //   });
+        // }
+      }
     });
   }, []);
+  console.log("given capacity", givenCapacity);
 
   NotificationApprovalScheduleReminderWebsocket(userName);
 
@@ -792,6 +827,8 @@ export default function DashboardR() {
                                 setSelectedPlateNumber(vehicle.plate_number),
                                 setSelectedModel(vehicle.model),
                                 setSelectedCapacity(vehicle.capacity))
+                              : vehicle.merge_trip === true
+                              ? setIsRequesterTripMergingFormOpen(true)
                               : openRequestForm(
                                   vehicle.plate_number,
                                   vehicle.model,
@@ -1123,6 +1160,11 @@ export default function DashboardR() {
         onRequestClose={handleClose}
         buttonText1="Proceed"
         buttonText2="Cancel"
+      />
+      <RequesterTripMergingForm
+        isOpen={isRequesterTripMergingFormOpen}
+        onRequestClose={handleClose}
+        given_capacity={givenCapacity}
       />
     </>
   );

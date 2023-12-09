@@ -1342,3 +1342,47 @@ export async function postCSM(data: any) {
       console.error("Error fetching questions list:", error);
     });
 }
+
+export function submitTripMerge(
+  requestId: any,
+  number_of_passenger: any,
+  passenger_name: any[],
+  purpose: any,
+  setIsConfirmationOpen: any,
+  onRequestClose: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+  const passenger_namee = JSON.stringify(passenger_name);
+  api
+    .patch(
+      `/api/v1/request/submit-trip-merge/${requestId}/`,
+      {
+        number_of_passenger: number_of_passenger,
+        passenger_name: passenger_namee,
+        purpose: purpose,
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setLoadingBarProgress(50);
+      onRequestClose();
+      setIsConfirmationOpen(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      setLoadingBarProgress(50);
+
+      setLoadingBarProgress(100);
+      console.log(error);
+    });
+}

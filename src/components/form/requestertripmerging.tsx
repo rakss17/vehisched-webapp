@@ -8,18 +8,26 @@ import {
   faUsers,
   faClipboard,
 } from "@fortawesome/free-solid-svg-icons";
+import CommonButton from "../button/commonbutton";
+import { submitTripMerge } from "../api/api";
+import Confirmation from "../confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
 const RequesterTripMergingForm: React.FC<RequesterTripMergingFormProps> = ({
   isOpen,
   onRequestClose,
   given_capacity,
+  requestId,
 }) => {
   const [numPassengers, setNumPassengers] = useState(0);
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [data, setData] = useState<any>({
     number_of_passenger: null,
     passenger_name: "",
+    purpose: "",
   });
 
   useEffect(() => {
@@ -98,58 +106,98 @@ const RequesterTripMergingForm: React.FC<RequesterTripMergingFormProps> = ({
       event.preventDefault();
     }
   };
-  return (
-    <Modal className="requester-trip-merging-form-modal" isOpen={isOpen}>
-      <div className="requester-trip-merging-form-container">
-        <h1>Trip Merging</h1>
-        <div className="requester-trip-merging-form-input-passenger-number">
-          <p className="requester-trip-merging-form-maximum-capacity-note">
-            Vehicle maximum capacity: {given_capacity}
-          </p>
-          <InputField
-            icon={faUsers}
-            onKeyDown={handleKeyDown}
-            label="No. of passengers"
-            value={numPassengers}
-            onChange={handlePassengerChange}
-            type="number"
-          />
-          <p className="set-trip-text-error">
-            {errorMessages[0]?.numberOfPassengersError}
-          </p>
 
-          {exceedsCapacity && (
-            <p className="set-trip-text-error">
-              Exceeds seating capacity of the vehicle
+  const handleSubmit = () => {
+    submitTripMerge(
+      requestId,
+      data.number_of_passenger,
+      data.passenger_name,
+      data.purpose,
+      setIsConfirmationOpen,
+      onRequestClose,
+      setLoadingBarProgress
+    );
+  };
+
+  return (
+    <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
+      <Modal className="requester-trip-merging-form-modal" isOpen={isOpen}>
+        <div className="requester-trip-merging-form-container">
+          <h1>Trip Merging</h1>
+          <div className="requester-trip-merging-form-input-passenger-number">
+            <p className="requester-trip-merging-form-maximum-capacity-note">
+              Vehicle maximum capacity: {given_capacity}
             </p>
-          )}
+            <InputField
+              icon={faUsers}
+              onKeyDown={handleKeyDown}
+              label="No. of passengers"
+              value={numPassengers}
+              onChange={handlePassengerChange}
+              type="number"
+            />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.numberOfPassengersError}
+            </p>
+
+            {exceedsCapacity && (
+              <p className="set-trip-text-error">
+                Exceeds seating capacity of the vehicle
+              </p>
+            )}
+          </div>
+          <div className="requester-trip-merging-form-passengers-name-row">
+            {generatePassengerInputs()}
+          </div>
+          <div className="requester-trip-merging-form-purpose-row">
+            <InputField
+              className="requester-trip-merging-form-purpose-width"
+              icon={faClipboard}
+              value={data.purpose}
+              label="Purpose"
+              placeholder="Purpose"
+              onChange={(event) => {
+                setData({ ...data, purpose: event.target.value });
+                if (event.target.value) {
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.purposeError;
+                  delete updatedErrors[0]?.all;
+                  setErrorMessages(updatedErrors);
+                }
+              }}
+            />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.purposeError}
+            </p>
+          </div>
+          <div className="requester-trip-merging-form-button-container">
+            <CommonButton
+              width={7}
+              height={6}
+              secondaryStyle
+              text="Cancel"
+              onClick={onRequestClose}
+            />
+            <CommonButton
+              width={7}
+              height={6}
+              primaryStyle
+              text="Submit"
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
-        <div className="requester-trip-merging-form-passengers-name-row">
-          {generatePassengerInputs()}
-        </div>
-        <div className="requester-trip-merging-form-purpose-row">
-          <InputField
-            className="requesterr-trip-merging-form-purpose-width"
-            icon={faClipboard}
-            value={data.purpose}
-            label="Purpose"
-            placeholder="Purpose"
-            onChange={(event) => {
-              setData({ ...data, purpose: event.target.value });
-              if (event.target.value) {
-                const updatedErrors = { ...errorMessages };
-                delete updatedErrors[0]?.purposeError;
-                delete updatedErrors[0]?.all;
-                setErrorMessages(updatedErrors);
-              }
-            }}
-          />
-          <p className="set-trip-text-error">
-            {errorMessages[0]?.purposeError}
-          </p>
-        </div>
-      </div>
-    </Modal>
+      </Modal>
+      <Confirmation
+        isOpen={isConfirmationOpen}
+        header="Submitted Successfully!"
+      />
+    </>
   );
 };
 

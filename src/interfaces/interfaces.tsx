@@ -9,6 +9,7 @@ export interface Vehicle {
   vehicle_image?: any;
   assigned_to: any;
   merge_trip?: any;
+  request_id?: any;
 }
 
 interface InputProps {
@@ -228,4 +229,5 @@ export interface RequesterTripMergingFormProps {
   isOpen: any;
   onRequestClose: any;
   given_capacity?: any;
+  requestId?: any;
 }

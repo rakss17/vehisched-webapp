@@ -348,7 +348,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
         </div>
       </Modal>
-      <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
+      <Confirmation isOpen={isConfirmationOpen} header="Trip Merged!" />
     </>
   );
 };

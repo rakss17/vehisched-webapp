@@ -66,6 +66,7 @@ export default function DashboardR() {
   const [isInitialFormVIPOpen, setIsInitialFormVIPOpen] = useState(false);
   const [isRequesterTripMergingFormOpen, setIsRequesterTripMergingFormOpen] =
     useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState("");
   const [givenCapacity, setGivenCapacity] = useState(0);
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const personalInfo = useSelector(
@@ -146,7 +147,10 @@ export default function DashboardR() {
         .filter(
           (request: any) => request.purpose === null && request.vehicle_details
         )
-        .map((request: any) => request.vehicle_details);
+        .map((request: any) => ({
+          ...request.vehicle_details,
+          request_id: request.request_id,
+        }));
       const vehiclesCapacity = vehicles.map((vehicle: any) => vehicle.capacity);
 
       if (vehicles.length > 0) {
@@ -157,23 +161,9 @@ export default function DashboardR() {
         const vacant_capacity =
           vehiclesCapacity - firstVehicleRequest.number_of_passenger;
         setGivenCapacity(vacant_capacity);
-        // if (firstVehicleRequest) {
-        //   setData({
-        //     travel_date: firstVehicleRequest.travel_date,
-        //     travel_time: firstVehicleRequest.travel_time,
-        //     return_date: firstVehicleRequest.return_date,
-        //     return_time: firstVehicleRequest.return_time,
-        //     category: firstVehicleRequest.type,
-        //   });
-        //   setAddressData({
-        //     destination: firstVehicleRequest.destination,
-        //     distance: firstVehicleRequest.distance,
-        //   });
-        // }
       }
     });
   }, []);
-  console.log("given capacity", givenCapacity);
 
   NotificationApprovalScheduleReminderWebsocket(userName);
 
@@ -280,6 +270,7 @@ export default function DashboardR() {
   const handleClose = () => {
     setIsInitialFormVIPOpen(false);
     setIsDisclaimerOpen(false);
+    setIsRequesterTripMergingFormOpen(false);
   };
   const handleKeyDown = (event: React.KeyboardEvent) => {
     const key = event.key;
@@ -512,6 +503,7 @@ export default function DashboardR() {
   };
   pendingSchedule.reverse();
   schedule.reverse();
+  console.log(vehiclesData);
   return (
     <>
       <Modal
@@ -828,7 +820,8 @@ export default function DashboardR() {
                                 setSelectedModel(vehicle.model),
                                 setSelectedCapacity(vehicle.capacity))
                               : vehicle.merge_trip === true
-                              ? setIsRequesterTripMergingFormOpen(true)
+                              ? (setIsRequesterTripMergingFormOpen(true),
+                                setSelectedRequestId(vehicle.request_id))
                               : openRequestForm(
                                   vehicle.plate_number,
                                   vehicle.model,
@@ -1165,6 +1158,7 @@ export default function DashboardR() {
         isOpen={isRequesterTripMergingFormOpen}
         onRequestClose={handleClose}
         given_capacity={givenCapacity}
+        requestId={selectedRequestId}
       />
     </>
   );

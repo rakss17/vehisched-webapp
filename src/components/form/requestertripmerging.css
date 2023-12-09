@@ -44,10 +44,14 @@
 .set-trip-text-error {
   color: red;
 }
-.requesterr-trip-merging-form-purpose-width {
+.requester-trip-merging-form-purpose-width {
   width: 25vw;
 }
 .requester-trip-merging-form-purpose-row {
   padding-left: 1.5vw;
   margin-top: 2vh;
+}
+.requester-trip-merging-form-button-container {
+  display: flex;
+  justify-content: space-around;
 }

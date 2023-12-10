@@ -15,6 +15,7 @@ import {
 import CommonButton from "../button/commonbutton";
 import LoadingBar from "react-top-loading-bar";
 import Confirmation from "../confirmation/confirmation";
+import { formatDate, formatTime } from "../functions/getTimeElapsed";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -127,10 +128,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     });
   };
 
-  const formatTime = (timeString: any) => {
-    const time = new Date(`1970-01-01T${timeString}`);
-    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  };
 
   const onCancelMergeTrip = () => {
     setIsMergeTripOpen(false);
@@ -156,6 +153,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     );
   };
 
+  const dateParts = selectedRequest.date_reserved.split('T');
+const date = dateParts[0];
+const timeParts = dateParts[1].split('.');
+const time = timeParts[0];
+
   return (
     <>
       <LoadingBar
@@ -172,7 +174,17 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <FontAwesomeIcon icon={faXmark} />
             </p>
           </div>
+     
           <div>
+          <div>
+              <h2>Date reserved:</h2>
+              <p>{formatDate(date)}, {formatTime(time)}</p>  
+            </div>
+          </div>
+            
+          
+          <div>
+          
             <div>
               <h2>Request's name:</h2>
               <p>{selectedRequest.requester_full_name}</p>
@@ -206,9 +218,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             <div>
               <h2>Date of travel:</h2>
-              <p>{selectedRequest.travel_date}</p>
+              <p>{formatDate(selectedRequest.travel_date)}</p>
               <h2>to:</h2>
-              <p>{selectedRequest.return_date}</p>
+              <p>{formatDate(selectedRequest.return_date)}</p>
             </div>
             <div>
               <h2>Time:</h2>

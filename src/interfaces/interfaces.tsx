@@ -129,6 +129,7 @@ export interface RequestFormProps {
   vehicle_driver_status?: any;
   role?: any;
   merge_trip?: any;
+  date_reserved?: any
 }
 
 export interface RequestFormDetailsProps {

@@ -181,15 +181,6 @@ export default function Requests() {
     );
   };
 
-  const handleReject = () => {
-    rejectRequestAPI(
-      requestId,
-      setIsConfirmationRejectedOpen,
-      setIsRequestFormOpen,
-      setLoadingBarProgress
-    );
-  };
-
   const selectedRequestDetails = selectedRequest
     ? requestList.filter(
         (request) => request.request_id === selectedRequest.request_id
@@ -294,7 +285,6 @@ export default function Requests() {
           handleConfirmationApprove(selectedDriverId)
         }
         onComplete={handleCompleted}
-        onReject={handleReject}
         errorMessages={errorMessages}
         setErrorMessages={setErrorMessages}
       />

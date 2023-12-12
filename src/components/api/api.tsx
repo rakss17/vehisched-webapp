@@ -1257,7 +1257,7 @@ export function maintenanceAbsenceCompletedRequestAPI(
 export function rejectRequestAPI(
   requestId: any,
   setIsConfirmationRejectedOpen: any,
-  setIsRequestFormOpen: any,
+  reason: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
@@ -1267,6 +1267,7 @@ export function rejectRequestAPI(
       `/api/v1/request/reject-request/${requestId}/`,
       {
         status: "Rejected",
+        reason: reason,
       },
       {
         headers: {
@@ -1276,7 +1277,6 @@ export function rejectRequestAPI(
       }
     )
     .then((response) => {
-      setIsRequestFormOpen(false);
       setIsConfirmationRejectedOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {

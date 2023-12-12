@@ -129,7 +129,7 @@ export interface RequestFormProps {
   vehicle_driver_status?: any;
   role?: any;
   merge_trip?: any;
-  date_reserved?: any
+  date_reserved?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -138,7 +138,6 @@ export interface RequestFormDetailsProps {
   selectedRequest: RequestFormProps | null;
   onApprove: (driverId: string | null) => void;
   onComplete: () => void;
-  onReject: () => void;
   errorMessages: any[];
   setErrorMessages: any;
   setIsOpen: any;

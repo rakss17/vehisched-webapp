@@ -12,6 +12,7 @@ import {
   fetchRequestAPI,
   fetchRequestersAPI,
   postRequestFromAPI,
+  rejectRequestAPI,
 } from "../api/api";
 import CommonButton from "../button/commonbutton";
 import LoadingBar from "react-top-loading-bar";
@@ -24,7 +25,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   selectedRequest,
   onApprove,
   onComplete,
-  onReject,
   errorMessages,
   setErrorMessages,
   setIsOpen,
@@ -38,10 +38,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
     useState(false);
+  const [isConfirmationRejectOpen, setIsConfirmationRejectOpen] =
+    useState(false);
   const [driversData, setDriversData] = useState<any[]>([]);
   const [requestersData, setRequestersData] = useState<any[]>([]);
   const [isMergeTripOpen, setIsMergeTripOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [mergeTripData, setMergeTripData] = useState({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
@@ -57,6 +60,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     role: null,
   });
   const [reasonForCancellation, setReasonForCancellation] = useState("");
+  const [reasonForRejection, setReasonForRejection] = useState("");
   const isFromOfficeStaff = true;
 
   const dropdownDrivers = [
@@ -138,6 +142,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     setIsMergeTripOpen(false);
     setIsCancelOpen(false);
     setIsOpen(true);
+    setIsRejectOpen(false);
   };
 
   const onMergeTripOpen = () => {
@@ -170,6 +175,20 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       isFromOfficeStaff,
       reasonForCancellation,
       setIsCancelOpen
+    );
+  };
+
+  const onReject = () => {
+    setIsRejectOpen(true);
+    setIsOpen(false);
+  };
+
+  const handleReject = () => {
+    rejectRequestAPI(
+      selectedRequest.request_id,
+      setIsConfirmationRejectOpen,
+      reasonForRejection,
+      setLoadingBarProgress
     );
   };
 
@@ -411,10 +430,44 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
         </div>
       </Modal>
+      <Modal className="reason-modal" isOpen={isRejectOpen}>
+        <div className="reason-modal-container">
+          <h1>Please provide the reason for the rejection</h1>
+          <div>
+            <input
+              value={reasonForRejection}
+              onChange={(event) => {
+                setReasonForRejection(event.target.value);
+              }}
+              placeholder="type here..."
+            />
+          </div>
+          <div className="reason-modal-button-container">
+            <CommonButton
+              width={7}
+              height={6}
+              secondaryStyle
+              text="Cancel"
+              onClick={onCancelMergeTrip}
+            />
+            <CommonButton
+              width={7}
+              height={6}
+              primaryStyle
+              text="Proceed"
+              onClick={handleReject}
+            />
+          </div>
+        </div>
+      </Modal>
       <Confirmation isOpen={isConfirmationOpen} header="Trip Merged!" />
       <Confirmation
         isOpen={isConfirmationCancelOpen}
         header="Trip Canceled Successfully!"
+      />
+      <Confirmation
+        isOpen={isConfirmationRejectOpen}
+        header="Trip Rejected Successfully!"
       />
     </>
   );

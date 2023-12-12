@@ -694,7 +694,10 @@ export function approveRequestAPI(
 export function cancelRequestAPI(
   requestId: any,
   setIsConfirmationOpen: any,
-  setLoadingBarProgress: (progress: number) => void
+  setLoadingBarProgress: (progress: number) => void,
+  isFromOfficeStaff?: any,
+  reason?: any,
+  setIsCancelOpen?: any
 ) {
   const token = localStorage.getItem("token");
 
@@ -703,6 +706,8 @@ export function cancelRequestAPI(
       `/api/v1/request/cancel/${requestId}/`,
       {
         status: "Canceled",
+        isFromOfficeStaff: isFromOfficeStaff,
+        reason: reason,
       },
       {
         headers: {
@@ -712,6 +717,7 @@ export function cancelRequestAPI(
       }
     )
     .then((response) => {
+      setIsCancelOpen(false);
       setIsConfirmationOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {

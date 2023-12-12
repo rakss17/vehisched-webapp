@@ -6,6 +6,7 @@ import "./requestformdetails.css";
 import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
 import {
+  cancelRequestAPI,
   downloadTripTicketAPI,
   fetchDriversScheduleAPI,
   fetchRequestAPI,
@@ -35,9 +36,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     null
   );
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
+    useState(false);
   const [driversData, setDriversData] = useState<any[]>([]);
   const [requestersData, setRequestersData] = useState<any[]>([]);
   const [isMergeTripOpen, setIsMergeTripOpen] = useState(false);
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [mergeTripData, setMergeTripData] = useState({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
@@ -52,6 +56,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     merge_trip: true,
     role: null,
   });
+  const [reasonForCancellation, setReasonForCancellation] = useState("");
+  const isFromOfficeStaff = true;
 
   const dropdownDrivers = [
     "Select Driver",
@@ -128,9 +134,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     });
   };
 
-
   const onCancelMergeTrip = () => {
     setIsMergeTripOpen(false);
+    setIsCancelOpen(false);
     setIsOpen(true);
   };
 
@@ -152,11 +158,25 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       setLoadingBarProgress
     );
   };
+  const onCancelTrip = () => {
+    setIsCancelOpen(true);
+    setIsOpen(false);
+  };
+  const handleCancelTrip = () => {
+    cancelRequestAPI(
+      selectedRequest.request_id,
+      setIsConfirmationCancelOpen,
+      setLoadingBarProgress,
+      isFromOfficeStaff,
+      reasonForCancellation,
+      setIsCancelOpen
+    );
+  };
 
-  const dateParts = selectedRequest.date_reserved.split('T');
-const date = dateParts[0];
-const timeParts = dateParts[1].split('.');
-const time = timeParts[0];
+  const dateParts = selectedRequest.date_reserved.split("T");
+  const date = dateParts[0];
+  const timeParts = dateParts[1].split(".");
+  const time = timeParts[0];
 
   return (
     <>
@@ -174,17 +194,17 @@ const time = timeParts[0];
               <FontAwesomeIcon icon={faXmark} />
             </p>
           </div>
-     
+
           <div>
-          <div>
+            <div>
               <h2>Date reserved:</h2>
-              <p>{formatDate(date)}, {formatTime(time)}</p>  
+              <p>
+                {formatDate(date)}, {formatTime(time)}
+              </p>
             </div>
           </div>
-            
-          
+
           <div>
-          
             <div>
               <h2>Request's name:</h2>
               <p>{selectedRequest.requester_full_name}</p>
@@ -271,10 +291,11 @@ const time = timeParts[0];
               selectedRequest.purpose !== "Driver Absence" && (
                 <>
                   <CommonButton
-                    width={6}
+                    width={8}
                     height={6}
                     tertiaryStyle
-                    text="Cancel"
+                    text="Cancel Trip"
+                    onClick={onCancelTrip}
                   />
                   <CommonButton
                     width={8}
@@ -360,7 +381,41 @@ const time = timeParts[0];
           </div>
         </div>
       </Modal>
+      <Modal className="reason-modal" isOpen={isCancelOpen}>
+        <div className="reason-modal-container">
+          <h1>Please provide the reason for the cancellation</h1>
+          <div>
+            <input
+              value={reasonForCancellation}
+              onChange={(event) => {
+                setReasonForCancellation(event.target.value);
+              }}
+              placeholder="type here..."
+            />
+          </div>
+          <div className="reason-modal-button-container">
+            <CommonButton
+              width={7}
+              height={6}
+              secondaryStyle
+              text="Cancel"
+              onClick={onCancelMergeTrip}
+            />
+            <CommonButton
+              width={7}
+              height={6}
+              primaryStyle
+              text="Proceed"
+              onClick={handleCancelTrip}
+            />
+          </div>
+        </div>
+      </Modal>
       <Confirmation isOpen={isConfirmationOpen} header="Trip Merged!" />
+      <Confirmation
+        isOpen={isConfirmationCancelOpen}
+        header="Trip Canceled Successfully!"
+      />
     </>
   );
 };

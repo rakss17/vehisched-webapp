@@ -12,6 +12,14 @@ import Confirmation from "../../components/confirmation/confirmation";
 import { DropdownParams, Vehicle } from "../../interfaces/interfaces";
 import { SignupParams } from "../../interfaces/interfaces";
 import {
+  faColumns,
+  faClipboardList,
+  faCar,
+  faCalendarAlt,
+  faUser,
+  faUsersCog,
+} from "@fortawesome/free-solid-svg-icons";
+import {
   SignupAPI,
   fetchUsersAPI,
   fetchVehiclesAPI,
@@ -22,12 +30,16 @@ import {
   updateVehicleAPI,
   deleteVehicleAPI,
   toggleUserActivationAPI,
+  fetchNotification,
 } from "../../components/api/api";
+import { SidebarItem } from "../../interfaces/interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
 import CommonButton from "../../components/button/commonbutton";
 import AddOfficeRole from "../../components/admin/user/addofficerole";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/sidebar/sidebar";
 
 export default function Admin() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -110,6 +122,8 @@ export default function Admin() {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
+  const personalInfo = useSelector((state: RootState) => state.personalInfo.data);
+  const role = personalInfo?.role
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>(
@@ -117,6 +131,24 @@ export default function Admin() {
   );
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
+  ];
+  const navigate = useNavigate();
+
+  fetchNotification(setNotifList);
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -547,6 +579,7 @@ export default function Admin() {
         return "black";
     }
   };
+  
   return (
     <>
       <LoadingBar
@@ -555,6 +588,8 @@ export default function Admin() {
         onLoaderFinished={() => setLoadingBarProgress(0)}
       />
       <Header />
+      {role === "office staff" ? (<Sidebar sidebarData={sidebarData}/>) : null}
+      
       <Container>
         <div className="label-margin-admin">
           <Label label="System Administration" />

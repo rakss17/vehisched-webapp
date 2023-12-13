@@ -193,9 +193,34 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   };
 
   const dateParts = selectedRequest.date_reserved.split("T");
-  const date = dateParts[0];
+  const date_reserved = dateParts[0];
   const timeParts = dateParts[1].split(".");
-  const time = timeParts[0];
+  const time_reserved = timeParts[0];
+  let departure_date_from_office = null;
+  let departure_time_from_office = null;
+
+  if (selectedRequest.departure_time_from_office) {
+    const departureDateParts = selectedRequest.departure_time_from_office.split("T");
+    departure_date_from_office = departureDateParts[0];
+
+    if (departureDateParts[1]) {
+      const departureTimeParts = departureDateParts[1].split(".");
+      departure_time_from_office = departureTimeParts[0];
+    }
+  }
+  let arrival_date_to_office = null;
+  let arrival_time_to_office = null;
+
+  if (selectedRequest.arrival_time_to_office) {
+    const arrivalDateParts = selectedRequest.arrival_time_to_office.split("T");
+    arrival_date_to_office = arrivalDateParts[0];
+
+    if (arrivalDateParts[1]) {
+      const arrivalTimeParts = arrivalDateParts[1].split(".");
+      arrival_time_to_office = arrivalTimeParts[0];
+    }
+  }
+
 
   return (
     <>
@@ -218,7 +243,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             <div>
               <h2>Date reserved:</h2>
               <p>
-                {formatDate(date)}, {formatTime(time)}
+                {formatDate(date_reserved)}, {formatTime(time_reserved)}
               </p>
             </div>
           </div>
@@ -284,6 +309,25 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <p>{selectedRequest.driver_full_name}</p>
             </div>
           )}
+          <div>
+            <div>
+              <h2>Departure: </h2>
+              <p>
+  {departure_date_from_office && departure_time_from_office 
+    ? `${formatDate(departure_date_from_office)}, ${formatTime(departure_time_from_office)}` 
+    : "N/A"}
+</p>
+
+            </div>
+            <div>
+              <h2>Arrival: </h2>
+              <p>
+  {arrival_date_to_office && arrival_time_to_office 
+    ? `${formatDate(arrival_date_to_office)}, ${formatTime(arrival_time_to_office)}` 
+    : "N/A"}
+</p>
+            </div>
+          </div>
           {selectedRequest.status === "Pending" && (
             <div>
               <h2>Assign a driver: </h2>
@@ -307,7 +351,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               selectedRequest.status !== "Pending" &&
               selectedRequest.status !== "Rejected" &&
               selectedRequest.purpose !== "Vehicle Maintenance" &&
-              selectedRequest.purpose !== "Driver Absence" && (
+              selectedRequest.purpose !== "Driver Absence" &&
+              selectedRequest.status !== "Canceled" && (
                 <>
                   <CommonButton
                     width={8}

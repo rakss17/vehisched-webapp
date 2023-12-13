@@ -200,10 +200,13 @@ export default function Requests() {
       <Container>
         <ToastContainer />
         <div className="margin-top">
-          <Label label="Request" />
         </div>
         <div className="request-row">
           <SearchBar onSearchChange={handleSearchChange} />
+          <div className="status-legend"><div className="ontrip-yess-container"><div className="ontrip-yess"></div><p>On Trip</p></div>
+          <div className="ontrip-noo-container"><div className="ontrip-noo"></div><p>Awaiting Trip</p></div>
+          <div className="ontrip-gray-container"><div className="ontrip-gray"></div><p>No Awaiting Trip</p></div>
+          </div>
           <Dropdown
             status={[
               "All",
@@ -233,7 +236,7 @@ export default function Requests() {
                 <th>Requested by</th>
                 <th>Travel Date</th>
                 <th>Status</th>
-                <th>On Trip</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -251,7 +254,7 @@ export default function Requests() {
                       <td>{request.request_id}</td>
                       <td>{request.requester_full_name}</td>
                       <td>{request.travel_date}</td>
-                      <td>{request.status}</td>
+                      <td>{request.vehicle_driver_status === "On Trip" ? request.vehicle_driver_status : request.status}</td>
                       <td>
                         {request.status === "Completed" ||
                         request.status === "Canceled" ||

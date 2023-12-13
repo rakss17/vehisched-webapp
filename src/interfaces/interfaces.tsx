@@ -130,6 +130,8 @@ export interface RequestFormProps {
   role?: any;
   merge_trip?: any;
   date_reserved?: any;
+  departure_time_from_office?: any;
+  arrival_time_to_office?: any;
 }
 
 export interface RequestFormDetailsProps {

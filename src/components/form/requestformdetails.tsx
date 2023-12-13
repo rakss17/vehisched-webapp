@@ -304,12 +304,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </div>
           </div>
           {selectedRequest.status !== "Pending" && (
+            <>
             <div>
               <h2>Driver:</h2>
               <p>{selectedRequest.driver_full_name}</p>
             </div>
-          )}
-          <div>
+            <div>
             <div>
               <h2>Departure: </h2>
               <p>
@@ -328,7 +328,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 </p>
             </div>
           </div>
+            </>
+          )}
+          
           {selectedRequest.status === "Pending" && (
+            <>
             <div>
               <h2>Assign a driver: </h2>
               <div onClick={handleFetchDrivers}>
@@ -343,17 +347,36 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 {errorMessages[0]?.driverSelectionError}
               </p>
             </div>
+            <div></div>
+            <div>
+                <CommonButton
+                  width={7}
+                  height={7}
+                  tertiaryStyle
+                  text="Reject"
+                  onClick={onReject}
+                />
+                <CommonButton
+                  width={7}
+                  height={7}
+                  primaryStyle
+                  text="Approve"
+                  onClick={() => onApprove(selectedDriverId)}
+                />
+              </div>
+            </>
           )}
 
-          <div>
+          
             {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
               selectedRequest.status !== "Driver Absence" &&
               selectedRequest.status !== "Pending" &&
               selectedRequest.status !== "Rejected" &&
               selectedRequest.purpose !== "Vehicle Maintenance" &&
               selectedRequest.purpose !== "Driver Absence" &&
-              selectedRequest.status !== "Canceled" && (
-                <>
+              selectedRequest.status !== "Canceled" &&
+              selectedRequest.status !== "Completed" && (
+                <div>
                   <CommonButton
                     width={8}
                     height={6}
@@ -375,45 +398,40 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     text="Download trip ticket"
                     onClick={handleDownloadTripTicket}
                   />
-                </>
+                </div>
               )}
+            {selectedRequest.status === "Completed" && (<div><CommonButton
+                    width={12}
+                    height={6}
+                    primaryStyle
+                    text="Download trip ticket"
+                    onClick={handleDownloadTripTicket}
+                  /></div> )}
             {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
+              <div>
               <CommonButton
-                width={7}
-                height={7}
-                primaryStyle
-                text="Done"
-                onClick={onComplete}
-              />
+              width={7}
+              height={7}
+              primaryStyle
+              text="Done"
+              onClick={onComplete}
+            />
+            </div>
             )}
             {selectedRequest.status === "Driver Absence" && (
-              <CommonButton
+              <div>
+                <CommonButton
                 width={7}
                 height={7}
                 primaryStyle
                 text="Done"
                 onClick={onComplete}
               />
+              </div>
+              
             )}
-            {selectedRequest.status === "Pending" && (
-              <>
-                <CommonButton
-                  width={7}
-                  height={7}
-                  tertiaryStyle
-                  text="Reject"
-                  onClick={onReject}
-                />
-                <CommonButton
-                  width={7}
-                  height={7}
-                  primaryStyle
-                  text="Approve"
-                  onClick={() => onApprove(selectedDriverId)}
-                />
-              </>
-            )}
-          </div>
+           
+          
         </div>
       </Modal>
       <Modal className="merge-trip-modal" isOpen={isMergeTripOpen}>

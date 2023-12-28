@@ -29,6 +29,7 @@ import { NotificationCreatedCancelWebsocket } from "../../../components/api/webs
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingBar from "react-top-loading-bar";
+import { formatDate } from "../../../components/functions/getTimeElapsed";
 
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -262,7 +263,7 @@ export default function Requests() {
                     >
                       <td>{request.request_id}</td>
                       <td>{request.requester_full_name}</td>
-                      <td>{request.travel_date}</td>
+                      <td>{formatDate(request.travel_date)}</td>
                       <td>
                         {request.vehicle_driver_status === "On Trip"
                           ? request.vehicle_driver_status

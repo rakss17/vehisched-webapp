@@ -9,8 +9,16 @@ import AddEdit from "../../components/admin/user/addedit";
 import AddEditVehicle from "../../components/admin/vehicle/addedit";
 import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
-import { Vehicle } from "../../interfaces/interfaces";
+import { DropdownParams, Vehicle } from "../../interfaces/interfaces";
 import { SignupParams } from "../../interfaces/interfaces";
+import {
+  faColumns,
+  faClipboardList,
+  faCar,
+  faCalendarAlt,
+  faUser,
+  faUsersCog,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   SignupAPI,
   fetchUsersAPI,
@@ -22,12 +30,16 @@ import {
   updateVehicleAPI,
   deleteVehicleAPI,
   toggleUserActivationAPI,
+  fetchNotification,
 } from "../../components/api/api";
+import { SidebarItem } from "../../interfaces/interfaces";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
 import CommonButton from "../../components/button/commonbutton";
 import AddOfficeRole from "../../components/admin/user/addofficerole";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/sidebar/sidebar";
 
 export default function Admin() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -65,7 +77,7 @@ export default function Admin() {
     useState(false);
   const [isConfirmationOpenVehicleDelete, setIsConfirmationOpenVehicleDelete] =
     useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<SignupParams>();
+  const [selectedAccount, setSelectedAccount] = useState<DropdownParams>();
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
@@ -94,6 +106,7 @@ export default function Admin() {
     type: "",
     capacity: null,
     is_vip: false,
+    assigned_to: "",
     image: null,
   });
   const [vehicleUpdate, setVehicleUpdate] = useState<Vehicle>({
@@ -103,11 +116,14 @@ export default function Admin() {
     capacity: null,
     status: "",
     is_vip: false,
+    assigned_to: "",
     image: null,
   });
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
+  const personalInfo = useSelector((state: RootState) => state.personalInfo.data);
+  const role = personalInfo?.role
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>(
@@ -115,6 +131,24 @@ export default function Admin() {
   );
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
+  ];
+  const navigate = useNavigate();
+
+  fetchNotification(setNotifList);
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -138,6 +172,18 @@ export default function Admin() {
     setUserUpdate((prevUserData) => ({
       ...prevUserData,
       office: selectedOption,
+    }));
+  };
+  const handleDropdownChange5 = (selectedOption: string) => {
+    setVehicleData((prevVehicleData) => ({
+      ...prevVehicleData,
+      assigned_to: selectedOption,
+    }));
+  };
+  const handleDropdownChange6 = (selectedOption: string) => {
+    setVehicleUpdate((prevVehicleUpdate) => ({
+      ...prevVehicleUpdate,
+      assigned_to: selectedOption,
     }));
   };
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -357,7 +403,6 @@ export default function Admin() {
       setErrorMessages([]);
       setLoadingBarProgress(20);
       setIsAddOpen(false);
-      console.log(userData);
       SignupAPI(userData, setIsConfirmationOpen, setLoadingBarProgress);
     }
   };
@@ -432,7 +477,6 @@ export default function Admin() {
     }
 
     setVehicleErrorMessages(vehicleValidationErrors);
-
     if (vehicleValidationErrors.length === 0) {
       setLoadingBarProgress(20);
       setIsAddVehicleOpen(false);
@@ -535,6 +579,7 @@ export default function Admin() {
         return "black";
     }
   };
+  
   return (
     <>
       <LoadingBar
@@ -543,6 +588,8 @@ export default function Admin() {
         onLoaderFinished={() => setLoadingBarProgress(0)}
       />
       <Header />
+      {role === "office staff" ? (<Sidebar sidebarData={sidebarData}/>) : null}
+      
       <Container>
         <div className="label-margin-admin">
           <Label label="System Administration" />
@@ -906,6 +953,9 @@ export default function Admin() {
           checked: vehicleData.is_vip,
           type: "checkbox",
         }}
+        vipDropdownProps={{
+          onChange: handleDropdownChange5,
+        }}
         uploadImageProps={{
           type: "file",
           accept: "image/*",
@@ -913,6 +963,7 @@ export default function Admin() {
             handleImageChange(event),
         }}
         vehicleErrorMessages={vehicleErrorMessages}
+        isVipProps={vehicleData.is_vip}
       />
       <AddEditVehicle
         isOpen={isEditVehicleOpen}
@@ -966,8 +1017,12 @@ export default function Admin() {
               ...vehicleUpdate,
               is_vip: event.target.checked,
             }),
-          checked: selectedVehicle?.is_vip ?? "",
+          checked: (selectedVehicle?.is_vip ?? "") || vehicleUpdate.is_vip,
           type: "checkbox",
+        }}
+        vipDropdownProps={{
+          onChange: handleDropdownChange6,
+          selectedVehicle: selectedVehicle,
         }}
         uploadImageProps={{
           type: "file",
@@ -975,6 +1030,7 @@ export default function Admin() {
           onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
             handleImageUpdateChange(event),
         }}
+        isVipProps={vehicleUpdate.is_vip}
       />
       <AddOfficeRole
         isOpen={isAddOfficeRoleOpen}
@@ -1002,7 +1058,7 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleActivateUserButton}
+        onProceed={handleActivateUserButton}
       />
       <PromptDialog
         isOpen={isDeleteVehicleOpen}

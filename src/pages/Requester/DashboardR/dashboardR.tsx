@@ -23,6 +23,7 @@ import {
   checkVehicleAvailability,
   acceptVehicleAPI,
   cancelRequestAPI,
+  fetchVehicleVIPAPI,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
@@ -34,6 +35,10 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import Confirmation from "../../../components/confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
+import InitialFormVip from "../../../components/form/initialformvip";
+import PromptDialog from "../../../components/promptdialog/prompdialog";
+import RequesterTripMergingForm from "../../../components/form/requestertripmerging";
+import { tr } from "date-fns/locale";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -58,7 +63,12 @@ export default function DashboardR() {
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
-  const [isSetTripOpen, setIsSetTripOpen] = useState(false);
+  const [isInitialFormVIPOpen, setIsInitialFormVIPOpen] = useState(false);
+  const [isRequesterTripMergingFormOpen, setIsRequesterTripMergingFormOpen] =
+    useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState("");
+  const [givenCapacity, setGivenCapacity] = useState(0);
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -82,6 +92,9 @@ export default function DashboardR() {
   const userName = personalInfo?.username;
   const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
+  const [plateNumber, setSelectedPlateNumber] = useState("");
+  const [vehicleName, setSelectedModel] = useState("");
+  const [capacity, setSelectedCapacity] = useState("");
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -98,8 +111,15 @@ export default function DashboardR() {
       notification: notifLength >= 1 ? notifLength : undefined,
     },
   ];
+  const role = personalInfo?.role;
 
   fetchNotification(setNotifList);
+
+  useEffect(() => {
+    if (role === "vip") {
+      fetchVehicleVIPAPI(setVehiclesData, handleButtonClick);
+    }
+  }, []);
 
   useEffect(() => {
     fetchSchedule(
@@ -121,6 +141,26 @@ export default function DashboardR() {
         handleButtonClick("Ongoing Schedule");
       } else {
         setHasPendingSchedule(false);
+      }
+
+      const vehicles = data
+        .filter(
+          (request: any) => request.purpose === null && request.vehicle_details
+        )
+        .map((request: any) => ({
+          ...request.vehicle_details,
+          request_id: request.request_id,
+        }));
+      const vehiclesCapacity = vehicles.map((vehicle: any) => vehicle.capacity);
+
+      if (vehicles.length > 0) {
+        setVehiclesData(vehicles);
+        const firstVehicleRequest = data.find(
+          (request: any) => request.purpose === null && request.vehicle_details
+        );
+        const vacant_capacity =
+          vehiclesCapacity - firstVehicleRequest.number_of_passenger;
+        setGivenCapacity(vacant_capacity);
       }
     });
   }, []);
@@ -221,8 +261,16 @@ export default function DashboardR() {
     }
   };
 
-  const handleCancelTripModal = () => {
-    setIsSetTripOpen(false);
+  const handleOpenRequestFormForVIP = () => {
+    navigate("/RequestForm", {
+      state: { plateNumber, vehicleName, capacity, data, addressData },
+    });
+  };
+
+  const handleClose = () => {
+    setIsInitialFormVIPOpen(false);
+    setIsDisclaimerOpen(false);
+    setIsRequesterTripMergingFormOpen(false);
   };
   const handleKeyDown = (event: React.KeyboardEvent) => {
     const key = event.key;
@@ -455,6 +503,7 @@ export default function DashboardR() {
   };
   pendingSchedule.reverse();
   schedule.reverse();
+  console.log(vehiclesData);
   return (
     <>
       <Modal
@@ -747,21 +796,39 @@ export default function DashboardR() {
                 </p>
               ) : (
                 <>
-                  <p className="date-available-range">
-                    Available vehicles from {data.travel_date},{" "}
-                    {formatTime(data.travel_time)} to {data.return_date},{" "}
-                    {formatTime(data.return_time)}
-                  </p>
+                  {role === "vip" ? null : (
+                    <p className="date-available-range">
+                      Available vehicles from {data.travel_date},{" "}
+                      {formatTime(data.travel_time)} to {data.return_date},{" "}
+                      {formatTime(data.return_time)}
+                    </p>
+                  )}
+
                   <div className="vehicle-container">
                     {vehiclesData.map((vehicle) => (
                       <a
-                        onClick={() =>
-                          openRequestForm(
-                            vehicle.plate_number,
-                            vehicle.model,
-                            vehicle.capacity
-                          )
-                        }
+                        onClick={() => {
+                          {
+                            role === "vip"
+                              ? (setIsInitialFormVIPOpen(true),
+                                setSelectedPlateNumber(vehicle.plate_number),
+                                setSelectedModel(vehicle.model),
+                                setSelectedCapacity(vehicle.capacity))
+                              : vehicle.is_vip === true
+                              ? (setIsDisclaimerOpen(true),
+                                setSelectedPlateNumber(vehicle.plate_number),
+                                setSelectedModel(vehicle.model),
+                                setSelectedCapacity(vehicle.capacity))
+                              : vehicle.merge_trip === true
+                              ? (setIsRequesterTripMergingFormOpen(true),
+                                setSelectedRequestId(vehicle.request_id))
+                              : openRequestForm(
+                                  vehicle.plate_number,
+                                  vehicle.model,
+                                  vehicle.capacity
+                                );
+                          }
+                        }}
                         className="vehicle-card"
                         key={vehicle.plate_number}
                       >
@@ -781,7 +848,7 @@ export default function DashboardR() {
                           </div>
                           <img
                             className="vehicle-image"
-                            src={serverSideUrl + vehicle.image}
+                            src={vehicle.image}
                             alt={vehicle.model}
                           />
                         </div>
@@ -818,8 +885,6 @@ export default function DashboardR() {
                           {recommend.return_date},{" "}
                           {formatTime(recommend.return_time)}
                         </span>{" "}
-                        is currently undergoing unexpected maintenance. We
-                        apologize for any inconvenience this may cause.{" "}
                         {recommend.message}
                       </p>
                     </div>
@@ -1012,26 +1077,26 @@ export default function DashboardR() {
                               <button>View more info</button>
                             </div>
                             <div className="next-user">
-                            {nextSchedule
-                            .filter(
-                              (nextSched) =>
-                                nextSched.previous_trip_id === schedule.trip_id
-                            )
-                            .map((nextSched) => (
-                              <div>
-                                <strong>
-                                  The next scheduled user of this vehicle will
-                                  commence at:
-                                </strong>
-                                <p>{nextSched.next_schedule_travel_date}</p>
-                                <p>
-                                  {formatTime(
-                                    nextSched.next_schedule_travel_time
-                                  )}
-                                </p>
-                              </div>
-                            ))}
-
+                              {nextSchedule
+                                .filter(
+                                  (nextSched) =>
+                                    nextSched.previous_trip_id ===
+                                    schedule.trip_id
+                                )
+                                .map((nextSched) => (
+                                  <div>
+                                    <strong>
+                                      The next scheduled user of this vehicle
+                                      will commence at:
+                                    </strong>
+                                    <p>{nextSched.next_schedule_travel_date}</p>
+                                    <p>
+                                      {formatTime(
+                                        nextSched.next_schedule_travel_time
+                                      )}
+                                    </p>
+                                  </div>
+                                ))}
                             </div>
                           </div>
                           {nextSchedule
@@ -1070,6 +1135,30 @@ export default function DashboardR() {
       <Confirmation
         isOpen={isConfirmationCancelOpen}
         header="Vehicle Recommendation Canceled!"
+      />
+      <InitialFormVip
+        isOpen={isInitialFormVIPOpen}
+        onRequestClose={handleClose}
+        plateNumber={plateNumber}
+        vehicleName={vehicleName}
+        capacity={capacity}
+      />
+      <PromptDialog
+        isOpen={isDisclaimerOpen}
+        header="Disclaimer"
+        content="This vehicle is prioritized for the higher official, and your reservation will be canceled once the higher official 
+      uses it during your trip."
+        footer="Are you sure you want to use this vehicle?"
+        onProceed={handleOpenRequestFormForVIP}
+        onRequestClose={handleClose}
+        buttonText1="Proceed"
+        buttonText2="Cancel"
+      />
+      <RequesterTripMergingForm
+        isOpen={isRequesterTripMergingFormOpen}
+        onRequestClose={handleClose}
+        given_capacity={givenCapacity}
+        requestId={selectedRequestId}
       />
     </>
   );

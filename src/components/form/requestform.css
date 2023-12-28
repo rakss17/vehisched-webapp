@@ -150,6 +150,14 @@
   gap: 2vw;
   width: 60vw;
 }
+.third-row2 {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1vh;
+  margin-left: 3vw;
+  gap: 6vw;
+  width: 60vw;
+}
 .vehicle-info-name {
   margin-top: 0vw;
   display: flex;
@@ -209,7 +217,11 @@
   flex-direction: row;
   gap: 1vw;
 }
-
+.calendar-containerr select {
+  width: 15vw;
+  border-radius: 1px;
+  background-color: #d9d9d9;
+}
 .fifth-row {
   display: flex;
   margin-top: 1vh;
@@ -306,6 +318,42 @@
   justify-content: center;
   z-index: 1000; /* Make sure it's above other elements on the page */
 }
+.customize-calendar {
+  background-color: #d9d9d9;
+  color: #000000;
+  font-size: 1.3rem;
+  border: none;
+  text-align: center;
+  width: 15vw;
+  height: 5vh;
+  border-radius: 5px;
+}
+.customize-autocomplete {
+  background-color: #d9d9d9;
+  color: black;
+  width: 15vw;
+  border: 2px solid white;
+  border-radius: 5px;
+  height: 5vh;
+  padding: 10px;
+}
+.autocomplete-container p {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
+/* .react-time-picker {
+  background-color: green;
+  color: #000000;
+  font-size: 1.3rem;
+  border: none;
+  padding-left: 6vh;
+  width: 15vw;
+  height: 5vh;
+  border-radius: 5px;
+  position: relative;
+} */
 
 @media screen and (max-width: 768px) {
   .request-form-body {
@@ -325,9 +373,8 @@
   }
   .first-row {
     margin-left: 0vh;
-  
   }
-  .first-row-column{
+  .first-row-column {
     margin-left: 0vh;
     display: flex;
     flex-direction: column;
@@ -343,7 +390,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    
   }
   .vehicle-info-name {
     width: 35vw;
@@ -355,10 +401,10 @@
   .kilometer-info {
     width: 50vw;
   }
-  .kilometer-info strong{
+  .kilometer-info strong {
     margin-left: 0vh;
   }
-  .kilometer-info p{
+  .kilometer-info p {
     width: 50vw;
   }
   .forth-row {
@@ -390,7 +436,6 @@
   .fifth-row {
     margin-left: 1.3vh;
     font-size: 1rem;
-
   }
   .fifth-row strong {
     display: flex;
@@ -398,7 +443,7 @@
   .fifth-row p {
     display: flex;
     width: 30vw;
-    font-size: 1rem; 
+    font-size: 1rem;
   }
   .sixth-row {
     margin-top: 2vw;
@@ -414,14 +459,13 @@
     width: 80vw;
   }
 
-
   .request-form-header {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
   }
-  .request-form-header h1{
+  .request-form-header h1 {
     position: absolute;
     font-size: 1rem;
     margin-top: 3.5rem;
@@ -439,25 +483,25 @@
     margin-top: -2vh;
     border: 0.5px solid black;
   }
-  .requester-info-name strong{
+  .requester-info-name strong {
     margin-left: 5vw;
   }
-  .requester-info-name p{
+  .requester-info-name p {
     width: 40vw;
     margin-right: -20vw;
   }
-  .requester-office strong{
-   margin-left: -17vw;;
+  .requester-office strong {
+    margin-left: -17vw;
   }
-  .requester-office p{
+  .requester-office p {
     width: 70vw;
   }
-  .input-passenger-number{
+  .input-passenger-number {
     margin-left: 18vw;
     flex-direction: column;
     width: 70vw;
   }
-  .passengers-name-row{
+  .passengers-name-row {
     flex-direction: column;
     align-items: baseline;
     margin-left: 5vw;
@@ -492,6 +536,4 @@
     flex-direction: row;
     align-items: center;
   }
-
 }
-

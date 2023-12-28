@@ -4,13 +4,14 @@ import { useEffect, useState, useRef } from "react";
 import "./googleaddressinput.css";
 
 interface AutoCompleteAddressGoogleProps {
-  travel_date: any;
-  travel_time: any;
+  travel_date?: any;
+  travel_time?: any;
   setData: (data: any) => void;
   setAddressData: (addressData: any) => void;
-  isDisabled: any;
-  category: any;
+  isDisabled?: any;
+  category?: any;
   removeDestinationError: () => void;
+  className?: any;
 }
 
 export default function AutoCompleteAddressGoogle({
@@ -21,6 +22,7 @@ export default function AutoCompleteAddressGoogle({
   isDisabled,
   category,
   removeDestinationError,
+  className
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
@@ -56,7 +58,7 @@ export default function AutoCompleteAddressGoogle({
 
   return (
     <Autocomplete
-      className="autocomplete-address"
+      className={`autocomplete-address ${className}`}
       disabled={isDisabled}
       options={{
         types: ["establishment", "geocode"],

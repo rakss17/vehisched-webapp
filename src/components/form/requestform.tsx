@@ -30,11 +30,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Csm from "../csm/csm";
 import { Modal } from "@mui/material";
+import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 
 export default function RequestForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
+  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
@@ -54,6 +56,8 @@ export default function RequestForm() {
   const middleName = personalInfo?.middle_name;
   const userID = personalInfo?.id;
   const office = personalInfo?.office;
+  const role = personalInfo?.role;
+
   const [data, setData] = useState<RequestFormProps>({
     requester_name: userID,
     office: office,
@@ -68,10 +72,14 @@ export default function RequestForm() {
     vehicle: `${plateNumber}`,
     type: category,
     distance: distance,
+    role: role,
+    merge_trip: false,
   });
+
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
+  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
 
@@ -204,7 +212,7 @@ export default function RequestForm() {
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-
+    console.log(data);
     if (
       validationErrors.numberOfPassengersError.length === 0 &&
       validationErrors.passengerNameError.length === 0 &&
@@ -213,16 +221,17 @@ export default function RequestForm() {
       validationErrors.all.length === 0
     ) {
       setLoadingBarProgress(20);
-      setIsModalOpen(true);
-      // postRequestFromAPI(
-      //   data,
-      //   () => {
-      //     setIsConfirmationOpen(true);
-      //     setIsModalOpen(true); // Open the modal after the request is successful
-      //   },
-      //   setIsConfirmationOpen,
-      //   setLoadingBarProgress
-      // );
+      // setIsModalOpen(true);
+      postRequestFromAPI(
+        data,
+        // () => {
+        //   setIsConfirmationOpen(true);
+        //   setIsModalOpen(true); // Open the modal after the request is successful
+        // },
+        setIsConfirmationOpen,
+        navigate,
+        setLoadingBarProgress
+      );
     }
   };
 
@@ -297,13 +306,14 @@ export default function RequestForm() {
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
               </div>
-              <div className="third-row">
+              <div className={role === "vip" ? "third-row2" : "third-row"}>
                 <div className="vehicle-info-name">
                   <strong>Vehicle:</strong>
                   <p>
                     {plateNumber} {vehicleName}
                   </p>
                 </div>
+
                 <div className="destination-info">
                   <strong>Destination: </strong>
                   <p>{destination}</p>
@@ -314,6 +324,7 @@ export default function RequestForm() {
                   <p>{distance} km</p>
                 </div>
               </div>
+
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Date of Travel:</strong>
@@ -340,6 +351,7 @@ export default function RequestForm() {
                   <p>{category}</p>
                 </div>
               </div>
+
               <div className="sixth-row">
                 <div className="purpose-row">
                   <InputField

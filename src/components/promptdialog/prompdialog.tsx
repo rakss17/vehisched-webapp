@@ -5,18 +5,22 @@ import { ModalProps } from "../../interfaces/interfaces";
 
 const PromptDialog: React.FC<ModalProps> = ({
   isOpen,
+  header,
   content,
+  footer,
   buttonText1,
   buttonText2,
   onRequestClose,
-  onRequestDelete,
+  onProceed,
 }) => {
   return (
     <Modal className="modal-prompt-dialog" isOpen={isOpen}>
-      <h1>{content}</h1>
+      <h1>{header}</h1>
+      <p>{content}</p>
+      <p>{footer}</p>
       <div>
-        <button onClick={onRequestDelete}>{buttonText1}</button>
         <button onClick={onRequestClose}>{buttonText2}</button>
+        <button onClick={onProceed}>{buttonText1}</button>
       </div>
     </Modal>
   );

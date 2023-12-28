@@ -151,6 +151,44 @@ export async function fetchOfficeAPI(setOfficeData: any) {
   }
 }
 
+export async function fetchVIPAPI(setVIPData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/fetch-vip/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const vipData = response.data.map((vip: any) => vip.username);
+    setVIPData(vipData);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function fetchVehicleVIPAPI(
+  setVehiclesData: any,
+  handleButtonClick: any
+) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/vehicles/fetch-vehicle-vip/", {
+      params: {
+        role: "vip",
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    setVehiclesData(response.data);
+    handleButtonClick("Available Vehicle");
+  } catch (error) {
+    console.log(error);
+  }
+}
 export function fetchUsersAPI() {
   return async (dispatch: Dispatch) => {
     try {
@@ -207,6 +245,21 @@ export async function fetchDriversAPI(setDriversData: any) {
       },
     });
     setDriversData(response.data);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+}
+
+export async function fetchRequestersAPI(setRequestersData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/requesters/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    setRequestersData(response.data);
   } catch (error) {
     console.error("Error fetching user list:", error);
   }
@@ -471,7 +524,7 @@ export async function deleteVehicleAPI(
 }
 
 export function postRequestFromAPI(
-  data: RequestFormProps,
+  data: any,
   setIsConfirmationOpen: any,
   navigate: any,
   setLoadingBarProgress: (progress: number) => void
@@ -479,8 +532,14 @@ export function postRequestFromAPI(
   const token = localStorage.getItem("token");
   const requestData = {
     ...data,
-    passenger_name: JSON.stringify(data.passenger_name),
   };
+
+  if (data.passenger_name) {
+    requestData.passenger_name = JSON.stringify(data.passenger_name);
+  } else {
+    requestData.passenger_name = JSON.stringify([]);
+  }
+
   api
     .post("api/v1/request/fetch-post/", requestData, {
       headers: {
@@ -498,6 +557,7 @@ export function postRequestFromAPI(
       }, 3000);
     })
     .catch((error) => {
+      console.log(error);
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
@@ -559,6 +619,7 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
         (trip: any) => trip.status === "Pending"
       );
       setPendingSchedule(pendingScheduleTrips);
+      console.log(response.data);
     })
     .catch((error) => {
       console.error("Error fetching request list:", error);
@@ -633,7 +694,10 @@ export function approveRequestAPI(
 export function cancelRequestAPI(
   requestId: any,
   setIsConfirmationOpen: any,
-  setLoadingBarProgress: (progress: number) => void
+  setLoadingBarProgress: (progress: number) => void,
+  isFromOfficeStaff?: any,
+  reason?: any,
+  setIsCancelOpen?: any
 ) {
   const token = localStorage.getItem("token");
 
@@ -642,6 +706,8 @@ export function cancelRequestAPI(
       `/api/v1/request/cancel/${requestId}/`,
       {
         status: "Canceled",
+        isFromOfficeStaff: isFromOfficeStaff,
+        reason: reason,
       },
       {
         headers: {
@@ -651,6 +717,7 @@ export function cancelRequestAPI(
       }
     )
     .then((response) => {
+      setIsCancelOpen(false);
       setIsConfirmationOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
@@ -1190,7 +1257,7 @@ export function maintenanceAbsenceCompletedRequestAPI(
 export function rejectRequestAPI(
   requestId: any,
   setIsConfirmationRejectedOpen: any,
-  setIsRequestFormOpen: any,
+  reason: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
@@ -1200,6 +1267,7 @@ export function rejectRequestAPI(
       `/api/v1/request/reject-request/${requestId}/`,
       {
         status: "Rejected",
+        reason: reason,
       },
       {
         headers: {
@@ -1209,7 +1277,6 @@ export function rejectRequestAPI(
       }
     )
     .then((response) => {
-      setIsRequestFormOpen(false);
       setIsConfirmationRejectedOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
@@ -1279,5 +1346,49 @@ export async function postCSM(data: any) {
     .then((response) => {})
     .catch((error) => {
       console.error("Error fetching questions list:", error);
+    });
+}
+
+export function submitTripMerge(
+  requestId: any,
+  number_of_passenger: any,
+  passenger_name: any[],
+  purpose: any,
+  setIsConfirmationOpen: any,
+  onRequestClose: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  const token = localStorage.getItem("token");
+  const passenger_namee = JSON.stringify(passenger_name);
+  api
+    .patch(
+      `/api/v1/request/submit-trip-merge/${requestId}/`,
+      {
+        number_of_passenger: number_of_passenger,
+        passenger_name: passenger_namee,
+        purpose: purpose,
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      setLoadingBarProgress(50);
+      onRequestClose();
+      setIsConfirmationOpen(true);
+      setLoadingBarProgress(100);
+      setTimeout(() => {
+        setIsConfirmationOpen(false);
+        window.location.reload();
+      }, 3000);
+    })
+    .catch((error) => {
+      setLoadingBarProgress(50);
+
+      setLoadingBarProgress(100);
+      console.log(error);
     });
 }

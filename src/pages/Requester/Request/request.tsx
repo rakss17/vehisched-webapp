@@ -121,7 +121,14 @@ export default function Request() {
   const handleCancelButton = () => {
     setLoadingBarProgress(20);
     setIsCancelOpen(false);
-    cancelRequestAPI(requestId, setIsConfirmationOpen, setLoadingBarProgress);
+    cancelRequestAPI(
+      requestId,
+      setIsConfirmationOpen,
+      setLoadingBarProgress,
+      () => {},
+      () => {},
+      () => {}
+    );
   };
 
   const handleClose = () => {
@@ -387,7 +394,7 @@ export default function Request() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleCancelButton}
+        onProceed={handleCancelButton}
       />
       <Confirmation isOpen={isConfirmationOpen} header="Request Canceled!" />
     </>

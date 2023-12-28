@@ -5,7 +5,8 @@ interface DropdownProps {
   onChange: (selectedOption: string) => void;
   selectedAccount?: { role: string; office: string };
   options: string[];
-  selectedKey: "role" | "office";
+  selectedKey: "role" | "office" | "assigned_to";
+  selectedVehicle?: { assigned_to: string };
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({
@@ -13,18 +14,28 @@ const DropdownMenu: React.FC<DropdownProps> = ({
   selectedAccount,
   options,
   selectedKey,
+  selectedVehicle,
 }) => {
-  const initialSelectedOption = selectedAccount
-    ? selectedAccount[selectedKey]
-    : "------------Select------------";
+  const initialSelectedOption =
+    selectedKey === "assigned_to"
+      ? selectedVehicle
+        ? selectedVehicle[selectedKey]
+        : "------------Select------------"
+      : selectedAccount
+      ? selectedAccount[selectedKey]
+      : "------------Select------------";
 
   const [selectedOption, setSelectedOption] = useState<string>(
     initialSelectedOption
   );
 
   useEffect(() => {
-    setSelectedOption(selectedAccount ? selectedAccount[selectedKey] : "");
-  }, [selectedAccount]);
+    if (selectedKey === "assigned_to") {
+      setSelectedOption(selectedVehicle ? selectedVehicle[selectedKey] : "");
+    } else {
+      setSelectedOption(selectedAccount ? selectedAccount[selectedKey] : "");
+    }
+  }, [selectedAccount, selectedVehicle, selectedKey]);
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newOption = event.target.value;

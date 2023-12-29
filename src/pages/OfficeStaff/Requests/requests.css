@@ -21,10 +21,8 @@
   margin-top: 2vw;
   margin-left: 0vh;
   display: flex;
-
   flex-direction: row;
-  justify-content: center;
-  gap: 0%;
+  justify-content: space-around;
 }
 
 .margin-top {
@@ -46,34 +44,49 @@
   color: black;
   text-align: center;
   cursor: pointer;
+  border-radius: 10px;
   /* position: relative; */
 }
 .request-container table tbody tr .ontrip-yes {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: green;
-  /* position: absolute; */
-  margin-top: 0vh;
-  margin-left: 5vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1vw;
+}
+.request-container table tbody tr .fa-road {
+  position: absolute;
+  font-size: 2rem;
+}
+.request-container table tbody tr .fa-car {
+  position: absolute;
+  font-size: 1.5rem;
+  z-index: 1;
+  color: #060e57;
 }
 .request-container table tbody tr .ontrip-no {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: red;
-  /* position: absolute; */
-  margin-top: 0vh;
-  margin-left: 5vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1vw;
+}
+.request-container table tbody tr .fa-school {
+  position: absolute;
+  font-size: 1.6rem;
+}
+.request-container table tbody tr .fa-car-pending {
+  font-size: 1.3rem;
+  color: #060e57;
+  z-index: 1;
+  top: 0.2vh;
+  right: 0.2vw;
 }
 .request-container table tbody tr .ontrip-completed {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: gray;
-  /* position: absolute; */
-  margin-top: 0vh;
-  margin-left: 5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #060e57;
 }
 /* .request-container table tbody tr .ontrip-yes {
   font-size: 1.5rem;
@@ -85,8 +98,7 @@
 } */
 
 .request-container table tbody tr:hover {
-  background-color: #060e57;
-  color: white;
+  background-color: white;
 }
 .status-legend {
   width: 30vw;
@@ -94,7 +106,7 @@
   display: flex;
   align-items: center;
   padding-left: 1vw;
-  gap: 1vw
+  gap: 1vw;
 }
 .status-legend p {
   color: black;
@@ -103,7 +115,7 @@
   width: 6vw;
   display: flex;
   align-items: center;
-  gap: 0.7vw
+  gap: 0.7vw;
 }
 .status-legend .ontrip-yess {
   width: 10px;
@@ -115,7 +127,7 @@
   width: 8vw;
   display: flex;
   align-items: center;
-  gap: 0.7vw
+  gap: 0.7vw;
 }
 .status-legend .ontrip-noo {
   width: 10px;
@@ -127,7 +139,7 @@
   width: 10vw;
   display: flex;
   align-items: center;
-  gap: 0.7vw
+  gap: 0.7vw;
 }
 .status-legend .ontrip-gray {
   width: 10px;

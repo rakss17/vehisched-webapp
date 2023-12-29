@@ -6,6 +6,8 @@ import {
   faCalendarAlt,
   faUser,
   faUsersCog,
+  faRoad,
+  faSchool,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -30,6 +32,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingBar from "react-top-loading-bar";
 import { formatDate } from "../../../components/functions/getTimeElapsed";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -203,7 +206,7 @@ export default function Requests() {
         <div className="margin-top"></div>
         <div className="request-row">
           <SearchBar onSearchChange={handleSearchChange} />
-          <div className="status-legend">
+          {/* <div className="status-legend">
             <div className="ontrip-yess-container">
               <div className="ontrip-yess"></div>
               <p>On Trip</p>
@@ -216,7 +219,7 @@ export default function Requests() {
               <div className="ontrip-gray"></div>
               <p>No Awaiting Trip</p>
             </div>
-          </div>
+          </div> */}
           <Dropdown
             status={[
               "All",
@@ -277,9 +280,30 @@ export default function Requests() {
                         ) : (
                           <>
                             {request.vehicle_driver_status === "On Trip" ? (
-                              <div className="ontrip-yes"></div>
+                              <div className="ontrip-yes">
+                                <FontAwesomeIcon
+                                  icon={faRoad}
+                                  color="gray"
+                                  className="fa-road"
+                                />
+
+                                <FontAwesomeIcon
+                                  icon={faCar}
+                                  className="fa-car"
+                                />
+                              </div>
                             ) : (
-                              <div className="ontrip-no"></div>
+                              <div className="ontrip-no">
+                                <FontAwesomeIcon
+                                  color="gray"
+                                  icon={faSchool}
+                                  className="fa-school"
+                                />
+                                <FontAwesomeIcon
+                                  icon={faCar}
+                                  className="fa-car-pending"
+                                />
+                              </div>
                             )}
                           </>
                         )}

@@ -224,19 +224,10 @@
   margin-top: 0vh;
   padding-left: 0vw;
   height: auto;
-  width: 23vw;
+  width: 35vw;
   gap: 1vw;
 }
-.request-form-container div:nth-child(7) div:nth-child(2) {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  margin-top: 1vh;
-  padding-left: 0vw;
-  height: auto;
-  width: 20vw;
-  gap: 1vw;
-}
+
 .request-form-container div:nth-child(7) h2 {
   color: black;
   font-size: 1.1rem;

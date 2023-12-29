@@ -200,7 +200,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   let departure_time_from_office = null;
 
   if (selectedRequest.departure_time_from_office) {
-    const departureDateParts = selectedRequest.departure_time_from_office.split("T");
+    const departureDateParts =
+      selectedRequest.departure_time_from_office.split("T");
     departure_date_from_office = departureDateParts[0];
 
     if (departureDateParts[1]) {
@@ -220,7 +221,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       arrival_time_to_office = arrivalTimeParts[0];
     }
   }
-
 
   return (
     <>
@@ -281,16 +281,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div>
             <div>
-              <h2>Date of travel:</h2>
-              <p>{formatDate(selectedRequest.travel_date)}</p>
+              <h2>Travel date & time:</h2>
+              <p>
+                {formatDate(selectedRequest.travel_date)},{" "}
+                {formatTime(selectedRequest.travel_time)}
+              </p>
               <h2>to:</h2>
-              <p>{formatDate(selectedRequest.return_date)}</p>
-            </div>
-            <div>
-              <h2>Time:</h2>
-              <p>{formatTime(selectedRequest.travel_time)}</p>
-              <h2>to:</h2>
-              <p>{formatTime(selectedRequest.return_time)}</p>
+              <p>
+                {formatDate(selectedRequest.return_date)},{" "}
+                {formatTime(selectedRequest.return_time)}
+              </p>
             </div>
           </div>
           <div>
@@ -305,50 +305,53 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           {selectedRequest.status !== "Pending" && (
             <>
-            <div>
-              <h2>Driver:</h2>
-              <p>{selectedRequest.driver_full_name}</p>
-            </div>
-            <div>
-            <div>
-              <h2>Departure: </h2>
-              <p>
-  {departure_date_from_office && departure_time_from_office 
-    ? `${formatDate(departure_date_from_office)}, ${formatTime(departure_time_from_office)}` 
-    : "N/A"}
-</p>
-
-            </div>
-            <div>
-              <h2>Arrival: </h2>
-              <p>
-  {arrival_date_to_office && arrival_time_to_office 
-    ? `${formatDate(arrival_date_to_office)}, ${formatTime(arrival_time_to_office)}` 
-    : "N/A"}
-</p>
-            </div>
-          </div>
+              <div>
+                <h2>Driver:</h2>
+                <p>{selectedRequest.driver_full_name}</p>
+              </div>
+              <div>
+                <div>
+                  <h2>Departure: </h2>
+                  <p>
+                    {departure_date_from_office && departure_time_from_office
+                      ? `${formatDate(
+                          departure_date_from_office
+                        )}, ${formatTime(departure_time_from_office)}`
+                      : "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <h2>Arrival: </h2>
+                  <p>
+                    {arrival_date_to_office && arrival_time_to_office
+                      ? `${formatDate(arrival_date_to_office)}, ${formatTime(
+                          arrival_time_to_office
+                        )}`
+                      : "N/A"}
+                  </p>
+                </div>
+              </div>
             </>
           )}
-          
+
           {selectedRequest.status === "Pending" && (
             <>
-            <div>
-              <h2>Assign a driver: </h2>
-              <div onClick={handleFetchDrivers}>
-                <Dropdown
-                  status={dropdownDrivers}
-                  onCategoryChange={handleChooseDriver}
-                  dropdownClassName="dropdown-custom"
-                  menuClassName="menu-custom"
-                />
+              <div>
+                <h2>Assign a driver: </h2>
+                <div onClick={handleFetchDrivers}>
+                  <Dropdown
+                    status={dropdownDrivers}
+                    onCategoryChange={handleChooseDriver}
+                    dropdownClassName="dropdown-custom"
+                    menuClassName="menu-custom"
+                  />
+                </div>
+                <p className="set-trip-text-error">
+                  {errorMessages[0]?.driverSelectionError}
+                </p>
               </div>
-              <p className="set-trip-text-error">
-                {errorMessages[0]?.driverSelectionError}
-              </p>
-            </div>
-            <div></div>
-            <div>
+              <div></div>
+              <div>
                 <CommonButton
                   width={7}
                   height={7}
@@ -367,71 +370,75 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </>
           )}
 
-          
-            {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
-              selectedRequest.status !== "Driver Absence" &&
-              selectedRequest.status !== "Pending" &&
-              selectedRequest.status !== "Rejected" &&
-              selectedRequest.purpose !== "Vehicle Maintenance" &&
-              selectedRequest.purpose !== "Driver Absence" &&
-              selectedRequest.status !== "Canceled" &&
-              selectedRequest.status !== "Completed" && (
-                <div>
-                  <CommonButton
-                    width={8}
-                    height={6}
-                    tertiaryStyle
-                    text="Cancel Trip"
-                    onClick={onCancelTrip}
-                  />
-                  <CommonButton
-                    width={8}
-                    height={6}
-                    secondaryStyle
-                    text="Merge trip"
-                    onClick={onMergeTripOpen}
-                  />
-                  <CommonButton
-                    width={12}
-                    height={6}
-                    primaryStyle
-                    text="Download trip ticket"
-                    onClick={handleDownloadTripTicket}
-                  />
-                </div>
-              )}
-            {selectedRequest.status === "Completed" && (<div><CommonButton
-                    width={12}
-                    height={6}
-                    primaryStyle
-                    text="Download trip ticket"
-                    onClick={handleDownloadTripTicket}
-                  /></div> )}
-            {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
-              <div>
-              <CommonButton
-              width={7}
-              height={7}
-              primaryStyle
-              text="Done"
-              onClick={onComplete}
-            />
-            </div>
-            )}
-            {selectedRequest.status === "Driver Absence" && (
+          {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
+            selectedRequest.status !== "Driver Absence" &&
+            selectedRequest.status !== "Pending" &&
+            selectedRequest.status !== "Rejected" &&
+            selectedRequest.purpose !== "Vehicle Maintenance" &&
+            selectedRequest.purpose !== "Driver Absence" &&
+            selectedRequest.status !== "Canceled" &&
+            selectedRequest.status !== "Completed" &&
+            selectedRequest.vehicle_driver_status !== "On Trip" && (
               <div>
                 <CommonButton
-                width={7}
-                height={7}
-                primaryStyle
-                text="Done"
-                onClick={onComplete}
-              />
+                  width={8}
+                  height={6}
+                  tertiaryStyle
+                  text="Cancel Trip"
+                  onClick={onCancelTrip}
+                />
+                <CommonButton
+                  width={8}
+                  height={6}
+                  secondaryStyle
+                  text="Merge trip"
+                  onClick={onMergeTripOpen}
+                />
+                <CommonButton
+                  width={12}
+                  height={6}
+                  primaryStyle
+                  text="Download trip ticket"
+                  onClick={handleDownloadTripTicket}
+                />
               </div>
-              
             )}
-           
-          
+          {selectedRequest.vehicle_driver_status === "On Trip" && (
+            <div>
+              <CommonButton
+                width={12}
+                height={6}
+                primaryStyle
+                text="Download trip ticket"
+                onClick={handleDownloadTripTicket}
+              />
+            </div>
+          )}
+          {selectedRequest.status === "Completed" &&
+            selectedRequest.purpose !== "Vehicle Maintenance" &&
+            selectedRequest.purpose !== "Driver Absence" && (
+              <div>
+                <CommonButton
+                  width={12}
+                  height={6}
+                  primaryStyle
+                  text="Download trip ticket"
+                  onClick={handleDownloadTripTicket}
+                />
+              </div>
+            )}
+          {selectedRequest.status === "Ongoing Vehicle Maintenance" ||
+            (selectedRequest.status === "Driver Absence" && (
+              <div>
+                <CommonButton
+                  width={7}
+                  height={7}
+                  primaryStyle
+                  text="Done"
+                  onClick={onComplete}
+                />
+              </div>
+            ))}
         </div>
       </Modal>
       <Modal className="merge-trip-modal" isOpen={isMergeTripOpen}>

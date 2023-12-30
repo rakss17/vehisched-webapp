@@ -84,7 +84,10 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   return null;
 }
 
-export function NotificationCreatedCancelWebsocket() {
+export function NotificationCreatedCancelWebsocket(
+  fetchRequestOfficeStaffAPI?: any,
+  setRequestList?: any
+) {
   useEffect(() => {
     const newSocket = new WebSocket(
       `ws://${serverSideUrl}/ws/notification/created_cancel/`
@@ -103,6 +106,7 @@ export function NotificationCreatedCancelWebsocket() {
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      fetchRequestOfficeStaffAPI(setRequestList);
       if (
         data.type === "notify.request_created" &&
         data.status === "Created" &&

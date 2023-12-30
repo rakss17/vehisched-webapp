@@ -503,7 +503,7 @@ export default function DashboardR() {
   };
   pendingSchedule.reverse();
   schedule.reverse();
-  console.log(vehiclesData);
+
   return (
     <>
       <Modal

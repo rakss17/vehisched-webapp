@@ -75,16 +75,19 @@ export default function Requests() {
 
   fetchNotification(setNotifList);
 
-  NotificationCreatedCancelWebsocket();
+  NotificationCreatedCancelWebsocket(
+    fetchRequestOfficeStaffAPI,
+    setRequestList
+  );
 
   useEffect(() => {
     fetchRequestOfficeStaffAPI(setRequestList);
 
-    const intervalId = setInterval(() => {
-      fetchRequestOfficeStaffAPI(setRequestList);
-    }, 60000);
+    // const intervalId = setInterval(() => {
+    //   fetchRequestOfficeStaffAPI(setRequestList);
+    // }, 60000);
 
-    return () => clearInterval(intervalId);
+    // return () => clearInterval(intervalId);
   }, []);
 
   const handleSearchChange = (term: string) => {
@@ -286,83 +289,95 @@ export default function Requests() {
                           <div className="ontrip-completed"></div>
                         ) : (
                           <>
-                            {request.vehicle_driver_status === "On Trip" ? (
-                              <div className="ontrip-yes">
-                                <FontAwesomeIcon
-                                  icon={faRoad}
-                                  color="gray"
-                                  className="fa-road"
-                                  onMouseOver={() => {
-                                    setIsOnTripHovered(true);
-                                    setHoverIdentification(request.request_id);
-                                  }}
-                                  onMouseOut={() => {
-                                    setIsOnTripHovered(false);
-                                    setHoverIdentification("");
-                                  }}
-                                />
+                            {request.status !== "Pending" && (
+                              <>
+                                {request.vehicle_driver_status === "On Trip" ? (
+                                  <div className="ontrip-yes">
+                                    <FontAwesomeIcon
+                                      icon={faRoad}
+                                      color="gray"
+                                      className="fa-road"
+                                      onMouseOver={() => {
+                                        setIsOnTripHovered(true);
+                                        setHoverIdentification(
+                                          request.request_id
+                                        );
+                                      }}
+                                      onMouseOut={() => {
+                                        setIsOnTripHovered(false);
+                                        setHoverIdentification("");
+                                      }}
+                                    />
 
-                                <FontAwesomeIcon
-                                  icon={faCar}
-                                  className="fa-car"
-                                  onMouseOver={() => {
-                                    setIsOnTripHovered(true);
-                                    setHoverIdentification(request.request_id);
-                                  }}
-                                  onMouseOut={() => {
-                                    setIsOnTripHovered(false);
-                                    setHoverIdentification("");
-                                  }}
-                                />
-                                {isOnTripHovered &&
-                                  hoverIdentification ===
-                                    request.request_id && (
-                                    <HoverDescription
-                                      description="On Trip"
-                                      top={2}
-                                      width={5}
-                                      height={5}
+                                    <FontAwesomeIcon
+                                      icon={faCar}
+                                      className="fa-car"
+                                      onMouseOver={() => {
+                                        setIsOnTripHovered(true);
+                                        setHoverIdentification(
+                                          request.request_id
+                                        );
+                                      }}
+                                      onMouseOut={() => {
+                                        setIsOnTripHovered(false);
+                                        setHoverIdentification("");
+                                      }}
                                     />
-                                  )}
-                              </div>
-                            ) : (
-                              <div className="ontrip-no">
-                                <FontAwesomeIcon
-                                  color="gray"
-                                  icon={faSchool}
-                                  className="fa-school"
-                                  onMouseOver={() => {
-                                    setIsAwaitingTripHovered(true);
-                                    setHoverIdentification(request.request_id);
-                                  }}
-                                  onMouseOut={() => {
-                                    setIsAwaitingTripHovered(false);
-                                    setHoverIdentification("");
-                                  }}
-                                />
-                                <FontAwesomeIcon
-                                  icon={faCar}
-                                  className="fa-car-pending"
-                                  onMouseOver={() => {
-                                    setIsAwaitingTripHovered(true);
-                                    setHoverIdentification(request.request_id);
-                                  }}
-                                  onMouseOut={() => {
-                                    setIsAwaitingTripHovered(false);
-                                    setHoverIdentification("");
-                                  }}
-                                />
-                                {isAwaitingTripHovered &&
-                                  hoverIdentification ===
-                                    request.request_id && (
-                                    <HoverDescription
-                                      description="Awaiting Trip"
-                                      top={3}
-                                      width={7}
-                                      height={6}
+                                    {isOnTripHovered &&
+                                      hoverIdentification ===
+                                        request.request_id && (
+                                        <HoverDescription
+                                          description="On Trip"
+                                          top={2}
+                                          width={5}
+                                          height={5}
+                                        />
+                                      )}
+                                  </div>
+                                ) : (
+                                  <div className="ontrip-no">
+                                    <FontAwesomeIcon
+                                      color="gray"
+                                      icon={faSchool}
+                                      className="fa-school"
+                                      onMouseOver={() => {
+                                        setIsAwaitingTripHovered(true);
+                                        setHoverIdentification(
+                                          request.request_id
+                                        );
+                                      }}
+                                      onMouseOut={() => {
+                                        setIsAwaitingTripHovered(false);
+                                        setHoverIdentification("");
+                                      }}
                                     />
-                                  )}
-                              </div>
+                                    <FontAwesomeIcon
+                                      icon={faCar}
+                                      className="fa-car-pending"
+                                      onMouseOver={() => {
+                                        setIsAwaitingTripHovered(true);
+                                        setHoverIdentification(
+                                          request.request_id
+                                        );
+                                      }}
+                                      onMouseOut={() => {
+                                        setIsAwaitingTripHovered(false);
+                                        setHoverIdentification("");
+                                      }}
+                                    />
+                                    {isAwaitingTripHovered &&
+                                      hoverIdentification ===
+                                        request.request_id && (
+                                        <HoverDescription
+                                          description="Awaiting Trip"
+                                          top={3}
+                                          width={7}
+                                          height={6}
+                                        />
+                                      )}
+                                  </div>
+                                )}
+                              </>
                             )}
                           </>
                         )}

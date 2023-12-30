@@ -45,7 +45,7 @@
   color: black;
   font-size: 1.5rem;
 }
-.request-form-container div:nth-child(1) p {
+.request-form-container .close-icon {
   font-size: 1.5rem;
   color: red;
 }
@@ -329,7 +329,7 @@
   list-style: none;
   color: black;
 }
-.request-form-container div:nth-child(10) {
+.request-form-container .departure-arrival-container {
   display: flex;
   flex-direction: row;
   padding-left: 2vw;
@@ -338,7 +338,7 @@
   width: 50vw;
   gap: 0vw;
 }
-.request-form-container div:nth-child(10) div:nth-child(1) {
+.request-form-container .departure-arrival-container div:nth-child(1) {
   display: flex;
   flex-direction: row;
   align-items: baseline;
@@ -348,7 +348,7 @@
   width: 27vw;
   gap: 1vw;
 }
-.request-form-container div:nth-child(10) div:nth-child(2) {
+.request-form-container .departure-arrival-container div:nth-child(2) {
   display: flex;
   flex-direction: row;
   align-items: baseline;
@@ -358,17 +358,37 @@
   width: auto;
   gap: 1vw;
 }
-.request-form-container div:nth-child(10) h2 {
+.request-form-container .departure-arrival-container h2 {
   color: black;
   font-size: 1.1rem;
   white-space: nowrap;
 }
-.request-form-container div:nth-child(10) p {
+.request-form-container .departure-arrival-container p {
   color: black;
   font-size: 1.1rem;
   word-break: break-all;
 }
-.request-form-container div:nth-child(11) {
+.request-form-container .travel-order-note {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0vh;
+  padding-left: 4vw;
+  align-items: center;
+  height: auto;
+  width: 50vw;
+  gap: 1vw;
+}
+
+.request-form-container .travel-order-note h2 {
+  color: black;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+.request-form-container .travel-order-note p {
+  color: black;
+  font-size: 1.1rem;
+}
+.request-form-container .button-details-container {
   display: flex;
   flex-direction: row;
   margin-top: 5vh;

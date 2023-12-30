@@ -8,6 +8,7 @@ import {
   faUsersCog,
   faRoad,
   faSchool,
+  faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -33,6 +34,7 @@ import "react-toastify/dist/ReactToastify.css";
 import LoadingBar from "react-top-loading-bar";
 import { formatDate } from "../../../components/functions/getTimeElapsed";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import HoverDescription from "../../../components/hoverdescription/hoverdescription";
 
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -40,6 +42,11 @@ export default function Requests() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
+  const [isTravelOrderNoteHovered, setIsTravelOrderNoteHovered] =
+    useState(false);
+  const [isOnTripHovered, setIsOnTripHovered] = useState(false);
+  const [isAwaitingTripHovered, setIsAwaitingTripHovered] = useState(false);
+  const [hoverIdentification, setHoverIdentification] = useState("");
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
@@ -285,12 +292,38 @@ export default function Requests() {
                                   icon={faRoad}
                                   color="gray"
                                   className="fa-road"
+                                  onMouseOver={() => {
+                                    setIsOnTripHovered(true);
+                                    setHoverIdentification(request.request_id);
+                                  }}
+                                  onMouseOut={() => {
+                                    setIsOnTripHovered(false);
+                                    setHoverIdentification("");
+                                  }}
                                 />
 
                                 <FontAwesomeIcon
                                   icon={faCar}
                                   className="fa-car"
+                                  onMouseOver={() => {
+                                    setIsOnTripHovered(true);
+                                    setHoverIdentification(request.request_id);
+                                  }}
+                                  onMouseOut={() => {
+                                    setIsOnTripHovered(false);
+                                    setHoverIdentification("");
+                                  }}
                                 />
+                                {isOnTripHovered &&
+                                  hoverIdentification ===
+                                    request.request_id && (
+                                    <HoverDescription
+                                      description="On Trip"
+                                      top={2}
+                                      width={5}
+                                      height={5}
+                                    />
+                                  )}
                               </div>
                             ) : (
                               <div className="ontrip-no">
@@ -298,14 +331,68 @@ export default function Requests() {
                                   color="gray"
                                   icon={faSchool}
                                   className="fa-school"
+                                  onMouseOver={() => {
+                                    setIsAwaitingTripHovered(true);
+                                    setHoverIdentification(request.request_id);
+                                  }}
+                                  onMouseOut={() => {
+                                    setIsAwaitingTripHovered(false);
+                                    setHoverIdentification("");
+                                  }}
                                 />
                                 <FontAwesomeIcon
                                   icon={faCar}
                                   className="fa-car-pending"
+                                  onMouseOver={() => {
+                                    setIsAwaitingTripHovered(true);
+                                    setHoverIdentification(request.request_id);
+                                  }}
+                                  onMouseOut={() => {
+                                    setIsAwaitingTripHovered(false);
+                                    setHoverIdentification("");
+                                  }}
                                 />
+                                {isAwaitingTripHovered &&
+                                  hoverIdentification ===
+                                    request.request_id && (
+                                    <HoverDescription
+                                      description="Awaiting Trip"
+                                      top={3}
+                                      width={7}
+                                      height={6}
+                                    />
+                                  )}
                               </div>
                             )}
                           </>
+                        )}
+                      </td>
+                      <td>
+                        {request.distance >= 50 && (
+                          <div style={{ position: "relative" }}>
+                            <FontAwesomeIcon
+                              keyTimes={request.request_id}
+                              icon={faCircleExclamation}
+                              color="#060e57"
+                              onMouseOver={() => {
+                                setIsTravelOrderNoteHovered(true);
+                                setHoverIdentification(request.request_id);
+                              }}
+                              onMouseOut={() => {
+                                setIsTravelOrderNoteHovered(false);
+                                setHoverIdentification("");
+                              }}
+                            />
+                            {isTravelOrderNoteHovered &&
+                              hoverIdentification === request.request_id && (
+                                <HoverDescription
+                                  description="A travel order is required for this trip"
+                                  right={0}
+                                  width={10}
+                                  height={8}
+                                />
+                              )}
+                          </div>
                         )}
                       </td>
                     </tr>

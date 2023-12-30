@@ -233,3 +233,13 @@ export interface RequesterTripMergingFormProps {
   given_capacity?: any;
   requestId?: any;
 }
+
+export interface HoverDescriptionProps {
+  description: string;
+  right?: number;
+  left?: number;
+  top?: number;
+  bottom?: number;
+  width?: number;
+  height?: number;
+}

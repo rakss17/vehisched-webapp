@@ -61,7 +61,6 @@
 .request-container table tbody tr .fa-car {
   position: absolute;
   font-size: 1.5rem;
-  z-index: 1;
   color: #060e57;
 }
 .request-container table tbody tr .ontrip-no {
@@ -78,7 +77,6 @@
 .request-container table tbody tr .fa-car-pending {
   font-size: 1.3rem;
   color: #060e57;
-  z-index: 1;
   top: 0.2vh;
   right: 0.2vw;
 }

@@ -234,7 +234,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div>
             <p></p>
             <h1>Request Form No. {selectedRequest.request_id}</h1>
-            <p onClick={onRequestClose}>
+            <p className="close-icon" onClick={onRequestClose}>
               <FontAwesomeIcon icon={faXmark} />
             </p>
           </div>
@@ -309,7 +309,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 <h2>Driver:</h2>
                 <p>{selectedRequest.driver_full_name}</p>
               </div>
-              <div>
+              <div className="departure-arrival-container">
                 <div>
                   <h2>Departure: </h2>
                   <p>
@@ -334,41 +334,87 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </>
           )}
 
-          {selectedRequest.status === "Pending" && (
-            <>
-              <div>
-                <h2>Assign a driver: </h2>
-                <div onClick={handleFetchDrivers}>
-                  <Dropdown
-                    status={dropdownDrivers}
-                    onCategoryChange={handleChooseDriver}
-                    dropdownClassName="dropdown-custom"
-                    menuClassName="menu-custom"
+          {selectedRequest.status === "Pending" &&
+            selectedRequest.distance >= 50 && (
+              <>
+                <div>
+                  <h2>Assign a driver: </h2>
+                  <div onClick={handleFetchDrivers}>
+                    <Dropdown
+                      status={dropdownDrivers}
+                      onCategoryChange={handleChooseDriver}
+                      dropdownClassName="dropdown-custom"
+                      menuClassName="menu-custom"
+                    />
+                  </div>
+                  <p className="set-trip-text-error">
+                    {errorMessages[0]?.driverSelectionError}
+                  </p>
+                </div>
+                <div className="travel-order-note">
+                  <h2>Note:</h2>
+                  <h3>A travel order is required for this trip</h3>
+                </div>
+                <div className="button-details-container">
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    tertiaryStyle
+                    text="Reject"
+                    onClick={onReject}
+                  />
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    primaryStyle
+                    text="Approve"
+                    onClick={() => onApprove(selectedDriverId)}
                   />
                 </div>
-                <p className="set-trip-text-error">
-                  {errorMessages[0]?.driverSelectionError}
-                </p>
+              </>
+            )}
+          {selectedRequest.status !== "Pending" &&
+            selectedRequest.distance >= 50 && (
+              <div className="travel-order-note">
+                <h2>Note:</h2>
+                <h3>A travel order is required for this trip</h3>
               </div>
-              <div></div>
-              <div>
-                <CommonButton
-                  width={7}
-                  height={7}
-                  tertiaryStyle
-                  text="Reject"
-                  onClick={onReject}
-                />
-                <CommonButton
-                  width={7}
-                  height={7}
-                  primaryStyle
-                  text="Approve"
-                  onClick={() => onApprove(selectedDriverId)}
-                />
-              </div>
-            </>
-          )}
+            )}
+          {selectedRequest.status === "Pending" &&
+            selectedRequest.distance < 50 && (
+              <>
+                <div>
+                  <h2>Assign a driver: </h2>
+                  <div onClick={handleFetchDrivers}>
+                    <Dropdown
+                      status={dropdownDrivers}
+                      onCategoryChange={handleChooseDriver}
+                      dropdownClassName="dropdown-custom"
+                      menuClassName="menu-custom"
+                    />
+                  </div>
+                  <p className="set-trip-text-error">
+                    {errorMessages[0]?.driverSelectionError}
+                  </p>
+                </div>
+                <div className="button-details-container">
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    tertiaryStyle
+                    text="Reject"
+                    onClick={onReject}
+                  />
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    primaryStyle
+                    text="Approve"
+                    onClick={() => onApprove(selectedDriverId)}
+                  />
+                </div>
+              </>
+            )}
 
           {selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
             selectedRequest.status !== "Driver Absence" &&
@@ -379,7 +425,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.status !== "Canceled" &&
             selectedRequest.status !== "Completed" &&
             selectedRequest.vehicle_driver_status !== "On Trip" && (
-              <div>
+              <div className="button-details-container">
                 <CommonButton
                   width={8}
                   height={6}
@@ -452,7 +498,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               menuClassName="menu-custom"
             />
           </div>
-          <div className="merge-trip-modal-button-container">
+          <div className="merge-trip-modal-button-details-container">
             <CommonButton
               width={7}
               height={6}
@@ -482,7 +528,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               placeholder="type here..."
             />
           </div>
-          <div className="reason-modal-button-container">
+          <div className="reason-modal-button-details-container">
             <CommonButton
               width={7}
               height={6}
@@ -512,7 +558,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               placeholder="type here..."
             />
           </div>
-          <div className="reason-modal-button-container">
+          <div className="reason-modal-button-details-container">
             <CommonButton
               width={7}
               height={6}

@@ -122,8 +122,10 @@ export default function Admin() {
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.usersInfo.data);
   const userId = selectedAccount?.id ?? "";
-  const personalInfo = useSelector((state: RootState) => state.personalInfo.data);
-  const role = personalInfo?.role
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const role = personalInfo?.role;
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
   const vehicleId = selectedVehicle?.plate_number ?? "";
   const [vehicleErrorMessages, setVehicleErrorMessages] = useState<string[]>(
@@ -186,6 +188,14 @@ export default function Admin() {
       assigned_to: selectedOption,
     }));
   };
+  useEffect(() => {
+    setVehicleUpdate((prevState) => ({
+      ...prevState,
+      is_vip: selectedVehicle?.is_vip ?? false,
+      assigned_to: selectedVehicle?.assigned_to ?? "",
+    }));
+  }, [selectedVehicle]);
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
@@ -498,7 +508,8 @@ export default function Admin() {
       capacity: vehicleUpdate.capacity || (selectedVehicle?.capacity ?? ""),
       status: vehicleUpdate.status || (selectedVehicle?.status ?? ""),
       type: vehicleUpdate.type || (selectedVehicle?.type ?? ""),
-      is_vip: vehicleUpdate.is_vip || (selectedVehicle?.is_vip ?? ""),
+      assigned_to: vehicleUpdate.assigned_to,
+      is_vip: vehicleUpdate.is_vip,
       image: vehicleUpdate.image,
     };
     updateVehicleAPI(
@@ -579,7 +590,7 @@ export default function Admin() {
         return "black";
     }
   };
-  
+
   return (
     <>
       <LoadingBar
@@ -588,8 +599,8 @@ export default function Admin() {
         onLoaderFinished={() => setLoadingBarProgress(0)}
       />
       <Header />
-      {role === "office staff" ? (<Sidebar sidebarData={sidebarData}/>) : null}
-      
+      {role === "office staff" ? <Sidebar sidebarData={sidebarData} /> : null}
+
       <Container>
         <div className="label-margin-admin">
           <Label label="System Administration" />
@@ -1017,7 +1028,7 @@ export default function Admin() {
               ...vehicleUpdate,
               is_vip: event.target.checked,
             }),
-          checked: (selectedVehicle?.is_vip ?? "") || vehicleUpdate.is_vip,
+          checked: vehicleUpdate.is_vip,
           type: "checkbox",
         }}
         vipDropdownProps={{

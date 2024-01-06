@@ -69,7 +69,7 @@ const AddEdit: React.FC<AddEditProps> = ({
       style={calculateModalStyles()}
     >
       <h1>{header}</h1>
-      <div>
+      <div className="content">
         {errorMessages && errorMessages.length > 0 && (
           <div className="error-messages">
             <ul>
@@ -79,53 +79,69 @@ const AddEdit: React.FC<AddEditProps> = ({
             </ul>
           </div>
         )}
-        <div>
-          <label>Email Address: </label>
-          <input {...emailProps} />
+       <div className="left-right">
+       <div className="right">
+          <div>
+            <div className="row">
+              <label>Email Address: </label>
+              <input {...emailProps} />
+            </div>
+            <div className="row">
+              <label>Username: </label>
+              <input {...usernameProps} />
+            </div>
+          </div>
+          <div>
+            <div className="row">
+              <label>Last Name: </label>
+              <input {...lastNameProps} />
+            </div>
+            <div className="row">
+              <label>First Name: </label>
+              <input {...firstNameProps} />
+            </div>
+            </div>
         </div>
-        <div>
-          <label>Username: </label>
-          <input {...usernameProps} />
+        
+        <div className="left">
+          <div>
+            <div className="row">  
+              <label>Middle Name: </label>
+              <input {...middleNameProps} />
+            </div>
+            <div className="row">
+              <label>Mobile Number: </label>
+              <input {...contactNumberProps} onKeyDown={handleKeyDown} />
+            </div>
+          </div>
+          <div >
+            <div className="row">
+                <label>Office: </label>
+                <DropdownMenu
+                  options={officeData}
+                  selectedKey="office"
+                  {...officeDropdownProps}
+                />
+              </div>
+              <div className="row">
+              <label>Role: </label>
+              <DropdownMenu
+                options={[
+                  "requester",
+                  "vip",
+                  "driver",
+                  "gate guard",
+                  "office staff",
+                ]}
+                selectedKey="role"
+                {...roleDropdownProps}
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Last Name: </label>
-          <input {...lastNameProps} />
-        </div>
-        <div>
-          <label>First Name: </label>
-          <input {...firstNameProps} />
-        </div>
-        <div>
-          <label>Middle Name: </label>
-          <input {...middleNameProps} />
-        </div>
-        <div>
-          <label>Office: </label>
-          <DropdownMenu
-            options={officeData}
-            selectedKey="office"
-            {...officeDropdownProps}
-          />
-        </div>
-        <div>
-          <label>Mobile Number: </label>
-          <input {...contactNumberProps} onKeyDown={handleKeyDown} />
-        </div>
-        <div>
-          <label>Role: </label>
-          <DropdownMenu
-            options={[
-              "requester",
-              "vip",
-              "driver",
-              "gate guard",
-              "office staff",
-            ]}
-            selectedKey="role"
-            {...roleDropdownProps}
-          />
-        </div>
-        <div>
+       </div>
+        
+        <div >
           <button onClick={onRequestClose}>Cancel</button>
           <button onClick={onRequestAddEdit}>{buttonText}</button>
         </div>

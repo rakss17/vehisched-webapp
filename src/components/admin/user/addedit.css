@@ -11,64 +11,70 @@
 .modal-add-edit {
   background-color: #d9d9d9;
   margin-top: 15vh;
-  margin-left: 35vw;
-  width: 30vw;
-  height: 73vh;
+  margin-left: 28vw;
+  width: 45vw;
+  height: 45vh;
   border-radius: 10px;
   flex-direction: column;
   display: flex;
   align-items: center;
+
 }
 .modal-add-edit h1 {
   color: #060e57;
   font-size: 1.5rem;
   margin-top: 2vw;
 }
-.modal-add-edit div {
-  display: flex;
-  flex-direction: column;
+.content {
   margin-top: 1vw;
-  width: 25vw;
-  height: 35vh;
-}
-.modal-add-edit div div:nth-child(1) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
 }
-.modal-add-edit div div:nth-child(n + 1) {
+.left-right{
   display: flex;
   flex-direction: row;
+  padding: 1px;
+}
+.right{
+  margin-left: 1vw;
   gap: 10%;
-  width: auto;
-  height: auto;
 }
-.modal-add-edit div div:last-child {
+
+.left{
+  margin-right: 1vw;
+  margin-left: 1vw;
+  gap: 10%;
+}
+
+.row{
+  margin-top: 3vh;
   display: flex;
-  justify-content: center;
-  margin-top: 1.5vw;
+  flex-direction: row;
 }
+
 .modal-add-edit label {
   color: black;
   font-size: 1.2rem;
-  white-space: nowrap;
+  margin-right: 1vw;
 }
 .modal-add-edit input {
   background-color: white;
   border: none;
   color: black;
-  width: 100%;
+  width: 12vw;
   height: 100%;
   padding: 3%;
   border-radius: 10px;
   font-size: 1rem;
-}
+  margin-left: auto;
+} 
+
 
 .modal-add-edit button {
   width: 10vw;
   height: 5vh;
   text-align: center;
+  margin-top: 4vh;
+  margin-left: 8vw;
 }
 .modal-add-edit button:nth-child(1) {
   background-color: transparent;

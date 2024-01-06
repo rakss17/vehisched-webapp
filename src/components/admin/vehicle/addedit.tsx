@@ -75,7 +75,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
       style={calculateModalStyles()}
     >
       <h1>{header}</h1>
-      <div>
+      <div className="content2">
         {vehicleErrorMessages.length > 0 && (
           <div className="v-error-messages">
             <ul>
@@ -85,50 +85,55 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
             </ul>
           </div>
         )}
-        <div>
-          <label>Plate No.: </label>
-          <input {...plateNoProps} />
-        </div>
-        <div>
-          <label>Model: </label>
-          <input {...modelProps} />
-        </div>
-        <div>
-          <label>Seating Capacity: </label>
-          <input {...seatingCapacityProps} onKeyDown={handleKeyDown} />
-        </div>
-        <div>
-          <label>Type: </label>
-          <input {...typeProps} />
-        </div>
-        <div>
-          <label>Driver: </label>
-          <DropdownMenu
-            options={driversData}
-            selectedKey="driver_assigned_to"
-            {...driverDropdownProps}
-          />
-        </div>
-        <div>
-          <label>VIP: </label>
-          <input {...vipProps} />
-        </div>
-
-        {isVipProps && (
-          <div>
-            <label>Assign to: </label>
-            <DropdownMenu
-              options={vipData}
-              selectedKey="vip_assigned_to"
-              {...vipDropdownProps}
-            />
+        <div className="addvehicle-left-right">
+          <div className="addvehicle-left">
+            <div className="row2">
+              <label>Plate No.: </label>
+              <input {...plateNoProps} />
+            </div>
+            <div className="row2">
+              <label>Model: </label>
+              <input {...modelProps} />
+            </div>
+            <div className="row2">
+              <label>Seating Capacity: </label>
+              <input {...seatingCapacityProps} onKeyDown={handleKeyDown} />
+            </div>
+            <div className="vip">
+              <label>VIP: </label>
+              <input {...vipProps} />
+            </div>
           </div>
-        )}
-
-        <div>
-          <label>Upload Image: </label>
-          <input {...uploadImageProps} />
+          <div className="addvehicle-right">
+            <div className="row2">
+              <label>Type: </label>
+              <input {...typeProps} />
+            </div>
+            <div className="row2">
+              <label>Driver: </label>
+              <DropdownMenu
+                options={driversData}
+                selectedKey="driver_assigned_to"
+                {...driverDropdownProps}
+              />
+            </div>
+            <div className="row2">
+              <label>Upload Image: </label>
+              <input {...uploadImageProps} />
+            </div>
+            {isVipProps && (
+              <div className="row2">
+                <label>Assign to: </label>
+                <DropdownMenu
+                  options={vipData}
+                  selectedKey="vip_assigned_to"
+                  {...vipDropdownProps}
+                />
+              </div>
+            )}
+          </div>
         </div>
+        
         <div>
           <button onClick={onRequestClose}>Cancel</button>
           <button onClick={onRequestAddEdit}>{buttonText}</button>

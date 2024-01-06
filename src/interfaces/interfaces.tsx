@@ -7,7 +7,8 @@ export interface Vehicle {
   status?: string;
   is_vip?: any;
   vehicle_image?: any;
-  assigned_to: any;
+  vip_assigned_to: any;
+  driver_assigned_to: any;
   merge_trip?: any;
   request_id?: any;
 }
@@ -74,6 +75,7 @@ export interface AddEditVehicleProps {
   vehicleErrorMessages?: string[];
   vipDropdownProps: DropdownProps;
   isVipProps?: any;
+  driverDropdownProps: DropdownProps;
 }
 export interface SigninParams {
   username: string;

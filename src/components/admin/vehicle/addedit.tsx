@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import "./addedit.css";
 import { AddEditVehicleProps } from "../../../interfaces/interfaces";
-import { fetchVIPAPI } from "../../api/api";
+import { fetchDriversForAssignmentAPI, fetchVIPAPI } from "../../api/api";
 import DropdownMenu from "../dropdownmenu";
 
 const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
@@ -20,11 +20,17 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   vehicleErrorMessages = [],
   vipDropdownProps,
   isVipProps,
+  driverDropdownProps,
 }) => {
   const [vipData, setVIPData] = useState<any[]>([]);
+  const [driversData, setDriversData] = useState<any[]>([]);
 
   useEffect(() => {
     fetchVIPAPI(setVIPData);
+  }, []);
+
+  useEffect(() => {
+    fetchDriversForAssignmentAPI(setDriversData);
   }, []);
 
   const handleKeyDown = (event: any) => {
@@ -48,7 +54,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
     if (vehicleErrorMessages.length > 0) {
       return 65 + vehicleErrorMessages.length * 5 + "vh";
     } else {
-      return "65vh";
+      return "68vh";
     }
   };
 
@@ -56,7 +62,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
     const defaultMarginTop = "15vh";
 
     if (vehicleErrorMessages.length >= 2) {
-      return "5vh";
+      return "8vh";
     } else {
       return defaultMarginTop;
     }
@@ -96,15 +102,24 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
           <input {...typeProps} />
         </div>
         <div>
+          <label>Driver: </label>
+          <DropdownMenu
+            options={driversData}
+            selectedKey="driver_assigned_to"
+            {...driverDropdownProps}
+          />
+        </div>
+        <div>
           <label>VIP: </label>
           <input {...vipProps} />
         </div>
+
         {isVipProps && (
           <div>
             <label>Assign to: </label>
             <DropdownMenu
               options={vipData}
-              selectedKey="assigned_to"
+              selectedKey="vip_assigned_to"
               {...vipDropdownProps}
             />
           </div>

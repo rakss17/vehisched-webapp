@@ -249,6 +249,21 @@ export async function fetchDriversAPI(setDriversData: any) {
     console.error("Error fetching user list:", error);
   }
 }
+export async function fetchDriversForAssignmentAPI(setDriversData: any) {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("api/v1/accounts/drivers/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const driverData = response.data.map((driver: any) => driver.username);
+    setDriversData(driverData);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+}
 
 export async function fetchRequestersAPI(setRequestersData: any) {
   try {

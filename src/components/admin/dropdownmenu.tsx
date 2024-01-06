@@ -5,8 +5,8 @@ interface DropdownProps {
   onChange: (selectedOption: string) => void;
   selectedAccount?: { role: string; office: string };
   options: string[];
-  selectedKey: "role" | "office" | "assigned_to";
-  selectedVehicle?: { assigned_to: string };
+  selectedKey: "role" | "office" | "vip_assigned_to" | "driver_assigned_to";
+  selectedVehicle?: { vip_assigned_to: string; driver_assigned_to: string };
 }
 
 const DropdownMenu: React.FC<DropdownProps> = ({
@@ -16,21 +16,27 @@ const DropdownMenu: React.FC<DropdownProps> = ({
   selectedKey,
   selectedVehicle,
 }) => {
-  const initialSelectedOption =
-    selectedKey === "assigned_to"
-      ? selectedVehicle
-        ? selectedVehicle[selectedKey]
-        : "------------Select------------"
-      : selectedAccount
-      ? selectedAccount[selectedKey]
-      : "------------Select------------";
+  let initialSelectedOption = "------------Select------------";
+
+  if (selectedKey === "vip_assigned_to" && selectedVehicle) {
+    initialSelectedOption = selectedVehicle.vip_assigned_to;
+  } else if (selectedKey === "driver_assigned_to" && selectedVehicle) {
+    initialSelectedOption = selectedVehicle.driver_assigned_to;
+  } else if (
+    selectedAccount &&
+    (selectedKey === "role" || selectedKey === "office")
+  ) {
+    initialSelectedOption = selectedAccount[selectedKey];
+  }
 
   const [selectedOption, setSelectedOption] = useState<string>(
     initialSelectedOption
   );
 
   useEffect(() => {
-    if (selectedKey === "assigned_to") {
+    if (selectedKey === "vip_assigned_to") {
+      setSelectedOption(selectedVehicle ? selectedVehicle[selectedKey] : "");
+    } else if (selectedKey === "driver_assigned_to") {
       setSelectedOption(selectedVehicle ? selectedVehicle[selectedKey] : "");
     } else {
       setSelectedOption(selectedAccount ? selectedAccount[selectedKey] : "");

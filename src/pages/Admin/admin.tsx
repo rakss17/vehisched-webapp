@@ -106,7 +106,8 @@ export default function Admin() {
     type: "",
     capacity: null,
     is_vip: false,
-    assigned_to: "",
+    vip_assigned_to: "",
+    driver_assigned_to: "",
     image: null,
   });
   const [vehicleUpdate, setVehicleUpdate] = useState<Vehicle>({
@@ -116,7 +117,8 @@ export default function Admin() {
     capacity: null,
     status: "",
     is_vip: false,
-    assigned_to: "",
+    vip_assigned_to: "",
+    driver_assigned_to: "",
     image: null,
   });
   const dispatch = useDispatch();
@@ -179,20 +181,33 @@ export default function Admin() {
   const handleDropdownChange5 = (selectedOption: string) => {
     setVehicleData((prevVehicleData) => ({
       ...prevVehicleData,
-      assigned_to: selectedOption,
+      vip_assigned_to: selectedOption,
     }));
   };
   const handleDropdownChange6 = (selectedOption: string) => {
     setVehicleUpdate((prevVehicleUpdate) => ({
       ...prevVehicleUpdate,
-      assigned_to: selectedOption,
+      vip_assigned_to: selectedOption,
+    }));
+  };
+  const handleDropdownChange7 = (selectedOption: string) => {
+    setVehicleData((prevVehicleData) => ({
+      ...prevVehicleData,
+      driver_assigned_to: selectedOption,
+    }));
+  };
+  const handleDropdownChange8 = (selectedOption: string) => {
+    setVehicleUpdate((prevVehicleUpdate) => ({
+      ...prevVehicleUpdate,
+      driver_assigned_to: selectedOption,
     }));
   };
   useEffect(() => {
     setVehicleUpdate((prevState) => ({
       ...prevState,
       is_vip: selectedVehicle?.is_vip ?? false,
-      assigned_to: selectedVehicle?.assigned_to ?? "",
+      vip_assigned_to: selectedVehicle?.vip_assigned_to ?? "",
+      driver_assigned_to: selectedVehicle?.driver_assigned_to ?? "",
     }));
   }, [selectedVehicle]);
 
@@ -478,7 +493,15 @@ export default function Admin() {
       }
 
       if (!vehicleData.type) {
-        vehicleValidationErrors.push("Please enter vehilce type");
+        vehicleValidationErrors.push("Please enter vehicle type");
+      }
+      if (!vehicleData.driver_assigned_to) {
+        vehicleValidationErrors.push("Please select a driver");
+      }
+      if (vehicleData.is_vip) {
+        if (!vehicleData.vip_assigned_to) {
+          vehicleValidationErrors.push("Please select a vip");
+        }
       }
 
       if (!vehicleData.image) {
@@ -508,10 +531,12 @@ export default function Admin() {
       capacity: vehicleUpdate.capacity || (selectedVehicle?.capacity ?? ""),
       status: vehicleUpdate.status || (selectedVehicle?.status ?? ""),
       type: vehicleUpdate.type || (selectedVehicle?.type ?? ""),
-      assigned_to: vehicleUpdate.assigned_to,
+      vip_assigned_to: vehicleUpdate.vip_assigned_to,
+      driver_assigned_to: vehicleUpdate.driver_assigned_to,
       is_vip: vehicleUpdate.is_vip,
       image: vehicleUpdate.image,
     };
+    console.log(updatedVehicleData);
     updateVehicleAPI(
       updatedVehicleData,
       vehicleId,
@@ -967,6 +992,9 @@ export default function Admin() {
         vipDropdownProps={{
           onChange: handleDropdownChange5,
         }}
+        driverDropdownProps={{
+          onChange: handleDropdownChange7,
+        }}
         uploadImageProps={{
           type: "file",
           accept: "image/*",
@@ -1033,6 +1061,10 @@ export default function Admin() {
         }}
         vipDropdownProps={{
           onChange: handleDropdownChange6,
+          selectedVehicle: selectedVehicle,
+        }}
+        driverDropdownProps={{
+          onChange: handleDropdownChange8,
           selectedVehicle: selectedVehicle,
         }}
         uploadImageProps={{

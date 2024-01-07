@@ -221,7 +221,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       arrival_time_to_office = arrivalTimeParts[0];
     }
   }
-
   return (
     <>
       <LoadingBar
@@ -305,10 +304,28 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           {selectedRequest.status !== "Pending" && (
             <>
-              <div>
-                <h2>Driver:</h2>
-                <p>{selectedRequest.driver_full_name}</p>
-              </div>
+              {selectedRequest.driver_full_name === null ? (
+                <div>
+                  <h2>Assign a driver: </h2>
+                  <div onClick={handleFetchDrivers}>
+                    <Dropdown
+                      status={dropdownDrivers}
+                      onCategoryChange={handleChooseDriver}
+                      dropdownClassName="dropdown-custom"
+                      menuClassName="menu-custom"
+                    />
+                  </div>
+                  <p className="set-trip-text-error">
+                    {errorMessages[0]?.driverSelectionError}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <h2>Driver:</h2>
+                  <p>{selectedRequest.driver_full_name}</p>
+                </div>
+              )}
+
               <div className="departure-arrival-container">
                 <div>
                   <h2>Departure: </h2>
@@ -337,20 +354,27 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           {selectedRequest.status === "Pending" &&
             selectedRequest.distance >= 50 && (
               <>
-                <div>
-                  <h2>Assign a driver: </h2>
-                  <div onClick={handleFetchDrivers}>
-                    <Dropdown
-                      status={dropdownDrivers}
-                      onCategoryChange={handleChooseDriver}
-                      dropdownClassName="dropdown-custom"
-                      menuClassName="menu-custom"
-                    />
+                {selectedRequest.driver_full_name === null ? (
+                  <div>
+                    <h2>Assign a driver: </h2>
+                    <div onClick={handleFetchDrivers}>
+                      <Dropdown
+                        status={dropdownDrivers}
+                        onCategoryChange={handleChooseDriver}
+                        dropdownClassName="dropdown-custom"
+                        menuClassName="menu-custom"
+                      />
+                    </div>
+                    <p className="set-trip-text-error">
+                      {errorMessages[0]?.driverSelectionError}
+                    </p>
                   </div>
-                  <p className="set-trip-text-error">
-                    {errorMessages[0]?.driverSelectionError}
-                  </p>
-                </div>
+                ) : (
+                  <div>
+                    <h2>Driver:</h2>
+                    <p>{selectedRequest.driver_full_name}</p>
+                  </div>
+                )}
                 <div className="travel-order-note">
                   <h2>Note:</h2>
                   <h3>A travel order is required for this trip</h3>
@@ -383,20 +407,27 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           {selectedRequest.status === "Pending" &&
             selectedRequest.distance < 50 && (
               <>
-                <div>
-                  <h2>Assign a driver: </h2>
-                  <div onClick={handleFetchDrivers}>
-                    <Dropdown
-                      status={dropdownDrivers}
-                      onCategoryChange={handleChooseDriver}
-                      dropdownClassName="dropdown-custom"
-                      menuClassName="menu-custom"
-                    />
+                {selectedRequest.driver_full_name === null ? (
+                  <div>
+                    <h2>Assign a driver: </h2>
+                    <div onClick={handleFetchDrivers}>
+                      <Dropdown
+                        status={dropdownDrivers}
+                        onCategoryChange={handleChooseDriver}
+                        dropdownClassName="dropdown-custom"
+                        menuClassName="menu-custom"
+                      />
+                    </div>
+                    <p className="set-trip-text-error">
+                      {errorMessages[0]?.driverSelectionError}
+                    </p>
                   </div>
-                  <p className="set-trip-text-error">
-                    {errorMessages[0]?.driverSelectionError}
-                  </p>
-                </div>
+                ) : (
+                  <div>
+                    <h2>Driver:</h2>
+                    <p>{selectedRequest.driver_full_name}</p>
+                  </div>
+                )}
                 <div className="button-details-container">
                   <CommonButton
                     width={7}

@@ -784,7 +784,6 @@ export function toggleVehicleStatusAPI(
 }
 
 export function fetchNotification(setNotifList: any) {
-  useEffect(() => {
     const token = localStorage.getItem("token");
     api
       .get("api/v1/notification/fetch/", {
@@ -799,7 +798,7 @@ export function fetchNotification(setNotifList: any) {
           (notification: any) => !notification.read_status
         );
         unreadNotifications.forEach((notification: any) => {
-          if (notification.subject.includes("has been created")) {
+          if (notification.subject.includes("has been submitted")) {
             const timeago = moment(notification.created_at).fromNow();
             let message = `${notification.subject} `;
             toast.success(
@@ -883,8 +882,6 @@ export function fetchNotification(setNotifList: any) {
       .catch((error) => {
         console.error("Error fetching notif list:", error);
       });
-  }, []);
-
   return null;
 }
 
@@ -989,6 +986,24 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
     })
     .then((response) => {
       setSchedule(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching schedule list:", error);
+    });
+}
+
+export async function fetchEachVehicleSchedule(setSchedule: any) {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/vehicles/fetch-each-vehicle-schedule/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setSchedule(response.data);
+      console.log(response.data)
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

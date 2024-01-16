@@ -1,5 +1,5 @@
 import "./dashboardOS.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/header/header";
 import {
   faColumns,
@@ -20,6 +20,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SidebarItem } from "../../../interfaces/interfaces";
 import {
+  fetchEachVehicleSchedule,
   fetchNotification,
   fetchScheduleOfficeStaff,
 } from "../../../components/api/api";
@@ -45,20 +46,24 @@ export default function DashboardOS() {
   ];
   const navigate = useNavigate();
 
-  fetchNotification(setNotifList);
+  
 
-  NotificationCreatedCancelWebsocket();
+  NotificationCreatedCancelWebsocket(()=>{}, ()=>{}, fetchNotification, setNotifList);
+
+  // useEffect(() => {
+  //   const currentDate = format(new Date(), "yyyy-MM-dd");
+  //   fetchScheduleOfficeStaff((data: any) => {
+  //     const todayTrips = data.filter(
+  //       (schedule: any) => schedule.travel_date === currentDate
+  //     ).length;
+  //     setTodayTrips(todayTrips);
+  //     setSchedulesData(data);
+  //   });
+  // }, []);
 
   useEffect(() => {
-    const currentDate = format(new Date(), "yyyy-MM-dd");
-    fetchScheduleOfficeStaff((data: any) => {
-      const todayTrips = data.filter(
-        (schedule: any) => schedule.travel_date === currentDate
-      ).length;
-      setTodayTrips(todayTrips);
-      setSchedulesData(data);
-    });
-  }, []);
+    fetchEachVehicleSchedule(setSchedulesData)
+  }, [])
 
   const handleOnClickTodaysTrip = () => {
     navigate("/Schedules");
@@ -68,17 +73,31 @@ export default function DashboardOS() {
     <>
       <Header />
       <Sidebar sidebarData={sidebarData} />
-      <Container>
-        <ToastContainer />
-        <Label label="Dashboard" />
         <div className="dashboard-container">
-          <div onClick={handleOnClickTodaysTrip} className="today-trip">
+        <ToastContainer />
+          <div>
+          <Label label="Dashboard" />
+          </div>
+        
+          {/* <div onClick={handleOnClickTodaysTrip} className="today-trip">
             <p>Today's Trip</p>
             <h2>{todayTrips}</h2>
+          </div> */}
+          <div className="calendar-column-container">
+          {Object.entries(schedulesData).map(([vehicleId, data]) => (
+        <React.Fragment key={vehicleId}>
+          <div>
+          <p>{data.vehicle}</p>
+          <CalendarSchedule schedulesData={data.schedules} />
           </div>
-          <CalendarSchedule schedulesData={schedulesData} />
+          
+        </React.Fragment>
+      ))}
+          </div>
+          
+          
         </div>
-      </Container>
+      
     </>
   );
 }

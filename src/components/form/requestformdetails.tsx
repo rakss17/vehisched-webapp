@@ -408,7 +408,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.distance < 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
-                  <div>
+                  <>
+                    <div>
                     <h2>Assign a driver: </h2>
                     <div onClick={handleFetchDrivers}>
                       <Dropdown
@@ -422,13 +423,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       {errorMessages[0]?.driverSelectionError}
                     </p>
                   </div>
-                ) : (
-                  <div>
-                    <h2>Driver:</h2>
-                    <p>{selectedRequest.driver_full_name}</p>
-                  </div>
-                )}
-                <div className="button-details-container">
+                  <div className="button-details-container">
                   <CommonButton
                     width={7}
                     height={7}
@@ -444,6 +439,34 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     onClick={() => onApprove(selectedDriverId)}
                   />
                 </div>
+                  </>
+                  
+                ) : (
+                  <>
+                    <div>
+                    <h2>Driver:</h2>
+                    <p>{selectedRequest.driver_full_name}</p>
+                  </div>
+                  <div className="button-details-container">
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    tertiaryStyle
+                    text="Reject"
+                    onClick={onReject}
+                  />
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    primaryStyle
+                    text="Approve"
+                    onClick={() => onApprove(selectedRequest.driver_id)}
+                  />
+                </div>
+                  </>
+                  
+                )}
+                
               </>
             )}
 

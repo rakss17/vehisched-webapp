@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Calendar, momentLocalizer, Event } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -14,31 +14,7 @@ type CalendarScheduleProps = {
   schedulesData: any[];
 };
 
-const eventStyleGetter = (
-  event: MyEvent,
-  start: any,
-  end: any,
-  isSelected: boolean
-) => {
-  let backgroundColor = "#060e57";
-  const textColor = "white";
 
-  if (event && event.status) {
-    if (
-      event.status === "Driver Absence" ||
-      event.status === "Ongoing Vehicle Maintenance"
-    ) {
-      backgroundColor = "red";
-    }
-  }
-
-  return {
-    style: {
-      backgroundColor,
-      color: textColor,
-    },
-  };
-};
 
 const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
   schedulesData,
@@ -46,6 +22,49 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
   const [markedDates, setMarkedDates] = useState<Date[]>([]);
   const [startDates, setStartDates] = useState<Date[]>([]);
   const [endDates, setEndDates] = useState<Date[]>([]);
+  const colors = ["#060e57", "#253093", "#1122BD", "#B67D06", "#E0A425", "#fdb316", "#656353", "#7D7A5B", "#979371", ]
+  const eventColors = useRef<Map<number, string>>(new Map());
+
+  const assignEventColors = () => {
+    let lastColorIndex = 0;
+    schedulesData.forEach((schedule, index) => {
+      const nextColorIndex = (lastColorIndex + 1) % colors.length;
+      eventColors.current.set(index, colors[nextColorIndex]);
+      lastColorIndex = nextColorIndex;
+    });
+  };
+
+  useEffect(() => {
+    assignEventColors();
+  }, [schedulesData]);
+
+  const eventStyleGetter = (
+    event: MyEvent,
+    start: any,
+    end: any,
+    isSelected: boolean
+  ) => {
+    const eventIndex = events.findIndex(e => e.start === event.start && e.end === event.end);
+    let backgroundColor = eventColors.current.get(eventIndex) || "#060e57";
+    const textColor = "white";
+
+    if (event && event.status) {
+      if (
+        event.status === "Driver Absence" ||
+        event.status === "Ongoing Vehicle Maintenance"
+      ) {
+        backgroundColor = "red";
+      }
+    }
+
+    return {
+      style: {
+        backgroundColor,
+        color: textColor,
+      },
+    };
+  };
+
 
   const markDates = () => {
     const startDates = schedulesData.map((schedule) => {
@@ -75,14 +94,14 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
   }, [schedulesData]);
 
   const events: Event[] = startDates.map((startDate, index) => {
-    const tripId = schedulesData[index]
-      ? schedulesData[index].trip_id
+    const requesterName = schedulesData[index]
+      ? schedulesData[index].requester_full_name
       : "undefined";
     const status = schedulesData[index]
       ? schedulesData[index].status
       : "undefined";
     return {
-      title: `Trip ${tripId}`,
+      title: `${requesterName}`,
       start: startDate,
       end: endDates[index],
       status: status,
@@ -97,6 +116,9 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
         startAccessor="start"
         endAccessor="end"
         eventPropGetter={eventStyleGetter}
+        onSelectEvent={(event: any) => {
+           console.log(event)
+        }}
       />
     </div>
   );

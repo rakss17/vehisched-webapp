@@ -85,8 +85,10 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
 }
 
 export function NotificationCreatedCancelWebsocket(
-  fetchRequestOfficeStaffAPI?: any,
-  setRequestList?: any
+  fetchAPI?: any,
+  setData?: any,
+  fetchAPI2?: any,
+  setData2?: any
 ) {
   useEffect(() => {
     const newSocket = new WebSocket(
@@ -97,6 +99,7 @@ export function NotificationCreatedCancelWebsocket(
       console.log(
         "Notification created and cancel WebSocket connection opened"
       );
+      fetchAPI2(setData2)
       newSocket.send(
         JSON.stringify({
           action: ["created", "canceled", "completed"],
@@ -106,20 +109,21 @@ export function NotificationCreatedCancelWebsocket(
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      fetchRequestOfficeStaffAPI(setRequestList);
+      fetchAPI(setData)
+      fetchAPI2(setData2)
       if (
         data.type === "notify.request_created" &&
         data.status === "Created" &&
         data.message != "Notification message goes here for created"
       ) {
         const justnow = "Just Now";
-        toast.success(
-          <ToastContent message={data.message} timeago={justnow} />,
-          {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: false,
-          }
-        );
+        // toast.success(
+        //   <ToastContent message={data.message} timeago={justnow} />,
+        //   {
+        //     position: toast.POSITION.TOP_CENTER,
+        //     autoClose: false,
+        //   }
+        // );
       } else if (
         data.type === "notify.request_completed" &&
         data.status === "Completed" &&

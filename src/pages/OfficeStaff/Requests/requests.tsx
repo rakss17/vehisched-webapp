@@ -73,11 +73,11 @@ export default function Requests() {
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
 
-  fetchNotification(setNotifList);
-
   NotificationCreatedCancelWebsocket(
     fetchRequestOfficeStaffAPI,
-    setRequestList
+    setRequestList,
+    fetchNotification,
+    setNotifList
   );
 
   useEffect(() => {

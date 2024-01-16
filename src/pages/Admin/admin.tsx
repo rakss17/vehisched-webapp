@@ -11,6 +11,9 @@ import PromptDialog from "../../components/promptdialog/prompdialog";
 import Confirmation from "../../components/confirmation/confirmation";
 import { DropdownParams, Vehicle } from "../../interfaces/interfaces";
 import { SignupParams } from "../../interfaces/interfaces";
+import { NotificationCreatedCancelWebsocket } from "../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   faColumns,
   faClipboardList,
@@ -150,9 +153,13 @@ export default function Admin() {
     { icon: faUser, text: "Drivers", path: "/Drivers" },
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
-  const navigate = useNavigate();
 
-  fetchNotification(setNotifList);
+  NotificationCreatedCancelWebsocket(
+    ()=>{},
+    ()=>{},
+    fetchNotification,
+    setNotifList
+  );
 
   const handleDropdownChange = (selectedOption: string) => {
     setUserData((prevUserData) => ({
@@ -627,6 +634,7 @@ export default function Admin() {
       {role === "office staff" ? <Sidebar sidebarData={sidebarData} /> : null}
 
       <Container>
+      <ToastContainer />
         <div className="label-margin-admin">
           <Label label="System Administration" />
         </div>

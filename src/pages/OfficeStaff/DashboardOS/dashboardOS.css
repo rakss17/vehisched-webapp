@@ -23,7 +23,7 @@
 }
 .calendar-column-container {
   background-color: transparent;
-  padding-left: 10vw;
+  padding-left: 7vw;
   flex-wrap: wrap;
   display: flex;
   flex-direction: row;

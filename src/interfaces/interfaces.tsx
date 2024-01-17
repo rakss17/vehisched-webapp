@@ -141,10 +141,10 @@ export interface RequestFormDetailsProps {
   isOpen: boolean;
   onRequestClose: () => void;
   selectedRequest: RequestFormProps | null;
-  onApprove: (driverId: string | null) => void;
+  onApprove?: (driverId: string | null) => void;
   onComplete: () => void;
-  errorMessages: any[];
-  setErrorMessages: any;
+  errorMessages?: any[];
+  setErrorMessages?: any;
   setIsOpen: any;
 }
 

@@ -784,104 +784,98 @@ export function toggleVehicleStatusAPI(
 }
 
 export function fetchNotification(setNotifList: any) {
-    const token = localStorage.getItem("token");
-    api
-      .get("api/v1/notification/fetch/", {
-        headers: {
-          Authorization: `Token ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        setNotifList(response.data);
-        const unreadNotifications = response.data.filter(
-          (notification: any) => !notification.read_status
-        );
-        unreadNotifications.forEach((notification: any) => {
-          if (notification.subject.includes("has been submitted")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.success(
-              <ToastContent message={message} timeago={timeago} />,
-              {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: false,
-              }
-            );
-          } else if (notification.subject.includes("has been approved")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.success(
-              <ToastContent message={message} timeago={timeago} />,
-              {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: false,
-              }
-            );
-          } else if (notification.subject.includes("A travel is on the way")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (notification.subject.includes("A travel is completed")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (
-            notification.subject.includes("Your travel will commence now")
-          ) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (notification.subject.includes("1 hour")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (notification.subject.includes("12 hours")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (notification.subject.includes("24 hours")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (notification.subject.includes("has been canceled")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          } else if (notification.subject.includes("unexpected maintenance")) {
-            const timeago = moment(notification.created_at).fromNow();
-            let message = `${notification.subject} `;
-            toast.info(<ToastContent message={message} timeago={timeago} />, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: false,
-            });
-          }
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching notif list:", error);
+  const token = localStorage.getItem("token");
+  api
+    .get("api/v1/notification/fetch/", {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      setNotifList(response.data);
+      const unreadNotifications = response.data.filter(
+        (notification: any) => !notification.read_status
+      );
+      unreadNotifications.forEach((notification: any) => {
+        if (notification.subject.includes("has been submitted")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.success(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("has been approved")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.success(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("A travel is on the way")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("A travel is completed")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (
+          notification.subject.includes("Your travel will commence now")
+        ) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("1 hour")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("12 hours")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("24 hours")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("has been canceled")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        } else if (notification.subject.includes("unexpected maintenance")) {
+          const timeago = moment(notification.created_at).fromNow();
+          let message = `${notification.subject} `;
+          toast.info(<ToastContent message={message} timeago={timeago} />, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: false,
+          });
+        }
       });
+    })
+    .catch((error) => {
+      console.error("Error fetching notif list:", error);
+    });
   return null;
 }
 
@@ -1002,8 +996,29 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
       },
     })
     .then((response) => {
-      setSchedule(response.data);
-      console.log(response.data)
+      const vehiclesData = response.data;
+
+      Object.keys(vehiclesData).forEach((vehicleKey) => {
+        const vehicleObj = vehiclesData[vehicleKey];
+        const schedules = vehicleObj.schedules;
+
+        const updatedSchedules = schedules.map((scheduleItem: any) => {
+          if (scheduleItem.passenger_name) {
+            const validJson = scheduleItem.passenger_name.replace(/'/g, '"');
+            try {
+              const passengerNamesArray = JSON.parse(validJson);
+              scheduleItem.passenger_name = passengerNamesArray.join(", ");
+            } catch (error) {
+              console.error("Error parsing passenger names:", error);
+            }
+          }
+          return scheduleItem;
+        });
+
+        vehicleObj.schedules = updatedSchedules;
+      });
+
+      setSchedule(vehiclesData);
     })
     .catch((error) => {
       console.error("Error fetching schedule list:", error);

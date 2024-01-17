@@ -18,19 +18,31 @@ import Label from "../../../components/label/label";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SidebarItem } from "../../../interfaces/interfaces";
+import { RequestFormProps, SidebarItem } from "../../../interfaces/interfaces";
 import {
   fetchEachVehicleSchedule,
   fetchNotification,
   fetchScheduleOfficeStaff,
+  maintenanceAbsenceCompletedRequestAPI,
 } from "../../../components/api/api";
 import { useNavigate } from "react-router-dom";
+import RequestFormDetails from "../../../components/form/requestformdetails";
+import Confirmation from "../../../components/confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
 export default function DashboardOS() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
   const [todayTrips, setTodayTrips] = useState<number>(0);
+  const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
+  const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
+    useState(false);
+  const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
+  const [selectedRequest, setSelectedRequest] =
+    useState<RequestFormProps | null>(null);
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const requestId = selectedRequest?.request_id;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
     {
@@ -46,9 +58,12 @@ export default function DashboardOS() {
   ];
   const navigate = useNavigate();
 
-  
-
-  NotificationCreatedCancelWebsocket(()=>{}, ()=>{}, fetchNotification, setNotifList);
+  NotificationCreatedCancelWebsocket(
+    () => {},
+    () => {},
+    fetchNotification,
+    setNotifList
+  );
 
   // useEffect(() => {
   //   const currentDate = format(new Date(), "yyyy-MM-dd");
@@ -62,42 +77,79 @@ export default function DashboardOS() {
   // }, []);
 
   useEffect(() => {
-    fetchEachVehicleSchedule(setSchedulesData)
-  }, [])
+    fetchEachVehicleSchedule(setSchedulesData);
+  }, []);
 
   const handleOnClickTodaysTrip = () => {
     navigate("/Schedules");
   };
 
+  const handleCloseRequestForm = () => {
+    setIsRequestFormOpen(false);
+  };
+
+  const selectedRequestDetails = selectedRequest
+    ? Object.values(schedulesData).flatMap((vehicleSchedule) =>
+        vehicleSchedule.schedules.filter(
+          (schedule: any) => schedule.request_id === selectedRequest.request_id
+        )
+      )
+    : [];
+
+  const handleCompleted = () => {
+    maintenanceAbsenceCompletedRequestAPI(
+      requestId,
+      setIsConfirmationCompletedOpen,
+      setIsRequestFormOpen,
+      setLoadingBarProgress
+    );
+  };
+  const handleOpenRequestForm = (event: any) => {
+    setIsRequestFormOpen(true);
+    setSelectedRequest(event.scheduleDetails);
+  };
+
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
-        <div className="dashboard-container">
+      <div className="dashboard-container">
         <ToastContainer />
-          <div>
+        <div>
           <Label label="Dashboard" />
-          </div>
-        
-          {/* <div onClick={handleOnClickTodaysTrip} className="today-trip">
+        </div>
+
+        {/* <div onClick={handleOnClickTodaysTrip} className="today-trip">
             <p>Today's Trip</p>
             <h2>{todayTrips}</h2>
           </div> */}
-          <div className="calendar-column-container">
+        <div className="calendar-column-container">
           {Object.entries(schedulesData).map(([vehicleId, data]) => (
-        <React.Fragment key={vehicleId}>
-          <div>
-          <p>{data.vehicle}</p>
-          <CalendarSchedule schedulesData={data.schedules} />
-          </div>
-          
-        </React.Fragment>
-      ))}
-          </div>
-          
-          
+            <React.Fragment key={vehicleId}>
+              <div>
+                <p>{data.vehicle}</p>
+                <CalendarSchedule
+                  schedulesData={data.schedules}
+                  onSelectEvent={handleOpenRequestForm}
+                />
+              </div>
+            </React.Fragment>
+          ))}
         </div>
-      
+      </div>
+      <RequestFormDetails
+        isOpen={isRequestFormOpen}
+        setIsOpen={setIsRequestFormOpen}
+        onRequestClose={handleCloseRequestForm}
+        selectedRequest={selectedRequestDetails[0]}
+        onComplete={handleCompleted}
+      />
+      <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
     </>
   );
 }

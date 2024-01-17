@@ -23,10 +23,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
   onRequestClose,
   selectedRequest,
-  onApprove,
+  onApprove = () => {},
   onComplete,
-  errorMessages,
-  setErrorMessages,
+  errorMessages = [],
+  setErrorMessages = [],
   setIsOpen,
 }) => {
   if (!selectedRequest) return null;
@@ -410,63 +410,60 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 {selectedRequest.driver_full_name === null ? (
                   <>
                     <div>
-                    <h2>Assign a driver: </h2>
-                    <div onClick={handleFetchDrivers}>
-                      <Dropdown
-                        status={dropdownDrivers}
-                        onCategoryChange={handleChooseDriver}
-                        dropdownClassName="dropdown-custom"
-                        menuClassName="menu-custom"
+                      <h2>Assign a driver: </h2>
+                      <div onClick={handleFetchDrivers}>
+                        <Dropdown
+                          status={dropdownDrivers}
+                          onCategoryChange={handleChooseDriver}
+                          dropdownClassName="dropdown-custom"
+                          menuClassName="menu-custom"
+                        />
+                      </div>
+                      <p className="set-trip-text-error">
+                        {errorMessages[0]?.driverSelectionError}
+                      </p>
+                    </div>
+                    <div className="button-details-container">
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        tertiaryStyle
+                        text="Reject"
+                        onClick={onReject}
+                      />
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        primaryStyle
+                        text="Approve"
+                        onClick={() => onApprove(selectedDriverId)}
                       />
                     </div>
-                    <p className="set-trip-text-error">
-                      {errorMessages[0]?.driverSelectionError}
-                    </p>
-                  </div>
-                  <div className="button-details-container">
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    tertiaryStyle
-                    text="Reject"
-                    onClick={onReject}
-                  />
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    primaryStyle
-                    text="Approve"
-                    onClick={() => onApprove(selectedDriverId)}
-                  />
-                </div>
                   </>
-                  
                 ) : (
                   <>
                     <div>
-                    <h2>Driver:</h2>
-                    <p>{selectedRequest.driver_full_name}</p>
-                  </div>
-                  <div className="button-details-container">
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    tertiaryStyle
-                    text="Reject"
-                    onClick={onReject}
-                  />
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    primaryStyle
-                    text="Approve"
-                    onClick={() => onApprove(selectedRequest.driver_id)}
-                  />
-                </div>
+                      <h2>Driver:</h2>
+                      <p>{selectedRequest.driver_full_name}</p>
+                    </div>
+                    <div className="button-details-container">
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        tertiaryStyle
+                        text="Reject"
+                        onClick={onReject}
+                      />
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        primaryStyle
+                        text="Approve"
+                        onClick={() => onApprove(selectedRequest.driver_id)}
+                      />
+                    </div>
                   </>
-                  
                 )}
-                
               </>
             )}
 

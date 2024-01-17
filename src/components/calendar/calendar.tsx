@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Calendar, momentLocalizer, Event } from "react-big-calendar";
 import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./calendar.css";
 
 const localizer = momentLocalizer(moment);
@@ -12,17 +11,26 @@ interface MyEvent extends Event {
 
 type CalendarScheduleProps = {
   schedulesData: any[];
+  onSelectEvent: any;
 };
-
-
 
 const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
   schedulesData,
+  onSelectEvent,
 }) => {
-  const [markedDates, setMarkedDates] = useState<Date[]>([]);
   const [startDates, setStartDates] = useState<Date[]>([]);
   const [endDates, setEndDates] = useState<Date[]>([]);
-  const colors = ["#060e57", "#253093", "#1122BD", "#B67D06", "#E0A425", "#fdb316", "#656353", "#7D7A5B", "#979371", ]
+  const colors = [
+    "#060e57",
+    "#253093",
+    "#1122BD",
+    "#B67D06",
+    "#E0A425",
+    "#fdb316",
+    "#656353",
+    "#7D7A5B",
+    "#979371",
+  ];
   const eventColors = useRef<Map<number, string>>(new Map());
 
   const assignEventColors = () => {
@@ -38,13 +46,10 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
     assignEventColors();
   }, [schedulesData]);
 
-  const eventStyleGetter = (
-    event: MyEvent,
-    start: any,
-    end: any,
-    isSelected: boolean
-  ) => {
-    const eventIndex = events.findIndex(e => e.start === event.start && e.end === event.end);
+  const eventStyleGetter = (event: MyEvent) => {
+    const eventIndex = events.findIndex(
+      (e) => e.start === event.start && e.end === event.end
+    );
     let backgroundColor = eventColors.current.get(eventIndex) || "#060e57";
     const textColor = "white";
 
@@ -64,7 +69,6 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
       },
     };
   };
-
 
   const markDates = () => {
     const startDates = schedulesData.map((schedule) => {
@@ -105,6 +109,7 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
       start: startDate,
       end: endDates[index],
       status: status,
+      scheduleDetails: schedulesData[index],
     };
   });
 
@@ -116,9 +121,7 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
         startAccessor="start"
         endAccessor="end"
         eventPropGetter={eventStyleGetter}
-        onSelectEvent={(event: any) => {
-           console.log(event)
-        }}
+        onSelectEvent={onSelectEvent}
       />
     </div>
   );

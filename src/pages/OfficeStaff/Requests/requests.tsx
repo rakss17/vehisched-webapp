@@ -285,8 +285,8 @@ export default function Requests() {
                       <td>
                         {request.status === "Completed" ||
                         request.status === "Canceled" ||
-                        request.status === "Rejected" || 
-                        request.status === "Driver Absence" || 
+                        request.status === "Rejected" ||
+                        request.status === "Driver Absence" ||
                         request.status === "Vehicle Maintenance" ? (
                           <div className="ontrip-completed"></div>
                         ) : (

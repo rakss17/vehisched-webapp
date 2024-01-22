@@ -7,6 +7,7 @@ import { RequestFormDetailsProps } from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
 import {
   cancelRequestAPI,
+  changeRequestDriverAPI,
   downloadTripTicketAPI,
   fetchDriversScheduleAPI,
   fetchRequestAPI,
@@ -28,6 +29,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   errorMessages = [],
   setErrorMessages = [],
   setIsOpen,
+  fetchRequestOfficeStaffAPI,
+  setRequestList,
 }) => {
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
@@ -45,6 +48,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [isMergeTripOpen, setIsMergeTripOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
+  const [isChangeDriverOpen, setIsChangeDriverOpen] = useState(false);
   const [mergeTripData, setMergeTripData] = useState({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
@@ -143,6 +147,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     setIsCancelOpen(false);
     setIsOpen(true);
     setIsRejectOpen(false);
+    setIsChangeDriverOpen(false);
   };
 
   const onMergeTripOpen = () => {
@@ -192,6 +197,23 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     );
   };
 
+  const onChangeDriver = () => {
+    setIsChangeDriverOpen(true);
+    setIsOpen(false);
+  };
+
+  const handleChangeDriver = () => {
+    changeRequestDriverAPI(
+      selectedRequest.request_id,
+      // setIsConfirmationRejectOpen,
+      selectedDriverId,
+      setLoadingBarProgress,
+      fetchRequestOfficeStaffAPI,
+      setRequestList,
+      setIsChangeDriverOpen,
+      setIsOpen
+    );
+  };
   const dateParts = selectedRequest.date_reserved.split("T");
   const date_reserved = dateParts[0];
   const timeParts = dateParts[1].split(".");
@@ -302,56 +324,69 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <p>{selectedRequest.type}</p>
             </div>
           </div>
-          {selectedRequest.status !== "Pending" && (
-            <>
-              {selectedRequest.driver_full_name === null ? (
-                <div>
-                  <h2>Assign a driver: </h2>
-                  <div onClick={handleFetchDrivers}>
-                    <Dropdown
-                      status={dropdownDrivers}
-                      onCategoryChange={handleChooseDriver}
-                      dropdownClassName="dropdown-custom"
-                      menuClassName="menu-custom"
+          {selectedRequest.status !== "Pending" &&
+            selectedRequest.status !== "Completed" &&
+            selectedRequest.status !== "Canceled" &&
+            selectedRequest.status !== "Rejected" &&
+            selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
+            selectedRequest.distance < 50 && (
+              <>
+                {selectedRequest.driver_full_name === null ? (
+                  <div>
+                    <h2>Assign a driver: </h2>
+                    <div onClick={handleFetchDrivers}>
+                      <Dropdown
+                        status={dropdownDrivers}
+                        onCategoryChange={handleChooseDriver}
+                        dropdownClassName="dropdown-custom"
+                        menuClassName="menu-custom"
+                      />
+                    </div>
+                    <p className="set-trip-text-error">
+                      {errorMessages[0]?.driverSelectionError}
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <h2>Driver:</h2>
+                    <p>{selectedRequest.driver_full_name}</p>
+                    <CommonButton
+                      width={10}
+                      height={7}
+                      underlinedStyle
+                      text="Change driver"
+                      onClick={onChangeDriver}
                     />
                   </div>
-                  <p className="set-trip-text-error">
-                    {errorMessages[0]?.driverSelectionError}
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <h2>Driver:</h2>
-                  <p>{selectedRequest.driver_full_name}</p>
-                </div>
-              )}
+                )}
 
-              <div className="departure-arrival-container">
-                <div>
-                  <h2>Departure: </h2>
-                  <p>
-                    {departure_date_from_office && departure_time_from_office
-                      ? `${formatDate(
-                          departure_date_from_office
-                        )}, ${formatTime(departure_time_from_office)}`
-                      : "N/A"}
-                  </p>
+                <div className="departure-arrival-container">
+                  <div>
+                    <h2>Departure: </h2>
+                    <p>
+                      {departure_date_from_office && departure_time_from_office
+                        ? `${formatDate(
+                            departure_date_from_office
+                          )}, ${formatTime(departure_time_from_office)}`
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <h2>Arrival: </h2>
+                    <p>
+                      {arrival_date_to_office && arrival_time_to_office
+                        ? `${formatDate(arrival_date_to_office)}, ${formatTime(
+                            arrival_time_to_office
+                          )}`
+                        : "N/A"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2>Arrival: </h2>
-                  <p>
-                    {arrival_date_to_office && arrival_time_to_office
-                      ? `${formatDate(arrival_date_to_office)}, ${formatTime(
-                          arrival_time_to_office
-                        )}`
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
           {selectedRequest.status === "Pending" &&
+            selectedRequest.status !== "Completed" &&
             selectedRequest.distance >= 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
@@ -373,6 +408,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   <div>
                     <h2>Driver:</h2>
                     <p>{selectedRequest.driver_full_name}</p>
+                    <CommonButton
+                      width={10}
+                      height={7}
+                      underlinedStyle
+                      text="Change driver"
+                      onClick={onChangeDriver}
+                    />
                   </div>
                 )}
                 <div className="travel-order-note">
@@ -398,11 +440,45 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               </>
             )}
           {selectedRequest.status !== "Pending" &&
+            selectedRequest.status !== "Rejected" &&
+            selectedRequest.status !== "Canceled" &&
+            selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
+            selectedRequest.status !== "Completed" &&
             selectedRequest.distance >= 50 && (
-              <div className="travel-order-note">
-                <h2>Note:</h2>
-                <h3>A travel order is required for this trip</h3>
-              </div>
+              <>
+                {selectedRequest.driver_full_name === null ? (
+                  <div>
+                    <h2>Assign a driver: </h2>
+                    <div onClick={handleFetchDrivers}>
+                      <Dropdown
+                        status={dropdownDrivers}
+                        onCategoryChange={handleChooseDriver}
+                        dropdownClassName="dropdown-custom"
+                        menuClassName="menu-custom"
+                      />
+                    </div>
+                    <p className="set-trip-text-error">
+                      {errorMessages[0]?.driverSelectionError}
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <h2>Driver:</h2>
+                    <p>{selectedRequest.driver_full_name}</p>
+                    <CommonButton
+                      width={10}
+                      height={7}
+                      underlinedStyle
+                      text="Change driver"
+                      onClick={onChangeDriver}
+                    />
+                  </div>
+                )}
+                <div className="travel-order-note">
+                  <h2>Note:</h2>
+                  <h3>A travel order is required for this trip</h3>
+                </div>
+              </>
             )}
           {selectedRequest.status === "Pending" &&
             selectedRequest.distance < 50 && (
@@ -445,6 +521,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     <div>
                       <h2>Driver:</h2>
                       <p>{selectedRequest.driver_full_name}</p>
+                      <CommonButton
+                        width={10}
+                        height={7}
+                        underlinedStyle
+                        text="Change driver"
+                        onClick={onChangeDriver}
+                      />
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -569,7 +652,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       </Modal>
       <Modal className="reason-modal" isOpen={isCancelOpen}>
         <div className="reason-modal-container">
-          <h1>Please provide the reason for the cancellation</h1>
+          <h1>Please provide the reason for the cancelation</h1>
           <div>
             <input
               value={reasonForCancellation}
@@ -623,6 +706,35 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               primaryStyle
               text="Proceed"
               onClick={handleReject}
+            />
+          </div>
+        </div>
+      </Modal>
+      <Modal className="reason-modal" isOpen={isChangeDriverOpen}>
+        <div className="reason-modal-container">
+          <h1>Choose the new driver that you would like to replace with it</h1>
+          <div onClick={handleFetchDrivers}>
+            <Dropdown
+              status={dropdownDrivers}
+              onCategoryChange={handleChooseDriver}
+              dropdownClassName="dropdown-custom"
+              menuClassName="menu-custom"
+            />
+          </div>
+          <div className="reason-modal-button-details-container">
+            <CommonButton
+              width={7}
+              height={6}
+              secondaryStyle
+              text="Cancel"
+              onClick={onCancelMergeTrip}
+            />
+            <CommonButton
+              width={7}
+              height={6}
+              primaryStyle
+              text="Proceed"
+              onClick={handleChangeDriver}
             />
           </div>
         </div>

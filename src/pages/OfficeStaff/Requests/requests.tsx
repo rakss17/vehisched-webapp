@@ -432,6 +432,8 @@ export default function Requests() {
         onComplete={handleCompleted}
         errorMessages={errorMessages}
         setErrorMessages={setErrorMessages}
+        fetchRequestOfficeStaffAPI={fetchRequestOfficeStaffAPI}
+        setRequestList={setRequestList}
       />
 
       <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />

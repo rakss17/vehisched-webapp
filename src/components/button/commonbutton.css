@@ -22,3 +22,13 @@
   height: 6vh;
   text-align: center;
 }
+
+.underlined-style {
+  background-color: transparent;
+  color: #212bf3;
+  border: none;
+  text-decoration: underline;
+  width: 8vw;
+  height: 6vh;
+  text-align: center;
+}

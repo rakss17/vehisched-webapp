@@ -8,6 +8,7 @@ const CommonButton: React.FC<ButtonProps> = ({
   primaryStyle,
   secondaryStyle,
   tertiaryStyle,
+  underlinedStyle,
   height,
   width,
 }) => {
@@ -27,6 +28,8 @@ const CommonButton: React.FC<ButtonProps> = ({
           ? "secondary-style"
           : tertiaryStyle
           ? "tertiary-style"
+          : underlinedStyle
+          ? "underlined-style"
           : ""
       }
     >

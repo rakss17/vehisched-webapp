@@ -146,6 +146,8 @@ export interface RequestFormDetailsProps {
   errorMessages?: any[];
   setErrorMessages?: any;
   setIsOpen: any;
+  fetchRequestOfficeStaffAPI: any;
+  setRequestList: any;
 }
 
 export interface TimeInputProps {
@@ -188,6 +190,7 @@ export interface ButtonProps {
   primaryStyle?: any;
   secondaryStyle?: any;
   tertiaryStyle?: any;
+  underlinedStyle?: any;
   width?: any;
   height?: any;
 }

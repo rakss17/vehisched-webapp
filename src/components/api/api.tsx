@@ -1334,6 +1334,46 @@ export function rejectRequestAPI(
     });
 }
 
+export function changeRequestDriverAPI(
+  requestId: any,
+  // setIsConfirmationRejectedOpen: any,
+  driver: any,
+  setLoadingBarProgress: (progress: number) => void,
+  fetchAPI: any,
+  setDataAPI: any,
+  setIsChangeDriverOpen: any,
+  setIsOpen: any
+) {
+  const token = localStorage.getItem("token");
+
+  api
+    .patch(
+      `/api/v1/request/change-request-driver/${requestId}/`,
+      {
+        new_driver: driver,
+      },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      // setIsConfirmationRejectedOpen(true);
+      setLoadingBarProgress(100);
+
+      // setIsConfirmationRejectedOpen(false);
+      // window.location.reload();
+      fetchAPI(setDataAPI);
+      setIsChangeDriverOpen(false);
+      setIsOpen(true);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export const downloadTripTicketAPI = async (requestId: any) => {
   try {
     const response = await api.get(

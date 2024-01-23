@@ -632,7 +632,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               menuClassName="menu-custom"
             />
           </div>
-          <div className="merge-trip-modal-button-details-container">
+          <div className="reason-modal-button-container">
             <CommonButton
               width={7}
               height={6}
@@ -662,7 +662,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               placeholder="type here..."
             />
           </div>
-          <div className="reason-modal-button-details-container">
+          <div className="reason-modal-button-container">
             <CommonButton
               width={7}
               height={6}
@@ -692,7 +692,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               placeholder="type here..."
             />
           </div>
-          <div className="reason-modal-button-details-container">
+          <div className="reason-modal-button-container">
             <CommonButton
               width={7}
               height={6}
@@ -721,7 +721,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               menuClassName="menu-custom"
             />
           </div>
-          <div className="reason-modal-button-details-container">
+          <div className="reason-modal-button-container">
             <CommonButton
               width={7}
               height={6}

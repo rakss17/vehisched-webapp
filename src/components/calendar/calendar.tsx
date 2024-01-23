@@ -11,7 +11,7 @@ interface MyEvent extends Event {
 
 type CalendarScheduleProps = {
   schedulesData: any[];
-  onSelectEvent: any;
+  onSelectEvent?: any;
 };
 
 const CalendarSchedule: React.FC<CalendarScheduleProps> = ({

@@ -148,6 +148,8 @@ export default function DashboardOS() {
         onRequestClose={handleCloseRequestForm}
         selectedRequest={selectedRequestDetails[0]}
         onComplete={handleCompleted}
+        fetchRequestOfficeStaffAPI={fetchEachVehicleSchedule}
+        setRequestList={setSchedulesData}
       />
       <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
     </>

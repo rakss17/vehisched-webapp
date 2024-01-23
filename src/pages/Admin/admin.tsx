@@ -84,7 +84,7 @@ export default function Admin() {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
   const [userData, setUserData] = useState<SignupParams>({
     username: "",
-    password: "vehisched123",
+    password: "",
     first_name: "",
     middle_name: "",
     last_name: "",
@@ -238,6 +238,13 @@ export default function Admin() {
       });
     }
   };
+
+  useEffect(() => {
+    setUserData((prevUserData: any) => ({
+      ...prevUserData,
+      password: `${userData.last_name}@${userData.first_name}`
+    }))
+  }, [userData])
 
   useEffect(() => {
     dispatch(fetchUsersAPI() as any);
@@ -1093,7 +1100,7 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleDeleteUserButton}
+        onProceed={handleDeleteUserButton}
       />
       <PromptDialog
         isOpen={isDeactivateOpen}
@@ -1101,7 +1108,7 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleDeactivateUserButton}
+        onProceed={handleDeactivateUserButton}
       />
       <PromptDialog
         isOpen={isActivateOpen}

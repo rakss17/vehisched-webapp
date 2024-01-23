@@ -350,13 +350,17 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   <div>
                     <h2>Driver:</h2>
                     <p>{selectedRequest.driver_full_name}</p>
-                    <CommonButton
-                      width={10}
-                      height={7}
-                      underlinedStyle
-                      text="Change driver"
-                      onClick={onChangeDriver}
-                    />
+                    <>
+                      {selectedRequest.purpose === "Driver Absence" ? null : (
+                        <CommonButton
+                        width={10}
+                        height={7}
+                        underlinedStyle
+                        text="Change driver"
+                        onClick={onChangeDriver}
+                      />
+                      )}
+                    </>
                   </div>
                 )}
 
@@ -390,6 +394,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.distance >= 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
+                  <>
                   <div>
                     <h2>Assign a driver: </h2>
                     <div onClick={handleFetchDrivers}>
@@ -404,20 +409,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       {errorMessages[0]?.driverSelectionError}
                     </p>
                   </div>
-                ) : (
-                  <div>
-                    <h2>Driver:</h2>
-                    <p>{selectedRequest.driver_full_name}</p>
-                    <CommonButton
-                      width={10}
-                      height={7}
-                      underlinedStyle
-                      text="Change driver"
-                      onClick={onChangeDriver}
-                    />
-                  </div>
-                )}
-                <div className="travel-order-note">
+                  <div className="travel-order-note">
                   <h2>Note:</h2>
                   <h3>A travel order is required for this trip</h3>
                 </div>
@@ -437,6 +429,50 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     onClick={() => onApprove(selectedDriverId)}
                   />
                 </div>
+                  </>
+                  
+                ) : (
+                  <>
+                 
+                    <div>
+                    <h2>Driver:</h2>
+                    <p>{selectedRequest.driver_full_name}</p>
+                    <>
+                      {selectedRequest.purpose === "Driver Absence" ? null : (
+                        <CommonButton
+                        width={10}
+                        height={7}
+                        underlinedStyle
+                        text="Change driver"
+                        onClick={onChangeDriver}
+                      />
+                      )}
+                    </>
+                  </div>
+                  <div className="travel-order-note">
+                  <h2>Note:</h2>
+                  <h3>A travel order is required for this trip</h3>
+                </div>
+                <div className="button-details-container">
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    tertiaryStyle
+                    text="Reject"
+                    onClick={onReject}
+                  />
+                  <CommonButton
+                    width={7}
+                    height={7}
+                    primaryStyle
+                    text="Approve"
+                    onClick={() => onApprove(selectedRequest.driver_id)}
+                  />
+                </div>
+                  </>
+                  
+                )}
+                
               </>
             )}
           {selectedRequest.status !== "Pending" &&
@@ -465,13 +501,17 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   <div>
                     <h2>Driver:</h2>
                     <p>{selectedRequest.driver_full_name}</p>
-                    <CommonButton
-                      width={10}
-                      height={7}
-                      underlinedStyle
-                      text="Change driver"
-                      onClick={onChangeDriver}
-                    />
+                    <>
+                      {selectedRequest.purpose === "Driver Absence" ? null : (
+                        <CommonButton
+                        width={10}
+                        height={7}
+                        underlinedStyle
+                        text="Change driver"
+                        onClick={onChangeDriver}
+                      />
+                      )}
+                    </>
                   </div>
                 )}
                 <div className="travel-order-note">
@@ -521,13 +561,17 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     <div>
                       <h2>Driver:</h2>
                       <p>{selectedRequest.driver_full_name}</p>
-                      <CommonButton
+                      <>
+                      {selectedRequest.purpose === "Driver Absence" ? null : (
+                        <CommonButton
                         width={10}
                         height={7}
                         underlinedStyle
                         text="Change driver"
                         onClick={onChangeDriver}
                       />
+                      )}
+                    </>
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -607,8 +651,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 />
               </div>
             )}
-          {selectedRequest.status === "Ongoing Vehicle Maintenance" ||
-            (selectedRequest.status === "Driver Absence" && (
+          {selectedRequest.status === "Driver Absence" && (
               <div>
                 <CommonButton
                   width={7}
@@ -618,7 +661,18 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   onClick={onComplete}
                 />
               </div>
-            ))}
+            )}
+            { selectedRequest.status === "Ongoing Vehicle Maintenance" && (
+              <div>
+                <CommonButton
+                  width={7}
+                  height={7}
+                  primaryStyle
+                  text="Done"
+                  onClick={onComplete}
+                />
+              </div>
+            )}
         </div>
       </Modal>
       <Modal className="merge-trip-modal" isOpen={isMergeTripOpen}>

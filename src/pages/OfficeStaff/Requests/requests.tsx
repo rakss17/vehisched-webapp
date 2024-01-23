@@ -168,7 +168,6 @@ export default function Requests() {
     if (!selectedDriverId) {
       validationErrors.driverSelectionError = "Please select a driver!";
     }
-    console.log(selectedDriverId);
     if (selectedDriverId === null) {
       validationErrors.driverSelectionError = "Please select a driver!";
     }

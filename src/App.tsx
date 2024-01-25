@@ -18,6 +18,7 @@ import Admin from "./pages/Admin/admin";
 import AccountActivated from "./pages/Activated/accountactivated";
 import Unauthorized from "./pages/Error/unauthorized";
 import NotFound from "./pages/Error/notfound";
+import ResetPasswordConfirm from "./pages/ResetPassword/resetPasswordConfirm";
 
 function ProtectedRoute({
   path,
@@ -153,6 +154,10 @@ function App() {
               />
 
               <Route path="/Unauthorized" element={<Unauthorized />} />
+              <Route
+                path="/ResetPassword/:uid/:token"
+                element={<ResetPasswordConfirm />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </HashRouter>

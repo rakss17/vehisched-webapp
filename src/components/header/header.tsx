@@ -8,8 +8,9 @@ import { RootState } from "../../redux/store";
 import { persistor } from "../../redux/store";
 import { clearUserData } from "../../redux/actions/userActions";
 import LoadingBar from "react-top-loading-bar";
+import { HeaderProps } from "../../interfaces/interfaces";
 
-export default function Header() {
+const Header: React.FC<HeaderProps> = ({ isDropDownHide }) => {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const personalInfo = useSelector(
@@ -53,34 +54,43 @@ export default function Header() {
         <img src={logo} alt="logo" />
         <div className="container-appname-dropdown">
           <p>Vehi-Sched</p>
-          <div className="dropdown-header">
-            <div className="dropdown-toggle-header" onClick={handleMenuToggle}>
-              <FontAwesomeIcon
-                icon={faUser}
-                style={{ marginRight: "0px", marginTop: "3px" }}
-              />
-              <span className="username">{username}</span>
-              <span>▼</span>
-            </div>
-            {isOpen && (
-              <ul className="dropdown-menu-header">
-                <li onClick={() => handleMenuOptionClick("profile")}>
-                  <FontAwesomeIcon icon={faUser} />
-                  Profile
-                </li>
-                <li onClick={() => handleMenuOptionClick("settings")}>
-                  <FontAwesomeIcon icon={faCog} />
-                  Settings
-                </li>
-                <li onClick={() => handleMenuOptionClick("signout")}>
-                  <FontAwesomeIcon icon={faSignOutAlt} />
-                  Sign Out
-                </li>
-              </ul>
-            )}
-          </div>
+          {!isDropDownHide && (
+            <>
+              <div className="dropdown-header">
+                <div
+                  className="dropdown-toggle-header"
+                  onClick={handleMenuToggle}
+                >
+                  <FontAwesomeIcon
+                    icon={faUser}
+                    style={{ marginRight: "0px", marginTop: "3px" }}
+                  />
+                  <span className="username">{username}</span>
+                  <span>▼</span>
+                </div>
+                {isOpen && (
+                  <ul className="dropdown-menu-header">
+                    <li onClick={() => handleMenuOptionClick("profile")}>
+                      <FontAwesomeIcon icon={faUser} />
+                      Profile
+                    </li>
+                    <li onClick={() => handleMenuOptionClick("settings")}>
+                      <FontAwesomeIcon icon={faCog} />
+                      Settings
+                    </li>
+                    <li onClick={() => handleMenuOptionClick("signout")}>
+                      <FontAwesomeIcon icon={faSignOutAlt} />
+                      Sign Out
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
   );
-}
+};
+
+export default Header;

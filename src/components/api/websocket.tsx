@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-const serverSideUrl = "localhost:8000";
+const serverSideUrl = "192.168.1.11:8000";
 
 export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   useEffect(() => {
@@ -99,7 +99,7 @@ export function NotificationCreatedCancelWebsocket(
       console.log(
         "Notification created and cancel WebSocket connection opened"
       );
-      fetchAPI2(setData2)
+      fetchAPI2(setData2);
       newSocket.send(
         JSON.stringify({
           action: ["created", "canceled", "completed"],
@@ -109,8 +109,8 @@ export function NotificationCreatedCancelWebsocket(
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      fetchAPI(setData)
-      fetchAPI2(setData2)
+      fetchAPI(setData);
+      fetchAPI2(setData2);
       if (
         data.type === "notify.request_created" &&
         data.status === "Created" &&

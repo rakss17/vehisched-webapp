@@ -3,7 +3,7 @@ import "./toastcontent.css";
 
 interface ToastContentProps {
   message: string;
-  timeago: string;
+  timeago?: string;
 }
 
 const ToastContent: React.FC<ToastContentProps> = ({ message, timeago }) => {

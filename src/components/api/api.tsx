@@ -15,10 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-export const serverSideUrl = "http://localhost:8000/media/";
+export const serverSideUrl = "http://192.168.1.11:8000/media/";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/",
+  baseURL: "http://192.168.1.11:8000/",
 });
 
 export async function SigninAPI(
@@ -86,6 +86,48 @@ export function SignupAPI(
       console.log(error);
     });
 }
+export async function resetPasswordConfirm(
+  uid: any,
+  token: any,
+  newPassword: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  try {
+    let response = await api.post(
+      "api/v1/accounts/users/reset_password_confirm/",
+      {
+        uid: uid,
+        token: token,
+        new_password: newPassword,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    setLoadingBarProgress(100);
+    toast.success(<ToastContent message="Password changed successfully." />, {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: false,
+    });
+    setTimeout(() => {
+      window.close();
+    }, 3000);
+  } catch (error: any) {
+    console.log("There was an error!", error);
+    setLoadingBarProgress(100);
+    toast.error(
+      <ToastContent message="There was an error when updating the password." />,
+      {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: false,
+      }
+    );
+  }
+}
+
 export function addOffice(
   name: any,
   setIsConfirmationOpen: any,

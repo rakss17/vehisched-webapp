@@ -44,6 +44,10 @@ interface DropdownProps {
   selectedVehicle?: Vehicle | undefined;
 }
 
+export interface HeaderProps {
+  isDropDownHide?: boolean;
+}
+
 export interface AddEditProps {
   isOpen: boolean;
   onRequestClose?: () => void;

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
-import { RequestFormDetailsProps } from "../../interfaces/interfaces";
+import {
+  RequestFormDetailsProps,
+  RequestFormProps,
+} from "../../interfaces/interfaces";
 import Dropdown from "../dropdown/dropdown";
 import {
   cancelRequestAPI,
@@ -19,6 +22,8 @@ import CommonButton from "../button/commonbutton";
 import LoadingBar from "react-top-loading-bar";
 import Confirmation from "../confirmation/confirmation";
 import { formatDate, formatTime } from "../functions/getTimeElapsed";
+import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
+import InputField from "../inputfield/inputfield";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -38,6 +43,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [selectedRequesterId, setSelectedRequesterId] = useState<string | null>(
     null
   );
+  const [numberOfVacant, setNumberOfVacant] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
     useState(false);
@@ -49,23 +55,41 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [isChangeDriverOpen, setIsChangeDriverOpen] = useState(false);
-  const [mergeTripData, setMergeTripData] = useState({
+  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(false);
+  const [selectedTripButton, setSelectedTripButton] =
+    useState<string>("Round Trip");
+  const [mergeTripData, setMergeTripData] = useState<RequestFormProps>({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
     travel_time: selectedRequest.travel_time,
-    return_date: selectedRequest.return_date,
-    return_time: selectedRequest.return_time,
-    destination: selectedRequest.destination,
-    number_of_passenger: selectedRequest.number_of_passenger,
+    return_date: "",
+    return_time: "",
+    destination: "",
+    number_of_passenger: "",
     vehicle: selectedRequest.vehicle,
-    type: selectedRequest.type,
-    distance: selectedRequest.distance,
+    type: "",
+    distance: null,
     merge_trip: true,
     role: null,
+    driver_name: selectedRequest.driver_id,
+    passenger_name: [],
+    vehicle_capacity: selectedRequest.vehicle_capacity,
+  });
+  const [addressData, setAddressData] = useState<any>({
+    destination: "",
+    distance: null,
   });
   const [reasonForCancellation, setReasonForCancellation] = useState("");
   const [reasonForRejection, setReasonForRejection] = useState("");
   const isFromOfficeStaff = true;
+
+  useEffect(() => {
+    setMergeTripData((prevData: any) => ({
+      ...prevData,
+      destination: addressData.destination,
+      distance: addressData.distance,
+    }));
+  }, [addressData]);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -98,7 +122,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   };
 
   const handleFetchRequester = () => {
-    fetchRequestersAPI(setRequestersData);
+    fetchRequestersAPI(setRequestersData, selectedRequest.requester_id);
   };
 
   const handleChooseDriver = (driverName: string) => {
@@ -142,6 +166,57 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     });
   };
 
+  useEffect(() => {
+    if (selectedRequest.number_of_passenger) {
+      const numberOfVacants =
+        selectedRequest.vehicle_capacity - selectedRequest.number_of_passenger;
+      setNumberOfVacant(numberOfVacants);
+    }
+  }, [selectedRequest.number_of_passenger]);
+  const generatePassengerInputs = () => {
+    const inputs = [];
+    if (numberOfVacant <= selectedRequest.vehicle_capacity) {
+      for (let i = 0; i < numberOfVacant; i++) {
+        inputs.push(
+          <div key={i} className="passenger-name-column">
+            <InputField
+              className="passenger_name_width"
+              value={mergeTripData.passenger_name[i]}
+              key={i}
+              icon={faUser}
+              label={`Passenger ${i + 1}`}
+              placeholder={`Passenger ${i + 1}`}
+              onChange={(event) => {
+                const newPassengerNames = [...mergeTripData.passenger_name];
+                newPassengerNames[i] = event.target.value;
+                const numberOfPassenger = newPassengerNames.reduce(
+                  (count, name) => (name ? count + 1 : count),
+                  0
+                );
+                setMergeTripData({
+                  ...mergeTripData,
+                  passenger_name: newPassengerNames,
+                  number_of_passenger: numberOfPassenger,
+                });
+
+                if (newPassengerNames[i]) {
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.passengerNameError[i];
+                  delete updatedErrors[0]?.all;
+                  setErrorMessages(updatedErrors);
+                }
+              }}
+            />
+            <p className="set-trip-text-error">
+              {errorMessages[0]?.passengerNameError[i]}
+            </p>
+          </div>
+        );
+      }
+    }
+    return inputs;
+  };
+
   const onCancelMergeTrip = () => {
     setIsMergeTripOpen(false);
     setIsCancelOpen(false);
@@ -168,9 +243,33 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       setLoadingBarProgress
     );
   };
+  const handleButtonClickTrip = (button: string) => {
+    const updatedErrors = { ...errorMessages };
+
+    // switch (button) {
+    //   case "Round Trip":
+
+    //     break;
+
+    //   case "One-way":
+
+    //     break;
+
+    //   default:
+    //     break;
+    // }
+    setMergeTripData((prevData: any) => ({ ...prevData, type: button }));
+    setSelectedTripButton(button);
+  };
   const onCancelTrip = () => {
     setIsCancelOpen(true);
     setIsOpen(false);
+  };
+
+  const removeDestinationError = () => {
+    const updatedErrors = [...errorMessages];
+    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
+    setErrorMessages(updatedErrors);
   };
   const handleCancelTrip = () => {
     cancelRequestAPI(
@@ -353,12 +452,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     <>
                       {selectedRequest.purpose === "Driver Absence" ? null : (
                         <CommonButton
-                        width={10}
-                        height={7}
-                        underlinedStyle
-                        text="Change driver"
-                        onClick={onChangeDriver}
-                      />
+                          width={10}
+                          height={7}
+                          underlinedStyle
+                          text="Change driver"
+                          onClick={onChangeDriver}
+                        />
                       )}
                     </>
                   </div>
@@ -395,84 +494,80 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <>
                 {selectedRequest.driver_full_name === null ? (
                   <>
-                  <div>
-                    <h2>Assign a driver: </h2>
-                    <div onClick={handleFetchDrivers}>
-                      <Dropdown
-                        status={dropdownDrivers}
-                        onCategoryChange={handleChooseDriver}
-                        dropdownClassName="dropdown-custom"
-                        menuClassName="menu-custom"
+                    <div>
+                      <h2>Assign a driver: </h2>
+                      <div onClick={handleFetchDrivers}>
+                        <Dropdown
+                          status={dropdownDrivers}
+                          onCategoryChange={handleChooseDriver}
+                          dropdownClassName="dropdown-custom"
+                          menuClassName="menu-custom"
+                        />
+                      </div>
+                      <p className="set-trip-text-error">
+                        {errorMessages[0]?.driverSelectionError}
+                      </p>
+                    </div>
+                    <div className="travel-order-note">
+                      <h2>Note:</h2>
+                      <h3>A travel order is required for this trip</h3>
+                    </div>
+                    <div className="button-details-container">
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        tertiaryStyle
+                        text="Reject"
+                        onClick={onReject}
+                      />
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        primaryStyle
+                        text="Approve"
+                        onClick={() => onApprove(selectedDriverId)}
                       />
                     </div>
-                    <p className="set-trip-text-error">
-                      {errorMessages[0]?.driverSelectionError}
-                    </p>
-                  </div>
-                  <div className="travel-order-note">
-                  <h2>Note:</h2>
-                  <h3>A travel order is required for this trip</h3>
-                </div>
-                <div className="button-details-container">
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    tertiaryStyle
-                    text="Reject"
-                    onClick={onReject}
-                  />
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    primaryStyle
-                    text="Approve"
-                    onClick={() => onApprove(selectedDriverId)}
-                  />
-                </div>
                   </>
-                  
                 ) : (
                   <>
-                 
                     <div>
-                    <h2>Driver:</h2>
-                    <p>{selectedRequest.driver_full_name}</p>
-                    <>
-                      {selectedRequest.purpose === "Driver Absence" ? null : (
-                        <CommonButton
-                        width={10}
+                      <h2>Driver:</h2>
+                      <p>{selectedRequest.driver_full_name}</p>
+                      <>
+                        {selectedRequest.purpose === "Driver Absence" ? null : (
+                          <CommonButton
+                            width={10}
+                            height={7}
+                            underlinedStyle
+                            text="Change driver"
+                            onClick={onChangeDriver}
+                          />
+                        )}
+                      </>
+                    </div>
+                    <div className="travel-order-note">
+                      <h2>Note:</h2>
+                      <h3>A travel order is required for this trip</h3>
+                    </div>
+                    <div className="button-details-container">
+                      <CommonButton
+                        width={7}
                         height={7}
-                        underlinedStyle
-                        text="Change driver"
-                        onClick={onChangeDriver}
+                        tertiaryStyle
+                        text="Reject"
+                        onClick={onReject}
                       />
-                      )}
-                    </>
-                  </div>
-                  <div className="travel-order-note">
-                  <h2>Note:</h2>
-                  <h3>A travel order is required for this trip</h3>
-                </div>
-                <div className="button-details-container">
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    tertiaryStyle
-                    text="Reject"
-                    onClick={onReject}
-                  />
-                  <CommonButton
-                    width={7}
-                    height={7}
-                    primaryStyle
-                    text="Approve"
-                    onClick={() => onApprove(selectedRequest.driver_id)}
-                  />
-                </div>
+                      <CommonButton
+                        width={7}
+                        height={7}
+                        primaryStyle
+                        text="Approve"
+                        onClick={() => onApprove(selectedRequest.driver_id)}
+                      />
+                    </div>
                   </>
-                  
                 )}
-                
               </>
             )}
           {selectedRequest.status !== "Pending" &&
@@ -504,12 +599,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     <>
                       {selectedRequest.purpose === "Driver Absence" ? null : (
                         <CommonButton
-                        width={10}
-                        height={7}
-                        underlinedStyle
-                        text="Change driver"
-                        onClick={onChangeDriver}
-                      />
+                          width={10}
+                          height={7}
+                          underlinedStyle
+                          text="Change driver"
+                          onClick={onChangeDriver}
+                        />
                       )}
                     </>
                   </div>
@@ -562,16 +657,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       <h2>Driver:</h2>
                       <p>{selectedRequest.driver_full_name}</p>
                       <>
-                      {selectedRequest.purpose === "Driver Absence" ? null : (
-                        <CommonButton
-                        width={10}
-                        height={7}
-                        underlinedStyle
-                        text="Change driver"
-                        onClick={onChangeDriver}
-                      />
-                      )}
-                    </>
+                        {selectedRequest.purpose === "Driver Absence" ? null : (
+                          <CommonButton
+                            width={10}
+                            height={7}
+                            underlinedStyle
+                            text="Change driver"
+                            onClick={onChangeDriver}
+                          />
+                        )}
+                      </>
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -652,40 +747,76 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               </div>
             )}
           {selectedRequest.status === "Driver Absence" && (
-              <div>
-                <CommonButton
-                  width={7}
-                  height={7}
-                  primaryStyle
-                  text="Done"
-                  onClick={onComplete}
-                />
-              </div>
-            )}
-            { selectedRequest.status === "Ongoing Vehicle Maintenance" && (
-              <div>
-                <CommonButton
-                  width={7}
-                  height={7}
-                  primaryStyle
-                  text="Done"
-                  onClick={onComplete}
-                />
-              </div>
-            )}
+            <div>
+              <CommonButton
+                width={7}
+                height={7}
+                primaryStyle
+                text="Done"
+                onClick={onComplete}
+              />
+            </div>
+          )}
+          {selectedRequest.status === "Ongoing Vehicle Maintenance" && (
+            <div>
+              <CommonButton
+                width={7}
+                height={7}
+                primaryStyle
+                text="Done"
+                onClick={onComplete}
+              />
+            </div>
+          )}
         </div>
       </Modal>
       <Modal className="merge-trip-modal" isOpen={isMergeTripOpen}>
         <div className="merge-trip-modal-container">
           <h1>Choose requester to merge with</h1>
-          <div onClick={handleFetchRequester}>
-            <Dropdown
-              status={dropdownRequesters}
-              onCategoryChange={handleChooseRequester}
-              dropdownClassName="dropdown-custom"
-              menuClassName="menu-custom"
+          <div className="trip-category">
+            <p>Requester name: </p>
+            <div onClick={handleFetchRequester}>
+              <Dropdown
+                status={dropdownRequesters}
+                onCategoryChange={handleChooseRequester}
+                dropdownClassName="dropdown-custom"
+                menuClassName="menu-custom"
+              />
+            </div>
+          </div>
+
+          <div className="trip-category">
+            <p>Category: </p>
+            <select
+              value={mergeTripData.type}
+              onChange={(event) => {
+                const selectedValue = event.target.value;
+
+                setMergeTripData((prevData: any) => ({
+                  ...prevData,
+                  type: selectedValue,
+                }));
+              }}
+            >
+              <option>--------- Select Type --------</option>
+              <option value="Round Trip">Round Trip</option>
+              <option value="One-way - Drop">One-way - Drop</option>
+              <option value="One-way - Fetch">One-way - Fetch</option>
+            </select>
+          </div>
+          <div className="trip-category">
+            <p>Destination:</p>
+            <AutoCompleteAddressGoogle
+              travel_date={selectedRequest.travel_date}
+              travel_time={selectedRequest.travel_time}
+              setData={setMergeTripData}
+              isDisabled={isAutocompleteDisabled}
+              setAddressData={setAddressData}
+              category={mergeTripData.type}
+              removeDestinationError={removeDestinationError}
             />
           </div>
+          <div className="passengers-name-row">{generatePassengerInputs()}</div>
           <div className="reason-modal-button-container">
             <CommonButton
               width={7}

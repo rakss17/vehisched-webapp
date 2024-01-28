@@ -139,6 +139,9 @@ export interface RequestFormProps {
   departure_time_from_office?: any;
   arrival_time_to_office?: any;
   driver_id?: any;
+  requester_id?: any;
+  vehicle_capacity?: any;
+  driver_name?: any;
 }
 
 export interface RequestFormDetailsProps {

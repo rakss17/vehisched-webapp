@@ -36,7 +36,6 @@ export default function RequestForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
-  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";

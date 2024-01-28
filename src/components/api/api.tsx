@@ -307,10 +307,13 @@ export async function fetchDriversForAssignmentAPI(setDriversData: any) {
   }
 }
 
-export async function fetchRequestersAPI(setRequestersData: any) {
+export async function fetchRequestersAPI(setRequestersData: any, requester: any) {
   try {
     const token = localStorage.getItem("token");
     const response = await api.get("api/v1/accounts/requesters/", {
+      params: {
+        requester: requester
+      },
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",

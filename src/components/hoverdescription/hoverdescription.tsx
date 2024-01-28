@@ -19,7 +19,7 @@ const HoverDescription: React.FC<HoverDescriptionProps> = ({
         left: `${left}vw`,
         top: `${top}vh`,
         bottom: `${bottom}vh`,
-        width: `${width}vw`,
+        width: `${width}vw` || "auto",
         height: `${height}vh`,
         zIndex: 10,
         display: "flex",
@@ -30,7 +30,7 @@ const HoverDescription: React.FC<HoverDescriptionProps> = ({
       <p
         style={{
           fontSize: "1rem",
-          color: "black",
+          color: "white",
         }}
       >
         {description}

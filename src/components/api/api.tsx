@@ -15,10 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-export const serverSideUrl = "http://192.168.1.11:8000/media/";
+export const serverSideUrl = "http://192.168.111.175:8000/media/";
 
 const api = axios.create({
-  baseURL: "http://192.168.1.11:8000/",
+  baseURL: "http://192.168.111.175:8000/",
 });
 
 export async function SigninAPI(
@@ -718,7 +718,7 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
 export function approveRequestAPI(
   requestId: any,
   selectedDriverId: any,
-  setIsRequestFormOpen: any,
+  onRequestClose: any,
   setIsConfirmationOpen: any
 ) {
   const token = localStorage.getItem("token");
@@ -738,7 +738,7 @@ export function approveRequestAPI(
       }
     )
     .then((response) => {
-      setIsRequestFormOpen(false);
+      onRequestClose()
       setIsConfirmationOpen(true);
 
       setTimeout(() => {

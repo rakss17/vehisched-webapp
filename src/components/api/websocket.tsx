@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-const serverSideUrl = "192.168.1.11:8000";
+const serverSideUrl = "192.168.111.175:8000";
 
 export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   useEffect(() => {

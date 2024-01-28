@@ -9,6 +9,7 @@ import {
   faRoad,
   faSchool,
   faCircleExclamation,
+  faM
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -44,12 +45,12 @@ export default function Requests() {
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [isTravelOrderNoteHovered, setIsTravelOrderNoteHovered] =
     useState(false);
+  const [isMergedWithNoteHovered, setIsMergedWithNoteHovered] = useState(false)
   const [isOnTripHovered, setIsOnTripHovered] = useState(false);
   const [isAwaitingTripHovered, setIsAwaitingTripHovered] = useState(false);
   const [hoverIdentification, setHoverIdentification] = useState("");
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
-  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
     useState(false);
@@ -162,28 +163,7 @@ export default function Requests() {
   const handleCloseRequestForm = () => {
     setIsRequestFormOpen(false);
   };
-  const handleConfirmationApprove = (selectedDriverId: any) => {
-    let validationErrors: { [key: string]: string } = {};
-
-    if (!selectedDriverId) {
-      validationErrors.driverSelectionError = "Please select a driver!";
-    }
-    if (selectedDriverId === null) {
-      validationErrors.driverSelectionError = "Please select a driver!";
-    }
-
-    const errorArray = [validationErrors];
-
-    setErrorMessages(errorArray);
-    if (Object.keys(validationErrors).length === 0) {
-      approveRequestAPI(
-        requestId,
-        selectedDriverId,
-        setIsRequestFormOpen,
-        setIsConfirmationOpen
-      );
-    }
-  };
+  
 
   const handleCompleted = () => {
     maintenanceAbsenceCompletedRequestAPI(
@@ -384,6 +364,33 @@ export default function Requests() {
                         )}
                       </td>
                       <td>
+                        {request.merged_with && (
+                          <div style={{ position: "relative" }}>
+                            <FontAwesomeIcon
+                              keyTimes={request.request_id}
+                              icon={faM}
+                              color="#060e57"
+                              onMouseOver={() => {
+                                setIsMergedWithNoteHovered(true);
+                                setHoverIdentification(request.request_id);
+                              }}
+                              onMouseOut={() => {
+                                setIsMergedWithNoteHovered(false);
+                                setHoverIdentification("");
+                              }}
+                            />
+                            {isMergedWithNoteHovered &&
+                              hoverIdentification === request.request_id && (
+                                <HoverDescription
+                                  description={`This request is merged with Request No. ${request.merged_with}`}
+                                  right={0}
+                                  width={12}
+                                />
+                              )}
+                          </div>
+                        )}
+                      </td>
+                      <td>
                         {request.distance >= 50 && (
                           <div style={{ position: "relative" }}>
                             <FontAwesomeIcon
@@ -425,12 +432,7 @@ export default function Requests() {
         setIsOpen={setIsRequestFormOpen}
         onRequestClose={handleCloseRequestForm}
         selectedRequest={selectedRequestDetails[0]}
-        onApprove={(selectedDriverId) =>
-          handleConfirmationApprove(selectedDriverId)
-        }
         onComplete={handleCompleted}
-        errorMessages={errorMessages}
-        setErrorMessages={setErrorMessages}
         fetchRequestOfficeStaffAPI={fetchRequestOfficeStaffAPI}
         setRequestList={setRequestList}
       />

@@ -403,24 +403,38 @@
   color: black;
   align-items: center;
   flex-direction: column;
-  margin: 30vh 0 0 35vw;
+  margin: 18vh 0 0 25vw;
   background-color: white;
-  width: 40vw;
-  height: 50vh;
+  width: 50vw;
+  height: 75vh;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
-  overflow-x: hidden;
   overflow-y: auto;
+  padding-bottom: 2vw;
 }
 .merge-trip-modal-container {
   display: flex;
   flex-direction: column;
   padding-top: 3vh;
   align-items: center;
-  width: 25vw;
-  height: 30vh;
-  position: relative;
+  width: 45vw;
+  height: 75vh;
   gap: 10%;
+}
+.merge-trip-modal-dropdown-container {
+  flex-direction: row;
+  margin-top: 5vh;
+  padding-left: 0vw;
+  align-items: center;
+  display: flex;
+  height: 5vh;
+  width: 40vw;
+  gap: 1vw;
+  position: relative;
+}
+.merge-trip-modal-container p {
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 .merge-trip-modal-container h1 {
   color: #060e57;
@@ -430,29 +444,66 @@
   position: absolute;
   background-color: #060e57;
   border-radius: 5px;
-  max-width: 13vw;
-  right: 25%;
+  max-width: 20vw;
+  width: 20vw;
+  right: 3.5vw;
+  bottom: -1vh;
 }
-
 .merge-trip-modal-container .menu-custom {
   position: absolute;
   top: 100%;
   left: 0%;
-  width: 13vw;
+  width: 20vw;
   padding: 10px;
   background-color: #d9d9d9;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 4px;
   list-style: none;
   color: black;
   z-index: 20;
 }
-
+.merge-trip-modal-container .dropdown-toggle-custom {
+  margin-left: 5vw;
+}
+.merge-trip-modal-container .autocomplete-address-google-custom{
+  background-color: #d9d9d9;
+  padding-left: 1vw;
+  width: 20vw;
+  margin-left: 8vw;
+}
 .merge-trip-modal-button-container {
   width: 20vw;
   display: flex;
-  margin-top: 10vh;
+  margin-top: 5vh;
   justify-content: space-between;
+}
+
+.merge-trip-modal-field-container {
+  flex-direction: row;
+  margin-top: 5vh;
+  padding-left: 0vw;
+  align-items: center;
+  display: flex;
+  height: 5vh;
+  width: 40vw;
+  gap: 2vw;
+}
+.merge-trip-modal-passenger-container {
+  flex-direction: row;
+  margin-top: 2vh;
+  padding-left: 0vw;
+  align-items: center;
+  display: flex;
+  height: 50vh;
+  width: 40vw;
+  gap: 1vw;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+.merge-trip-modal-field-container select {
+  background-color: #d9d9d9;
+  width: 20vw;
+  margin-left: 9.5vw;
 }
 
 .reason-modal {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import {
   RequestFormDetailsProps,
@@ -76,6 +76,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     passenger_name: [],
     vehicle_capacity: "",
     merged_with: "",
+    purpose: ""
   });
   const [addressData, setAddressData] = useState<any>({
     destination: "",
@@ -103,7 +104,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         return_time: selectedRequest.return_time
       }))
     }
-  }, [mergeTripData.type])
+
+    if(mergeTripData.destination && mergeTripData.distance) {
+      const updatedErrors = [...errorMessages];
+      delete updatedErrors[0]?.destinationError;
+      setErrorMessages(updatedErrors);
+    } 
+  }, [mergeTripData.type, mergeTripData.destination])
 
   const dropdownDrivers = [
     "Select Driver",
@@ -188,18 +195,23 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
     if (selectedRequester) {
       setSelectedRequesterId(selectedRequester.id);
-    }
-    if (requesterName === "Select requester") {
-      setSelectedRequesterId(null);
-    }
-    const updatedErrors = { ...errorMessages };
-    delete updatedErrors[0]?.requesterSelectionError;
+      const updatedErrors = [...errorMessages];
+    delete updatedErrors[0]?.requesterNameError;
     setErrorMessages(updatedErrors);
-
     setMergeTripData({
       ...mergeTripData,
       requester_name: selectedRequester.id,
     });
+    }
+    if (requesterName === "Select Requester") {
+      setSelectedRequesterId("");
+      setMergeTripData({
+        ...mergeTripData,
+        requester_name: "",
+      });
+    }
+
+    
   };
 
   // useEffect(() => {
@@ -267,18 +279,39 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   };
 
   const handleMergeTrip = () => {
-    setLoadingBarProgress(20);
+    let validationErrors: { [key: string]: string } = {};
+
+    if (!mergeTripData.requester_name) {
+      validationErrors.requesterNameError = "Please select requester.";
+    }
+    if (!mergeTripData.type) {
+      validationErrors.travelTypeError = "Please select travel type.";
+    } 
+
+    if (!mergeTripData.destination) {
+      validationErrors.destinationError = "Please input destination.";
+    }
+    if (!mergeTripData.purpose) {
+      validationErrors.purposeError = "Please input purpose.";
+    } 
+    const errorArray = [validationErrors];
+
+    setErrorMessages(errorArray);
     console.log(mergeTripData)
-    postRequestFromAPI(
-      mergeTripData,
-      // () => {
-      //   setIsConfirmationOpen(true);
-      //   setIsModalOpen(true); // Open the modal after the request is successful
-      // },
-      setIsConfirmationOpen,
-      () => {},
-      setLoadingBarProgress
-    );
+    if (Object.keys(validationErrors).length === 0) { 
+      setLoadingBarProgress(20);
+      postRequestFromAPI(
+        mergeTripData,
+        // () => {
+        //   setIsConfirmationOpen(true);
+        //   setIsModalOpen(true); // Open the modal after the request is successful
+        // },
+        setIsConfirmationOpen,
+        () => {},
+        setLoadingBarProgress
+      );      
+    }
+    
   };
 
   const onCancelTrip = () => {
@@ -288,7 +321,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
   const removeDestinationError = () => {
     const updatedErrors = [...errorMessages];
-    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
+    delete updatedErrors[0]?.destinationError;
     setErrorMessages(updatedErrors);
   };
   const handleCancelTrip = () => {
@@ -797,28 +830,46 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <h1>Merge Trip</h1>
           <div className="merge-trip-modal-dropdown-container">
             <p>Requester's name: </p>
-            <div onClick={handleFetchRequester}>
-              <Dropdown
-                status={dropdownRequesters}
-                onCategoryChange={handleChooseRequester}
-                dropdownClassName="dropdown-custom"
-                menuClassName="menu-custom"
-                toggleClassName="dropdown-toggle-custom"
-              />
+            <div className="merge-trip-modal-dropdown-child-container">
+              <div onClick={handleFetchRequester}>
+                <Dropdown
+                  status={dropdownRequesters}
+                  onCategoryChange={handleChooseRequester}
+                  dropdownClassName="dropdown-custom"
+                  menuClassName="menu-custom"
+                  toggleClassName="dropdown-toggle-custom"
+                />
+              </div>
+              <span className="set-trip-text-error-span">
+                {errorMessages[0]?.requesterNameError}
+              </span>
             </div>
+            
           </div>
 
           <div className="merge-trip-modal-field-container">
             <p>Category: </p>
+            <div className="merge-trip-modal-select-field-container">
             <select
               value={mergeTripData.type}
               onChange={(event) => {
                 const selectedValue = event.target.value;
-
-                setMergeTripData((prevData: any) => ({
-                  ...prevData,
-                  type: selectedValue,
-                }));
+                if (selectedValue === "Round Trip" || selectedValue === "One-way - Drop" || 
+                selectedValue === "One-way - Fetch") {
+                  setMergeTripData((prevData: any) => ({
+                    ...prevData,
+                    type: selectedValue,
+                  }));
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.travelTypeError;
+                  setErrorMessages(updatedErrors);
+                }
+                else {
+                  setMergeTripData((prevData: any) => ({
+                    ...prevData,
+                    type: "",
+                  }));
+                }
               }}
             >
               <option>--------- Select Type --------</option>
@@ -826,20 +877,55 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <option value="One-way - Drop">One-way - Drop</option>
               <option value="One-way - Fetch">One-way - Fetch</option>
             </select>
+            <span className="set-trip-text-error">
+                {errorMessages[0]?.travelTypeError}
+              </span>
+            </div>
           </div>
           <div className="merge-trip-modal-field-container">
             <p>Destination:</p>
-            <AutoCompleteAddressGoogle
-              className="autocomplete-address-google-custom"
-              travel_date={selectedRequest.travel_date}
-              travel_time={selectedRequest.travel_time}
-              setData={setMergeTripData}
-              isDisabled={isAutocompleteDisabled}
-              setAddressData={setAddressData}
-              category={mergeTripData.type}
-              removeDestinationError={removeDestinationError}
-            />
+            <div className="merge-trip-modal-destination-field-container">
+              <AutoCompleteAddressGoogle
+                className="autocomplete-address-google-custom"
+                travel_date={selectedRequest.travel_date}
+                travel_time={selectedRequest.travel_time}
+                setData={setMergeTripData}
+                isDisabled={isAutocompleteDisabled}
+                setAddressData={setAddressData}
+                category={mergeTripData.type}
+                removeDestinationError={removeDestinationError}
+              />
+              <span className="set-trip-text-error">
+                {errorMessages[0]?.destinationError}
+              </span>
+            </div>
+            
           </div>
+          <div className="merge-trip-modal-field-container">
+          <p>Purpose:</p>
+          <div className="merge-trip-modal-field-container-purpose-container">
+          <InputField
+              className="merge-trip-modal-field-container-purpose"
+              icon={faClipboard}
+              value={mergeTripData.purpose}
+              label="Purpose"
+              placeholder="Purpose"
+              onChange={(event) => {
+                setMergeTripData({ ...mergeTripData, purpose: event.target.value });
+                if (event.target.value) {
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.purposeError;
+                  setErrorMessages(updatedErrors);
+                }
+              }}
+            />
+
+            <span className="set-trip-text-error">
+              {errorMessages[0]?.purposeError}
+            </span>
+          </div>
+                  
+                </div>
           <div className="merge-trip-modal-field-container">
             <p>Passenger's name</p>
           </div>

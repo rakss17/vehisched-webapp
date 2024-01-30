@@ -15,10 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-export const serverSideUrl = "http://192.168.111.175:8000/media/";
+export const serverSideUrl = "http://192.168.1.19:8000/media/";
 
 const api = axios.create({
-  baseURL: "http://192.168.111.175:8000/",
+  baseURL: "http://192.168.1.19:8000/",
 });
 
 export async function SigninAPI(
@@ -33,7 +33,7 @@ export async function SigninAPI(
     const response = await api.post("api/v1/accounts/token/login", userData);
     const token = response.data.auth_token;
 
-    localStorage.setItem("token", token);
+    
 
     const res = await api.get("api/v1/accounts/me/", {
       headers: {
@@ -45,10 +45,12 @@ export async function SigninAPI(
     dispatch(fetchPersonalInfo(res.data));
     setLoadingBarProgress(70);
     if (res.data.role === "requester" || res.data.role === "vip") {
-      navigate("/DashboardR");
+      alert('Web application for requester is not yet available. Please install the vehisched mobile application to login')
     } else if (res.data.role === "office staff") {
+      localStorage.setItem("token", token);
       navigate("/DashboardOS");
     } else if (res.data.role === "admin") {
+      localStorage.setItem("token", token); 
       navigate("/Admin");
     }
     setLoadingBarProgress(100);
@@ -613,6 +615,7 @@ export function postRequestFromAPI(
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpen(false);
+        window.location.reload()
         navigate("/DashboardR");
       }, 3000);
     })

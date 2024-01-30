@@ -38,8 +38,9 @@ export default function Landing() {
         navigate("/Admin");
       } else if (role === "office staff") {
         navigate("/DashboardOS");
-      } else if (role === "requester" || role === "vip") {
-        navigate("/DashboardR");
+      // } else if (role === "requester" || role === "vip") {
+      //   navigate("/DashboardR");
+      // }
       }
     }
   }, []);

@@ -105,12 +105,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       }))
     }
 
-    if(mergeTripData.destination && mergeTripData.distance) {
-      const updatedErrors = [...errorMessages];
-      delete updatedErrors[0]?.destinationError;
-      setErrorMessages(updatedErrors);
-    } 
-  }, [mergeTripData.type, mergeTripData.destination])
+  }, [mergeTripData.type])
+
+  // useEffect(() => {
+    
+  //   if(mergeTripData.destination && mergeTripData.distance) {
+  //     const updatedErrors = [...errorMessages];
+  //     delete updatedErrors[0]?.destinationError;
+  //     setErrorMessages(updatedErrors);
+  //   } 
+  // }, [mergeTripData.destination, mergeTripData.distance])
 
   const dropdownDrivers = [
     "Select Driver",
@@ -477,7 +481,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </div>
           </div>
           {selectedRequest.status !== "Pending" &&
-            selectedRequest.status !== "Completed" &&
             selectedRequest.status !== "Canceled" &&
             selectedRequest.status !== "Rejected" &&
             selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
@@ -542,7 +545,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             )}
 
           {selectedRequest.status === "Pending" &&
-            selectedRequest.status !== "Completed" &&
             selectedRequest.distance >= 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
@@ -627,7 +629,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.status !== "Rejected" &&
             selectedRequest.status !== "Canceled" &&
             selectedRequest.status !== "Ongoing Vehicle Maintenance" &&
-            selectedRequest.status !== "Completed" &&
             selectedRequest.distance >= 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
@@ -662,6 +663,29 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     </>
                   </div>
                 )}
+
+                <div className="departure-arrival-container">
+                  <div>
+                    <h2>Departure: </h2>
+                    <p>
+                      {departure_date_from_office && departure_time_from_office
+                        ? `${formatDate(
+                            departure_date_from_office
+                          )}, ${formatTime(departure_time_from_office)}`
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <h2>Arrival: </h2>
+                    <p>
+                      {arrival_date_to_office && arrival_time_to_office
+                        ? `${formatDate(arrival_date_to_office)}, ${formatTime(
+                            arrival_time_to_office
+                          )}`
+                        : "N/A"}
+                    </p>
+                  </div>
+                </div>
                 <div className="travel-order-note">
                   <h2>Note:</h2>
                   <h3>A travel order is required for this trip</h3>

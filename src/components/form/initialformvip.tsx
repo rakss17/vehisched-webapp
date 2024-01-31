@@ -18,7 +18,6 @@ const InitialFormVip: React.FC<InitialFormVipProps> = ({
 }) => {
   const [isOneWayClick, setIsOneWayClick] = useState(false);
   const [isFetchSelect, setIsFetchSelect] = useState(false);
-  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [selectedTripButton, setSelectedTripButton] =
@@ -117,7 +116,6 @@ const InitialFormVip: React.FC<InitialFormVipProps> = ({
   };
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {
-      setIsAutocompleteDisabled(false);
       setIsTravelDateSelected(false);
     }
   };
@@ -127,7 +125,6 @@ const InitialFormVip: React.FC<InitialFormVipProps> = ({
     switch (button) {
       case "Round Trip":
         setIsOneWayClick(false);
-        setIsAutocompleteDisabled(true);
         delete updatedErrors[0];
         setErrorMessages(updatedErrors);
         setData({
@@ -144,7 +141,6 @@ const InitialFormVip: React.FC<InitialFormVipProps> = ({
         break;
 
       case "One-way":
-        setIsAutocompleteDisabled(true);
         setIsOneWayClick(true);
         setIsTravelDateSelected(true);
         delete updatedErrors[0];
@@ -307,7 +303,6 @@ const InitialFormVip: React.FC<InitialFormVipProps> = ({
                 travel_date={data.travel_date}
                 travel_time={data.travel_time}
                 setData={setData}
-                isDisabled={isAutocompleteDisabled}
                 setAddressData={setAddressData}
                 category={data.category}
                 removeDestinationError={removeDestinationError}

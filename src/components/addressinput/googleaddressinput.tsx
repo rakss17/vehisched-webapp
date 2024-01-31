@@ -22,7 +22,7 @@ export default function AutoCompleteAddressGoogle({
   isDisabled,
   category,
   removeDestinationError,
-  className
+  className,
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
@@ -59,12 +59,12 @@ export default function AutoCompleteAddressGoogle({
   return (
     <Autocomplete
       className={`autocomplete-address ${className}`}
-      disabled={isDisabled}
+      disabled={!!isDisabled}
       options={{
-        types: ["establishment", "geocode"],
-        componentRestrictions: { country: "PH" },
+        types: ["establishment", "geocode"] as const,
+        componentRestrictions: { country: "PH" } as const,
       }}
-      apiKey={apiKey}
+      apiKey={apiKey || ""}
       onPlaceSelected={(place) => onPlaceSelectedRef.current(place)}
     />
   );

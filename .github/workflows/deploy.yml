@@ -24,13 +24,6 @@ jobs:
 
       - name: Build project
         run: npm run build
-        
-      - name: Debugging
-        run: |
-          echo "Node version: $(node --version)"
-          echo "NPM version: $(npm --version)"
-          npm install
-          npm run build -- --noEmit
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2

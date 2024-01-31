@@ -1,0 +1,57 @@
+.requester-trip-merging-form-modal {
+  background-color: transparent;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.requester-trip-merging-form-container {
+  background-color: #d9d9d9;
+  width: 40vw;
+  height: 50vh;
+  padding-top: 3vh;
+  overflow: auto;
+}
+.requester-trip-merging-form-container h1 {
+  color: #060e57;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.requester-trip-merging-form-input-passenger-number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.requester-trip-merging-form-maximum-capacity-note {
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  color: black;
+  font-weight: bold;
+}
+.requester-trip-merging-form-passengers-name-row {
+  margin-top: 0vh;
+  padding: 0px;
+  margin-left: 1.5vw;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1%;
+}
+.set-trip-text-error {
+  color: red;
+}
+.requester-trip-merging-form-purpose-width {
+  width: 25vw;
+}
+.requester-trip-merging-form-purpose-row {
+  padding-left: 1.5vw;
+  margin-top: 2vh;
+}
+.requester-trip-merging-form-button-container {
+  display: flex;
+  justify-content: space-around;
+}

@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import {
+  faColumns,
+  faClipboardList,
+  faAngleDown,
+  faAngleUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import LoadingBar from "react-top-loading-bar";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
@@ -7,187 +14,159 @@ import Label from "../../../components/label/label";
 import "./request.css";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 import Confirmation from "../../../components/confirmation/confirmation";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
+import PromptDialog from "../../../components/promptdialog/prompdialog";
+import { SidebarItem } from "../../../interfaces/interfaces";
+import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
+import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
+import { ToastContainer, toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { useSpring, animated } from "@react-spring/web";
 
 const sidebarData: SidebarItem[] = [
   { icon: faColumns, text: "Dashboard", path: "/DashboardR" },
-  { icon: faClipboardList, text: "Request", path: "/Request" },
-];
-const fetchedPendingData = [
   {
-    request_number: "02",
-    travel_date: "August 17, 2023",
-    vehicle: "Ford Ranger",
-    status: "Pending",
-  },
-  {
-    request_number: "03",
-    travel_date: "August 18, 2023",
-    vehicle: "Nissan Navara",
-    status: "Pending",
-  },
-  {
-    request_number: "04",
-    travel_date: "August 19, 2023",
-    vehicle: "Chevrolet Colorado",
-    status: "Pending",
-  },
-  {
-    request_number: "05",
-    travel_date: "August 20, 2023",
-    vehicle: "Honda Ridgeline",
-    status: "Pending",
-  },
-  {
-    request_number: "06",
-    travel_date: "August 21, 2023",
-    vehicle: "Mitsubishi Triton",
-    status: "Pending",
-  },
-  {
-    request_number: "07",
-    travel_date: "August 22, 2023",
-    vehicle: "Isuzu D-Max",
-    status: "Pending",
-  },
-  {
-    request_number: "08",
-    travel_date: "August 23, 2023",
-    vehicle: "Volkswagen Amarok",
-    status: "Pending",
-  },
-  {
-    request_number: "09",
-    travel_date: "August 24, 2023",
-    vehicle: "Mazda BT-50",
-    status: "Pending",
-  },
-  {
-    request_number: "10",
-    travel_date: "August 25, 2023",
-    vehicle: "GMC Canyon",
-    status: "Pending",
-  },
-  {
-    request_number: "11",
-    travel_date: "August 26, 2023",
-    vehicle: "RAM 1500",
-    status: "Pending",
-  },
-];
-
-const fetchedApprovedData = [
-  {
-    request_number: "10",
-    travel_date: "April 16, 2024",
-    vehicle: "Toyota hilux",
-    status: "Approved",
-  },
-  {
-    request_number: "02",
-    travel_date: "August 17, 2023",
-    vehicle: "Ford Ranger",
-    status: "Approved",
-  },
-  {
-    request_number: "03",
-    travel_date: "August 18, 2023",
-    vehicle: "Nissan Navara",
-    status: "Approved",
-  },
-  {
-    request_number: "04",
-    travel_date: "August 19, 2023",
-    vehicle: "Chevrolet Colorado",
-    status: "Approved",
-  },
-];
-const fetchedCanceledData = [
-  {
-    request_number: "10",
-    travel_date: "April 16, 2024",
-    vehicle: "Toyota hilux",
-    status: "Canceled",
-  },
-];
-const fetchedDeclinedData = [
-  {
-    request_number: "10",
-    travel_date: "April 16, 2024",
-    vehicle: "Toyota hilux",
-    status: "Declined",
-  },
-  {
-    request_number: "10",
-    travel_date: "August 25, 2023",
-    vehicle: "GMC Canyon",
-    status: "Declined",
-  },
-  {
-    request_number: "11",
-    travel_date: "August 26, 2023",
-    vehicle: "RAM 1500",
-    status: "Declined",
+    icon: faClipboardList,
+    text: "Request",
+    path: "/Request",
   },
 ];
 
 export default function Request() {
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [requestData, setRequestData] = useState<any[]>([]);
+  const [requestFilteredData, setRequestFilteredData] = useState<any[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string>("Pending");
+  const [selectedRequest, setSelectedRequest] = useState<any>();
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [selectedRequestIndex, setSelectedRequestIndex] = useState(null);
+  const [expandedRequestIndex, setExpandedRequestIndex] = useState(null);
+  const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
+  const requestId = selectedRequest?.request_id ?? "";
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const userName = personalInfo?.username;
+  const springProps = useSpring({
+    height: expandedRequestIndex ? "auto" : "0vh",
+  });
+
+  useEffect(() => {
+    fetchRequestAPI(setRequestFilteredData);
+  }, []);
+
+  NotificationApprovalScheduleReminderWebsocket(userName);
 
   const handleButtonClick = (status: string) => {
+    let filteredData = [];
+
     switch (status) {
       case "Pending":
-        setRequestData(fetchedPendingData);
+        filteredData = requestFilteredData.filter(
+          (request) =>
+            request.status === "Pending" ||
+            request.status === "Awaiting Vehicle Alteration"
+        );
         break;
       case "Approved":
-        setRequestData(fetchedApprovedData);
+        filteredData = requestFilteredData.filter(
+          (request) =>
+            request.status === "Approved" ||
+            request.status === "Approved - Alterate Vehicle"
+        );
+        break;
+      case "Completed":
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Completed"
+        );
         break;
       case "Canceled":
-        setRequestData(fetchedCanceledData);
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Canceled"
+        );
         break;
-      case "Declined":
-        setRequestData(fetchedDeclinedData);
+      case "Rejected":
+        filteredData = requestFilteredData.filter(
+          (request) => request.status === "Rejected"
+        );
         break;
       default:
-        setRequestData([]);
         break;
     }
+    setRequestData(filteredData);
     setSelectedStatus(status);
   };
   useEffect(() => {
     handleButtonClick("Pending");
   }, []);
 
-  const onHandleEllipsis = (requestNumber: string) => {
-    setIsConfirmationOpen(true);
-    const updatedRequestData = requestData.map((request) =>
-      request.request_number === requestNumber
-        ? { ...request, status: "Canceled" }
-        : request
+  let filteredStatus: any[] = [];
+  useEffect(() => {
+    filteredStatus = requestFilteredData.filter(
+      (request) =>
+        request.status === "Pending" ||
+        request.status === "Awaiting Vehicle Alteration"
     );
+    setRequestData(filteredStatus);
+  }, [requestFilteredData]);
 
-    setRequestData(updatedRequestData);
+  const onHandleEllipsis = (category: any, request: any) => {
+    if (category === "Cancel Request") {
+      setIsCancelOpen(true);
+      setSelectedRequest(request);
+    }
+  };
+
+  const handleCancelButton = () => {
+    setLoadingBarProgress(20);
+    setIsCancelOpen(false);
+    cancelRequestAPI(
+      requestId,
+      setIsConfirmationOpen,
+      setLoadingBarProgress,
+      () => {},
+      () => {},
+      () => {}
+    );
+  };
+
+  const handleClose = () => {
+    setIsCancelOpen(false);
     setTimeout(() => {
       setIsConfirmationOpen(false);
     }, 3000);
   };
 
-  const filteredData = requestData.filter(
-    (request) => request.status === selectedStatus
-  );
+  const onHandleAngleDown = (index: any, request: any) => {
+    setExpandedRequestIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
+    setSelectedRequestIndex((prevIndex) =>
+      prevIndex === index ? null : index
+    );
+    if (request.distance >= 50) {
+      setIsFifthyKilometers(true);
+    } else if (request.distance < 50) {
+      setIsFifthyKilometers(false);
+    }
+  };
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="label-margin">
           <Label label="Request" />
         </div>
@@ -206,16 +185,22 @@ export default function Request() {
               Approved
             </button>
             <button
+              onClick={() => handleButtonClick("Completed")}
+              className={selectedStatus === "Completed" ? "active" : ""}
+            >
+              Completed
+            </button>
+            <button
               onClick={() => handleButtonClick("Canceled")}
               className={selectedStatus === "Canceled" ? "active" : ""}
             >
               Canceled
             </button>
             <button
-              onClick={() => handleButtonClick("Declined")}
-              className={selectedStatus === "Declined" ? "active" : ""}
+              onClick={() => handleButtonClick("Rejected")}
+              className={selectedStatus === "Rejected" ? "active" : ""}
             >
-              Declined
+              Rejected
             </button>
           </div>
           <div className="requests-container">
@@ -227,32 +212,175 @@ export default function Request() {
             >
               <thead>
                 <tr>
-                  <th style={{ fontWeight: "normal" }}>Request No.</th>
-                  <th style={{ fontWeight: "normal" }}>Travel Date</th>
-                  <th style={{ fontWeight: "normal" }}>Vehicle</th>
+                  <th></th>
+                  <th>Request No.</th>
+                  <th></th>
+                  <th>Travel Date</th>
+                  <th></th>
+                  <th>Vehicle</th>
+                  <th></th>
                 </tr>
               </thead>
-              {filteredData.length === 0 ? (
-                <p>No request available.</p>
+              {requestData.length === 0 ? (
+                <p style={{ position: "absolute" }}>No request available.</p>
               ) : (
                 <tbody>
-                  {filteredData.map((request, index) => (
-                    <tr key={index}>
-                      <td>{request.request_number}</td>
-                      <td>{request.travel_date}</td>
-                      <td>{request.vehicle}</td>
-                      <td className="ellipsis-cell">
-                        {selectedStatus === "Pending" ||
-                        selectedStatus === "Approved" ? (
-                          <Ellipsis
-                            onCategoryChange={() =>
-                              onHandleEllipsis(request.request_number)
-                            }
-                            status={["Cancel Request"]}
-                          />
-                        ) : null}
-                      </td>
-                    </tr>
+                  {requestData.map((request, index) => (
+                    <>
+                      <tr
+                        key={request.request_id}
+                        className={
+                          selectedRequestIndex === request.request_id
+                            ? "selected-request"
+                            : ""
+                        }
+                      >
+                        <td className="angle-down">
+                          {expandedRequestIndex === request.request_id ? (
+                            <FontAwesomeIcon
+                              icon={faAngleUp}
+                              style={{ fontSize: "24px" }}
+                              onClick={() =>
+                                onHandleAngleDown(request.request_id, request)
+                              }
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faAngleDown}
+                              style={{ fontSize: "24px" }}
+                              onClick={() =>
+                                onHandleAngleDown(request.request_id, request)
+                              }
+                            />
+                          )}
+                        </td>
+
+                        <td>{request.request_id}</td>
+                        <td></td>
+                        <td>{request.travel_date}</td>
+                        <td></td>
+                        <td>{request.vehicle}</td>
+                        {request.vehicle_driver_status === "On Trip" ? (
+                          <p className="ontrip-text">On Trip</p>
+                        ) : (
+                          <td></td>
+                        )}
+                        <td className="ellipsis-cell">
+                          {selectedStatus === "Pending" ||
+                          selectedStatus === "Approved" ? (
+                            <Ellipsis
+                              onCategoryChange={(category) =>
+                                onHandleEllipsis(category, request)
+                              }
+                              status={["Cancel Request"]}
+                            />
+                          ) : null}
+                        </td>
+                      </tr>
+                      {selectedRequestIndex === request.request_id && (
+                        <animated.div
+                          style={springProps}
+                          className={`request-more-info ${
+                            selectedRequestIndex === request.request_id
+                              ? "show"
+                              : ""
+                          }`}
+                        >
+                          {/* first child */}
+                          <div className="request-more-info-first-child">
+                            <div>
+                              <strong>Destination:</strong>
+                              <p>{request.destination}</p>
+                            </div>
+                            <div>
+                              <strong>Distance: </strong>
+                              <p>{request.distance} km</p>
+                            </div>
+                          </div>
+                          {/* second child */}
+                          <div className="request-more-info-second-child">
+                            <div>
+                              <strong>Date of Travel: </strong>
+                              <p>
+                                {request.travel_date},{" "}
+                                {formatTime(request.travel_time)}{" "}
+                                <strong>to: </strong>
+                                {request.return_date},{" "}
+                                {formatTime(request.return_time)}
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Travel type: </strong>
+                              <p>{request.type}</p>
+                            </div>
+                          </div>
+                          {/* third child */}
+                          <div className="request-more-info-third-child">
+                            <div className="request-more-info-third-child-passengers">
+                              <strong
+                                style={{
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Passengers:{" "}
+                              </strong>
+                              <p
+                                style={{
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {request.passenger_name}
+                              </p>
+                            </div>
+                            <div className="request-more-info-third-child-driver">
+                              <div>
+                                <strong>Driver: </strong>
+                                <p>{request.driver_full_name}</p>
+                              </div>
+                              <div>
+                                <strong>Contact No.: </strong>
+                                <p>{request.driver_mobile_number}</p>
+                              </div>
+                            </div>
+                          </div>
+                          {/* fourth child */}
+                          <div className="request-more-info-fourth-child">
+                            <div className="request-more-info-fourth-child-purpose">
+                              <strong
+                                style={{
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                Purpose:{" "}
+                              </strong>
+                              <p
+                                style={{
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {request.purpose}
+                              </p>
+                            </div>
+                            <div>
+                              <strong>Status: </strong>
+                              <p>{request.status}</p>
+                            </div>
+                          </div>
+                          {isFifthyKilometers && (
+                            <div className="request-more-info-fifth-child">
+                              <p>
+                                <strong>Note:</strong> Requesters traveling to
+                                destinations exceed 50 kilometers are required
+                                to provide a travel order for the vehicle's fuel
+                                and
+                                <br></br>
+                                the driver's per diem.
+                              </p>
+                            </div>
+                          )}
+                        </animated.div>
+                      )}
+                    </>
                   ))}
                 </tbody>
               )}
@@ -260,6 +388,14 @@ export default function Request() {
           </div>
         </div>
       </Container>
+      <PromptDialog
+        isOpen={isCancelOpen}
+        content="Are you sure you want to cancel your request?"
+        buttonText1="Yes"
+        buttonText2="No"
+        onRequestClose={handleClose}
+        onProceed={handleCancelButton}
+      />
       <Confirmation isOpen={isConfirmationOpen} header="Request Canceled!" />
     </>
   );

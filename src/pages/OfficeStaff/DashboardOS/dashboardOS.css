@@ -13,14 +13,32 @@
   background-color: #fbfbfb;
 }
 .dashboard-container {
-  margin-top: 1rem;
-  margin-left: 6rem;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fbfbfb;
+  overflow-y: auto;
+  padding: 5%
+}
+.calendar-column-container {
+  background-color: transparent;
+  padding-left: 7vw;
+  flex-wrap: wrap;
   display: flex;
   flex-direction: row;
-  gap: 15%;
-  width: 90vw;
-  height: 60vh;
-  background-color: #fbfbfb;
+  gap: 10%;
+  
+}
+.calendar-column-container p{
+  color: black;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 3vh 
+}
+.calendar-column-container div {
+
 }
 .label {
   color: #060e57;
@@ -38,6 +56,9 @@
   width: 30vw;
   height: 50vh;
   background-color: #d9d9d9;
+}
+.today-trip:hover {
+  cursor: pointer;
 }
 .today-trip p {
   color: #060e57;

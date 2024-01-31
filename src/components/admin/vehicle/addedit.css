@@ -4,76 +4,90 @@
   box-sizing: border-box;
 }
 
-.modal-add-edit {
+.modal-add-edit2 {
   background-color: #d9d9d9;
-  margin-top: 25vh;
-  margin-left: 35vw;
-  width: 30vw;
-  height: 58vh;
+  margin-top: 20vh;
+  margin-left: 28vw;
+  width: 45vw;
+  height: 45vh;
   border-radius: 10px;
   flex-direction: column;
   display: flex;
   align-items: center;
 }
-.modal-add-edit h1 {
+.modal-add-edit2 h1 {
   color: #060e57;
   font-size: 1.5rem;
   margin-top: 2vw;
 }
-.modal-add-edit div {
-  display: flex;
-  flex-direction: column;
+.content2 {
   margin-top: 1vw;
-  width: 25vw;
-  height: 35vh;
 }
-.modal-add-edit div div {
+.addvehicle-left-right{
   display: flex;
   flex-direction: row;
+  padding: 1px;
+}
+.addvehicle-left{
+
+  margin-left: 1vw;
   gap: 10%;
 }
-.modal-add-edit div div:nth-child(5) {
+.addvehicle-right{
+
+  margin-right: 1vw;
+  margin-left: 1vw;
+  gap: 10%;
+}
+.row2{
+  margin-top: 3vh;
   display: flex;
   flex-direction: row;
-  gap: 0%;
-  align-items: center;
 }
-.modal-add-edit div div:last-child {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5vw;
-}
-.modal-add-edit label {
+.modal-add-edit2 label {
   color: black;
   font-size: 1.2rem;
-  white-space: nowrap;
+  margin-right: 1vw;
 }
-.modal-add-edit input {
+.modal-add-edit2 input {
   background-color: white;
   border: none;
   color: black;
-  width: 25vw;
-  height: 5vh;
-  padding: 10px;
+  width: 12vw;
+  height: 100%;
+  padding: 3%;
   border-radius: 10px;
   font-size: 1rem;
+  margin-left: auto;
+}
+.vip{
+  justify-content: center;
 }
 
-.modal-add-edit button {
+.modal-add-edit2 button {
   width: 10vw;
   height: 5vh;
   text-align: center;
+  margin-top: 4vh;
+  margin-left: 8vw;
 }
-.modal-add-edit button:nth-child(1) {
+.modal-add-edit2 button:nth-child(1) {
   background-color: transparent;
   color: black;
   border: 2px solid #060e57;
 }
-.modal-add-edit button:nth-child(2) {
+.modal-add-edit2 button:nth-child(2) {
   background-color: #060e57;
 }
-.modal-add-edit input[type="checkbox"] {
+.modal-add-edit2 input[type="checkbox"] {
   height: 3vh;
   color: white;
   width: 8vw;
+}
+.v-error-messages {
+  text-align: center;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  align-self: center;
 }

@@ -21,10 +21,8 @@
   margin-top: 2vw;
   margin-left: 0vh;
   display: flex;
-
   flex-direction: row;
-  justify-content: center;
-  gap: 30%;
+  justify-content: space-around;
 }
 
 .margin-top {
@@ -33,7 +31,6 @@
 .request-container table {
   width: 80vw;
   overflow: auto;
-  table-layout: fixed;
 }
 .request-container table thead {
   font-size: 1.5rem;
@@ -47,12 +44,107 @@
   color: black;
   text-align: center;
   cursor: pointer;
+  border-radius: 10px;
+  /* position: relative; */
 }
-.request-container table tbody tr:hover {
-  background-color: #060e57;
-  color: white;
+.request-container table tbody tr .ontrip-yes {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1vw;
 }
+.request-container table tbody tr .fa-road {
+  position: absolute;
+  font-size: 2rem;
+}
+.request-container table tbody tr .fa-car {
+  position: absolute;
+  font-size: 1.5rem;
+  color: #060e57;
+}
+.request-container table tbody tr .ontrip-no {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1vw;
+}
+.request-container table tbody tr .fa-school {
+  position: absolute;
+  font-size: 1.6rem;
+}
+.request-container table tbody tr .fa-car-pending {
+  font-size: 1.3rem;
+  color: #060e57;
+  top: 0.2vh;
+  right: 0.2vw;
+}
+.request-container table tbody tr .ontrip-completed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #060e57;
+}
+/* .request-container table tbody tr .ontrip-yes {
+  font-size: 1.5rem;
+  color: green;
+}
+.request-container table tbody tr .ontrip-no {
+  font-size: 1.5rem;
+  color: red;
+} */
 
+.request-container table tbody tr:hover {
+  background-color: white;
+}
+.status-legend {
+  width: 30vw;
+  height: 6vh;
+  display: flex;
+  align-items: center;
+  padding-left: 1vw;
+  gap: 1vw;
+}
+.status-legend p {
+  color: black;
+}
+.status-legend .ontrip-yess-container {
+  width: 6vw;
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+}
+.status-legend .ontrip-yess {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: green;
+}
+.status-legend .ontrip-noo-container {
+  width: 8vw;
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+}
+.status-legend .ontrip-noo {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+}
+.status-legend .ontrip-gray-container {
+  width: 10vw;
+  display: flex;
+  align-items: center;
+  gap: 0.7vw;
+}
+.status-legend .ontrip-gray {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: gray;
+}
 @media screen and (max-width: 768px) {
   .request-container {
     display: flex;

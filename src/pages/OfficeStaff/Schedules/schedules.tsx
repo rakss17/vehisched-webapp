@@ -5,6 +5,7 @@ import {
   faCar,
   faCalendarAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import "./schedules.css";
 import Header from "../../../components/header/header";
@@ -12,202 +13,110 @@ import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
-
-interface TableData {
-  label: string;
-  content: { [key: string]: string }[];
-  columns: string[];
-}
-
-const fetchedTodayData = [
-  {
-    request_number: "1",
-    requester_name: "Bohari S. Ambulo",
-    time: "10:00 am",
-  },
-  {
-    request_number: "2",
-    requester_name: "Jane Doe",
-    time: "11:30 am",
-  },
-  {
-    request_number: "3",
-    requester_name: "John Smith",
-    time: "2:15 pm",
-  },
-  {
-    request_number: "4",
-    requester_name: "Alice Johnson",
-    time: "3:45 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-  },
-];
-
-const fetchedUpcomingData = [
-  {
-    request_number: "1",
-    requester_name: "Bohari S. Ambulo",
-    time: "10:00 am",
-    date: "2023-07-30",
-  },
-  {
-    request_number: "2",
-    requester_name: "Jane Doe",
-    time: "11:30 am",
-    date: "2023-07-30",
-  },
-  {
-    request_number: "3",
-    requester_name: "John Smith",
-    time: "2:15 pm",
-    date: "2023-07-30",
-  },
-  {
-    request_number: "4",
-    requester_name: "Alice Johnson",
-    time: "3:45 pm",
-    date: "2023-07-31",
-  },
-  {
-    request_number: "5",
-    requester_name: "Michael Lee",
-    time: "4:30 pm",
-    date: "2023-07-31",
-  },
-  {
-    request_number: "6",
-    requester_name: "Sarah Williams",
-    time: "5:00 pm",
-    date: "2023-07-31",
-  },
-  {
-    request_number: "7",
-    requester_name: "David Clark",
-    time: "6:15 pm",
-    date: "2023-08-01",
-  },
-  {
-    request_number: "8",
-    requester_name: "Emily Adams",
-    time: "9:30 am",
-    date: "2023-08-01",
-  },
-  {
-    request_number: "9",
-    requester_name: "Robert Turner",
-    time: "1:00 pm",
-    date: "2023-08-02",
-  },
-  {
-    request_number: "10",
-    requester_name: "Sophia Martinez",
-    time: "7:45 pm",
-    date: "2023-08-02",
-  },
-];
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { SidebarItem } from "../../../interfaces/interfaces";
+import {
+  fetchNotification,
+  fetchScheduleOfficeStaff,
+} from "../../../components/api/api";
 
 export default function Schedules() {
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const [selectedSched, setSelectedSched] = useState<string>("Today");
   const [searchTerm, setSearchTerm] = useState("");
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
+  ];
+
+  NotificationCreatedCancelWebsocket(()=>{}, () => {}, fetchNotification, setNotifList);
+
+  useEffect(() => {
+    fetchScheduleOfficeStaff(setSchedulesData);
+  }, []);
+
+  useEffect(() => {
+    if (schedulesData.length > 0) {
+      handleButtonClick("Today");
+    }
+  }, [schedulesData]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
 
   const handleButtonClick = (sched: string) => {
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    let filteredData;
     switch (sched) {
       case "Today":
-        setSchedulesData(fetchedTodayData);
+        filteredData = schedulesData.filter(
+          (schedule) => schedule.travel_date === currentDate
+        );
         break;
       case "Upcoming":
-        setSchedulesData(fetchedUpcomingData);
+        filteredData = schedulesData.filter(
+          (schedule) => schedule.travel_date > currentDate
+        );
         break;
 
       default:
-        setSchedulesData([]);
+        filteredData = [];
         break;
     }
+    setFilteredData(filteredData);
     setSelectedSched(sched);
   };
-  useEffect(() => {
-    handleButtonClick("Today");
-  }, []);
-  const filteredSchedulesData = schedulesData.filter((schedule) => {
+
+  const filteredSchedulesData = filteredData.filter((schedule) => {
     const isSearchMatch =
       searchTerm === "" ||
-      schedule.request_number
+      schedule.request_id
+        .toString()
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       schedule.requester_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      schedule.time.toLowerCase().includes(searchTerm.toLowerCase());
+      schedule.travel_time.toLowerCase().includes(searchTerm.toLowerCase());
 
     if (selectedSched === "Today") {
       return isSearchMatch;
     } else if (selectedSched === "Upcoming") {
       return (
         isSearchMatch ||
-        schedule.date.toLowerCase().includes(searchTerm.toLowerCase())
+        schedule.travel_date.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     return false;
   });
+
+  const formatTime = (timeString: any) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
 
   return (
     <>
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="schedules-margin-top">
           <Label label="Schedules" />
         </div>
@@ -253,10 +162,12 @@ export default function Schedules() {
                 <tbody>
                   {filteredSchedulesData.map((schedule, index) => (
                     <tr key={index}>
-                      <td>{schedule.request_number}</td>
+                      <td>{schedule.request_id}</td>
                       <td>{schedule.requester_name}</td>
-                      <td>{schedule.time}</td>
-                      {selectedSched === "Upcoming" && <td>{schedule.date}</td>}
+                      <td>{formatTime(schedule.travel_time)}</td>
+                      {selectedSched === "Upcoming" && (
+                        <td>{schedule.travel_date}</td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

@@ -4,32 +4,44 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./calendarinput.css";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CalendarInputProps } from "../../interfaces/interfaces";
 
-interface CalendarInputProps {
-  className?: string; // className prop for customization
-}
+const CalendarInput: React.FC<CalendarInputProps> = ({
+  containerClassName,
+  calendarClassName,
+  iconClassName,
+  onChange,
+  disableDaysBefore = 0,
+  selectedDate,
+}) => {
+  const [date, setDate] = useState<Date | null>(null);
 
-const CalendarInput: React.FC<CalendarInputProps> = ({ className }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   useEffect(() => {
-    setSelectedDate(new Date());
-  }, []);
+    setDate(selectedDate || new Date());
+  }, [selectedDate]);
 
   const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
+    setDate(date);
+    onChange(date);
   };
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + disableDaysBefore);
 
   return (
     <>
-      <div className={`calendar-container ${className}`}>
+      <div className={`calendar-container ${containerClassName}`}>
         <DatePicker
-          className={`calendar-input ${className}`}
-          selected={selectedDate}
+          key={date?.toString()}
+          className={`calendar-input ${calendarClassName}`}
+          selected={date}
           onChange={handleDateChange}
+          minDate={minDate}
         />
+
         <div className="calendar-icon-container">
           <FontAwesomeIcon
-            className={`calendar-input-icon ${className}`}
+            className={`calendar-input-icon ${iconClassName}`}
             icon={faCalendarAlt}
           />
         </div>

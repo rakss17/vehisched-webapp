@@ -2,58 +2,94 @@ import React, { useState } from "react";
 import TimePicker from "react-time-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import {
-  format,
-  setHours,
-  setMinutes,
-  getHours,
-  addHours,
-  subHours,
-} from "date-fns";
+import { format, setHours, setMinutes, getHours, getMinutes } from "date-fns";
 import "./timeinput.css";
+import { TimeInputProps } from "../../interfaces/interfaces";
 
-const TimeInput: React.FC = () => {
-  const [selectedTime, setSelectedTime] = useState<Date | null>(new Date());
+const TimeInput: React.FC<TimeInputProps> = ({
+  onChange,
+  selectedDate,
+  handleDateChange,
+}) => {
+  const [selectedTime, setSelectedTime] = useState<any>(new Date());
 
   const handleTimeChange = (time: string | null) => {
-    setSelectedTime(
-      time ? new Date(new Date().toDateString() + " " + time) : null
-    );
+    if (time) {
+      const [hours, minutes] = time.split(":");
+      const selectedTimee = new Date(selectedTime);
+      selectedTimee.setHours(parseInt(hours));
+      selectedTimee.setMinutes(parseInt(minutes));
+      setSelectedTime(selectedTimee);
+      onChange(format(selectedTimee, "HH:mm"));
+    } else {
+      console.log("No time selected.");
+    }
   };
-
-  const handleTimeIncrement = () => {
+  const handleHourIncrement = () => {
     if (selectedTime) {
-      setSelectedTime(addHours(selectedTime, 1));
+      const incrementedTime = new Date(selectedTime);
+      incrementedTime.setHours(incrementedTime.getHours() + 1);
+      setSelectedTime(incrementedTime);
+      onChange(format(incrementedTime, "HH:mm"));
+
+      if (incrementedTime.getHours() === 0) {
+        if (selectedDate) {
+          const currentDate = new Date(selectedDate);
+
+          currentDate.setDate(currentDate.getDate() + 1);
+
+          if (handleDateChange) {
+            handleDateChange(currentDate);
+          }
+        }
+      }
     }
   };
 
-  const handleTimeDecrement = () => {
+  const handleHourDecrement = () => {
     if (selectedTime) {
-      setSelectedTime(subHours(selectedTime, 1));
+      const decrementedTime = new Date(selectedTime);
+      decrementedTime.setHours(decrementedTime.getHours() - 1);
+      setSelectedTime(decrementedTime);
+      onChange(format(decrementedTime, "HH:mm"));
+
+      if (decrementedTime.getHours() === 23) {
+        if (selectedDate) {
+          const currentDate = new Date(selectedDate);
+
+          currentDate.setDate(currentDate.getDate() - 1);
+
+          if (handleDateChange) {
+            handleDateChange(currentDate);
+          }
+        }
+      }
     }
   };
 
   const handleAmPmIncrement = () => {
     if (selectedTime) {
       const currentHour = getHours(selectedTime);
-      setSelectedTime(
-        setHours(
-          selectedTime,
-          currentHour >= 12 ? currentHour - 12 : currentHour + 12
-        )
+      const newTime = setHours(
+        selectedTime,
+        currentHour >= 12 ? currentHour - 12 : currentHour + 12
       );
+
+      setSelectedTime(newTime);
+      onChange(format(newTime, "HH:mm"));
     }
   };
 
   const handleAmPmDecrement = () => {
     if (selectedTime) {
       const currentHour = getHours(selectedTime);
-      setSelectedTime(
-        setHours(
-          selectedTime,
-          currentHour >= 12 ? currentHour - 12 : currentHour + 12
-        )
+      const newTime = setHours(
+        selectedTime,
+        currentHour >= 12 ? currentHour - 12 : currentHour + 12
       );
+
+      setSelectedTime(newTime);
+      onChange(format(newTime, "HH:mm"));
     }
   };
 
@@ -76,11 +112,11 @@ const TimeInput: React.FC = () => {
         />
       </div>
       <div className="arrow-buttons">
-        <button onClick={handleTimeIncrement}>
+        <button onClick={handleHourIncrement}>
           <FontAwesomeIcon icon={faAngleUp} />
         </button>
 
-        <button onClick={handleTimeDecrement}>
+        <button onClick={handleHourDecrement}>
           <FontAwesomeIcon icon={faAngleDown} />
         </button>
       </div>

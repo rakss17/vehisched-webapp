@@ -4,11 +4,8 @@ import {
   GeoapifyContext,
 } from "@geoapify/react-geocoder-autocomplete";
 import "./addressinput.css";
-const AddressInput: React.FC = () => {
-  function onPlaceSelect(value: any) {
-    console.log(value);
-  }
-
+import { AddressInputProps } from "../../interfaces/interfaces";
+const AddressInput: React.FC<AddressInputProps> = ({ onPlaceSelect }) => {
   function onSuggestionChange(value: string) {
     console.log(value);
   }

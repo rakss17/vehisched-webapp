@@ -7,8 +7,10 @@
   background-color: #fbfbfb;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 300px) {
   .main-container {
     height: 100%;
+    background-color: #fbfbfb;
+    width: 100%;
   }
 }

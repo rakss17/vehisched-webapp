@@ -1,0 +1,88 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.vehicle-maintenance-modal {
+  margin-top: 23vh;
+  margin-left: 35vw;
+  background-color: #d9d9d9;
+  width: 35vw;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2%;
+}
+.vehicle-maintenance-container {
+  width: 35vw;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1vh;
+}
+.vehicle-maintenance-brief-info {
+  text-align: center;
+  width: 25vw;
+}
+.vehicle-maintenance-brief-info .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
+.vehicle-maintenance-brief-info strong {
+  color: #060e57;
+  font-size: 1.2rem;
+  text-align: center;
+}
+.maintenance-from {
+  width: 20vw;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.maintenance-from p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.maintenance-from .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
+.maintenance-to {
+  margin-top: 1vh;
+  width: 20vw;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.maintenance-to .set-trip-text-error {
+  color: red;
+  font-size: 1rem;
+  margin-left: 0vw;
+  text-align: center;
+}
+.maintenance-to p {
+  color: #060e57;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.maintenance-button {
+  margin-top: 1vh;
+  display: flex;
+  width: 20vw;
+  height: auto;
+  flex-direction: row;
+  justify-content: space-between;
+}

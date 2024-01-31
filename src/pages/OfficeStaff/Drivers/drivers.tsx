@@ -5,6 +5,7 @@ import {
   faCar,
   faCalendarAlt,
   faUser,
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
@@ -13,143 +14,125 @@ import "./drivers.css";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
+import { SidebarItem, SignupParams } from "../../../interfaces/interfaces";
+import {
+  fetchDriversAPI,
+  fetchNotification,
+  fetchDriverSchedules,
+} from "../../../components/api/api";
+import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import CalendarModal from "../../../components/calendar/calendarmodal";
+import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
+import DriverAbsence from "../../../components/maintenance/driver";
+import Confirmation from "../../../components/confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
-
-const sidebarData: SidebarItem[] = [
-  { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
-  { icon: faClipboardList, text: "Requests", path: "/Requests" },
-  { icon: faCar, text: "Vehicles", path: "/Vehicles" },
-  { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
-  { icon: faUser, text: "Drivers", path: "/Drivers" },
-];
-
-interface Driver {
-  id: number;
-  driver_name: string;
-  status: string;
-}
-const fetchedDrivers: Driver[] = [
-  {
-    id: 1,
-    driver_name: "Ambulo, Bohari S.",
-    status: "On Trip",
-  },
-  {
-    id: 2,
-    driver_name: "Araquil, Tristan C.",
-    status: "Available",
-  },
-  {
-    id: 3,
-    driver_name: "Lorejo, Mark Dave M.",
-    status: "Unavailable",
-  },
-  {
-    id: 4,
-    driver_name: "Romeo, Michael Ray V.",
-    status: "On Trip",
-  },
-  {
-    id: 5,
-    driver_name: "Ibahay, Mike Emmanuel ",
-    status: "Unavailable",
-  },
-  {
-    id: 6,
-    driver_name: "Gabut, Anton Joseph C. ",
-    status: "Available",
-  },
-  {
-    id: 7,
-    driver_name: "Abragan, Juren Roy R. ",
-    status: "On Trip",
-  },
-  {
-    id: 8,
-    driver_name: "Ednilan, Jonathan B. ",
-    status: "Unavailable",
-  },
-  {
-    id: 9,
-    driver_name: "Genson, Edmar J. ",
-    status: "On Trip",
-  },
-  {
-    id: 10,
-    driver_name: "Iligan, CJ Andrey B.",
-    status: "Available",
-  },
-  {
-    id: 11,
-    driver_name: "Engracia, Jayde Mike",
-    status: "Available",
-  },
-  {
-    id: 12,
-    driver_name: "Magdugo, Bon C.",
-    status: "Unavailable",
-  },
-];
 export default function Drivers() {
-  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
+  const [driversData, setDriversData] = useState<SignupParams[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const fetchedDriverList = () => {
-    setDrivers(fetchedDrivers);
-  };
+  const [notifList, setNotifList] = useState<any[]>([]);
+  const [isDriverCalendarOpen, setIsDriverCalendarOpen] = useState(false);
+  const [driverSchedulesData, setDriverSchedules] = useState<any[]>([]);
+  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const [selectedDriver, setSelectedDriver] = useState<any>();
+  const [isDriverAbsenceOpen, setIsDriverAbsenceOpen] = useState(false);
+  const [isConfirmationOpenDriverAbsence, setIsConfirmationOpenDriverAbsence] =
+    useState(false);
+  const sidebarData: SidebarItem[] = [
+    { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
+    {
+      icon: faClipboardList,
+      text: "Requests",
+      path: "/Requests",
+      notification: notifLength >= 1 ? notifLength : undefined,
+    },
+    { icon: faCar, text: "Vehicles", path: "/Vehicles" },
+    { icon: faCalendarAlt, text: "Schedules", path: "/Schedules" },
+    { icon: faUser, text: "Drivers", path: "/Drivers" },
+    { icon: faUsersCog, text: "Administration", path: "/Admin" },
+  ];
 
   useEffect(() => {
-    fetchedDriverList();
+    fetchDriversAPI(setDriversData);
   }, []);
+
+  NotificationCreatedCancelWebsocket(()=>{}, () => {}, fetchNotification, setNotifList);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
   };
 
-  const filteredDriverList = drivers.filter((driver) => {
-    const isCategoryMatch =
-      selectedCategory === null || driver.status === selectedCategory;
-
+  const filteredDriverList = driversData.filter((driver) => {
     const isSearchMatch =
       searchTerm === "" ||
-      driver.driver_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.status.toLowerCase().includes(searchTerm.toLowerCase());
+      driver.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      driver.middle_name.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return isCategoryMatch && isSearchMatch;
+    return isSearchMatch;
   });
 
-  const handleCategoryChange = (status: string) => {
-    setSelectedCategory(status === "All" ? null : status);
+  const handleEllipsisMenu = (category: string, driver: any) => {
+    setSelectedDriver(driver);
+    if (category === "View Schedules") {
+      setIsDriverCalendarOpen(true);
+    } else if (category === "Schedule an absence") {
+      setIsDriverAbsenceOpen(true);
+      setIsDriverCalendarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDriver && isDriverCalendarOpen) {
+      fetchDriverSchedules(setDriverSchedules, selectedDriver.id);
+    }
+  }, [selectedDriver, isDriverCalendarOpen]);
+
+  const handleClose = () => {
+    setIsDriverCalendarOpen(false);
+    setIsDriverAbsenceOpen(false);
   };
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
+        <ToastContainer />
         <div className="margin-top-drivers">
           <Label label="Drivers" />
         </div>
         <div className="drivers-row">
           <SearchBar onSearchChange={handleSearchChange} />
-          <Dropdown
-            status={["All", "Available", "On Trip", "Unavailable"]}
-            onCategoryChange={handleCategoryChange}
-          />
         </div>
         <div className="drivers-container">
           {filteredDriverList.length === 0 ? (
             <p className="drivers-null">No drivers available</p>
           ) : (
             filteredDriverList.map((driver) => (
-              <a className="driver-card">
+              <a key={driver.id} className="driver-card">
+                <div className="driver-ellipsis-container">
+                  <Ellipsis
+                    onCategoryChange={(category) =>
+                      handleEllipsisMenu(category, driver)
+                    }
+                    status={["View Schedules", "Schedule an absence"]}
+                  />
+                </div>
                 <div className="driver-card-column">
-                  <p className="driver-name">{driver.driver_name}</p>
+                  <p className="driver-name">
+                    {driver.last_name}, {driver.first_name} {driver.middle_name}
+                  </p>
+                  <p className="driver-status">{driver.mobile_number}</p>
+
                   <p className="driver-status">{driver.status}</p>
                 </div>
               </a>
@@ -157,6 +140,23 @@ export default function Drivers() {
           )}
         </div>
       </Container>
+      <CalendarModal
+        isOpen={isDriverCalendarOpen}
+        selectedSchedule={driverSchedulesData}
+        onRequestClose={handleClose}
+      />
+      <DriverAbsence
+        isOpen={isDriverAbsenceOpen}
+        selectedDriver={selectedDriver}
+        setIsDriverAbsenceOpen={setIsDriverAbsenceOpen}
+        setIsConfirmationOpenDriverAbsence={setIsConfirmationOpenDriverAbsence}
+        onRequestClose={handleClose}
+        setLoadingBarProgress={setLoadingBarProgress}
+      />
+      <Confirmation
+        isOpen={isConfirmationOpenDriverAbsence}
+        header="Driver scheduled for absence successfully!"
+      />
     </>
   );
 }

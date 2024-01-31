@@ -3,12 +3,7 @@ import "./sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
-
-type SidebarItem = {
-  icon: any;
-  text: string;
-  path: string;
-};
+import { SidebarItem } from "../../interfaces/interfaces";
 
 interface SidebarProps {
   sidebarData: SidebarItem[];
@@ -57,6 +52,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
                 >
                   <FontAwesomeIcon icon={item.icon} className="sidebar-icon" />
                   <span className="sidebar-text">{item.text}</span>
+                  {item.notification &&
+                    item.notification > 0 &&
+                    item.text !== activeButton && (
+                      <span className="notification">{item.notification}</span>
+                    )}
                 </button>
               ) : null
             )}

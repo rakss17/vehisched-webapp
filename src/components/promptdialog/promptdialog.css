@@ -15,14 +15,22 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
+  gap: 1vh;
 }
 .modal-prompt-dialog h1 {
   color: #060e57;
   font-size: 1.4rem;
   text-align: center;
 }
+
+.modal-prompt-dialog p {
+  color: #060e57;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
 .modal-prompt-dialog div {
-  margin-top: 4vh;
+  margin-top: 2vh;
   width: 25vw;
   display: flex;
   justify-content: space-around;
@@ -30,10 +38,10 @@
 .modal-prompt-dialog button {
   width: 8vw;
 }
-.modal-prompt-dialog button:nth-child(1) {
-  background-color: #a30303;
-}
 .modal-prompt-dialog button:nth-child(2) {
+  background-color: #060e57;
+}
+.modal-prompt-dialog button:nth-child(1) {
   background-color: transparent;
   color: black;
   border: 3px solid #060e57;

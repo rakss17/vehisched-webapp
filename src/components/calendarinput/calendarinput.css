@@ -34,13 +34,15 @@
 
 @media screen and (max-width: 768px) {
   .calendar-input {
-    width: 30vw;
+    display: flex;
+    width: 54vw;
     font-size: 1rem;
     text-align: start;
     padding-left: 1rem;
   }
   .calendar-input-icon {
     height: 2vh;
+    margin-left: 9vh;
   }
   .calendar-icon-container {
     top: 58%;

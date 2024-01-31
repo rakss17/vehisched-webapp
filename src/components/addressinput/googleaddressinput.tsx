@@ -11,7 +11,6 @@ interface AutoCompleteAddressGoogleProps
   travel_time?: any;
   setData: (data: any) => void;
   setAddressData: (addressData: any) => void;
-  isDisabled?: any;
   category?: any;
   removeDestinationError: () => void;
   className?: any;
@@ -22,7 +21,6 @@ export default function AutoCompleteAddressGoogle({
   travel_time: travelTimeProp,
   setData,
   setAddressData,
-  isDisabled,
   category,
   removeDestinationError,
   className,
@@ -62,7 +60,6 @@ export default function AutoCompleteAddressGoogle({
   return (
     <Autocomplete
       className={`autocomplete-address ${className}`}
-      disabled={isDisabled}
       options={{
         types: ["establishment", "geocode"],
         componentRestrictions: { country: "PH" },

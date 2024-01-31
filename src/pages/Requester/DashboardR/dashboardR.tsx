@@ -86,7 +86,6 @@ export default function DashboardR() {
   });
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const userName = personalInfo?.username;
-  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(true);
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const [plateNumber, setSelectedPlateNumber] = useState("");
   const [vehicleName, setSelectedModel] = useState("");
@@ -297,7 +296,6 @@ export default function DashboardR() {
   }, []);
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {
-      setIsAutocompleteDisabled(false);
       setIsTravelDateSelected(false);
     }
   };
@@ -332,7 +330,6 @@ export default function DashboardR() {
     switch (button) {
       case "Round Trip":
         setIsOneWayClick(false);
-        setIsAutocompleteDisabled(true);
         delete updatedErrors[0];
         setErrorMessages(updatedErrors);
         setData({
@@ -349,7 +346,6 @@ export default function DashboardR() {
         break;
 
       case "One-way":
-        setIsAutocompleteDisabled(true);
         setIsOneWayClick(true);
         setIsTravelDateSelected(true);
         delete updatedErrors[0];
@@ -626,7 +622,6 @@ export default function DashboardR() {
                         travel_date={data.travel_date}
                         travel_time={data.travel_time}
                         setData={setData}
-                        isDisabled={isAutocompleteDisabled}
                         setAddressData={setAddressData}
                         category={data.category}
                         removeDestinationError={removeDestinationError}

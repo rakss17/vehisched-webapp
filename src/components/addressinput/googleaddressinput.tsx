@@ -1,9 +1,12 @@
-import Autocomplete from "react-google-autocomplete";
+import Autocomplete, {
+  ReactGoogleAutocompleteInputProps,
+} from "react-google-autocomplete";
 import { handlePlaceSelect } from "../api/api";
 import { useEffect, useState, useRef } from "react";
 import "./googleaddressinput.css";
 
-interface AutoCompleteAddressGoogleProps {
+interface AutoCompleteAddressGoogleProps
+  extends ReactGoogleAutocompleteInputProps {
   travel_date?: any;
   travel_time?: any;
   setData: (data: any) => void;
@@ -59,12 +62,12 @@ export default function AutoCompleteAddressGoogle({
   return (
     <Autocomplete
       className={`autocomplete-address ${className}`}
-      disabled={!!isDisabled}
+      disabled={isDisabled}
       options={{
-        types: ["establishment", "geocode"] as const,
-        componentRestrictions: { country: "PH" } as const,
+        types: ["establishment", "geocode"],
+        componentRestrictions: { country: "PH" },
       }}
-      apiKey={apiKey || ""}
+      apiKey={apiKey}
       onPlaceSelected={(place) => onPlaceSelectedRef.current(place)}
     />
   );

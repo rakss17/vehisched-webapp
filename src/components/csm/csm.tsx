@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./csm.css";
 import USTPLogo from "../../assets/USTP LOGO.png";
 import CSM from "../../assets/csm.jpg";

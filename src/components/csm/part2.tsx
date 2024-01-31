@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { QuestionProps } from "../../interfaces/interfaces";
 
-const Part2: React.FC<QuestionProps> = ({
-  onNext,
-  data,
-  setData,
-  questions,
-  setQuestions,
-}) => {
+const Part2: React.FC<QuestionProps> = ({ setData, questions }) => {
   const [sqd0, setSqd0] = useState("");
   const [sqd1, setSqd1] = useState("");
   const [sqd2, setSqd2] = useState("");

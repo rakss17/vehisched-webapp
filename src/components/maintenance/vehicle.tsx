@@ -7,7 +7,6 @@ import TimeInput from "../timeinput/timeinput";
 import CommonButton from "../button/commonbutton";
 import { format } from "date-fns";
 import { vehicleMaintenanceAPI } from "../api/api";
-import { useNavigate } from "react-router-dom";
 
 const VehicleMaintenance: React.FC<ModalProps> = ({
   isOpen,
@@ -26,7 +25,6 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
     return_time: null,
     plate_number: "",
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     setData((prevData: any) => ({
@@ -107,7 +105,6 @@ const VehicleMaintenance: React.FC<ModalProps> = ({
       vehicleMaintenanceAPI(
         data,
         setIsConfirmationOpenVehicleMaintenance,
-        navigate,
         setLoadingBarProgress,
         setIsVehicleMaintenanceOpen
       );

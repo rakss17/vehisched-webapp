@@ -38,13 +38,10 @@ import LoadingBar from "react-top-loading-bar";
 import InitialFormVip from "../../../components/form/initialformvip";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import RequesterTripMergingForm from "../../../components/form/requestertripmerging";
-import { tr } from "date-fns/locale";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
-  const [hasSchedule, setHasSchedule] = useState(false);
-  const [hasPendingSchedule, setHasPendingSchedule] = useState(true);
   const [schedule, setSchedule] = useState<any[]>([]);
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
@@ -52,7 +49,6 @@ export default function DashboardR() {
   const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
-  const [isRoundTripClick, setIsRoundTripClick] = useState(false);
   const [isOneWayClick, setIsOneWayClick] = useState(false);
   const [isFetchSelect, setIsFetchSelect] = useState(false);
   const [selectedButton, setSelectedButton] =
@@ -135,12 +131,8 @@ export default function DashboardR() {
     fetchPendingRequestAPI((data: any) => {
       setPendingSchedule(data);
       if (data.length > 0) {
-        setHasPendingSchedule(true);
-        setHasSchedule(false);
         setIsOngoingScheduleClick(true);
         handleButtonClick("Ongoing Schedule");
-      } else {
-        setHasPendingSchedule(false);
       }
 
       const vehicles = data

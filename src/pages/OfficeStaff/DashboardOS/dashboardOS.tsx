@@ -9,11 +9,9 @@ import {
   faUser,
   faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
-import { format } from "date-fns";
 
 import Sidebar from "../../../components/sidebar/sidebar";
 import CalendarSchedule from "../../../components/calendar/calendar";
-import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
@@ -22,10 +20,8 @@ import { RequestFormProps, SidebarItem } from "../../../interfaces/interfaces";
 import {
   fetchEachVehicleSchedule,
   fetchNotification,
-  fetchScheduleOfficeStaff,
   maintenanceAbsenceCompletedRequestAPI,
 } from "../../../components/api/api";
-import { useNavigate } from "react-router-dom";
 import RequestFormDetails from "../../../components/form/requestformdetails";
 import Confirmation from "../../../components/confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
@@ -33,11 +29,9 @@ import LoadingBar from "react-top-loading-bar";
 export default function DashboardOS() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
-  const [todayTrips, setTodayTrips] = useState<number>(0);
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
     useState(false);
-  const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
   const [notifList, setNotifList] = useState<any[]>([]);
@@ -56,7 +50,6 @@ export default function DashboardOS() {
     { icon: faUser, text: "Drivers", path: "/Drivers" },
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
-  const navigate = useNavigate();
 
   NotificationCreatedCancelWebsocket(
     () => {},
@@ -79,10 +72,6 @@ export default function DashboardOS() {
   useEffect(() => {
     fetchEachVehicleSchedule(setSchedulesData);
   }, []);
-
-  const handleOnClickTodaysTrip = () => {
-    navigate("/Schedules");
-  };
 
   const handleCloseRequestForm = () => {
     setIsRequestFormOpen(false);

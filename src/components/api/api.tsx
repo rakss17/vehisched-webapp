@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import axios from "axios";
 import {
-  RequestFormProps,
   SigninParams,
   SignupParams,
   Vehicle,
@@ -33,8 +31,6 @@ export async function SigninAPI(
     const response = await api.post("api/v1/accounts/token/login", userData);
     const token = response.data.auth_token;
 
-    
-
     const res = await api.get("api/v1/accounts/me/", {
       headers: {
         Authorization: `Token ${token}`,
@@ -45,12 +41,14 @@ export async function SigninAPI(
     dispatch(fetchPersonalInfo(res.data));
     setLoadingBarProgress(70);
     if (res.data.role === "requester" || res.data.role === "vip") {
-      alert('Web application for requester is not yet available. Please install the vehisched mobile application to login')
+      alert(
+        "Web application for requester is not yet available. Please install the vehisched mobile application to login"
+      );
     } else if (res.data.role === "office staff") {
       localStorage.setItem("token", token);
       navigate("/DashboardOS");
     } else if (res.data.role === "admin") {
-      localStorage.setItem("token", token); 
+      localStorage.setItem("token", token);
       navigate("/Admin");
     }
     setLoadingBarProgress(100);
@@ -69,7 +67,7 @@ export function SignupAPI(
 ) {
   api
     .post("api/v1/accounts/users/", userData)
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setIsConfirmationOpen(true);
@@ -115,6 +113,7 @@ export async function resetPasswordConfirm(
       autoClose: false,
     });
     setTimeout(() => {
+      console.log(response);
       window.close();
     }, 3000);
   } catch (error: any) {
@@ -147,7 +146,7 @@ export function addOffice(
         },
       }
     )
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setIsConfirmationOpen(true);
@@ -309,12 +308,15 @@ export async function fetchDriversForAssignmentAPI(setDriversData: any) {
   }
 }
 
-export async function fetchRequestersAPI(setRequestersData: any, requester: any) {
+export async function fetchRequestersAPI(
+  setRequestersData: any,
+  requester: any
+) {
   try {
     const token = localStorage.getItem("token");
     const response = await api.get("api/v1/accounts/requesters/", {
       params: {
-        requester: requester
+        requester: requester,
       },
       headers: {
         Authorization: `Token ${token}`,
@@ -351,6 +353,7 @@ export async function updateUserAPI(
       setLoadingBarProgress(100);
       setIsConfirmationOpenEdit(false);
       window.location.reload();
+      console.log(response);
     }, 3000);
   } catch (error) {
     setLoadingBarProgress(20);
@@ -496,7 +499,7 @@ export function addVehiclesAPI(
         Authorization: `Token ${token}`,
       },
     })
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(50);
       setIsConfirmationOpenVehicle(true);
       setTimeout(() => {
@@ -543,6 +546,7 @@ export async function updateVehicleAPI(
       setLoadingBarProgress(100);
       setIsConfirmationOpenVehicleEdit(false);
       window.location.reload();
+      console.log(response);
     }, 3000);
   } catch (error) {
     setLoadingBarProgress(50);
@@ -576,6 +580,7 @@ export async function deleteVehicleAPI(
       setIsConfirmationOpenVehicleDelete(false);
       window.location.reload();
       setSelectedNavigation("Vehicles");
+      console.log(response);
     }, 3000);
   } catch (error) {
     setLoadingBarProgress(50);
@@ -609,13 +614,13 @@ export function postRequestFromAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(50);
       setIsConfirmationOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
         setIsConfirmationOpen(false);
-        window.location.reload()
+        window.location.reload();
         navigate("/DashboardR");
       }, 3000);
     })
@@ -740,8 +745,8 @@ export function approveRequestAPI(
         },
       }
     )
-    .then((response) => {
-      onRequestClose()
+    .then(() => {
+      onRequestClose();
       setIsConfirmationOpen(true);
 
       setTimeout(() => {
@@ -779,7 +784,7 @@ export function cancelRequestAPI(
         },
       }
     )
-    .then((response) => {
+    .then(() => {
       setIsCancelOpen(false);
       setIsConfirmationOpen(true);
       setLoadingBarProgress(100);
@@ -1195,7 +1200,6 @@ export async function handlePlaceSelect(
 export function vehicleMaintenanceAPI(
   data: any,
   setIsConfirmationOpenVehicleMaintenance: any,
-  navigate: any,
   setLoadingBarProgress: (progress: number) => void,
   setIsVehicleMaintenanceOpen: any
 ) {
@@ -1207,7 +1211,7 @@ export function vehicleMaintenanceAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(50);
       setIsVehicleMaintenanceOpen(false);
       setIsConfirmationOpenVehicleMaintenance(true);
@@ -1255,7 +1259,7 @@ export function acceptVehicleAPI(
         },
       }
     )
-    .then((response) => {
+    .then(() => {
       setIsConfirmationAcceptOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
@@ -1272,7 +1276,6 @@ export function acceptVehicleAPI(
 export function driverAbsenceAPI(
   data: any,
   setIsConfirmationOpenDriverAbsence: any,
-  navigate: any,
   setLoadingBarProgress: (progress: number) => void,
   setIsDriverAbsenceOpen: any
 ) {
@@ -1284,7 +1287,7 @@ export function driverAbsenceAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(50);
       setIsDriverAbsenceOpen(false);
       setIsConfirmationOpenDriverAbsence(true);
@@ -1333,7 +1336,7 @@ export function maintenanceAbsenceCompletedRequestAPI(
         },
       }
     )
-    .then((response) => {
+    .then(() => {
       setIsRequestFormOpen(false);
       setIsConfirmationCompletedOpen(true);
       setLoadingBarProgress(100);
@@ -1369,7 +1372,7 @@ export function rejectRequestAPI(
         },
       }
     )
-    .then((response) => {
+    .then(() => {
       setIsConfirmationRejectedOpen(true);
       setLoadingBarProgress(100);
       setTimeout(() => {
@@ -1407,12 +1410,9 @@ export function changeRequestDriverAPI(
         },
       }
     )
-    .then((response) => {
-      // setIsConfirmationRejectedOpen(true);
+    .then(() => {
       setLoadingBarProgress(100);
 
-      // setIsConfirmationRejectedOpen(false);
-      // window.location.reload();
       fetchAPI(setDataAPI);
       setIsChangeDriverOpen(false);
       setIsOpen(true);
@@ -1476,7 +1476,7 @@ export async function postCSM(data: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {})
+    .then(() => {})
     .catch((error) => {
       console.error("Error fetching questions list:", error);
     });
@@ -1508,7 +1508,7 @@ export function submitTripMerge(
         },
       }
     )
-    .then((response) => {
+    .then(() => {
       setLoadingBarProgress(50);
       onRequestClose();
       setIsConfirmationOpen(true);

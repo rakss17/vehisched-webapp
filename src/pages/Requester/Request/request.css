@@ -8,9 +8,7 @@
 }
 .request-child-container {
   display: flex;
-
   flex-direction: column;
-
   height: 75vh;
   width: 100vw;
 }
@@ -269,11 +267,9 @@
   }
   .requests-container table thead {
     font-size: 0.8rem;
-
   }
-  .requests-container table th{
+  .requests-container table th {
     width: 11vw;
-
   }
   .angle-down {
     margin-left: 10px;
@@ -283,7 +279,6 @@
     background-color: #d9d9d9;
     padding: 1rem;
     width: 81vw;
-    
   }
   .request-more-info strong {
     font-size: 0.8rem;
@@ -291,19 +286,17 @@
   .request-more-info p {
     font-size: 0.8rem;
   }
-  .request-more-info-second-child{
+  .request-more-info-second-child {
     flex-direction: column;
   }
-  .request-more-info-second-child strong{
+  .request-more-info-second-child strong {
     width: 48vw;
   }
-  .request-more-info-third-child{
+  .request-more-info-third-child {
     flex-direction: column;
   }
-  .request-more-info-third-child-driver{
+  .request-more-info-third-child-driver {
     margin-left: 3%;
     width: auto;
   }
-  
-
 }

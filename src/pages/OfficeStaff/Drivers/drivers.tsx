@@ -13,7 +13,6 @@ import Container from "../../../components/container/container";
 import "./drivers.css";
 import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
-import Dropdown from "../../../components/dropdown/dropdown";
 import { SidebarItem, SignupParams } from "../../../interfaces/interfaces";
 import {
   fetchDriversAPI,
@@ -59,7 +58,12 @@ export default function Drivers() {
     fetchDriversAPI(setDriversData);
   }, []);
 
-  NotificationCreatedCancelWebsocket(()=>{}, () => {}, fetchNotification, setNotifList);
+  NotificationCreatedCancelWebsocket(
+    () => {},
+    () => {},
+    fetchNotification,
+    setNotifList
+  );
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClipboard,
+  faUser,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import "./requestformdetails.css";
 import {
   RequestFormDetailsProps,
@@ -14,7 +18,6 @@ import {
   changeRequestDriverAPI,
   downloadTripTicketAPI,
   fetchDriversScheduleAPI,
-  fetchRequestAPI,
   fetchRequestersAPI,
   postRequestFromAPI,
   rejectRequestAPI,
@@ -38,14 +41,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   if (!selectedRequest) return null;
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
-  const [selectedRequesterId, setSelectedRequesterId] = useState<string | null>(
-    null
-  );
-  const [numberOfVacant, setNumberOfVacant] = useState(0);
+
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationApprovedOpen, setIsConfirmationApprovedOpen] =
     useState(false);
-    const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
+  const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
     useState(false);
   const [isConfirmationRejectOpen, setIsConfirmationRejectOpen] =
     useState(false);
@@ -55,10 +55,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [isChangeDriverOpen, setIsChangeDriverOpen] = useState(false);
-  const [isAutocompleteDisabled, setIsAutocompleteDisabled] = useState(false);
+
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
-  const [selectedTripButton, setSelectedTripButton] =
-    useState<string>("Round Trip");
   const [mergeTripData, setMergeTripData] = useState<RequestFormProps>({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
@@ -76,7 +74,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     passenger_name: [],
     vehicle_capacity: "",
     merged_with: "",
-    purpose: ""
+    purpose: "",
   });
   const [addressData, setAddressData] = useState<any>({
     destination: "",
@@ -91,30 +89,19 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       ...prevData,
       destination: addressData.destination,
       distance: addressData.distance,
-      vehicle_capacity: numberOfVacant,
-      merged_with: selectedRequest.request_id
+      merged_with: selectedRequest.request_id,
     }));
   }, [addressData, mergeTripData]);
 
   useEffect(() => {
-    if(mergeTripData.type === "Round Trip") {
+    if (mergeTripData.type === "Round Trip") {
       setMergeTripData((prevData: any) => ({
         ...prevData,
         return_date: selectedRequest.return_date,
-        return_time: selectedRequest.return_time
-      }))
+        return_time: selectedRequest.return_time,
+      }));
     }
-
-  }, [mergeTripData.type])
-
-  // useEffect(() => {
-    
-  //   if(mergeTripData.destination && mergeTripData.distance) {
-  //     const updatedErrors = [...errorMessages];
-  //     delete updatedErrors[0]?.destinationError;
-  //     setErrorMessages(updatedErrors);
-  //   } 
-  // }, [mergeTripData.destination, mergeTripData.distance])
+  }, [mergeTripData.type]);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -198,24 +185,20 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     });
 
     if (selectedRequester) {
-      setSelectedRequesterId(selectedRequester.id);
       const updatedErrors = [...errorMessages];
-    delete updatedErrors[0]?.requesterNameError;
-    setErrorMessages(updatedErrors);
-    setMergeTripData({
-      ...mergeTripData,
-      requester_name: selectedRequester.id,
-    });
+      delete updatedErrors[0]?.requesterNameError;
+      setErrorMessages(updatedErrors);
+      setMergeTripData({
+        ...mergeTripData,
+        requester_name: selectedRequester.id,
+      });
     }
     if (requesterName === "Select Requester") {
-      setSelectedRequesterId("");
       setMergeTripData({
         ...mergeTripData,
         requester_name: "",
       });
     }
-
-    
   };
 
   // useEffect(() => {
@@ -227,45 +210,45 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   // }, [selectedRequest.number_of_passenger]);
   const generatePassengerInputs = () => {
     const inputs = [];
-    
-      for (let i = 0; i < selectedRequest.vehicle_capacity; i++) {
-        inputs.push(
-          <div key={i} className="passenger-name-column">
-            <InputField
-              className="passenger_name_width"
-              value={mergeTripData.passenger_name[i]}
-              key={i}
-              icon={faUser}
-              label={`Passenger ${i + 1}`}
-              placeholder={`Passenger ${i + 1}`}
-              onChange={(event) => {
-                const newPassengerNames = [...mergeTripData.passenger_name];
-                newPassengerNames[i] = event.target.value;
-                const numberOfPassenger = newPassengerNames.reduce(
-                  (count, name) => (name ? count + 1 : count),
-                  0
-                );
-                setMergeTripData((prevData: any)=> ({
-                  ...mergeTripData,
-                  passenger_name: newPassengerNames,
-                  number_of_passenger: numberOfPassenger,
-                }));
 
-                if (newPassengerNames[i]) {
-                  const updatedErrors = { ...errorMessages };
-                  delete updatedErrors[0]?.passengerNameError[i];
-                  delete updatedErrors[0]?.all;
-                  setErrorMessages(updatedErrors);
-                }
-              }}
-            />
-            <p className="set-trip-text-error">
-              {/* {errorMessages[0]?.passengerNameError[i]} */}
-            </p>
-          </div>
-        );
-      }
-    
+    for (let i = 0; i < selectedRequest.vehicle_capacity; i++) {
+      inputs.push(
+        <div key={i} className="passenger-name-column">
+          <InputField
+            className="passenger_name_width"
+            value={mergeTripData.passenger_name[i]}
+            key={i}
+            icon={faUser}
+            label={`Passenger ${i + 1}`}
+            placeholder={`Passenger ${i + 1}`}
+            onChange={(event) => {
+              const newPassengerNames = [...mergeTripData.passenger_name];
+              newPassengerNames[i] = event.target.value;
+              const numberOfPassenger = newPassengerNames.reduce(
+                (count, name) => (name ? count + 1 : count),
+                0
+              );
+              setMergeTripData((prevData: any) => ({
+                ...prevData,
+                passenger_name: newPassengerNames,
+                number_of_passenger: numberOfPassenger,
+              }));
+
+              if (newPassengerNames[i]) {
+                const updatedErrors = { ...errorMessages };
+                delete updatedErrors[0]?.passengerNameError[i];
+                delete updatedErrors[0]?.all;
+                setErrorMessages(updatedErrors);
+              }
+            }}
+          />
+          <p className="set-trip-text-error">
+            {/* {errorMessages[0]?.passengerNameError[i]} */}
+          </p>
+        </div>
+      );
+    }
+
     return inputs;
   };
 
@@ -290,19 +273,19 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     }
     if (!mergeTripData.type) {
       validationErrors.travelTypeError = "Please select travel type.";
-    } 
+    }
 
     if (!mergeTripData.destination) {
       validationErrors.destinationError = "Please input destination.";
     }
     if (!mergeTripData.purpose) {
       validationErrors.purposeError = "Please input purpose.";
-    } 
+    }
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-    console.log(mergeTripData)
-    if (Object.keys(validationErrors).length === 0) { 
+    console.log(mergeTripData);
+    if (Object.keys(validationErrors).length === 0) {
       setLoadingBarProgress(20);
       postRequestFromAPI(
         mergeTripData,
@@ -313,9 +296,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         setIsConfirmationOpen,
         () => {},
         setLoadingBarProgress
-      );      
+      );
     }
-    
   };
 
   const onCancelTrip = () => {
@@ -580,7 +562,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                         height={7}
                         primaryStyle
                         text="Approve"
-                        onClick={() => handleConfirmationApprove(selectedDriverId)}
+                        onClick={() =>
+                          handleConfirmationApprove(selectedDriverId)
+                        }
                       />
                     </div>
                   </>
@@ -618,7 +602,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                         height={7}
                         primaryStyle
                         text="Approve"
-                        onClick={() => handleConfirmationApprove(selectedRequest.driver_id)}
+                        onClick={() =>
+                          handleConfirmationApprove(selectedRequest.driver_id)
+                        }
                       />
                     </div>
                   </>
@@ -724,7 +710,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                         height={7}
                         primaryStyle
                         text="Approve"
-                        onClick={() => handleConfirmationApprove(selectedDriverId)}
+                        onClick={() =>
+                          handleConfirmationApprove(selectedDriverId)
+                        }
                       />
                     </div>
                   </>
@@ -758,7 +746,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                         height={7}
                         primaryStyle
                         text="Approve"
-                        onClick={() => handleConfirmationApprove(selectedRequest.driver_id)}
+                        onClick={() =>
+                          handleConfirmationApprove(selectedRequest.driver_id)
+                        }
                       />
                     </div>
                   </>
@@ -785,12 +775,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 />
                 {!selectedRequest.main_merge && (
                   <CommonButton
-                  width={8}
-                  height={6}
-                  secondaryStyle
-                  text="Merge trip"
-                  onClick={onMergeTripOpen}
-                />
+                    width={8}
+                    height={6}
+                    secondaryStyle
+                    text="Merge trip"
+                    onClick={onMergeTripOpen}
+                  />
                 )}
                 <CommonButton
                   width={12}
@@ -868,40 +858,41 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 {errorMessages[0]?.requesterNameError}
               </span>
             </div>
-            
           </div>
 
           <div className="merge-trip-modal-field-container">
             <p>Category: </p>
             <div className="merge-trip-modal-select-field-container">
-            <select
-              value={mergeTripData.type}
-              onChange={(event) => {
-                const selectedValue = event.target.value;
-                if (selectedValue === "Round Trip" || selectedValue === "One-way - Drop" || 
-                selectedValue === "One-way - Fetch") {
-                  setMergeTripData((prevData: any) => ({
-                    ...prevData,
-                    type: selectedValue,
-                  }));
-                  const updatedErrors = { ...errorMessages };
-                  delete updatedErrors[0]?.travelTypeError;
-                  setErrorMessages(updatedErrors);
-                }
-                else {
-                  setMergeTripData((prevData: any) => ({
-                    ...prevData,
-                    type: "",
-                  }));
-                }
-              }}
-            >
-              <option>--------- Select Type --------</option>
-              <option value="Round Trip">Round Trip</option>
-              <option value="One-way - Drop">One-way - Drop</option>
-              <option value="One-way - Fetch">One-way - Fetch</option>
-            </select>
-            <span className="set-trip-text-error">
+              <select
+                value={mergeTripData.type}
+                onChange={(event) => {
+                  const selectedValue = event.target.value;
+                  if (
+                    selectedValue === "Round Trip" ||
+                    selectedValue === "One-way - Drop" ||
+                    selectedValue === "One-way - Fetch"
+                  ) {
+                    setMergeTripData((prevData: any) => ({
+                      ...prevData,
+                      type: selectedValue,
+                    }));
+                    const updatedErrors = { ...errorMessages };
+                    delete updatedErrors[0]?.travelTypeError;
+                    setErrorMessages(updatedErrors);
+                  } else {
+                    setMergeTripData((prevData: any) => ({
+                      ...prevData,
+                      type: "",
+                    }));
+                  }
+                }}
+              >
+                <option>--------- Select Type --------</option>
+                <option value="Round Trip">Round Trip</option>
+                <option value="One-way - Drop">One-way - Drop</option>
+                <option value="One-way - Fetch">One-way - Fetch</option>
+              </select>
+              <span className="set-trip-text-error">
                 {errorMessages[0]?.travelTypeError}
               </span>
             </div>
@@ -914,7 +905,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 travel_date={selectedRequest.travel_date}
                 travel_time={selectedRequest.travel_time}
                 setData={setMergeTripData}
-                isDisabled={isAutocompleteDisabled}
                 setAddressData={setAddressData}
                 category={mergeTripData.type}
                 removeDestinationError={removeDestinationError}
@@ -923,37 +913,40 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 {errorMessages[0]?.destinationError}
               </span>
             </div>
-            
           </div>
           <div className="merge-trip-modal-field-container">
-          <p>Purpose:</p>
-          <div className="merge-trip-modal-field-container-purpose-container">
-          <InputField
-              className="merge-trip-modal-field-container-purpose"
-              icon={faClipboard}
-              value={mergeTripData.purpose}
-              label="Purpose"
-              placeholder="Purpose"
-              onChange={(event) => {
-                setMergeTripData({ ...mergeTripData, purpose: event.target.value });
-                if (event.target.value) {
-                  const updatedErrors = { ...errorMessages };
-                  delete updatedErrors[0]?.purposeError;
-                  setErrorMessages(updatedErrors);
-                }
-              }}
-            />
+            <p>Purpose:</p>
+            <div className="merge-trip-modal-field-container-purpose-container">
+              <InputField
+                className="merge-trip-modal-field-container-purpose"
+                icon={faClipboard}
+                value={mergeTripData.purpose}
+                label="Purpose"
+                placeholder="Purpose"
+                onChange={(event) => {
+                  setMergeTripData({
+                    ...mergeTripData,
+                    purpose: event.target.value,
+                  });
+                  if (event.target.value) {
+                    const updatedErrors = { ...errorMessages };
+                    delete updatedErrors[0]?.purposeError;
+                    setErrorMessages(updatedErrors);
+                  }
+                }}
+              />
 
-            <span className="set-trip-text-error">
-              {errorMessages[0]?.purposeError}
-            </span>
+              <span className="set-trip-text-error">
+                {errorMessages[0]?.purposeError}
+              </span>
+            </div>
           </div>
-                  
-                </div>
           <div className="merge-trip-modal-field-container">
             <p>Passenger's name</p>
           </div>
-          <div className="merge-trip-modal-passenger-container">{generatePassengerInputs()}</div>
+          <div className="merge-trip-modal-passenger-container">
+            {generatePassengerInputs()}
+          </div>
           <div className="merge-trip-modal-button-container">
             <CommonButton
               width={7}

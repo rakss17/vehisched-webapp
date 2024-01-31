@@ -13,7 +13,6 @@ import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
 import Label from "../../../components/label/label";
-import Dropdown from "../../../components/dropdown/dropdown";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Ellipsis from "../../../components/ellipsismenu/ellipsismenu";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
@@ -78,7 +77,12 @@ export default function Vehicles() {
     setVehiclesData(vehicles);
   }, [vehicles]);
 
-  NotificationCreatedCancelWebsocket(()=>{}, () => {}, fetchNotification, setNotifList);
+  NotificationCreatedCancelWebsocket(
+    () => {},
+    () => {},
+    fetchNotification,
+    setNotifList
+  );
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
@@ -21,7 +20,6 @@ import NotFound from "./pages/Error/notfound";
 import ResetPasswordConfirm from "./pages/ResetPassword/resetPasswordConfirm";
 
 function ProtectedRoute({
-  path,
   allowedRoles,
   children,
 }: {

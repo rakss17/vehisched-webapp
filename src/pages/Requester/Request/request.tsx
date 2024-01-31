@@ -18,7 +18,7 @@ import PromptDialog from "../../../components/promptdialog/prompdialog";
 import { SidebarItem } from "../../../interfaces/interfaces";
 import { cancelRequestAPI, fetchRequestAPI } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { useSpring, animated } from "@react-spring/web";
@@ -225,7 +225,7 @@ export default function Request() {
                 <p style={{ position: "absolute" }}>No request available.</p>
               ) : (
                 <tbody>
-                  {requestData.map((request, index) => (
+                  {requestData.map((request) => (
                     <>
                       <tr
                         key={request.request_id}

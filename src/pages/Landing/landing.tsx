@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, RefObject } from "react";
+import { useState, useRef, useEffect, RefObject } from "react";
 import {
   faUser,
   faLock,
@@ -38,9 +38,9 @@ export default function Landing() {
         navigate("/Admin");
       } else if (role === "office staff") {
         navigate("/DashboardOS");
-      // } else if (role === "requester" || role === "vip") {
-      //   navigate("/DashboardR");
-      // }
+        // } else if (role === "requester" || role === "vip") {
+        //   navigate("/DashboardR");
+        // }
       }
     }
   }, []);

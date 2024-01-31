@@ -41,7 +41,6 @@ import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
 import CommonButton from "../../components/button/commonbutton";
 import AddOfficeRole from "../../components/admin/user/addofficerole";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/sidebar/sidebar";
 
 export default function Admin() {
@@ -155,8 +154,8 @@ export default function Admin() {
   ];
 
   NotificationCreatedCancelWebsocket(
-    ()=>{},
-    ()=>{},
+    () => {},
+    () => {},
     fetchNotification,
     setNotifList
   );
@@ -242,9 +241,9 @@ export default function Admin() {
   useEffect(() => {
     setUserData((prevUserData: any) => ({
       ...prevUserData,
-      password: `${userData.last_name}@${userData.first_name}`
-    }))
-  }, [userData])
+      password: `${userData.last_name}@${userData.first_name}`,
+    }));
+  }, [userData]);
 
   useEffect(() => {
     dispatch(fetchUsersAPI() as any);
@@ -478,7 +477,7 @@ export default function Admin() {
         );
       })
       .then(() => {})
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   const handleAddVehicleButton = () => {
@@ -641,7 +640,7 @@ export default function Admin() {
       {role === "office staff" ? <Sidebar sidebarData={sidebarData} /> : null}
 
       <Container>
-      <ToastContainer />
+        <ToastContainer />
         <div className="label-margin-admin">
           <Label label="System Administration" />
         </div>

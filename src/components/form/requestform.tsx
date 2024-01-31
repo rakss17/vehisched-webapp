@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect, useRef } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Container from "../container/container";
 import Header from "../header/header";
@@ -6,17 +6,9 @@ import InputField from "../inputfield/inputfield";
 import "./requestform.css";
 import {
   faUser,
-  faBuilding,
   faUsers,
-  faCar,
   faClipboard,
-  faDownload,
-  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import AddressInput from "../addressinput/addressinput";
-import CalendarInput from "../calendarinput/calendarinput";
-import TimeInput from "../timeinput/timeinput";
 import Confirmation from "../confirmation/confirmation";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -24,16 +16,11 @@ import USTPLogo from "../../assets/USTP LOGO.png";
 import DocumentCode from "../../assets/documentcode.jpg";
 import { RequestFormProps } from "../../interfaces/interfaces";
 import { postRequestFromAPI } from "../api/api";
-import { format } from "date-fns";
 import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Csm from "../csm/csm";
-import { Modal } from "@mui/material";
-import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 
 export default function RequestForm() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
@@ -78,7 +65,6 @@ export default function RequestForm() {
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
-  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
 
@@ -250,11 +236,11 @@ export default function RequestForm() {
       <Header />
       <Container>
         {/* Conditionally render the CSM component as a modal */}
-        {isModalOpen && (
+        {/* {isModalOpen && (
           <div className="modal-overlay">
             <Csm />
           </div>
-        )}
+        )} */}
         <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />

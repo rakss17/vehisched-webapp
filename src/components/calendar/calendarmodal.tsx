@@ -67,7 +67,7 @@ const CalendarModal: React.FC<any> = ({
                     </div>
                   ) : (
                     <div>
-                      <strong onClick={() => handleShowMore(null)}>Hide</strong>
+                      <strong onClick={() => handleShowMore(0)}>Hide</strong>
                     </div>
                   )}
                 </div>

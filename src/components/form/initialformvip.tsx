@@ -23,13 +23,7 @@ const InitialFormVip: React.FC<InitialFormVipProps> = ({
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [selectedTripButton, setSelectedTripButton] =
     useState<string>("Round Trip");
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    const key = event.key;
 
-    if (key !== "Backspace" && isNaN(Number(key))) {
-      event.preventDefault();
-    }
-  };
   const [data, setData] = useState<any>({
     travel_date: null,
     travel_time: null,

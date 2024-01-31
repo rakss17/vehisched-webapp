@@ -6,7 +6,6 @@ import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import CommonButton from "../button/commonbutton";
 import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
 import { driverAbsenceAPI } from "../api/api";
 
 const DriverAbsence: React.FC<ModalProps> = ({
@@ -26,7 +25,6 @@ const DriverAbsence: React.FC<ModalProps> = ({
     return_time: null,
     driver: selectedDriver.id,
   });
-  const navigate = useNavigate();
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData({ ...data, travel_date: formattedDate });
@@ -98,7 +96,6 @@ const DriverAbsence: React.FC<ModalProps> = ({
       driverAbsenceAPI(
         data,
         setIsConfirmationOpenDriverAbsence,
-        navigate,
         setLoadingBarProgress,
         setIsDriverAbsenceOpen
       );

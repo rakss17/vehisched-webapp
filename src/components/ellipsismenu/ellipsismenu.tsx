@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./ellipsismenu.css";
 
 type EllipsisProps = {
@@ -7,7 +7,6 @@ type EllipsisProps = {
 };
 
 export default function Ellipsis(props: EllipsisProps) {
-  const [selectedOption, setSelectedOption] = useState(props.status[0]);
   const [isOpen, setIsOpen] = useState(false);
   const ellipsisRef = useRef<HTMLDivElement>(null);
 
@@ -16,7 +15,6 @@ export default function Ellipsis(props: EllipsisProps) {
   };
 
   const handleMenuOptionClick = (option: string) => {
-    setSelectedOption(option);
     setIsOpen(false);
     props.onCategoryChange(option);
   };

@@ -1,140 +1,131 @@
 .modal-guidelines {
-    background-color: #D9D9D9;
+  background-color: #d9d9d9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 40px;
+  margin: 20px;
+  width: 80%;
+  margin-top: 2%;
+  margin-bottom: 5%;
+  overflow-y: auto;
+  max-height: 90vh;
+  z-index: 9999;
+}
+
+.modal-guidelines h2 {
+  text-align: center;
+  color: #060e57;
+}
+
+.modal-content {
+  margin-top: 20px;
+}
+
+.modal-guidelines p {
+  margin: 10px 0;
+  text-align: justify;
+  color: black;
+}
+.modal-guidelines h4 {
+  color: black;
+}
+
+.guidelines-footer {
+  margin-top: 2%;
+  display: flex;
+  flex-direction: row;
+  text-align: justify;
+}
+
+.validation {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-checkbox {
+  color: #060e57;
+  margin-left: -0.1vw;
+  justify-content: center;
+}
+.alert-text {
+  color: red;
+}
+
+.next-button {
+  background-color: #d9d9d9;
+  border: 2px solid #060e57;
+  border-radius: 10px;
+  padding: 10px 30px;
+  color: #060e57;
+  cursor: pointer;
+  margin: auto;
+  margin-right: -0.1vw;
+  margin-bottom: -0.1vh;
+}
+
+@media screen and (max-width: 768px) {
+  .modal-guidelines {
+    background-color: #d9d9d9;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    padding: 40px;
+    padding: 30px;
     margin: 20px;
-    width: 80%;
+    width: 95%;
     margin-top: 2%;
     margin-bottom: 5%;
     overflow-y: auto; /* Add this to make the content scrollable */
     max-height: 90vh; /* Add this to limit the max height of the modal content */
-    z-index: 9999;
-
+    z-index: 999;
   }
-  
+
   .modal-guidelines h2 {
     text-align: center;
-    color: #060E57;
+    color: #060e57;
   }
-  
+
   .modal-content {
     margin-top: 20px;
   }
-  
+
   .modal-guidelines p {
     margin: 10px 0;
     text-align: justify;
-    color: black
+    color: black;
   }
   .modal-guidelines h4 {
-    color: black
+    color: black;
   }
-  
+
   .guidelines-footer {
     margin-top: 2%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     text-align: justify;
   }
 
-  .validation{
+  .validation {
     display: flex;
     flex-direction: column;
   }
-  
+
   .modal-checkbox {
-    color: #060E57;
+    color: #060e57;
     margin-left: -0.1vw;
-    justify-content: center;
   }
-  .alert-text{
+  .alert-text {
     color: red;
-    
   }
-  
+
   .next-button {
-    background-color: #D9D9D9;
-    border: 2px solid #060E57;
+    background-color: #d9d9d9;
+    border: 2px solid #060e57;
     border-radius: 10px;
     padding: 10px 30px;
-    color: #060E57;
+    color: #060e57;
     cursor: pointer;
     margin: auto;
     margin-right: -0.1vw;
     margin-bottom: -0.1vh;
+    margin-top: 5%;
   }
-
-  @media screen and (max-width: 768px){
-
-    .modal-guidelines {
-      background-color: #D9D9D9;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-      padding: 30px;
-      margin: 20px;
-      width: 95%;
-      margin-top: 2%;
-      margin-bottom: 5%;
-      overflow-y: auto; /* Add this to make the content scrollable */
-      max-height: 90vh; /* Add this to limit the max height of the modal content */
-      z-index: 999;
-  
-    }
-    
-    .modal-guidelines h2 {
-      text-align: center;
-      color: #060E57;
-    }
-    
-    .modal-content {
-      margin-top: 20px;
-    }
-    
-    .modal-guidelines p {
-      margin: 10px 0;
-      text-align: justify;
-      color: black
-    }
-    .modal-guidelines h4 {
-      color: black
-    }
-    
-    .guidelines-footer {
-      margin-top: 2%;
-      display: flex;
-      flex-direction: column;
-      text-align: justify;
-    }
-  
-    .validation{
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .modal-checkbox {
-      color: #060E57;
-      margin-left: -0.1vw;
-    }
-    .alert-text{
-      color: red;
-      
-    }
-    
-    .next-button {
-      background-color: #D9D9D9;
-      border: 2px solid #060E57;
-      border-radius: 10px;
-      padding: 10px 30px;
-      color: #060E57;
-      cursor: pointer;
-      margin: auto;
-      margin-right: -0.1vw;
-      margin-bottom: -0.1vh;
-      margin-top: 5%;
-    }
-
-
-  }
-
-  
+}

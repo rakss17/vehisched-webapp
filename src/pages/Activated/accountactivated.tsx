@@ -1,4 +1,3 @@
-import Container from "../../components/container/container";
 import "./accountactivated.css";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";

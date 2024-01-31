@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
 const serverSideUrl = "192.168.11.206:8000";
@@ -11,7 +10,7 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
       `ws://${serverSideUrl}/ws/notification/approval_schedule-reminder/?requester_name=${userName}`
     );
 
-    newSocket.onopen = (event) => {
+    newSocket.onopen = () => {
       console.log(
         "Notification approval and schedule reminder connection opened"
       );
@@ -70,7 +69,7 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
       }
     };
 
-    newSocket.onclose = (event) => {
+    newSocket.onclose = () => {
       console.log(
         "Notification approval and schedule reminder connection closed"
       );
@@ -95,7 +94,7 @@ export function NotificationCreatedCancelWebsocket(
       `ws://${serverSideUrl}/ws/notification/created_cancel/`
     );
 
-    newSocket.onopen = (event) => {
+    newSocket.onopen = () => {
       console.log(
         "Notification created and cancel WebSocket connection opened"
       );
@@ -116,14 +115,6 @@ export function NotificationCreatedCancelWebsocket(
         data.status === "Created" &&
         data.message != "Notification message goes here for created"
       ) {
-        const justnow = "Just Now";
-        // toast.success(
-        //   <ToastContent message={data.message} timeago={justnow} />,
-        //   {
-        //     position: toast.POSITION.TOP_CENTER,
-        //     autoClose: false,
-        //   }
-        // );
       } else if (
         data.type === "notify.request_completed" &&
         data.status === "Completed" &&
@@ -163,7 +154,7 @@ export function NotificationCreatedCancelWebsocket(
       }
     };
 
-    newSocket.onclose = (event) => {
+    newSocket.onclose = () => {
       console.log(
         "Notification created and cancel WebSocket connection closed"
       );

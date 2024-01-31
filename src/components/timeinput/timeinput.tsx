@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TimePicker from "react-time-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { format, setHours, setMinutes, getHours, getMinutes } from "date-fns";
+import { format, setHours, getHours } from "date-fns";
 import "./timeinput.css";
 import { TimeInputProps } from "../../interfaces/interfaces";
 

@@ -35,7 +35,7 @@ const CalendarSchedule: React.FC<CalendarScheduleProps> = ({
 
   const assignEventColors = () => {
     let lastColorIndex = 0;
-    schedulesData.forEach((schedule, index) => {
+    schedulesData.forEach((index) => {
       const nextColorIndex = (lastColorIndex + 1) % colors.length;
       eventColors.current.set(index, colors[nextColorIndex]);
       lastColorIndex = nextColorIndex;

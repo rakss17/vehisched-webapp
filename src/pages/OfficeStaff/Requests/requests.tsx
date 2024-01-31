@@ -9,13 +9,12 @@ import {
   faRoad,
   faSchool,
   faCircleExclamation,
-  faM
+  faM,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
 import Container from "../../../components/container/container";
 import "./requests.css";
-import Label from "../../../components/label/label";
 import SearchBar from "../../../components/searchbar/searchbar";
 import Dropdown from "../../../components/dropdown/dropdown";
 import { SidebarItem } from "../../../interfaces/interfaces";
@@ -23,11 +22,9 @@ import RequestFormDetails from "../../../components/form/requestformdetails";
 import Confirmation from "../../../components/confirmation/confirmation";
 import { RequestFormProps } from "../../../interfaces/interfaces";
 import {
-  approveRequestAPI,
   fetchRequestOfficeStaffAPI,
   fetchNotification,
   maintenanceAbsenceCompletedRequestAPI,
-  rejectRequestAPI,
 } from "../../../components/api/api";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
@@ -45,7 +42,7 @@ export default function Requests() {
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [isTravelOrderNoteHovered, setIsTravelOrderNoteHovered] =
     useState(false);
-  const [isMergedWithNoteHovered, setIsMergedWithNoteHovered] = useState(false)
+  const [isMergedWithNoteHovered, setIsMergedWithNoteHovered] = useState(false);
   const [isOnTripHovered, setIsOnTripHovered] = useState(false);
   const [isAwaitingTripHovered, setIsAwaitingTripHovered] = useState(false);
   const [hoverIdentification, setHoverIdentification] = useState("");
@@ -53,8 +50,6 @@ export default function Requests() {
     useState<RequestFormProps | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
-    useState(false);
-  const [isConfirmationRejectedOpen, setIsConfirmationRejectedOpen] =
     useState(false);
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
@@ -163,7 +158,6 @@ export default function Requests() {
   const handleCloseRequestForm = () => {
     setIsRequestFormOpen(false);
   };
-  
 
   const handleCompleted = () => {
     maintenanceAbsenceCompletedRequestAPI(
@@ -439,10 +433,6 @@ export default function Requests() {
 
       <Confirmation isOpen={isConfirmationOpen} header="Request Approved!" />
       <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
-      <Confirmation
-        isOpen={isConfirmationRejectedOpen}
-        header="Request Rejected!"
-      />
     </>
   );
 }

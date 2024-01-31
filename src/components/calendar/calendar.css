@@ -23,7 +23,6 @@
 button.rbc-btn {
   overflow: visible;
   text-transform: none;
-  -webkit-appearance: button;
   cursor: pointer;
 }
 

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import "./addofficerole.css";
-import DropdownMenu from "../dropdownmenu";
 import { ModalProps } from "../../../interfaces/interfaces";
 import CommonButton from "../../button/commonbutton";
 import { addOffice } from "../../api/api";
@@ -13,42 +12,6 @@ const AddOfficeRole: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [name, setName] = useState("");
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-
-  const handleKeyDown = (event: any) => {
-    const key = event.key;
-
-    if (key !== "Backspace" && isNaN(key)) {
-      event.preventDefault();
-    }
-  };
-
-  //   const calculateModalStyles = () => {
-  //     const modalStyles = {
-  //       content: {
-  //         height: calculateModalHeight(),
-  //         marginTop: calculateMarginTop(),
-  //       },
-  //     };
-  //     return modalStyles;
-  //   };
-
-  //   const calculateModalHeight = () => {
-  //     if (errorMessages.length > 0) {
-  //       return 73 + errorMessages.length * 5 + "vh";
-  //     } else {
-  //       return "73vh";
-  //     }
-  //   };
-
-  //   const calculateMarginTop = () => {
-  //     const defaultMarginTop = "15vh";
-
-  //     if (errorMessages.length >= 2) {
-  //       return "5vh";
-  //     } else {
-  //       return defaultMarginTop;
-  //     }
-  //   };
 
   const handleAddOffice = () => {
     addOffice(name, setIsConfirmationOpen, setLoadingBarProgress);

@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ isDropDownHide }) => {
       setLoadingBarProgress(70);
       persistor.purge();
       setLoadingBarProgress(100);
-      window.location.href = "/";
+      window.location.href = "/vehisched-backend";
     }
 
     setIsOpen(false);

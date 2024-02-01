@@ -46,7 +46,7 @@ function App() {
         <PersistGate persistor={persistor}>
           <HashRouter>
             <Routes>
-              <Route path="/" element={<Landing />} />
+              <Route path="/vehisched-backend" element={<Landing />} />
               <Route path="/AccountActivated" element={<AccountActivated />} />
 
               <Route

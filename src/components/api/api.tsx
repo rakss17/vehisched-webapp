@@ -46,19 +46,11 @@ export async function SigninAPI(
         "Web application for requester is not yet available. Please install the vehisched mobile application to login"
       );
     } else if (res.data.role === "office staff") {
-      if (window.isSecureContext) {
-        localStorage.setItem("token", token);
-        navigate("/DashboardOS");
-      } else {
-        console.error("Cannot save token due to insecure context");
-      }
+      localStorage.setItem("token", token);
+      navigate("/DashboardOS");
     } else if (res.data.role === "admin") {
-      if (window.isSecureContext) {
-        localStorage.setItem("token", token);
-        navigate("/Admin");
-      } else {
-        console.error("Cannot save token due to insecure context");
-      }
+      localStorage.setItem("token", token);
+      navigate("/Admin");
     }
     setLoadingBarProgress(100);
   } catch (error) {

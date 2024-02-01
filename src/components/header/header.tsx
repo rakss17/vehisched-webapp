@@ -9,6 +9,7 @@ import { persistor } from "../../redux/store";
 import { clearUserData } from "../../redux/actions/userActions";
 import LoadingBar from "react-top-loading-bar";
 import { HeaderProps } from "../../interfaces/interfaces";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC<HeaderProps> = ({ isDropDownHide }) => {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -18,6 +19,7 @@ const Header: React.FC<HeaderProps> = ({ isDropDownHide }) => {
   );
   const username = personalInfo?.username;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleMenuToggle = () => {
     setIsOpen(!isOpen);
@@ -37,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ isDropDownHide }) => {
       setLoadingBarProgress(70);
       persistor.purge();
       setLoadingBarProgress(100);
-      window.location.href = "/vehisched-backend";
+      navigate("/Vehi-Sched");
     }
 
     setIsOpen(false);

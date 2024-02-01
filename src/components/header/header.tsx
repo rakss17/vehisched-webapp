@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ isDropDownHide }) => {
       setLoadingBarProgress(70);
       persistor.purge();
       setLoadingBarProgress(100);
-      navigate("/Vehi-Sched");
+      navigate("/");
     }
 
     setIsOpen(false);

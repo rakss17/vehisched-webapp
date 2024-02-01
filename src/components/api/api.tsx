@@ -13,10 +13,11 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-export const serverSideUrl = "http://192.168.11.206:8000/media/";
+export const serverSideUrl =
+  "http://https://vehisched-backend.keannu1.duckdns.org/media/";
 
 const api = axios.create({
-  baseURL: "http://192.168.11.206:8000/",
+  baseURL: "http://https://vehisched-backend.keannu1.duckdns.org/",
 });
 
 export async function SigninAPI(

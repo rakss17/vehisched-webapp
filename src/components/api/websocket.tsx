@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import ToastContent from "../toastcontent/toastcontent";
 
-const serverSideUrl = "192.168.11.206:8000";
+const serverSideUrl = "https://vehisched-backend.keannu1.duckdns.org/";
 
 export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   useEffect(() => {

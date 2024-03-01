@@ -1,18 +1,22 @@
+/* Base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-.label-margin-admin {
+ }
+ 
+ .label-margin-admin {
   margin-top: 5vw;
-}
-.nav-button-row-admin {
+ }
+ 
+ .nav-button-row-admin {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
-}
-.nav-button-row-admin button {
+ }
+ 
+ .nav-button-row-admin button {
   background-color: #d9d9d9;
   color: #060e57;
   height: 8vh;
@@ -22,93 +26,230 @@
   font-weight: bold;
   width: 50vw;
   border: none;
-}
-
-.nav-button-row-admin button.active {
+ }
+ 
+ .nav-button-row-admin button.active {
   background-color: #060e57;
   color: #d9d9d9;
-}
-.nav-button-row-admin button:focus {
+ }
+ 
+ .nav-button-row-admin button:focus {
   border: none;
-}
-.nav-button-row-admin button:hover {
+ }
+ 
+ .nav-button-row-admin button:hover {
   background-color: #060e57;
   color: #d9d9d9;
-}
-.display-accounts-container {
+ }
+ 
+ .display-accounts-container {
   background-color: transparent;
   display: flex;
   flex-direction: column;
   height: 70vh;
-}
-.display-accounts-container p {
+ }
+ 
+ .display-accounts-container p {
   color: black;
   font-size: 1.2rem;
-}
-.accounts-row {
+ }
+ 
+ .accounts-row {
   margin-top: 1rem;
   margin-left: 19vh;
   display: flex;
   flex-direction: row;
   gap: 20%;
-}
-.accounts-row .accounts-row-button {
+ }
+ 
+ .accounts-row .accounts-row-button {
   height: 7vh;
   width: 25vw;
   justify-content: space-between;
   display: flex;
-}
-
-.usertype-button-row {
+ }
+ 
+ .usertype-button-row {
   margin-top: 1vw;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
-}
-.usertype-button-row button {
+ }
+ 
+ .usertype-button-row button {
   width: 20vw;
   border-radius: 0px;
   background-color: #d9d9d9;
   color: black;
   border: none;
-}
-.usertype-button-row button.active {
+ }
+ 
+ .usertype-button-row button.active {
   background-color: #d0951b;
   color: white;
-}
-.usertype-button-row button:hover {
+ }
+ 
+ .usertype-button-row button:hover {
   background-color: #d0951b;
   color: white;
-}
-.accounts-data-container {
+ }
+ 
+ .accounts-data-container {
   display: flex;
   justify-content: center;
   overflow-x: auto;
-}
-
-.accounts-data-container table {
+ }
+ 
+ .accounts-data-container table {
   width: 90vw;
   padding-bottom: 3rem;
-}
-
-.accounts-data-container table thead {
+ }
+ 
+ .accounts-data-container table thead {
   color: black;
   font-size: 1.3rem;
-}
-
-.accounts-data-container table tbody tr {
+ }
+ 
+ .accounts-data-container table tbody tr {
   color: black;
   background-color: #d9d9d9;
   font-size: 1.2rem;
   text-align: center;
   cursor: pointer;
   height: 7vh;
-}
-.accounts-data-container table tbody tr div {
+ }
+ 
+ .accounts-data-container table tbody tr div {
   background-color: transparent;
   width: 1.2vw;
-}
-.accounts-data-container table tbody td {
+ }
+ 
+ .accounts-data-container table tbody td {
   border-radius: 0px;
-}
+ }
+ 
+ /* Responsive styles */
+ @media (max-width: 768px) {
+
+  .label-margin-admin {
+    display: flex;
+    margin-bottom: 1vh;
+    margin-top: -1vh;
+    justify-content: center ;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+   }
+
+   .display-accounts-container {
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+   }
+   
+   .display-accounts-container p {
+    color: black;
+    font-size: 1.2rem;
+   }
+
+  .nav-button-row-admin button {
+     width: 100vw;
+     height: 5vh;
+     align-items: center;
+     font-size: 1rem;
+  }
+ 
+  .accounts-row {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     width: 90vw;
+  }
+ 
+  .accounts-row .accounts-row-button {
+    height: 5vh;
+    width: 80vw;
+    justify-content: space-between;
+    display: flex;
+    font-size: smaller;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+   }
+ 
+  .usertype-button-row button {
+    display: flex;
+     width: 100vw;
+     font-size: x-small;
+     margin-top: 1vh;
+  }
+
+  .accounts-data-container {
+    display: flex;
+    justify-content: center;
+    width: auto;
+    overflow-x: auto;
+    padding-left: 20%;
+    width: 100vw;
+   }
+ 
+  .accounts-data-container table {
+    overflow: auto;
+    margin-left: 30%;
+    width: max-content;
+  }
+  .accounts-data-container table thead {
+    color: black;
+    font-size: smaller;
+
+   }
+   .accounts-data-container table tbody tr {
+    color: black;
+    background-color: #d9d9d9;
+    font-size: smaller;
+    text-align: center;
+    cursor: pointer;
+    height: 5vh;
+
+   }
+
+   .accounts-data-container table tbody td {
+    height: 3vh;
+    margin-right: 2%;
+    margin-left: 2%;
+    overflow: auto;
+    
+   }
+   .stats{
+    margin-right: 30px;
+   }
+
+ }
+ 
+ @media (max-width: 480px) {
+  .nav-button-row-admin button {
+     width: 90vw;
+  }
+ 
+  .accounts-row {
+     margin-left: 2vh;
+  }
+ 
+  .accounts-row .accounts-row-button {
+     width: 80vw;
+     height: 5vh;
+     margin-top: 2vh;
+     margin-bottom: 1vh;
+  }
+ 
+  .usertype-button-row button {
+     width: 35vw;
+  }
+ 
+  .accounts-data-container table {
+
+  }
+ }
+ 

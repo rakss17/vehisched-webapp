@@ -6,7 +6,7 @@
 
 @media screen and (max-width: 768px) {
   .label {
-    margin-left: 5rem;
+    margin-left: -1rem;
     margin-top: 6rem;
     font-size: 2rem;
   }

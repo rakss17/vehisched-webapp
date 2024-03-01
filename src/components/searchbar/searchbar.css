@@ -28,16 +28,23 @@
 
 @media screen and (max-width: 768px) {
   .search-bar {
-    width: 10rem;
+    width: 100vw;
     height: 3rem;
     border-radius: 5px;
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
-    margin-left: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 3rem;
+    margin-left: 0rem;
+
   }
   .inputsearch {
-    position: unset;
+    position: relative;
+    background-color: blue;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 90vw;
   }
   .icon-container-search {
-    display: none;
+    position: absolute;
+    left: 5%;
   }
 }

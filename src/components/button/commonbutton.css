@@ -32,3 +32,40 @@
   height: 6vh;
   text-align: center;
 }
+
+
+@media (max-width: 768px) {
+  .primary-style {
+    background-color: #060e57;
+    color: white;
+    width: 8vw;
+    height: 3vh;
+    text-align: center;
+  }
+  .secondary-style {
+    background-color: transparent;
+    color: black;
+    border: 2px solid #060e57;
+    width: 8vw;
+    height: 3vh;
+    text-align: center;
+  }
+  .tertiary-style {
+    background-color: transparent;
+    color: red;
+    border: 2px solid red;
+    width: 8vw;
+    height: 3vh;
+    text-align: center;
+  }
+  
+  .underlined-style {
+    background-color: transparent;
+    color: #212bf3;
+    border: none;
+    text-decoration: underline;
+    width: 8vw;
+    height: 3vh;
+    text-align: center;
+  }
+}

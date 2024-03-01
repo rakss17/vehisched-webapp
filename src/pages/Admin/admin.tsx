@@ -663,16 +663,14 @@ export default function Admin() {
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchAccount} />
               <div className="accounts-row-button">
-                <CommonButton
-                  width={12}
-                  height={7}
+                <CommonButton 
+                  
                   secondaryStyle
                   onClick={handleAddOfficeRole}
                   text="+ Add Office/Role"
                 />
                 <CommonButton
-                  width={10}
-                  height={7}
+                  
                   primaryStyle
                   onClick={handleAddUser}
                   text="+ Add User"
@@ -751,7 +749,7 @@ export default function Admin() {
                         <td>{account.middle_name}</td>
                         <td>{account.mobile_number}</td>
                         <td>
-                          <div
+                          <div className="stats"
                             style={{
                               width: "10px",
                               height: "10px",
@@ -789,8 +787,8 @@ export default function Admin() {
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchVehicle} />
               <CommonButton
-                width={10}
-                height={7}
+                // width={10}
+                // height={7}
                 primaryStyle
                 text="+ Add Vehicle"
                 onClick={handleAddVehicle}

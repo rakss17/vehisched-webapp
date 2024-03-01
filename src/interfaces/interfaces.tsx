@@ -191,6 +191,7 @@ export interface ModalProps {
   setIsConfirmationOpenDriverAbsence?: any;
   selectedDriver?: any;
   onProceed?: any;
+  onSubmit?:any;
 }
 
 export interface ButtonProps {

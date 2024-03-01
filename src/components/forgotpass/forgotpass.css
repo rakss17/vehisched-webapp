@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .modal-forgot-pass {
+    margin-top: 26vh;
+    margin-left: 38vw;
+    background-color: #d9d9d9;
+    width: 25vw;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 1vh;
+    border-radius: 10px;
+  }
+  .modal-forgot-pass h1 {
+    color: #060e57;
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  
+  .forgotpass-content{
+    justify-content: center;
+    align-self: center;
+    margin-left: 1vw;
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+  }
+  .Text{
+    color: black;
+    font-size: 1rem;
+    text-align: left;
+  }
+  .forgot-input{
+    background-color: white;
+    width:21vw;
+    align-self: center;
+    margin-top: 3vh;
+    height: 5vh;
+    border-radius: 5px;
+    color: black;
+    padding: 2%;
+  }
+  .yesno-forgot-btn{
+    margin-left: -7vh;
+    display: flex;
+    gap: 30%;
+  }
+  
+  @media screen and (max-width: 767px) {
+    
+    
+    .modal-forgot-pass {
+      margin-top: 26vh;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #d9d9d9;
+      width: 90vw;
+      height: 30vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      gap: 1vh;
+    }
+    
+    .modal-forgot-pass h1 {
+        color: #060e57;
+        font-size: 1.4rem;
+        text-align: center;
+      }
+      
+      .forgotpass-content{
+        justify-content: center;
+        align-self: center;
+        margin-left: 1vw;
+        margin-top: 2vh;
+        margin-bottom: 3vh;
+      }
+      .Text{
+        color: black;
+        font-size: 1rem;
+        text-align: left;
+      }
+      .forgot-input{
+        background-color: white;
+        width:80vw;
+        align-self: center;
+        margin-top: 2vh;
+        height: 5vh;
+        border-radius: 5px;
+        color: black;
+        padding: 2%;
+      }
+    .yesno-forgot-btn{
+      gap: 30%;
+  
+    }
+    
+  }

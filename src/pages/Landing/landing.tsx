@@ -13,6 +13,7 @@ import { SigninParams } from "../../interfaces/interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import LoadingBar from "react-top-loading-bar";
+import ForgotPass from "../../components/forgotpass/forgotpass";
 
 export default function Landing() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -44,6 +45,13 @@ export default function Landing() {
       }
     }
   }, []);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+   };
+   
 
   const handleToggleVisibility = () => {
     setShowPassword(!showPassword);
@@ -144,7 +152,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="forgotpassword">
-            <a className="forgottext">Forgot password?</a>
+            <a className="forgottext" onClick={toggleModal}>Forgot password?</a>
           </div>
           <div className="buttoncontainer">
             <div className="rememberme">
@@ -161,6 +169,16 @@ export default function Landing() {
           <div className="line"></div>
         </div>
       </div>
+      <ForgotPass
+        isOpen={showModal}
+        header="Forgot Password?"
+        onRequestClose={toggleModal}
+        onProceed={() => {
+          // Implement the logic to handle the forgot password process
+          console.log("Forgot password process initiated");
+          toggleModal(); // Close the modal after proceeding
+        }}
+      />
     </>
   );
 }

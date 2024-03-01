@@ -167,6 +167,7 @@
      justify-content: center;
      align-items: center;
      width: 90vw;
+
   }
  
   .accounts-row .accounts-row-button {
@@ -177,6 +178,12 @@
     font-size: smaller;
     margin-top: 2vh;
     margin-bottom: 1vh;
+   }
+
+   .addvehicle-btn{
+    margin-top: 2vh;
+    align-items: center;
+ 
    }
  
   .usertype-button-row button {

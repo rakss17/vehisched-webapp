@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import ToastContent from "../toastcontent/toastcontent";
 
-const serverSideUrl = "vehisched-backend.keannu1.duckdns.org";
+const serverSideUrl = "172.20.12.21:8000";
 
 export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
   useEffect(() => {
     const newSocket = new WebSocket(
-      `wss://${serverSideUrl}/ws/notification/approval_schedule-reminder/?requester_name=${userName}`
+      `ws://${serverSideUrl}/ws/notification/approval_schedule-reminder/?requester_name=${userName}`
     );
 
     newSocket.onopen = () => {
@@ -91,7 +91,7 @@ export function NotificationCreatedCancelWebsocket(
 ) {
   useEffect(() => {
     const newSocket = new WebSocket(
-      `wss://${serverSideUrl}/ws/notification/created_cancel/`
+      `ws://${serverSideUrl}/ws/notification/created_cancel/`
     );
 
     newSocket.onopen = () => {

@@ -786,13 +786,15 @@ export default function Admin() {
           <>
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchVehicle} />
-              <CommonButton
-                // width={10}
-                // height={7}
-                primaryStyle
-                text="+ Add Vehicle"
-                onClick={handleAddVehicle}
-              />
+              <div className="addvehicle-btn">
+                <CommonButton
+                  // width={10}
+                  // height={7}
+                  primaryStyle
+                  text="+ Add Vehicle"
+                  onClick={handleAddVehicle}
+                />
+                </div>
             </div>
             <div className="vehicles-container">
               {filteredVehicleList.length === 0 ? (

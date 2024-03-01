@@ -66,7 +66,7 @@
   margin-top: 25vh;
 }
 
-@media  screen and (max-width: 767px) {
+@media  screen and (max-width: 767px ) {
 
   .modal-add-office-role {
     background-color: #d9d9d9;

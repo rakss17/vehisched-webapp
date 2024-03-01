@@ -14,15 +14,15 @@ import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
 export const serverSideUrl =
-  "https://vehisched-backend.keannu1.duckdns.org/media/";
+  "http://172.20.12.21:8000/media/";
 
 const api = axios.create({
-  baseURL: "https://vehisched-backend.keannu1.duckdns.org/",
+  baseURL: "http://172.20.12.21:8000/",
 });
 
 export async function SigninAPI(
   userData: SigninParams,
-  navigate: any,
+  navigate: any,  
   dispatch: any,
   setLoadingBarProgress: (progress: number) => void,
   setError: any

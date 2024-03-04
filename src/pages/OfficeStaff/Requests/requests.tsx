@@ -33,6 +33,9 @@ import LoadingBar from "react-top-loading-bar";
 import { formatDate } from "../../../components/functions/getTimeElapsed";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HoverDescription from "../../../components/hoverdescription/hoverdescription";
+import CommonButton from "../../../components/button/commonbutton";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -175,6 +178,12 @@ export default function Requests() {
     : [];
 
   filteredRequestList.reverse();
+
+  const navigate = useNavigate();
+  const handleCreateRequest = () => {
+    navigate("/RequestForm");
+ };
+
   return (
     <>
       <LoadingBar
@@ -218,6 +227,7 @@ export default function Requests() {
             ]}
             onCategoryChange={handleCategoryChange}
           />
+          <CommonButton onClick={handleCreateRequest} text="Create Request" primaryStyle />
         </div>
         <div className="request-container">
           <table

@@ -119,7 +119,9 @@ export async function resetPassword(
     );
     setLoadingBarProgress(50);
     setEmail("");
+    console.log(response);
     setLoadingBarProgress(100);
+    window.location.reload();
   } catch (error) {
     setLoadingBarProgress(100);
     console.log("There was an error!", error);

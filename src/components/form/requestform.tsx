@@ -155,7 +155,7 @@ export default function RequestForm() {
   };
 
   const handleGoBack = () => {
-    navigate("/DashboardR");
+    window.history.back();
   };
 
   const handleSubmit = () => {

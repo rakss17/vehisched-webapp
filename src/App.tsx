@@ -121,7 +121,7 @@ function App() {
                 element={
                   <ProtectedRoute
                     path="/RequestForm"
-                    allowedRoles={["requester", "vip"]}
+                    allowedRoles={["requester", "vip", "office staff"]}
                   >
                     <RequestForm />
                   </ProtectedRoute>

@@ -7,8 +7,6 @@ import './forgotpass.css'
 const ForgotPass: React.FC<ModalProps> = ({
   isOpen,
   header,
-  content,
-  footer,
   onRequestClose,
   onSubmit,
 }) => {

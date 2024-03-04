@@ -26,14 +26,13 @@
   color: black;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .search-bar {
     width: 100vw;
     height: 3rem;
     border-radius: 5px;
     padding: 0.5rem 0.5rem 0.5rem 3rem;
     margin-left: 0rem;
-
   }
   .inputsearch {
     position: relative;
@@ -42,6 +41,7 @@
     align-items: center;
     display: flex;
     width: 90vw;
+    margin-left: 0.5rem;
   }
   .icon-container-search {
     position: absolute;

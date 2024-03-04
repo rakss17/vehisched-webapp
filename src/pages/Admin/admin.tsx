@@ -241,7 +241,7 @@ export default function Admin() {
   useEffect(() => {
     setUserData((prevUserData: any) => ({
       ...prevUserData,
-      password: `${userData.last_name}@${userData.first_name}`,
+      password: `${userData.last_name.toLowerCase()}@${userData.first_name.toLowerCase()}`,
     }));
   }, [userData]);
 
@@ -663,14 +663,12 @@ export default function Admin() {
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchAccount} />
               <div className="accounts-row-button">
-                <CommonButton 
-                  
+                <CommonButton
                   secondaryStyle
                   onClick={handleAddOfficeRole}
                   text="+ Add Office/Role"
                 />
                 <CommonButton
-                  
                   primaryStyle
                   onClick={handleAddUser}
                   text="+ Add User"
@@ -749,7 +747,8 @@ export default function Admin() {
                         <td>{account.middle_name}</td>
                         <td>{account.mobile_number}</td>
                         <td>
-                          <div className="stats"
+                          <div
+                            className="stats"
                             style={{
                               width: "10px",
                               height: "10px",
@@ -794,7 +793,7 @@ export default function Admin() {
                   text="+ Add Vehicle"
                   onClick={handleAddVehicle}
                 />
-                </div>
+              </div>
             </div>
             <div className="vehicles-container">
               {filteredVehicleList.length === 0 ? (

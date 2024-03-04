@@ -142,8 +142,8 @@ export interface RequestFormProps {
   requester_id?: any;
   vehicle_capacity?: any;
   driver_name?: any;
-  merged_with?: any,
-  main_merge?: any
+  merged_with?: any;
+  main_merge?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -191,7 +191,6 @@ export interface ModalProps {
   setIsConfirmationOpenDriverAbsence?: any;
   selectedDriver?: any;
   onProceed?: any;
-  onSubmit?:any;
 }
 
 export interface ButtonProps {

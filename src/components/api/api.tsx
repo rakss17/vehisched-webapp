@@ -13,16 +13,28 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-export const serverSideUrl =
-  "http://172.20.12.21:8000/media/";
+const debug = true;
 
-const api = axios.create({
-  baseURL: "http://172.20.12.21:8000/",
-});
+export let serverSideUrl: any;
+export let api: any;
+
+if (debug) {
+  serverSideUrl = "http://172.20.12.21:8000/media/";
+
+  api = axios.create({
+    baseURL: "http://172.20.12.21:8000/",
+  });
+} else {
+  serverSideUrl = "https://vehisched-backend.keannu1.duckdns.org/media/";
+
+  api = axios.create({
+    baseURL: "https://vehisched-backend.keannu1.duckdns.org/",
+  });
+}
 
 export async function SigninAPI(
   userData: SigninParams,
-  navigate: any,  
+  navigate: any,
   dispatch: any,
   setLoadingBarProgress: (progress: number) => void,
   setError: any
@@ -80,12 +92,38 @@ export function SignupAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setLoadingBarProgress(100);
       console.log(error);
     });
+}
+export async function resetPassword(
+  email: any,
+  setEmail: any,
+  setLoadingBarProgress: (progress: number) => void
+) {
+  try {
+    let response = await api.post(
+      "api/v1/accounts/users/reset_password/",
+      {
+        email: email,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    setLoadingBarProgress(50);
+    setEmail("");
+    setLoadingBarProgress(100);
+  } catch (error) {
+    setLoadingBarProgress(100);
+    console.log("There was an error!", error);
+  }
 }
 export async function resetPasswordConfirm(
   uid: any,
@@ -159,7 +197,7 @@ export function addOffice(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setLoadingBarProgress(100);
@@ -271,10 +309,10 @@ export function fetchDriversScheduleAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setDriversData(response.data);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching driver list:", error);
     });
 }
@@ -400,7 +438,7 @@ export function deleteUserAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       if (response.status === 204) {
         setLoadingBarProgress(50);
         setIsConfirmationOpenDelete(true);
@@ -425,7 +463,7 @@ export function deleteUserAPI(
         console.error("Error deleting user");
       }
     })
-    .catch((error) => console.error("Error deleting user:", error));
+    .catch((error: any) => console.error("Error deleting user:", error));
 }
 
 export function toggleUserActivationAPI(
@@ -442,7 +480,7 @@ export function toggleUserActivationAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       if (response.data.is_active === true) {
         setIsConfirmationOpenActivated(true);
         setTimeout(() => {
@@ -461,7 +499,7 @@ export function toggleUserActivationAPI(
         }, 3000);
       }
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -509,7 +547,7 @@ export function addVehiclesAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       setLoadingBarProgress(20);
       setLoadingBarProgress(50);
       setLoadingBarProgress(100);
@@ -625,7 +663,7 @@ export function postRequestFromAPI(
         navigate("/DashboardR");
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
@@ -653,12 +691,12 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       const responseData = Array.isArray(response.data)
         ? response.data
         : [response.data];
 
-      const updatedData = responseData.map((item) => {
+      const updatedData = responseData.map((item: any) => {
         if (item.passenger_name) {
           const validJson = item.passenger_name.replace(/'/g, '"');
           const passengerNamesArray = JSON.parse(validJson);
@@ -669,7 +707,7 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
 
       setRequestFilteredData(updatedData);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching request list:", error);
     });
 }
@@ -683,14 +721,14 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       const pendingScheduleTrips = response.data.filter(
         (trip: any) => trip.status === "Pending"
       );
       setPendingSchedule(pendingScheduleTrips);
       console.log(response.data);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching request list:", error);
     });
 }
@@ -704,12 +742,12 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       const responseData = Array.isArray(response.data)
         ? response.data
         : [response.data];
 
-      const updatedData = responseData.map((item) => {
+      const updatedData = responseData.map((item: any) => {
         if (item.passenger_name) {
           const validJson = item.passenger_name.replace(/'/g, '"');
           const passengerNamesArray = JSON.parse(validJson);
@@ -719,7 +757,7 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
       });
       setRequestList(updatedData);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching request list:", error);
     });
 }
@@ -755,7 +793,7 @@ export function approveRequestAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -794,7 +832,7 @@ export function cancelRequestAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -813,7 +851,7 @@ export function toggleVehicleStatusAPI(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       if (response.data.status === "Available") {
         setIsConfirmationOpen(true);
         setTimeout(() => {
@@ -832,7 +870,7 @@ export function toggleVehicleStatusAPI(
         }, 3000);
       }
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -846,7 +884,7 @@ export function fetchNotification(setNotifList: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setNotifList(response.data);
       const unreadNotifications = response.data.filter(
         (notification: any) => !notification.read_status
@@ -927,7 +965,7 @@ export function fetchNotification(setNotifList: any) {
         }
       });
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching notif list:", error);
     });
   return null;
@@ -958,13 +996,13 @@ export function checkVehicleAvailability(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setLoadingBarProgress(50);
       setVehiclesData(response.data);
       setLoadingBarProgress(100);
       handleButtonClick("Available Vehicle");
     })
-    .catch((error) => {
+    .catch((error: any) => {
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
@@ -998,7 +1036,7 @@ export function fetchSchedule(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       const scheduleData = response.data.trip_data.filter(
         (item: any) => !item.next_schedule_travel_date
       );
@@ -1018,7 +1056,7 @@ export function fetchSchedule(
         handleButtonClick("Ongoing Schedule");
       }
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
     });
 }
@@ -1032,10 +1070,10 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setSchedule(response.data);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
     });
 }
@@ -1049,7 +1087,7 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       const vehiclesData = response.data;
 
       Object.keys(vehiclesData).forEach((vehicleKey) => {
@@ -1074,7 +1112,7 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
 
       setSchedule(vehiclesData);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
     });
 }
@@ -1094,10 +1132,10 @@ export async function fetchVehicleSchedules(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setVehicleSchedules(response.data);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
     });
 }
@@ -1117,10 +1155,10 @@ export async function fetchDriverSchedules(
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setDriverSchedules(response.data);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
     });
 }
@@ -1222,7 +1260,7 @@ export function vehicleMaintenanceAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
@@ -1268,7 +1306,7 @@ export function acceptVehicleAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       setLoadingBarProgress(100);
       console.log(error);
     });
@@ -1298,7 +1336,7 @@ export function driverAbsenceAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
@@ -1346,7 +1384,7 @@ export function maintenanceAbsenceCompletedRequestAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -1381,7 +1419,7 @@ export function rejectRequestAPI(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -1418,7 +1456,7 @@ export function changeRequestDriverAPI(
       setIsChangeDriverOpen(false);
       setIsOpen(true);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log(error);
     });
 }
@@ -1460,10 +1498,10 @@ export async function fetchQuestion(setQuestions: any) {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => {
+    .then((response: any) => {
       setQuestions(response.data);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching questions list:", error);
     });
 }
@@ -1478,7 +1516,7 @@ export async function postCSM(data: any) {
       },
     })
     .then(() => {})
-    .catch((error) => {
+    .catch((error: any) => {
       console.error("Error fetching questions list:", error);
     });
 }
@@ -1519,7 +1557,7 @@ export function submitTripMerge(
         window.location.reload();
       }, 3000);
     })
-    .catch((error) => {
+    .catch((error: any) => {
       setLoadingBarProgress(50);
 
       setLoadingBarProgress(100);

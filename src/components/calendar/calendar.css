@@ -842,10 +842,11 @@ button.rbc-input::-moz-focus-inner {
 
 /*# sourceMappingURL=react-big-calendar.css.map */
 
-@media screen and (max-width: 768px) {
-  .calendar-container {
+@media screen and (max-width: 767px) {
+  .calendar-container-main{
     width: 90vw;
     height: 50vh;
-    margin-left: 0.2rem;
+    margin-left: auto;
+    margin-right: auto;
   }
 }

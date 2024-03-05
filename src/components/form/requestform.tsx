@@ -36,8 +36,8 @@ export default function RequestForm() {
   const capacity = location.state?.capacity || "";
   // const travelDate = location.state?.data.travel_date || "";
   // const travelTime = location.state?.data.travel_time || "";
-  const returnDate = location.state?.data.return_date || "";
-  const returnTime = location.state?.data.return_time || "";
+  // const returnDate = location.state?.data.return_date || "";
+  // const returnTime = location.state?.data.return_time || "";
   const [distance, setDistance] = useState(0);
   const destination = location.state?.addressData.destination || "";
 
@@ -45,6 +45,9 @@ export default function RequestForm() {
   const [requesterOffice, setRequesterOffice] = useState("");
   const [travelTime, setTravelTime] = useState<string | null>(null);
   const [travelDate, setTravelDate] = useState<string | null>(null);
+
+  const [returnDate, setReturnDate] = useState<string | null>(null);
+  const [returnTime, setReturnTime] = useState<string | null>(null);
 
   const [category, setCategory] = useState("");
 
@@ -316,20 +319,20 @@ export default function RequestForm() {
                     )}
                   </div> */}
                   <div className="fifth-row">
-                <div className="travel-type">
-                  <strong>Travel Type:</strong>
-                  <select
-                    className="select-options"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="Round Trip">Round Trip</option>
-                    <option value="One-way - Fetch">One-way - Fetch</option>
-                    <option value="One-way - Drop">One-way - Drop</option>
-                  </select>
-                </div>
-              </div>
-                  
+                    <div className="travel-type">
+                      <strong>Travel Type:</strong>
+                      <select
+                        className="select-options"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                      >
+                         <option value="Round Trip">Select Type</option>
+                        <option value="Round Trip">Round Trip</option>
+                        <option value="One-way - Fetch">One-way - Fetch</option>
+                        <option value="One-way - Drop">One-way - Drop</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="passengers-name-row">
@@ -365,44 +368,75 @@ export default function RequestForm() {
                     }}
                   />
                 </div>
-                
               </div>
               <div className="forth-row">
-              <div className="calendar-containerr">
+                <div className="calendar-containerr">
                   <strong>Return Date:</strong>
-                  <p>{returnDate}</p>
+                  {category === "Round Trip" ? (
+                    <CalendarInput
+                      containerClassName="calendar-container"
+                      calendarClassName="calendar-input"
+                      iconClassName="calendar-input-icon"
+                      onChange={(date) =>
+                        setReturnDate(date?.toISOString().split("T")[0] || "")
+                      }
+                      selectedDate={returnDate ? new Date(returnDate) : null}
+                    />
+                  ) : (
+                    <div>
+                      <p>Estimated</p>
+                    </div> 
+                  )}
                 </div>
-                
+
                 <div className="calendar-containerr">
                   <strong>Return Time </strong>
-                  <p>{formatTime(returnTime)}</p>
+                  {category === "Round Trip" ? (
+                    <TimeInput
+                      onChange={(returnTime) => setReturnTime(returnTime || "")}
+                      selectedDate={
+                        travelDate
+                          ? new Date(travelDate).toISOString().split("T")[0]
+                          : null
+                      }
+                      handleDateChange={(date) => {
+                        const formattedDate = date
+                          ? new Date(date).toISOString().split("T")[0]
+                          : null;
+                        setReturnDate(formattedDate || "");
+                      }}
+                    />
+                  ) : (
+                    <div>
+                      <p>Estimated</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-
               <div className="third-row2">
-              <div className="vehicle-info-name">
-                    <strong>Vehicle:</strong>
-                    <p>
-                      <div className="vehicle-options">
-                        <select
-                          className="select-options"
-                          value={`${vehicle_Name} - ${plate_Number}`} // Ensure the value reflects the current state
-                          onChange={(e) => handleCategoryChange(e.target.value)}
-                        >
-                          <option value="">Select Vehicle</option>
-                          {vehicles.map((vehicle) => (
-                            <option
-                              key={vehicle.plate_number}
-                              value={`${vehicle.model} - ${vehicle.plate_number}`}
-                            >
-                              {`${vehicle.model} - ${vehicle.plate_number}`}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </p>
-                  </div>
+                <div className="vehicle-info-name">
+                  <strong>Vehicle:</strong>
+                  <p>
+                    <div className="vehicle-options">
+                      <select
+                        className="select-options"
+                        value={`${vehicle_Name} - ${plate_Number}`} // Ensure the value reflects the current state
+                        onChange={(e) => handleCategoryChange(e.target.value)}
+                      >
+                        <option value="">Select Vehicle</option>
+                        {vehicles.map((vehicle) => (
+                          <option
+                            key={vehicle.plate_number}
+                            value={`${vehicle.model} - ${vehicle.plate_number}`}
+                          >
+                            {`${vehicle.model} - ${vehicle.plate_number}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </p>
+                </div>
                 <div className="destination-info">
                   <strong>Destination: </strong>
                   <AutoCompleteAddressGoogle

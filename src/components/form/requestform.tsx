@@ -19,9 +19,9 @@ import { postRequestFromAPI } from "../api/api";
 import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import CalendarInput from "../calendarinput/calendarinput";
+import TimeInput from "../timeinput/timeinput";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
-import { set } from "date-fns";
 
 export default function RequestForm() {
   const [addressData, setAddressData] = useState<any>({
@@ -44,8 +44,9 @@ export default function RequestForm() {
 
   const [requesterName, setRequesterName] = useState("");
   const [requesterOffice, setRequesterOffice] = useState("");
-  const [travelDate, setTravelDate] = useState("");
-  const [travelTime, setTravelTime] = useState("");
+  const [travelTime, setTravelTime] = useState<string | null>(null);
+  const [travelDate, setTravelDate] = useState<string | null>(null);
+
   const [travelType, setTravelType] = useState("");
 
   const [data, setData] = useState<RequestFormProps>({
@@ -345,11 +346,14 @@ export default function RequestForm() {
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Date of Travel:</strong>
-                  <input
-                  className="destination-input"
-                    type="date"
-                    value={travelDate}
-                    onChange={(e) => setTravelDate(e.target.value)}
+                  <CalendarInput
+                    containerClassName="calendar-container"
+                    calendarClassName="calendar-input"
+                    iconClassName="calendar-input-icon"
+                    onChange={(date) =>
+                      setTravelDate(date?.toISOString().split("T")[0] || "")
+                    }
+                    selectedDate={travelDate ? new Date(travelDate) : null}
                   />
                 </div>
                 <div className="calendar-containerr">
@@ -360,11 +364,19 @@ export default function RequestForm() {
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Time of Travel:</strong>
-                  <input
-                    className="destination-input"
-                    type="time"
-                    value={travelTime}
-                    onChange={(e) => setTravelTime(e.target.value)}
+                  <TimeInput
+                    onChange={(time) => setTravelTime(time || "")} // Use an empty string as a fallback
+                    selectedDate={
+                      travelDate
+                        ? new Date(travelDate).toISOString().split("T")[0]
+                        : null
+                    }
+                    handleDateChange={(date) => {
+                      const formattedDate = date
+                        ? new Date(date).toISOString().split("T")[0]
+                        : null;
+                      setTravelDate(formattedDate || ""); // Use an empty string as a fallback
+                    }}
                   />
                 </div>
                 <div className="calendar-containerr">

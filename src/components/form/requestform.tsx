@@ -38,7 +38,6 @@ export default function RequestForm() {
   // const travelTime = location.state?.data.travel_time || "";
   const returnDate = location.state?.data.return_date || "";
   const returnTime = location.state?.data.return_time || "";
-  const category = location.state?.data.category || "";
   const [distance, setDistance] = useState(0);
   const destination = location.state?.addressData.destination || "";
 
@@ -47,7 +46,7 @@ export default function RequestForm() {
   const [travelTime, setTravelTime] = useState<string | null>(null);
   const [travelDate, setTravelDate] = useState<string | null>(null);
 
-  const [travelType, setTravelType] = useState("");
+  const [category, setCategory] = useState("");
 
   const [data, setData] = useState<RequestFormProps>({
     purpose: "",
@@ -390,13 +389,13 @@ export default function RequestForm() {
                   <strong>Travel Type:</strong>
                   <select
                     className="select-options"
-                    value={travelType}
-                    onChange={(e) => setTravelType(e.target.value)}
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
                   >
                     <option value="">Select Travel Type</option>
-                    <option value="business">Round Trip</option>
-                    <option value="personal">One-way-fetch</option>
-                    <option value="personal">One-way-drop</option>
+                    <option value="Round Trip">Round Trip</option>
+                    <option value="One-way - Fetch">One-way - Fetch</option>
+                    <option value="One-way - Drop">One-way - Drop</option>
                   </select>
                 </div>
               </div>

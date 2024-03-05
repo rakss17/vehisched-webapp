@@ -315,7 +315,73 @@ export default function RequestForm() {
                       </p>
                     )}
                   </div> */}
-                  <div className="vehicle-info-name">
+                  <div className="fifth-row">
+                <div className="travel-type">
+                  <strong>Travel Type:</strong>
+                  <select
+                    className="select-options"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option value="Round Trip">Round Trip</option>
+                    <option value="One-way - Fetch">One-way - Fetch</option>
+                    <option value="One-way - Drop">One-way - Drop</option>
+                  </select>
+                </div>
+              </div>
+                  
+                </div>
+              </div>
+              <div className="passengers-name-row">
+                {generatePassengerInputs()}
+              </div>
+              <div className="forth-row">
+                <div className="calendar-containerr">
+                  <strong>Date of Travel:</strong>
+                  <CalendarInput
+                    containerClassName="calendar-container"
+                    calendarClassName="calendar-input"
+                    iconClassName="calendar-input-icon"
+                    onChange={(date) =>
+                      setTravelDate(date?.toISOString().split("T")[0] || "")
+                    }
+                    selectedDate={travelDate ? new Date(travelDate) : null}
+                  />
+                </div>
+                <div className="calendar-containerr">
+                  <strong>Time of Travel:</strong>
+                  <TimeInput
+                    onChange={(time) => setTravelTime(time || "")} // Use an empty string as a fallback
+                    selectedDate={
+                      travelDate
+                        ? new Date(travelDate).toISOString().split("T")[0]
+                        : null
+                    }
+                    handleDateChange={(date) => {
+                      const formattedDate = date
+                        ? new Date(date).toISOString().split("T")[0]
+                        : null;
+                      setTravelDate(formattedDate || ""); // Use an empty string as a fallback
+                    }}
+                  />
+                </div>
+                
+              </div>
+              <div className="forth-row">
+              <div className="calendar-containerr">
+                  <strong>Return Date:</strong>
+                  <p>{returnDate}</p>
+                </div>
+                
+                <div className="calendar-containerr">
+                  <strong>Return Time </strong>
+                  <p>{formatTime(returnTime)}</p>
+                </div>
+              </div>
+
+
+              <div className="third-row2">
+              <div className="vehicle-info-name">
                     <strong>Vehicle:</strong>
                     <p>
                       <div className="vehicle-options">
@@ -337,70 +403,6 @@ export default function RequestForm() {
                       </div>
                     </p>
                   </div>
-                </div>
-              </div>
-              <div className="passengers-name-row">
-                {generatePassengerInputs()}
-              </div>
-              <div className="forth-row">
-                <div className="calendar-containerr">
-                  <strong>Date of Travel:</strong>
-                  <CalendarInput
-                    containerClassName="calendar-container"
-                    calendarClassName="calendar-input"
-                    iconClassName="calendar-input-icon"
-                    onChange={(date) =>
-                      setTravelDate(date?.toISOString().split("T")[0] || "")
-                    }
-                    selectedDate={travelDate ? new Date(travelDate) : null}
-                  />
-                </div>
-                <div className="calendar-containerr">
-                  <strong>to </strong>
-                  <p>{returnDate}</p>
-                </div>
-              </div>
-              <div className="forth-row">
-                <div className="calendar-containerr">
-                  <strong>Time of Travel:</strong>
-                  <TimeInput
-                    onChange={(time) => setTravelTime(time || "")} // Use an empty string as a fallback
-                    selectedDate={
-                      travelDate
-                        ? new Date(travelDate).toISOString().split("T")[0]
-                        : null
-                    }
-                    handleDateChange={(date) => {
-                      const formattedDate = date
-                        ? new Date(date).toISOString().split("T")[0]
-                        : null;
-                      setTravelDate(formattedDate || ""); // Use an empty string as a fallback
-                    }}
-                  />
-                </div>
-                <div className="calendar-containerr">
-                  <strong>to </strong>
-                  <p>{formatTime(returnTime)}</p>
-                </div>
-              </div>
-
-              <div className="fifth-row">
-                <div className="travel-type">
-                  <strong>Travel Type:</strong>
-                  <select
-                    className="select-options"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="">Select Travel Type</option>
-                    <option value="Round Trip">Round Trip</option>
-                    <option value="One-way - Fetch">One-way - Fetch</option>
-                    <option value="One-way - Drop">One-way - Drop</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="third-row2">
                 <div className="destination-info">
                   <strong>Destination: </strong>
                   <AutoCompleteAddressGoogle

@@ -20,33 +20,35 @@ import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
+import { set } from "date-fns";
+
 export default function RequestForm() {
+  const [addressData, setAddressData] = useState<any>({
+    destination: "",
+    distance: null,
+  });
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
   const capacity = location.state?.capacity || "";
-  const travelDate = location.state?.data.travel_date || "";
-  const travelTime = location.state?.data.travel_time || "";
+  // const travelDate = location.state?.data.travel_date || "";
+  // const travelTime = location.state?.data.travel_time || "";
   const returnDate = location.state?.data.return_date || "";
   const returnTime = location.state?.data.return_time || "";
   const category = location.state?.data.category || "";
-  const distance = location.state?.addressData.distance || "";
+  const [distance, setDistance] = useState(0);
   const destination = location.state?.addressData.destination || "";
-  const personalInfo = useSelector(
-    (state: RootState) => state.personalInfo.data
-  );
-  const firstName = personalInfo?.first_name;
-  const lastName = personalInfo?.last_name;
-  const middleName = personalInfo?.middle_name;
-  const userID = personalInfo?.id;
-  const office = personalInfo?.office;
-  const role = personalInfo?.role;
+
+  const [requesterName, setRequesterName] = useState("");
+  const [requesterOffice, setRequesterOffice] = useState("");
+  const [travelDate, setTravelDate] = useState("");
+  const [travelTime, setTravelTime] = useState("");
+  const [travelType, setTravelType] = useState("");
 
   const [data, setData] = useState<RequestFormProps>({
-    requester_name: userID,
-    office: office,
     purpose: "",
     number_of_passenger: null,
     passenger_name: [],
@@ -58,7 +60,6 @@ export default function RequestForm() {
     vehicle: `${plateNumber}`,
     type: category,
     distance: distance,
-    role: role,
     merge_trip: false,
   });
 
@@ -68,6 +69,11 @@ export default function RequestForm() {
   const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
 
+  useEffect(() => {
+    if (addressData.distance) {
+      setDistance(addressData.distance);
+    }
+  }, [addressData.distance]);
   useEffect(() => {
     if (distance >= 50) {
       setIsFifthyKilometers(true);
@@ -225,6 +231,22 @@ export default function RequestForm() {
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   };
 
+  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
+
+  const dropdownOptions = vehicles.map(
+    (vehicle) => `${vehicle.model} - ${vehicle.plate_number}`
+  );
+
+  const [plate_Number, setPlateNumber] = useState("");
+  const [vehicle_Name, setVehicleName] = useState("");
+
+  const handleCategoryChange = (selectedOption: string) => {
+    // Assuming the selectedOption is in the format "Vehicle Model - Plate Number"
+    const [selectedModel, selectedPlate] = selectedOption.split(" - ");
+    setVehicleName(selectedModel); // Update the vehicle name state
+    setPlateNumber(selectedPlate); // Update the plate number state
+  };
+
   return (
     <>
       <LoadingBar
@@ -254,17 +276,24 @@ export default function RequestForm() {
                 <div className="first-row-column">
                   <div className="requester-info-name">
                     <strong>Requester's name:</strong>
-                    <p>
-                      {lastName}, {firstName} {middleName}
-                    </p>
+                    <input
+                      className="destination-input"
+                      type="text"
+                      value={requesterName}
+                      onChange={(e) => setRequesterName(e.target.value)}
+                    />
                   </div>
 
                   <div className="requester-office">
                     <strong>Office:</strong>
-                    <p>{office}</p>
+                    <input
+                      className="destination-input"
+                      type="text"
+                      value={requesterOffice}
+                      onChange={(e) => setRequesterOffice(e.target.value)}
+                    />
                   </div>
-
-                  <div className="input-passenger-number">
+                  {/* <div className="input-passenger-number">
                     <p className="maximum-capacity-note">
                       Vehicle maximum capacity: {capacity}
                     </p>
@@ -285,35 +314,43 @@ export default function RequestForm() {
                         Exceeds seating capacity of the vehicle
                       </p>
                     )}
+                  </div> */}
+                  <div className="vehicle-info-name">
+                    <strong>Vehicle:</strong>
+                    <p>
+                      <div className="vehicle-options">
+                        <select
+                          className="select-options"
+                          value={`${vehicle_Name} - ${plate_Number}`} // Ensure the value reflects the current state
+                          onChange={(e) => handleCategoryChange(e.target.value)}
+                        >
+                          <option value="">Select Vehicle</option>
+                          {vehicles.map((vehicle) => (
+                            <option
+                              key={vehicle.plate_number}
+                              value={`${vehicle.model} - ${vehicle.plate_number}`}
+                            >
+                              {`${vehicle.model} - ${vehicle.plate_number}`}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="passengers-name-row">
                 {generatePassengerInputs()}
               </div>
-              <div className={role === "vip" ? "third-row2" : "third-row"}>
-                <div className="vehicle-info-name">
-                  <strong>Vehicle:</strong>
-                  <p>
-                    {plateNumber} {vehicleName}
-                  </p>
-                </div>
-
-                <div className="destination-info">
-                  <strong>Destination: </strong>
-                  <p>{destination}</p>
-                </div>
-
-                <div className="kilometer-info">
-                  <strong>Distance:</strong>
-                  <p>{distance} km</p>
-                </div>
-              </div>
-
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Date of Travel:</strong>
-                  <p>{travelDate}</p>
+                  <input
+                  className="destination-input"
+                    type="date"
+                    value={travelDate}
+                    onChange={(e) => setTravelDate(e.target.value)}
+                  />
                 </div>
                 <div className="calendar-containerr">
                   <strong>to </strong>
@@ -322,18 +359,58 @@ export default function RequestForm() {
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
-                  <strong>Time of Travel: </strong>
-                  <p>{formatTime(travelTime)}</p>
+                  <strong>Time of Travel:</strong>
+                  <input
+                    className="destination-input"
+                    type="time"
+                    value={travelTime}
+                    onChange={(e) => setTravelTime(e.target.value)}
+                  />
                 </div>
                 <div className="calendar-containerr">
                   <strong>to </strong>
                   <p>{formatTime(returnTime)}</p>
                 </div>
               </div>
+
               <div className="fifth-row">
-                <div className="calendar-containerr">
+                <div className="travel-type">
                   <strong>Travel Type:</strong>
-                  <p>{category}</p>
+                  <select
+                    className="select-options"
+                    value={travelType}
+                    onChange={(e) => setTravelType(e.target.value)}
+                  >
+                    <option value="">Select Travel Type</option>
+                    <option value="business">Round Trip</option>
+                    <option value="personal">One-way-fetch</option>
+                    <option value="personal">One-way-drop</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="third-row2">
+                <div className="destination-info">
+                  <strong>Destination: </strong>
+                  <AutoCompleteAddressGoogle
+                    travel_date={travelDate}
+                    travel_time={travelTime}
+                    setData={setData}
+                    setAddressData={setAddressData}
+                    category={category}
+                    removeDestinationError={() =>
+                      setErrorMessages((prev) => ({
+                        ...prev,
+                        destinationError: undefined,
+                      }))
+                    }
+                    className="select-options"
+                  />
+                </div>
+
+                <div className="kilometer-info">
+                  <strong>Distance:</strong>
+                  <p>{distance} km</p>
                 </div>
               </div>
 
@@ -382,7 +459,6 @@ export default function RequestForm() {
           </div>
         </div>
       </Container>
-
       <Confirmation
         isOpen={isConfirmationOpen}
         header="Request Submitted!"

@@ -166,7 +166,8 @@
   width: auto;
   color: black;
   white-space: nowrap;
-  gap: 1vw;
+  gap: 5%;
+  align-items: center;
 }
 
 .vehicle-info-name strong {
@@ -180,6 +181,7 @@
   display: flex;
   flex-direction: row;
   gap: 1vw;
+  align-items: center;
 }
 .destination-info strong {
   white-space: nowrap;
@@ -204,9 +206,11 @@
   margin-left: 0vw;
   flex-direction: row;
   justify-content: space-evenly;
+  gap: 10%;
+  margin-left: 3vw;
 }
 .forth-row strong {
-  white-space: nowrap;
+  /* white-space: nowrap; */
   font-size: 1rem;
   color: black;
 }
@@ -227,12 +231,14 @@
   margin-top: 1vh;
   margin-left: 3vw;
   flex-direction: row;
+  align-items: center;  
 }
 
 .fifth-row strong {
-  white-space: nowrap;
+
   font-size: 1rem;
   color: black;
+  margin-right: 10px;
 }
 
 .fifth-row label {
@@ -352,6 +358,41 @@
   border-radius: 5px;
   position: relative;
 } */
+.destination-input{
+  color: black;
+  background-color: transparent;
+  font-size: 1rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  align-items: center;
+  padding: 1rem;
+  width: auto;
+  height: 1vh;
+}
+
+.destination-input:focus{
+  outline: none;
+}
+.destination-input::placeholder{
+  color: transparent;
+}
+
+.select-options{
+  color: #000000;
+  font-size: 1rem;
+  background-color: #ffffff;
+  width: fit-content;
+  margin-left: 10px;
+}
+.select-options:focus{
+  outline: none;
+}
+.travel-type{
+  width: 90vw;
+  gap: 10%;
+}
+
 
 @media screen and (max-width: 768px) {
   .request-form-body {
@@ -376,6 +417,8 @@
     margin-left: 0vh;
     display: flex;
     flex-direction: column;
+    width: 90vw;
+    margin-left: auto;
   }
   .passenger_name_width {
     width: 30vw;
@@ -391,6 +434,7 @@
   }
   .vehicle-info-name {
     width: 35vw;
+    margin-left: -22vh;
   }
 
   .vehicle-info-name p:nth-child(2) {
@@ -411,6 +455,7 @@
     margin-left: 3vw;
     flex-direction: row;
     justify-content: space-around;
+    
   }
   .calendar-containerr {
     width: 100vw;
@@ -434,15 +479,14 @@
   .fifth-row {
     margin-left: 1.3vh;
     font-size: 1rem;
+    width: 90vw;
+    flex-direction: row-reverse;
   }
   .fifth-row strong {
-    display: flex;
+    
+    margin-right: 0;
   }
-  .fifth-row p {
-    display: flex;
-    width: 30vw;
-    font-size: 1rem;
-  }
+
   .sixth-row {
     margin-top: 2vw;
     display: flex;
@@ -489,7 +533,7 @@
     margin-right: -20vw;
   }
   .requester-office strong {
-    margin-left: -17vw;
+    margin-left: -33vw;
   }
   .requester-office p {
     width: 70vw;
@@ -533,5 +577,13 @@
     margin-left: 15%;
     flex-direction: row;
     align-items: center;
+  }
+  .third-row2 {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1vh;
+    margin-left: 3vw;
+    gap: 6vw;
+    width: 60vw;
   }
 }

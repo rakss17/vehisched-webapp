@@ -1201,6 +1201,7 @@ export async function handlePlaceSelect(
         distance: distance,
         destination: fullAddress,
       }));
+      console.log(distanceString)
     } else if (
       category === "One-way - Drop" ||
       category === "One-way - Fetch" ||

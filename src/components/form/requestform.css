@@ -126,8 +126,7 @@
   flex-direction: row;
   height: auto;
   align-items: center;
-
-  margin-left: 4vw ;
+  margin-left: -.7vw ;
 
 }
 .input-passenger-number .maximum-capacity-note {
@@ -443,19 +442,27 @@
   font-size: 1rem;
   background-color: #ffffff;
   width: fit-content;
-  margin-left: 10px;
+  margin-left: auto;
 }
 .select-options:focus{
   outline: none;
 }
 
 .travel-type{
-  width: 20vw;
+  width: 25vw;
+
+}
+.type-options{
+  color: #000000;
+  font-size: 1rem;
+  background-color: #ffffff;
+  width: fit-content;
+  margin-left: 7.5vw;
+}
+.type-optionsfocus{
+  outline: none;
 }
 
-.travel-type{
-  width: 20vw;
-}
 
 .googledestination{
   color: #000000;

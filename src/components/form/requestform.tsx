@@ -302,7 +302,7 @@ export default function RequestForm() {
                   <div className="travel-type">
                     <strong>Travel Type:</strong>
                     <select
-                      className="select-options"
+                      className="type-options"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                     >

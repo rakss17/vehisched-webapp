@@ -22,6 +22,8 @@ import "react-toastify/dist/ReactToastify.css";
 import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
+import { format } from "date-fns";
+import { formatDate, formatTime } from "../functions/getTimeElapsed";
 
 export default function RequestForm() {
   const [addressData, setAddressData] = useState<any>({
@@ -34,21 +36,12 @@ export default function RequestForm() {
   const plateNumber = location.state?.plateNumber || "";
   const vehicleName = location.state?.vehicleName || "";
   const capacity = location.state?.capacity || "";
-  // const travelDate = location.state?.data.travel_date || "";
-  // const travelTime = location.state?.data.travel_time || "";
-  // const returnDate = location.state?.data.return_date || "";
-  // const returnTime = location.state?.data.return_time || "";
   const [distance, setDistance] = useState(0);
   const destination = location.state?.addressData.destination || "";
 
   const [requesterName, setRequesterName] = useState("");
 
   const [requesterOffice, setRequesterOffice] = useState("");
-  const [travelTime, setTravelTime] = useState<string | null>(null);
-  const [travelDate, setTravelDate] = useState<string | null>(null);
-
-  const [returnDate, setReturnDate] = useState<string | null>(null);
-  const [returnTime, setReturnTime] = useState<string | null>(null);
 
   const [category, setCategory] = useState("");
 
@@ -56,10 +49,10 @@ export default function RequestForm() {
     purpose: "",
     number_of_passenger: null,
     passenger_name: [],
-    travel_date: travelDate,
-    travel_time: travelTime,
-    return_date: returnDate,
-    return_time: returnTime,
+    travel_date: null,
+    travel_time: null,
+    return_date: null,
+    return_time: null,
     destination: destination,
     vehicle: `${plateNumber}`,
     type: category,
@@ -103,6 +96,67 @@ export default function RequestForm() {
       number_of_passenger: numPassengers,
     });
   }, [numPassengers]);
+
+  const handleStartDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, travel_date: formattedDate });
+    if (data.category === "Round Trip") {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelDateError;
+      setErrorMessages(updatedErrors);
+    } else if (
+      data.category === "One-way" ||
+      data.category === "One-way - Fetch" ||
+      data.category === "One-way - Drop"
+    ) {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.travelDateOnewayError;
+      setErrorMessages(updatedErrors);
+    }
+
+    // checkAutocompleteDisability();
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
+    setData({ ...data, return_date: formattedDate });
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.returnDateError;
+    setErrorMessages(updatedErrors);
+  };
+
+  const handleStartTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, travel_time: time });
+      if (data.category === "Round Trip") {
+        const updatedErrors = { ...errorMessages };
+        delete updatedErrors[0]?.travelTimeError;
+        setErrorMessages(updatedErrors);
+      } else if (
+        data.category === "One-way" ||
+        data.category === "One-way - Fetch" ||
+        data.category === "One-way - Drop"
+      ) {
+        const updatedErrors = { ...errorMessages };
+        delete updatedErrors[0]?.travelTimeOnewayError;
+        setErrorMessages(updatedErrors);
+      }
+      // checkAutocompleteDisability();
+    } else {
+      console.log("No time selected.");
+    }
+  };
+
+  const handleEndTimeChange = (time: string | null) => {
+    if (time) {
+      setData({ ...data, return_time: time });
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.returnTimeError;
+      setErrorMessages(updatedErrors);
+    } else {
+      console.log("No time selected.");
+    }
+  };
 
   const handlePassengerChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.value) {
@@ -229,16 +283,7 @@ export default function RequestForm() {
     }
   };
 
-  const formatTime = (timeString: any) => {
-    const time = new Date(`1970-01-01T${timeString}`);
-    return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  };
-
   const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
-
-  const dropdownOptions = vehicles.map(
-    (vehicle) => `${vehicle.model} - ${vehicle.plate_number}`
-  );
 
   const [plate_Number, setPlateNumber] = useState("");
   const [vehicle_Name, setVehicleName] = useState("");
@@ -344,10 +389,10 @@ export default function RequestForm() {
                       containerClassName="calendar-container"
                       calendarClassName="calendar-input"
                       iconClassName="calendar-input-icon"
-                      onChange={(date) =>
-                        setTravelDate(date?.toISOString().split("T")[0] || "")
+                      onChange={handleStartDateChange}
+                      selectedDate={
+                        data.travel_date ? new Date(data.travel_date) : null
                       }
-                      selectedDate={travelDate ? new Date(travelDate) : null}
                     />
                   </div>
                 </div>
@@ -355,18 +400,9 @@ export default function RequestForm() {
                   <strong>Time of Travel:</strong>
                   <div className="date-and-time">
                     <TimeInput
-                      onChange={(time) => setTravelTime(time || "")} // Use an empty string as a fallback
-                      selectedDate={
-                        travelDate
-                          ? new Date(travelDate).toISOString().split("T")[0]
-                          : null
-                      }
-                      handleDateChange={(date) => {
-                        const formattedDate = date
-                          ? new Date(date).toISOString().split("T")[0]
-                          : null;
-                        setTravelDate(formattedDate || ""); // Use an empty string as a fallback
-                      }}
+                      onChange={handleStartTimeChange}
+                      selectedDate={data.travel_date}
+                      handleDateChange={handleStartDateChange}
                     />
                   </div>
                 </div>
@@ -380,15 +416,16 @@ export default function RequestForm() {
                         containerClassName="calendar-container"
                         calendarClassName="calendar-input"
                         iconClassName="calendar-input-icon"
-                        onChange={(date) =>
-                          setReturnDate(date?.toISOString().split("T")[0] || "")
+                        selectedDate={
+                          data.return_date ? new Date(data.return_date) : null
                         }
-                        selectedDate={returnDate ? new Date(returnDate) : null}
+                        onChange={handleEndDateChange}
+                        disableDaysBefore={3}
                       />
                     </div>
                   ) : (
                     <div>
-                      <p>Estimated</p>
+                      <p>{formatDate(data.return_date)}</p>
                     </div>
                   )}
                 </div>
@@ -398,25 +435,14 @@ export default function RequestForm() {
                   {category === "Round Trip" ? (
                     <div className="date-and-time">
                       <TimeInput
-                        onChange={(returnTime) =>
-                          setReturnTime(returnTime || "")
-                        }
-                        selectedDate={
-                          travelDate
-                            ? new Date(travelDate).toISOString().split("T")[0]
-                            : null
-                        }
-                        handleDateChange={(date) => {
-                          const formattedDate = date
-                            ? new Date(date).toISOString().split("T")[0]
-                            : null;
-                          setReturnDate(formattedDate || "");
-                        }}
+                        onChange={handleEndTimeChange}
+                        selectedDate={data.return_date}
+                        handleDateChange={handleEndDateChange}
                       />
                     </div>
                   ) : (
                     <div>
-                      <p>Estimated</p>
+                      <p>{formatTime(data.return_time)}</p>
                     </div>
                   )}
                 </div>
@@ -448,8 +474,8 @@ export default function RequestForm() {
                 <div className="destination-info">
                   <strong>Destination: </strong>
                   <AutoCompleteAddressGoogle
-                    travel_date={travelDate}
-                    travel_time={travelTime}
+                    travel_date={data.travel_date}
+                    travel_time={data.travel_time}
                     setData={setData}
                     setAddressData={setAddressData}
                     category={category}
@@ -497,7 +523,7 @@ export default function RequestForm() {
                   <strong>Passenger's name(s):</strong>
                 </div>
                 <div className="passenger-input-fields">
-                {generatePassengerInputs()}
+                  {generatePassengerInputs()}
                 </div>
               </div>
 

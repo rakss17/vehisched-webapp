@@ -42,6 +42,7 @@ export default function RequestForm() {
   const destination = location.state?.addressData.destination || "";
 
   const [requesterName, setRequesterName] = useState("");
+
   const [requesterOffice, setRequesterOffice] = useState("");
   const [travelTime, setTravelTime] = useState<string | null>(null);
   const [travelDate, setTravelDate] = useState<string | null>(null);
@@ -114,7 +115,7 @@ export default function RequestForm() {
     setNumPassengers(Number(value));
 
     if (Number(value) > capacity) {
-      setExceedsCapacity(true);
+      setExceedsCapacity(false);
     } else {
       setExceedsCapacity(false);
     }
@@ -122,35 +123,34 @@ export default function RequestForm() {
 
   const generatePassengerInputs = () => {
     const inputs = [];
-    if (numPassengers <= capacity) {
-      for (let i = 0; i < numPassengers; i++) {
-        inputs.push(
-          <div key={i} className="passenger-name-column">
-            <InputField
-              className="passenger_name_width"
-              value={data.passenger_name[i]}
-              key={i}
-              icon={faUser}
-              label={`Passenger ${i + 1}`}
-              placeholder={`Passenger ${i + 1}`}
-              onChange={(event) => {
-                const newPassengerNames = [...data.passenger_name];
-                newPassengerNames[i] = event.target.value;
-                setData({ ...data, passenger_name: newPassengerNames });
-                if (newPassengerNames[i]) {
-                  const updatedErrors = { ...errorMessages };
-                  delete updatedErrors[0]?.passengerNameError[i];
-                  delete updatedErrors[0]?.all;
-                  setErrorMessages(updatedErrors);
-                }
-              }}
-            />
-            <p className="set-trip-text-error">
-              {errorMessages[0]?.passengerNameError[i]}
-            </p>
-          </div>
-        );
-      }
+    for (let i = 0; i < numPassengers; i++) {
+      inputs.push(
+        <div key={i} className="passenger-name-column">
+          <InputField
+            className="passenger_name_width"
+            value={data.passenger_name[i] || ""} // Ensure a default value to avoid undefined
+            key={i}
+            icon={faUser}
+            label={`Passenger ${i + 1}`}
+            placeholder={`Passenger ${i + 1}`}
+            onChange={(event) => {
+              const newPassengerNames = [...data.passenger_name];
+              newPassengerNames[i] = event.target.value;
+              setData({ ...data, passenger_name: newPassengerNames });
+              // Update error messages if any
+              if (newPassengerNames[i]) {
+                const updatedErrors = { ...errorMessages };
+                delete updatedErrors[0]?.passengerNameError[i];
+                delete updatedErrors[0]?.all;
+                setErrorMessages(updatedErrors);
+              }
+            }}
+          />
+          <p className="set-trip-text-error">
+            {errorMessages[0]?.passengerNameError[i]}
+          </p>
+        </div>
+      );
     }
     return inputs;
   };
@@ -335,7 +335,6 @@ export default function RequestForm() {
                     </p>
                   )}
                 </div>
-                {/* {generatePassengerInputs()} */}
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
@@ -469,7 +468,6 @@ export default function RequestForm() {
                   <p>{distance} km</p>
                 </div>
               </div>
-
               <div className="sixth-row">
                 <div className="purpose-row">
                   <InputField
@@ -497,14 +495,12 @@ export default function RequestForm() {
               <div className="sixth-row">
                 <div className="requester-info-name">
                   <strong>Passenger's name(s):</strong>
-                  <input
-                    className="passenger-input"
-                    type="text"
-                    value={requesterName}
-                    onChange={(e) => setRequesterName(e.target.value)}
-                  />
+                </div>
+                <div className="passenger-input-fields">
+                {generatePassengerInputs()}
                 </div>
               </div>
+
               <div className="seventh-row">
                 {isFifthyKilometers && (
                   <p>

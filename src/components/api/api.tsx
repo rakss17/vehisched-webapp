@@ -54,9 +54,11 @@ export async function SigninAPI(
     dispatch(fetchPersonalInfo(res.data));
     setLoadingBarProgress(70);
     if (res.data.role === "requester" || res.data.role === "vip") {
-      alert(
-        "Web application for requester is not yet available. Please install the vehisched mobile application to login"
-      );
+      localStorage.setItem("token", token);
+      navigate("/DashboardR");
+      // alert(
+      //   "Web application for requester is not yet available. Please install the vehisched mobile application to login"
+      // );
     } else if (res.data.role === "office staff") {
       localStorage.setItem("token", token);
       navigate("/DashboardOS");

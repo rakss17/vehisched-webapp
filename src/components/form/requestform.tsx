@@ -286,11 +286,10 @@ export default function RequestForm() {
                       onChange={(e) => setRequesterName(e.target.value)}
                     />
                   </div>
-
                   <div className="requester-office">
                     <strong>Office:</strong>
                     <input
-                      className="destination-input"
+                      className="office-input"
                       type="text"
                       value={requesterOffice}
                       onChange={(e) => setRequesterOffice(e.target.value)}
@@ -299,21 +298,21 @@ export default function RequestForm() {
                 </div>
               </div>
               <div className="passengers-name-row">
-              <div className="fifth-row">
-                    <div className="travel-type">
-                      <strong>Travel Type:</strong>
-                      <select
-                        className="select-options"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                      >
-                         <option value="Round Trip">Select Type</option>
-                        <option value="Round Trip">Round Trip</option>
-                        <option value="One-way - Fetch">One-way - Fetch</option>
-                        <option value="One-way - Drop">One-way - Drop</option>
-                      </select>
-                    </div>
+                <div className="fifth-row">
+                  <div className="travel-type">
+                    <strong>Travel Type:</strong>
+                    <select
+                      className="select-options"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value="Round Trip">Select Type</option>
+                      <option value="Round Trip">Round Trip</option>
+                      <option value="One-way - Fetch">One-way - Fetch</option>
+                      <option value="One-way - Drop">One-way - Drop</option>
+                    </select>
                   </div>
+                </div>
                 <div className="input-passenger-number">
                   <p className="maximum-capacity-note">
                     Vehicle maximum capacity: {capacity}
@@ -341,47 +340,53 @@ export default function RequestForm() {
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Date of Travel:</strong>
-                  <CalendarInput
-                    containerClassName="calendar-container"
-                    calendarClassName="calendar-input"
-                    iconClassName="calendar-input-icon"
-                    onChange={(date) =>
-                      setTravelDate(date?.toISOString().split("T")[0] || "")
-                    }
-                    selectedDate={travelDate ? new Date(travelDate) : null}
-                  />
+                  <div className="date-and-time">
+                    <CalendarInput
+                      containerClassName="calendar-container"
+                      calendarClassName="calendar-input"
+                      iconClassName="calendar-input-icon"
+                      onChange={(date) =>
+                        setTravelDate(date?.toISOString().split("T")[0] || "")
+                      }
+                      selectedDate={travelDate ? new Date(travelDate) : null}
+                    />
+                  </div>
                 </div>
                 <div className="calendar-containerr">
                   <strong>Time of Travel:</strong>
-                  <TimeInput
-                    onChange={(time) => setTravelTime(time || "")} // Use an empty string as a fallback
-                    selectedDate={
-                      travelDate
-                        ? new Date(travelDate).toISOString().split("T")[0]
-                        : null
-                    }
-                    handleDateChange={(date) => {
-                      const formattedDate = date
-                        ? new Date(date).toISOString().split("T")[0]
-                        : null;
-                      setTravelDate(formattedDate || ""); // Use an empty string as a fallback
-                    }}
-                  />
+                  <div className="date-and-time">
+                    <TimeInput
+                      onChange={(time) => setTravelTime(time || "")} // Use an empty string as a fallback
+                      selectedDate={
+                        travelDate
+                          ? new Date(travelDate).toISOString().split("T")[0]
+                          : null
+                      }
+                      handleDateChange={(date) => {
+                        const formattedDate = date
+                          ? new Date(date).toISOString().split("T")[0]
+                          : null;
+                        setTravelDate(formattedDate || ""); // Use an empty string as a fallback
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
                   <strong>Return Date:</strong>
                   {category === "Round Trip" ? (
-                    <CalendarInput
-                      containerClassName="calendar-container"
-                      calendarClassName="calendar-input"
-                      iconClassName="calendar-input-icon"
-                      onChange={(date) =>
-                        setReturnDate(date?.toISOString().split("T")[0] || "")
-                      }
-                      selectedDate={returnDate ? new Date(returnDate) : null}
-                    />
+                    <div className="date-and-time">
+                      <CalendarInput
+                        containerClassName="calendar-container"
+                        calendarClassName="calendar-input"
+                        iconClassName="calendar-input-icon"
+                        onChange={(date) =>
+                          setReturnDate(date?.toISOString().split("T")[0] || "")
+                        }
+                        selectedDate={returnDate ? new Date(returnDate) : null}
+                      />
+                    </div>
                   ) : (
                     <div>
                       <p>Estimated</p>
@@ -392,20 +397,24 @@ export default function RequestForm() {
                 <div className="calendar-containerr">
                   <strong>Return Time </strong>
                   {category === "Round Trip" ? (
-                    <TimeInput
-                      onChange={(returnTime) => setReturnTime(returnTime || "")}
-                      selectedDate={
-                        travelDate
-                          ? new Date(travelDate).toISOString().split("T")[0]
-                          : null
-                      }
-                      handleDateChange={(date) => {
-                        const formattedDate = date
-                          ? new Date(date).toISOString().split("T")[0]
-                          : null;
-                        setReturnDate(formattedDate || "");
-                      }}
-                    />
+                    <div className="date-and-time">
+                      <TimeInput
+                        onChange={(returnTime) =>
+                          setReturnTime(returnTime || "")
+                        }
+                        selectedDate={
+                          travelDate
+                            ? new Date(travelDate).toISOString().split("T")[0]
+                            : null
+                        }
+                        handleDateChange={(date) => {
+                          const formattedDate = date
+                            ? new Date(date).toISOString().split("T")[0]
+                            : null;
+                          setReturnDate(formattedDate || "");
+                        }}
+                      />
+                    </div>
                   ) : (
                     <div>
                       <p>Estimated</p>
@@ -485,7 +494,17 @@ export default function RequestForm() {
                   </p>
                 </div>
               </div>
-
+              <div className="sixth-row">
+                <div className="requester-info-name">
+                  <strong>Passenger's name(s):</strong>
+                  <input
+                    className="passenger-input"
+                    type="text"
+                    value={requesterName}
+                    onChange={(e) => setRequesterName(e.target.value)}
+                  />
+                </div>
+              </div>
               <div className="seventh-row">
                 {isFifthyKilometers && (
                   <p>

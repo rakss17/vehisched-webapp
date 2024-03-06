@@ -103,6 +103,8 @@
   display: flex;
   flex-direction: row;
   height: auto;
+  align-items: center;
+
 }
 .input-passenger-number .maximum-capacity-note {
   font-size: 1rem;
@@ -113,8 +115,9 @@
 .input-passenger-number .set-trip-text-error {
   color: red;
   font-size: 0.8rem;
-  margin-left: 0vw;
+  margin-left: -4vw;
   font-weight: bold;
+  width: 9vw;
 }
 .passenger_name_width {
   width: 12vw;
@@ -122,13 +125,15 @@
 .passengers-name-row {
   margin-top: 0vh;
   padding: 0px;
-  margin-left: 3vw;
+  margin-left: 0vw;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 1%;
+  gap: 10%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .passenger-name-column {
   display: flex;
@@ -141,6 +146,7 @@
   margin-top: -2vh;
   font-weight: bold;
   text-align: center;
+
 }
 .third-row {
   display: flex;
@@ -202,12 +208,14 @@
 }
 .forth-row {
   display: flex;
-  margin-top: 1vh;
+
   margin-left: 0vw;
   flex-direction: row;
   justify-content: space-evenly;
   gap: 10%;
   margin-left: 3vw;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .forth-row strong {
   /* white-space: nowrap; */
@@ -390,11 +398,24 @@
   outline: none;
 }
 .travel-type{
-  width: 15vw;
+  width: 20vw;
 }
-.travel-type strong{
-  margin-left: -4vw;
+
+.googledestination{
+  color: #000000;
+  font-size: 1rem;
+  background-color: #c4c2c2;
+  width: fit-content;
+  margin-left: 10px;
+  padding: 10px;
 }
+.select-options:focus{
+  outline: none;
+}
+.travel-type{
+  width: 20vw;
+}
+
 
 @media screen and (max-width: 768px) {
   .request-form-body {

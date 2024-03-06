@@ -296,29 +296,10 @@ export default function RequestForm() {
                       onChange={(e) => setRequesterOffice(e.target.value)}
                     />
                   </div>
-                  {/* <div className="input-passenger-number">
-                    <p className="maximum-capacity-note">
-                      Vehicle maximum capacity: {capacity}
-                    </p>
-                    <InputField
-                      icon={faUsers}
-                      onKeyDown={handleKeyDown}
-                      label="No. of passengers"
-                      value={numPassengers}
-                      onChange={handlePassengerChange}
-                      type="number"
-                    />
-                    <p className="set-trip-text-error">
-                      {errorMessages[0]?.numberOfPassengersError}
-                    </p>
-
-                    {exceedsCapacity && (
-                      <p className="set-trip-text-error">
-                        Exceeds seating capacity of the vehicle
-                      </p>
-                    )}
-                  </div> */}
-                  <div className="fifth-row">
+                </div>
+              </div>
+              <div className="passengers-name-row">
+              <div className="fifth-row">
                     <div className="travel-type">
                       <strong>Travel Type:</strong>
                       <select
@@ -333,10 +314,29 @@ export default function RequestForm() {
                       </select>
                     </div>
                   </div>
+                <div className="input-passenger-number">
+                  <p className="maximum-capacity-note">
+                    Vehicle maximum capacity: {capacity}
+                  </p>
+                  <InputField
+                    icon={faUsers}
+                    onKeyDown={handleKeyDown}
+                    label="No. of passengers"
+                    value={numPassengers}
+                    onChange={handlePassengerChange}
+                    type="number"
+                  />
+                  <p className="set-trip-text-error">
+                    {errorMessages[0]?.numberOfPassengersError}
+                  </p>
+
+                  {exceedsCapacity && (
+                    <p className="set-trip-text-error">
+                      Exceeds seating capacity of the vehicle
+                    </p>
+                  )}
                 </div>
-              </div>
-              <div className="passengers-name-row">
-                {generatePassengerInputs()}
+                {/* {generatePassengerInputs()} */}
               </div>
               <div className="forth-row">
                 <div className="calendar-containerr">
@@ -385,7 +385,7 @@ export default function RequestForm() {
                   ) : (
                     <div>
                       <p>Estimated</p>
-                    </div> 
+                    </div>
                   )}
                 </div>
 
@@ -451,7 +451,7 @@ export default function RequestForm() {
                         destinationError: undefined,
                       }))
                     }
-                    className="select-options"
+                    className="googledestination"
                   />
                 </div>
 

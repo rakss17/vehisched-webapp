@@ -188,6 +188,10 @@ export default function RequestForm() {
     } else if (numPassengers < updatedPassengerNames.length) {
       updatedPassengerNames.splice(numPassengers); // Remove excess passengers
     }
+    const numberOfPassenger = updatedPassengerNames.reduce(
+      (count, name) => (name ? count + 1 : count),
+      0
+    );
     const filteredPassengerData = updatedPassengerNames.filter(
       (name) => name !== ""
     );
@@ -195,7 +199,7 @@ export default function RequestForm() {
     setData((prevData: any) => ({
       ...prevData,
       passenger_name: filteredPassengerData,
-      number_of_passenger: numPassengers,
+      number_of_passenger: numberOfPassenger,
     }));
   }, [numPassengers]);
 
@@ -291,7 +295,7 @@ export default function RequestForm() {
 
   const generatePassengerInputs = () => {
     const inputs = [];
-    for (let i = 0; i < numPassengers; i++) {
+    for (let i = 0; i < data.vehicle_capacity; i++) {
       inputs.push(
         <div key={i} className="passenger-name-column">
           <InputField
@@ -350,18 +354,15 @@ export default function RequestForm() {
       numberOfPassengersError: [],
       numberOfPassengersExceedError: [],
     };
-    const allFieldsBlank = !data.purpose && !data.number_of_passenger;
+    const allFieldsBlank = !data.purpose;
     !data.category && !data.destination && !data.distance;
-    const semiFieldsBlank = !data.purpose && !data.number_of_passenger;
+    const semiFieldsBlank = !data.purpose;
 
     if (allFieldsBlank) {
       validationErrors.all = ["Required all fields!"];
     } else if (semiFieldsBlank) {
       validationErrors.all = ["Required all fields!"];
     } else {
-      if (!data.number_of_passenger) {
-        validationErrors.numberOfPassengersError = ["This field is required"];
-      }
       if (!data.purpose) {
         validationErrors.purposeError = ["This field is required"];
       }
@@ -486,15 +487,6 @@ export default function RequestForm() {
                     onChange={handlePassengerChange}
                     type="number"
                   />
-                  <p className="set-trip-text-error">
-                    {errorMessages[0]?.numberOfPassengersError}
-                  </p>
-
-                  {exceedsCapacity && (
-                    <p className="set-trip-text-error">
-                      Exceeds seating capacity of the vehicle
-                    </p>
-                  )}
                 </div>
               </div>
               {data.type === "Round Trip" && (
@@ -680,8 +672,7 @@ export default function RequestForm() {
               {data.travel_date &&
                 data.travel_time &&
                 data.return_date &&
-                data.return_time &&
-                data.number_of_passenger && (
+                data.return_time && (
                   <>
                     <div className="third-row2">
                       <div className="vehicle-info-name">

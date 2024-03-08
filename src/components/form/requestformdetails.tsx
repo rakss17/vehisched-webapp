@@ -224,14 +224,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             onChange={(event) => {
               const newPassengerNames = [...mergeTripData.passenger_name];
               newPassengerNames[i] = event.target.value;
-              const numberOfPassenger = newPassengerNames.reduce(
-                (count, name) => (name ? count + 1 : count),
-                0
-              );
+              const countNumberOfPassenger = newPassengerNames.filter(
+                (name) => name !== ""
+              ).length;
               setMergeTripData((prevData: any) => ({
                 ...prevData,
                 passenger_name: newPassengerNames,
-                number_of_passenger: numberOfPassenger,
+                number_of_passenger: countNumberOfPassenger,
+                vehicle_capacity: selectedRequest.number_of_passenger,
               }));
 
               if (newPassengerNames[i]) {
@@ -852,7 +852,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   dropdownClassName="dropdown-custom"
                   menuClassName="menu-custom"
                   toggleClassName="dropdown-toggle-custom"
-                  
                 />
               </div>
               <span className="set-trip-text-error-span">

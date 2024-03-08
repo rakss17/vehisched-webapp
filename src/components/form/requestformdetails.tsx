@@ -852,6 +852,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   dropdownClassName="dropdown-custom"
                   menuClassName="menu-custom"
                   toggleClassName="dropdown-toggle-custom"
+                  
                 />
               </div>
               <span className="set-trip-text-error-span">
@@ -899,7 +900,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div className="merge-trip-modal-field-container">
             <p>Destination:</p>
-            <div className="merge-trip-modal-destination-field-container">
+            <div className="merge-trip-modal-select-field-container">
               <AutoCompleteAddressGoogle
                 className="autocomplete-address-google-custom"
                 travel_date={selectedRequest.travel_date}
@@ -916,7 +917,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div className="merge-trip-modal-field-container">
             <p>Purpose:</p>
-            <div className="merge-trip-modal-field-container-purpose-container">
+            <div className="merge-trip-modal-select-field-container">
               <InputField
                 className="merge-trip-modal-field-container-purpose"
                 icon={faClipboard}
@@ -944,7 +945,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div className="merge-trip-modal-field-container">
             <p>Passenger's name</p>
           </div>
-          <div className="merge-trip-modal-passenger-container">
+          <div className="merge-trip-modal-select-field-container">
             {generatePassengerInputs()}
           </div>
           <div className="merge-trip-modal-button-container">

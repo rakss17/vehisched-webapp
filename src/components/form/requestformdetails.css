@@ -429,13 +429,14 @@
   display: flex;
   height: 5vh;
   width: 40vw;
-  gap: 1vw;
+  gap: 2vw;
   position: relative;
+
 }
 .merge-trip-modal-dropdown-child-container{ 
   height: 15vh;
   width: 20vw;
-  margin-left: 5.6vw;
+  margin-left: 10%;
 }
 
 .set-trip-text-error-span{ 
@@ -497,15 +498,19 @@
   padding-left: 0vw;
   align-items: center;
   display: flex;
+  justify-content: flex-start;
   height: 5vh;
   width: 40vw;
   gap: 2vw;
+
 }
 .merge-trip-modal-select-field-container{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 40vw;
   text-align: center;
+  justify-content: flex-end;
+  margin-right: 9%;
 }
 .merge-trip-modal-destination-field-container {
   display: flex;

@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: row;
   gap: 30%;
+
 }
 .margin-top-vehicles {
   margin-top: 5rem;
@@ -90,33 +91,35 @@
   margin-right: 4vh;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .vehicles-container {
     height: 100vh;
     width: 100vw;
-    margin-left: 0vh;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 5%;
   }
   .vehicles-row {
-    margin-top: 1.5rem;
+    margin-top: 0vh;
     margin-left: 1vh;
     display: flex;
     flex-direction: row;
-    gap: 15%;
+   
   }
   .margin-top-vehicles {
     margin-top: 0rem;
     margin-bottom: 1rem;
   }
   .vehicle-card {
+    width: 85vw;
+    height: 25vh;
+    margin-left: -4vw;
+  }
+  .vehicle-row {
+    margin-right: auto;
     width: 80vw;
     height: 25vh;
 
-    margin-left: 1vh;
-  }
-  .vehicle-row {
-    margin-left: 1.5vh;
-    width: 80vw;
-    height: 25vh;
   }
   .vehicle-image {
     width: 35vw;
@@ -127,11 +130,13 @@
     color: black;
     font-weight: bold;
     text-align: center;
+
   }
   .vehicle-detail {
     font-size: 0.8rem;
     color: black;
     text-align: center;
+ 
   }
   .vehicle-status {
     font-size: 0.8rem;
@@ -140,6 +145,6 @@
     font-weight: bold;
   }
   .ellipsis-container {
-    margin-right: 3vh;
+    margin-right: 0;
   }
 }

@@ -4,12 +4,12 @@ import "./addedit.css";
 import DropdownMenu from "../dropdownmenu";
 import { AddEditProps } from "../../../interfaces/interfaces";
 import { fetchOfficeAPI } from "../../api/api";
+import CommonButton from "../../button/commonbutton";
 
 const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
   header,
-  buttonText,
   onRequestAddEdit,
   lastNameProps,
   firstNameProps,
@@ -79,43 +79,43 @@ const AddEdit: React.FC<AddEditProps> = ({
             </ul>
           </div>
         )}
-       <div className="left-right">
-       <div className="right">
-          <div>
-            <div className="row">
-              <label>Email Address: </label>
-              <input {...emailProps} />
+        <div className="left-right">
+          <div className="right">
+            <div>
+              <div className="row">
+                <label>Email Address: </label>
+                <input {...emailProps} />
+              </div>
+              <div className="row">
+                <label>Username: </label>
+                <input {...usernameProps} />
+              </div>
             </div>
-            <div className="row">
-              <label>Username: </label>
-              <input {...usernameProps} />
-            </div>
-          </div>
-          <div>
-            <div className="row">
-              <label>Last Name: </label>
-              <input {...lastNameProps} />
-            </div>
-            <div className="row">
-              <label>First Name: </label>
-              <input {...firstNameProps} />
-            </div>
-            </div>
-        </div>
-        
-        <div className="left">
-          <div>
-            <div className="row">  
-              <label>Middle Name: </label>
-              <input {...middleNameProps} />
-            </div>
-            <div className="row">
-              <label>Mobile Number: </label>
-              <input {...contactNumberProps} onKeyDown={handleKeyDown} />
+            <div>
+              <div className="row">
+                <label>Last Name: </label>
+                <input {...lastNameProps} />
+              </div>
+              <div className="row">
+                <label>First Name: </label>
+                <input {...firstNameProps} />
+              </div>
             </div>
           </div>
-          <div >
-            <div className="row">
+
+          <div className="left">
+            <div>
+              <div className="row">
+                <label>Middle Name: </label>
+                <input {...middleNameProps} />
+              </div>
+              <div className="row">
+                <label>Mobile Number: </label>
+                <input {...contactNumberProps} onKeyDown={handleKeyDown} />
+              </div>
+            </div>
+            <div>
+              <div className="row">
                 <label>Office: </label>
                 <DropdownMenu
                   options={officeData}
@@ -124,26 +124,30 @@ const AddEdit: React.FC<AddEditProps> = ({
                 />
               </div>
               <div className="row">
-              <label>Role: </label>
-              <DropdownMenu
-                options={[
-                  "requester",
-                  "vip",
-                  "driver",
-                  "gate guard",
-                  "office staff",
-                ]}
-                selectedKey="role"
-                {...roleDropdownProps}
-              />
+                <label>Role: </label>
+                <DropdownMenu
+                  options={[
+                    "requester",
+                    "vip",
+                    "driver",
+                    "gate guard",
+                    "office staff",
+                  ]}
+                  selectedKey="role"
+                  {...roleDropdownProps}
+                />
+              </div>
             </div>
           </div>
         </div>
-       </div>
-        
-        <div >
-          <button onClick={onRequestClose}>Cancel</button>
-          <button onClick={onRequestAddEdit}>{buttonText}</button>
+
+        <div className="btns">
+          <CommonButton onClick={onRequestClose} secondaryStyle text="Close" />
+          <CommonButton
+            onClick={onRequestAddEdit}
+            primaryStyle
+            text="+ Add User"
+          />
         </div>
       </div>
     </Modal>

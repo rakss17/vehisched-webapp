@@ -156,11 +156,24 @@
     margin-top: 5vw;
   }
   .request-row {
-    margin-top: 1.5rem;
     margin-left: 0rem;
-
     gap: 10%;
+    margin-top: 5rem;
+    flex-direction: column;
+    margin-top: 4rem;
+    align-items: end;
+    margin-left: auto;
+    margin-right: auto;
+    
   }
+  .request-row > :nth-child(1){
+    margin-bottom: 1.5vh;
+    margin-top: 3.5rem;
+  }
+  .request-row > :nth-child(2){
+    width: 40%;
+    
+  } 
   .margin-top {
     margin-top: 0rem;
   }

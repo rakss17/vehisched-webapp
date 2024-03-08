@@ -53,8 +53,6 @@ const AddOfficeRole: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
           <div>
             <CommonButton
               onClick={handleAddOffice}
-              width={9}
-              height={6}
               primaryStyle
               text="+ Add Office"
             />
@@ -63,8 +61,6 @@ const AddOfficeRole: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
         <div className="close-button">
           <CommonButton
             onClick={onRequestClose}
-            width={6}
-            height={6}
             secondaryStyle
             text="Close"
           />

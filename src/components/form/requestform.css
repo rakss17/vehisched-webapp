@@ -91,7 +91,28 @@
   display: flex;
   gap: 1vw;
   color: black;
-  width: 18vw;
+  width: 28vw;
+  margin-left: auto;
+  margin-right: 1vw;
+}
+.office-input {
+  color: black;
+  background-color: transparent;
+  font-size: 1rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  align-items: center;
+  padding: 1rem;
+  width: 100%;
+  height: 1vh;
+}
+
+.office-input:focus {
+  outline: none;
+}
+.office-input::placeholder {
+  color: transparent;
 }
 .first-row .set-trip-text-error {
   color: red;
@@ -103,6 +124,8 @@
   display: flex;
   flex-direction: row;
   height: auto;
+  align-items: center;
+  margin-left: -0.7vw;
 }
 .input-passenger-number .maximum-capacity-note {
   font-size: 1rem;
@@ -113,8 +136,9 @@
 .input-passenger-number .set-trip-text-error {
   color: red;
   font-size: 0.8rem;
-  margin-left: 0vw;
+  margin-left: -11vw;
   font-weight: bold;
+  width: 11vw;
 }
 .passenger_name_width {
   width: 12vw;
@@ -122,13 +146,15 @@
 .passengers-name-row {
   margin-top: 0vh;
   padding: 0px;
-  margin-left: 3vw;
+  margin-left: 0vw;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 1%;
+  gap: 10%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .passenger-name-column {
   display: flex;
@@ -153,10 +179,11 @@
 .third-row2 {
   display: flex;
   flex-direction: row;
-  margin-top: 1vh;
   margin-left: 3vw;
   gap: 6vw;
   width: 60vw;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .vehicle-info-name {
   margin-top: 0vw;
@@ -166,7 +193,8 @@
   width: auto;
   color: black;
   white-space: nowrap;
-  gap: 1vw;
+  gap: 5%;
+  align-items: center;
 }
 
 .vehicle-info-name strong {
@@ -174,12 +202,22 @@
   white-space: nowrap;
   color: black;
 }
+.destinationn-row {
+  display: flex;
+  margin-left: 0vw;
+  flex-direction: row;
+  gap: 10%;
+  margin-left: 0vw;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
 .destination-info {
   width: auto;
   height: auto;
   display: flex;
   flex-direction: row;
-  gap: 1vw;
+  gap: 5vw;
+  margin-left: 3vw;
 }
 .destination-info strong {
   white-space: nowrap;
@@ -187,11 +225,12 @@
   color: black;
 }
 .kilometer-info {
-  margin-top: 0vw;
+  margin-top: 0.5vh;
   display: flex;
   flex-direction: row;
-  width: 14vw;
+  width: 20vw;
   gap: 1vw;
+  margin-left: 4.5vw;
 }
 .kilometer-info strong {
   font-size: 1rem;
@@ -200,13 +239,16 @@
 }
 .forth-row {
   display: flex;
-  margin-top: 1vh;
   margin-left: 0vw;
   flex-direction: row;
   justify-content: space-evenly;
+  gap: 10%;
+  margin-left: 3vw;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .forth-row strong {
-  white-space: nowrap;
+  /* white-space: nowrap; */
   font-size: 1rem;
   color: black;
 }
@@ -215,24 +257,29 @@
   width: 30vw;
   display: flex;
   flex-direction: row;
-  gap: 1vw;
+  font-size: smaller;
 }
 .calendar-containerr select {
   width: 15vw;
   border-radius: 1px;
   background-color: #d9d9d9;
 }
+.date-and-time {
+  margin-left: auto;
+  margin-right: 15%;
+}
 .fifth-row {
   display: flex;
   margin-top: 1vh;
   margin-left: 3vw;
   flex-direction: row;
+  align-items: center;
 }
 
 .fifth-row strong {
-  white-space: nowrap;
   font-size: 1rem;
   color: black;
+  margin-right: 10px;
 }
 
 .fifth-row label {
@@ -352,6 +399,100 @@
   border-radius: 5px;
   position: relative;
 } */
+.destination-input {
+  color: black;
+  background-color: transparent;
+  font-size: 1rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  align-items: center;
+  padding: 1rem;
+  width: auto;
+  height: 1vh;
+}
+
+.destination-input:focus {
+  outline: none;
+}
+.destination-input::placeholder {
+  color: transparent;
+}
+
+.passenger-input {
+  color: black;
+  background-color: transparent;
+  font-size: 1rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  align-items: center;
+  padding: 1rem;
+  width: 49vw;
+  height: 1vh;
+}
+
+.passenger-input:focus {
+  outline: none;
+}
+.passenger-input::placeholder {
+  color: transparent;
+}
+
+.select-options {
+  color: #000000;
+  font-size: 1rem;
+  background-color: #ffffff;
+  width: fit-content;
+  margin-left: auto;
+}
+.select-options:focus {
+  outline: none;
+}
+
+.travel-type {
+  width: 25vw;
+}
+.type-options {
+  color: #000000;
+  font-size: 1rem;
+  background-color: #ffffff;
+  width: fit-content;
+  margin-left: 7.5vw;
+}
+.type-optionsfocus {
+  outline: none;
+}
+
+.googledestination {
+  color: #000000;
+  font-size: 1rem;
+  border: 1px solid black;
+  width: fit-content;
+  margin-left: 10px;
+  padding: 10px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+.googledestination {
+  outline: none;
+}
+
+.passenger-input-fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 0vw;
+  display: flex;
+  flex-direction: row;
+  margin-left: 0vh;
+  width: auto;
+  color: black;
+  gap: 1vw;
+  height: auto;
+}
 
 @media screen and (max-width: 768px) {
   .request-form-body {
@@ -376,6 +517,8 @@
     margin-left: 0vh;
     display: flex;
     flex-direction: column;
+    width: 90vw;
+    margin-left: auto;
   }
   .passenger_name_width {
     width: 30vw;
@@ -391,6 +534,7 @@
   }
   .vehicle-info-name {
     width: 35vw;
+    margin-left: -22vh;
   }
 
   .vehicle-info-name p:nth-child(2) {
@@ -434,15 +578,13 @@
   .fifth-row {
     margin-left: 1.3vh;
     font-size: 1rem;
+    width: 90vw;
+    flex-direction: row-reverse;
   }
   .fifth-row strong {
-    display: flex;
+    margin-right: 0;
   }
-  .fifth-row p {
-    display: flex;
-    width: 30vw;
-    font-size: 1rem;
-  }
+
   .sixth-row {
     margin-top: 2vw;
     display: flex;
@@ -489,7 +631,7 @@
     margin-right: -20vw;
   }
   .requester-office strong {
-    margin-left: -17vw;
+    margin-left: -33vw;
   }
   .requester-office p {
     width: 70vw;
@@ -533,5 +675,13 @@
     margin-left: 15%;
     flex-direction: row;
     align-items: center;
+  }
+  .third-row2 {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1vh;
+    margin-left: 3vw;
+    gap: 6vw;
+    width: 60vw;
   }
 }

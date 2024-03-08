@@ -4,12 +4,12 @@ import "./addedit.css";
 import { AddEditVehicleProps } from "../../../interfaces/interfaces";
 import { fetchDriversForAssignmentAPI, fetchVIPAPI } from "../../api/api";
 import DropdownMenu from "../dropdownmenu";
+import CommonButton from "../../button/commonbutton";
 
 const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   isOpen,
   onRequestClose,
   header,
-  buttonText,
   onRequestAddEdit,
   plateNoProps,
   modelProps,
@@ -121,6 +121,10 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
               <label>Upload Image: </label>
               <input {...uploadImageProps} />
             </div>
+            <div className="vip2">
+              <label>VIP: </label>
+              <input {...vipProps} />
+            </div>
             {isVipProps && (
               <div className="row2">
                 <label>Assign to: </label>
@@ -133,10 +137,14 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
             )}
           </div>
         </div>
-        
-        <div>
-          <button onClick={onRequestClose}>Cancel</button>
-          <button onClick={onRequestAddEdit}>{buttonText}</button>
+
+        <div className="addvehicle-btns">
+          <CommonButton onClick={onRequestClose} secondaryStyle text="Cancel" />
+          <CommonButton
+            onClick={onRequestAddEdit}
+            primaryStyle
+            text="Add Vehicle +"
+          />
         </div>
       </div>
     </Modal>

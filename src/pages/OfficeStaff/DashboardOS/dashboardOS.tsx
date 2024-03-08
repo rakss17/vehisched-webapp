@@ -109,7 +109,7 @@ export default function DashboardOS() {
       <Sidebar sidebarData={sidebarData} />
       <div className="dashboard-container">
         <ToastContainer />
-        <div>
+        <div className="dashboard-label">
           <Label label="Dashboard" />
         </div>
 

@@ -28,6 +28,7 @@
   display: flex;
   flex-direction: row;
   gap: 10%;
+
 }
 .calendar-column-container p {
   color: black;
@@ -69,18 +70,40 @@
   background-color: #fdb316;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .dashboard-container {
-    margin-left: 1rem;
     flex-direction: column;
-    width: 85vw;
+    width: 100vw;
     height: 100vh;
     gap: 10%;
+
   }
   .label {
-    margin-left: 5rem;
-    margin-top: 6rem;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    margin-bottom: 0;
+
+  }
+  .dashboard-label{
+    margin-top: -6vh;
+  }
+
+  .calendar-column-container {
+    background-color: transparent;
+    padding-left: 0vw;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
+    margin-top: -7vh;
+
+  }
+
+  .calendar-column-container p {
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 3vh;
   }
   .today-trip {
     margin-top: 3rem;
@@ -92,6 +115,6 @@
     font-size: 1.5rem;
   }
   .today-trip h2 {
-    font-size: 6rem;
+    font-size: 4rem;
   }
 }

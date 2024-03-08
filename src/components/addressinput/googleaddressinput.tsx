@@ -4,6 +4,7 @@ import Autocomplete, {
 import { handlePlaceSelect } from "../api/api";
 import { useEffect, useState, useRef } from "react";
 import "./googleaddressinput.css";
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface AutoCompleteAddressGoogleProps
   extends ReactGoogleAutocompleteInputProps {
@@ -27,6 +28,7 @@ export default function AutoCompleteAddressGoogle({
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
+  const [isLoading, setIsLoading] = useState(false);
   const apiKey = process.env.GOOGLE_MAP_API_KEY;
 
   const onPlaceSelectedRef = useRef<(place: any) => void>(() => {});
@@ -39,8 +41,10 @@ export default function AutoCompleteAddressGoogle({
         travel_time,
         setData,
         setAddressData,
-        category
+        category,
+        setIsLoading
       );
+      setIsLoading(true);
       removeDestinationError();
     };
   }, [
@@ -58,14 +62,17 @@ export default function AutoCompleteAddressGoogle({
   }, [travelDateProp, travelTimeProp]);
 
   return (
-    <Autocomplete
-      className={`autocomplete-address ${className}`}
-      options={{
-        types: ["establishment", "geocode"],
-        componentRestrictions: { country: "PH" },
-      }}
-      apiKey={apiKey}
-      onPlaceSelected={(place) => onPlaceSelectedRef.current(place)}
-    />
+    <div className="autocomplete-address-container">
+      <Autocomplete
+        className={`autocomplete-address ${className}`}
+        options={{
+          types: ["establishment", "geocode"],
+          componentRestrictions: { country: "PH" },
+        }}
+        apiKey={apiKey}
+        onPlaceSelected={(place) => onPlaceSelectedRef.current(place)}
+      />
+      {isLoading && <CircularProgress color="primary" size={25} />}
+    </div>
   );
 }

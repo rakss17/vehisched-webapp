@@ -241,7 +241,7 @@ export default function Admin() {
   useEffect(() => {
     setUserData((prevUserData: any) => ({
       ...prevUserData,
-      password: `${userData.last_name}@${userData.first_name}`,
+      password: `${userData.last_name.toLowerCase()}@${userData.first_name.toLowerCase()}`,
     }));
   }, [userData]);
 
@@ -664,15 +664,11 @@ export default function Admin() {
               <SearchBar onSearchChange={handleSearchAccount} />
               <div className="accounts-row-button">
                 <CommonButton
-                  width={12}
-                  height={7}
                   secondaryStyle
                   onClick={handleAddOfficeRole}
                   text="+ Add Office/Role"
                 />
                 <CommonButton
-                  width={10}
-                  height={7}
                   primaryStyle
                   onClick={handleAddUser}
                   text="+ Add User"
@@ -752,6 +748,7 @@ export default function Admin() {
                         <td>{account.mobile_number}</td>
                         <td>
                           <div
+                            className="stats"
                             style={{
                               width: "10px",
                               height: "10px",
@@ -788,13 +785,15 @@ export default function Admin() {
           <>
             <div className="accounts-row">
               <SearchBar onSearchChange={handleSearchVehicle} />
-              <CommonButton
-                width={10}
-                height={7}
-                primaryStyle
-                text="+ Add Vehicle"
-                onClick={handleAddVehicle}
-              />
+              <div className="addvehicle-btn">
+                <CommonButton
+                  // width={10}
+                  // height={7}
+                  primaryStyle
+                  text="+ Add Vehicle"
+                  onClick={handleAddVehicle}
+                />
+              </div>
             </div>
             <div className="vehicles-container">
               {filteredVehicleList.length === 0 ? (

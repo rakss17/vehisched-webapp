@@ -70,7 +70,6 @@
   gap: 2vw;
   width: 60vw;
   align-items: center;
-
 }
 
 .requester-info-name {
@@ -96,7 +95,7 @@
   margin-left: auto;
   margin-right: 1vw;
 }
-.office-input{
+.office-input {
   color: black;
   background-color: transparent;
   font-size: 1rem;
@@ -109,10 +108,10 @@
   height: 1vh;
 }
 
-.office-input:focus{
+.office-input:focus {
   outline: none;
 }
-.office-input::placeholder{
+.office-input::placeholder {
   color: transparent;
 }
 .first-row .set-trip-text-error {
@@ -126,8 +125,7 @@
   flex-direction: row;
   height: auto;
   align-items: center;
-  margin-left: -.7vw ;
-
+  margin-left: -0.7vw;
 }
 .input-passenger-number .maximum-capacity-note {
   font-size: 1rem;
@@ -169,7 +167,6 @@
   margin-top: -2vh;
   font-weight: bold;
   text-align: center;
-
 }
 .third-row {
   display: flex;
@@ -187,7 +184,6 @@
   width: 60vw;
   margin-top: 10px;
   margin-bottom: 10px;
-
 }
 .vehicle-info-name {
   margin-top: 0vw;
@@ -206,13 +202,22 @@
   white-space: nowrap;
   color: black;
 }
+.destinationn-row {
+  display: flex;
+  margin-left: 0vw;
+  flex-direction: row;
+  gap: 10%;
+  margin-left: 0vw;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
 .destination-info {
   width: auto;
   height: auto;
   display: flex;
   flex-direction: row;
-  gap: 1vw;
-  align-items: center;
+  gap: 5vw;
+  margin-left: 3vw;
 }
 .destination-info strong {
   white-space: nowrap;
@@ -220,13 +225,12 @@
   color: black;
 }
 .kilometer-info {
-  margin-top: .5vw;
+  margin-top: 0.5vh;
   display: flex;
   flex-direction: row;
   width: 20vw;
   gap: 1vw;
-  margin-left: 4vw;
-
+  margin-left: 4.5vw;
 }
 .kilometer-info strong {
   font-size: 1rem;
@@ -254,14 +258,13 @@
   display: flex;
   flex-direction: row;
   font-size: smaller;
-
 }
 .calendar-containerr select {
   width: 15vw;
   border-radius: 1px;
   background-color: #d9d9d9;
 }
-.date-and-time{
+.date-and-time {
   margin-left: auto;
   margin-right: 15%;
 }
@@ -270,11 +273,10 @@
   margin-top: 1vh;
   margin-left: 3vw;
   flex-direction: row;
-  align-items: center;  
+  align-items: center;
 }
 
 .fifth-row strong {
-
   font-size: 1rem;
   color: black;
   margin-right: 10px;
@@ -397,7 +399,7 @@
   border-radius: 5px;
   position: relative;
 } */
-.destination-input{
+.destination-input {
   color: black;
   background-color: transparent;
   font-size: 1rem;
@@ -410,14 +412,14 @@
   height: 1vh;
 }
 
-.destination-input:focus{
+.destination-input:focus {
   outline: none;
 }
-.destination-input::placeholder{
+.destination-input::placeholder {
   color: transparent;
 }
 
-.passenger-input{
+.passenger-input {
   color: black;
   background-color: transparent;
   font-size: 1rem;
@@ -430,41 +432,39 @@
   height: 1vh;
 }
 
-.passenger-input:focus{
+.passenger-input:focus {
   outline: none;
 }
-.passenger-input::placeholder{
+.passenger-input::placeholder {
   color: transparent;
 }
 
-.select-options{
+.select-options {
   color: #000000;
   font-size: 1rem;
   background-color: #ffffff;
   width: fit-content;
   margin-left: auto;
 }
-.select-options:focus{
+.select-options:focus {
   outline: none;
 }
 
-.travel-type{
+.travel-type {
   width: 25vw;
-
 }
-.type-options{
+.type-options {
   color: #000000;
   font-size: 1rem;
   background-color: #ffffff;
   width: fit-content;
   margin-left: 7.5vw;
 }
-.type-optionsfocus{
+.type-optionsfocus {
   outline: none;
 }
 
-
-.googledestination{
+.googledestination {
   color: #000000;
   font-size: 1rem;
   border: 1px solid black;
@@ -476,11 +476,11 @@
   border-right: none;
   border-radius: 0;
 }
-.googledestination{
+.googledestination {
   outline: none;
 }
 
-.passenger-input-fields{
+.passenger-input-fields {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -555,7 +555,6 @@
     margin-left: 3vw;
     flex-direction: row;
     justify-content: space-around;
-    
   }
   .calendar-containerr {
     width: 100vw;
@@ -583,7 +582,6 @@
     flex-direction: row-reverse;
   }
   .fifth-row strong {
-    
     margin-right: 0;
   }
 

@@ -10,12 +10,17 @@ import {
   faClipboard,
 } from "@fortawesome/free-solid-svg-icons";
 import Confirmation from "../confirmation/confirmation";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 import USTPLogo from "../../assets/USTP LOGO.png";
 import DocumentCode from "../../assets/documentcode.jpg";
 import { RequestFormProps } from "../../interfaces/interfaces";
-import { postRequestFromAPI } from "../api/api";
+import {
+  checkVehicleAvailability,
+  fetchDriversScheduleAPI,
+  fetchRequestersAPI,
+  postRequestFromAPI,
+} from "../api/api";
 import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,6 +29,7 @@ import TimeInput from "../timeinput/timeinput";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import { format } from "date-fns";
 import { formatDate, formatTime } from "../functions/getTimeElapsed";
+import Dropdown from "../dropdown/dropdown";
 
 export default function RequestForm() {
   const [addressData, setAddressData] = useState<any>({
@@ -33,18 +39,12 @@ export default function RequestForm() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isFifthyKilometers, setIsFifthyKilometers] = useState(false);
   const location = useLocation();
-  const plateNumber = location.state?.plateNumber || "";
-  const vehicleName = location.state?.vehicleName || "";
   const capacity = location.state?.capacity || "";
   const [distance, setDistance] = useState(0);
   const destination = location.state?.addressData.destination || "";
-
-  const [requesterName, setRequesterName] = useState("");
-
-  const [requesterOffice, setRequesterOffice] = useState("");
-
-  const [category, setCategory] = useState("");
-
+  const [vehicles, setVehicles] = useState<any[]>([]);
+  const [driversData, setDriversData] = useState<any[]>([]);
+  const [requesters, setRequesters] = useState<any[]>([]);
   const [data, setData] = useState<RequestFormProps>({
     purpose: "",
     number_of_passenger: null,
@@ -54,11 +54,18 @@ export default function RequestForm() {
     return_date: null,
     return_time: null,
     destination: destination,
-    vehicle: `${plateNumber}`,
-    type: category,
+    vehicle: "",
+    type: "",
     distance: distance,
     merge_trip: false,
+    role: "",
+    driver_name: "",
+    office: "",
+    requester_name: "",
+    vehicle_capacity: null,
   });
+
+  const requester = null;
 
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -66,9 +73,97 @@ export default function RequestForm() {
   const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
 
+  const dropdownVehicles = [
+    "Select Vehicle",
+    ...vehicles.map(
+      (vehicle: any) => `${vehicle.plate_number} ${vehicle.model}`
+    ),
+  ];
+
+  const handleFetchVehicles = () => {
+    checkVehicleAvailability(
+      setVehicles,
+      data.travel_date,
+      data.travel_time,
+      data.return_date,
+      data.return_time,
+      numPassengers,
+      setLoadingBarProgress,
+      () => {}
+    );
+  };
+
+  const handleChooseVehicle = (vehicleName: string) => {
+    const selectedVehicle = vehicles.find((vehicle) => {
+      const { plate_number, model } = vehicle;
+      const fullName = `${plate_number} ${model}`;
+      return fullName === vehicleName;
+    });
+
+    if (selectedVehicle) {
+      setData((prevData: any) => ({
+        ...prevData,
+        vehicle: selectedVehicle.plate_number,
+        vehicle_capacity: selectedVehicle.capacity,
+      }));
+    }
+    // if (vehicleName === "Select Driver") {
+
+    // }
+    // const updatedErrors = { ...errorMessages };
+    // delete updatedErrors[0]?.driverSelectionError;
+    // setErrorMessages(updatedErrors);
+  };
+
+  const handleFetchDrivers = () => {
+    fetchDriversScheduleAPI(
+      setDriversData,
+      data.travel_date,
+      data.travel_time,
+      data.return_date,
+      data.return_time
+    );
+  };
+
+  const dropdownDrivers = [
+    "Select Driver",
+    ...driversData.map(
+      (driver) =>
+        `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
+    ),
+  ];
+
+  const handleChooseDriver = (driverName: string) => {
+    const selectedDriver = driversData.find((driver) => {
+      const { first_name, middle_name, last_name } = driver;
+      const fullName = `${first_name} ${middle_name} ${last_name}`;
+      return fullName === driverName;
+    });
+
+    if (selectedDriver) {
+      setData((prevData: any) => ({
+        ...prevData,
+        driver_name: selectedDriver.id,
+      }));
+    }
+    // if (driverName === "Select Driver") {
+    //   setSelectedDriverId(null);
+    // }
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.driverSelectionError;
+    setErrorMessages(updatedErrors);
+  };
+
   useEffect(() => {
-    if (addressData.distance) {
+    if (addressData.distance && addressData.destination) {
       setDistance(addressData.distance);
+      setData((prevData: any) => ({
+        ...prevData,
+        role: "office staff",
+        merge_trip: false,
+        distance: addressData.distance,
+        destination: addressData.destination,
+      }));
     }
   }, [addressData.distance]);
   useEffect(() => {
@@ -80,26 +175,36 @@ export default function RequestForm() {
   }, []);
 
   useEffect(() => {
-    let updatedPassengerNames = [...data.passenger_name];
-    if (numPassengers > data.passenger_name.length) {
+    // Check if data.passenger_name exists before creating a copy
+    const updatedPassengerNames = data.passenger_name
+      ? [...data.passenger_name]
+      : [];
+
+    if (numPassengers > updatedPassengerNames.length) {
       const additionalPassengers = new Array(
-        numPassengers - data.passenger_name.length
+        numPassengers - updatedPassengerNames.length
       ).fill("");
-      updatedPassengerNames =
-        updatedPassengerNames.concat(additionalPassengers);
-    } else if (numPassengers < data.passenger_name.length) {
-      updatedPassengerNames = updatedPassengerNames.slice(0, numPassengers);
+      updatedPassengerNames.push(...additionalPassengers);
+    } else if (numPassengers < updatedPassengerNames.length) {
+      updatedPassengerNames.splice(numPassengers); // Remove excess passengers
     }
-    setData({
-      ...data,
-      passenger_name: updatedPassengerNames,
+    const filteredPassengerData = updatedPassengerNames.filter(
+      (name) => name !== ""
+    );
+
+    setData((prevData: any) => ({
+      ...prevData,
+      passenger_name: filteredPassengerData,
       number_of_passenger: numPassengers,
-    });
+    }));
   }, [numPassengers]);
 
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, travel_date: formattedDate });
+    setData((prevData: any) => ({
+      ...prevData,
+      travel_date: formattedDate,
+    }));
     if (data.category === "Round Trip") {
       const updatedErrors = { ...errorMessages };
       delete updatedErrors[0]?.travelDateError;
@@ -119,7 +224,10 @@ export default function RequestForm() {
 
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, return_date: formattedDate });
+    setData((prevData: any) => ({
+      ...prevData,
+      return_date: formattedDate,
+    }));
     const updatedErrors = { ...errorMessages };
     delete updatedErrors[0]?.returnDateError;
     setErrorMessages(updatedErrors);
@@ -127,7 +235,10 @@ export default function RequestForm() {
 
   const handleStartTimeChange = (time: string | null) => {
     if (time) {
-      setData({ ...data, travel_time: time });
+      setData((prevData: any) => ({
+        ...prevData,
+        travel_time: time,
+      }));
       if (data.category === "Round Trip") {
         const updatedErrors = { ...errorMessages };
         delete updatedErrors[0]?.travelTimeError;
@@ -149,7 +260,10 @@ export default function RequestForm() {
 
   const handleEndTimeChange = (time: string | null) => {
     if (time) {
-      setData({ ...data, return_time: time });
+      setData((prevData: any) => ({
+        ...prevData,
+        return_time: time,
+      }));
       const updatedErrors = { ...errorMessages };
       delete updatedErrors[0]?.returnTimeError;
       setErrorMessages(updatedErrors);
@@ -182,7 +296,7 @@ export default function RequestForm() {
         <div key={i} className="passenger-name-column">
           <InputField
             className="passenger_name_width"
-            value={data.passenger_name[i] || ""} // Ensure a default value to avoid undefined
+            value={(data.passenger_name && data.passenger_name[i]) || ""}
             key={i}
             icon={faUser}
             label={`Passenger ${i + 1}`}
@@ -190,24 +304,22 @@ export default function RequestForm() {
             onChange={(event) => {
               const newPassengerNames = [...data.passenger_name];
               newPassengerNames[i] = event.target.value;
-              setData({ ...data, passenger_name: newPassengerNames });
+              setData((prevData: any) => ({
+                ...prevData,
+                passenger_name: newPassengerNames,
+              }));
               // Update error messages if any
-              if (newPassengerNames[i]) {
-                const updatedErrors = { ...errorMessages };
-                delete updatedErrors[0]?.passengerNameError[i];
-                delete updatedErrors[0]?.all;
-                setErrorMessages(updatedErrors);
-              }
             }}
           />
-          <p className="set-trip-text-error">
-            {errorMessages[0]?.passengerNameError[i]}
-          </p>
         </div>
       );
     }
     return inputs;
   };
+
+  useEffect(() => {
+    fetchRequestersAPI(setRequesters, requester);
+  }, []);
 
   const handleKeyDown = (event: any) => {
     const key = event.key;
@@ -217,13 +329,21 @@ export default function RequestForm() {
     }
   };
 
+  const handleSelectRequester = (event: any, value: any) => {
+    setData({
+      ...data,
+      requester_name: value.id,
+      office: value.office,
+    });
+  };
+
   const handleGoBack = () => {
     window.history.back();
   };
 
   const handleSubmit = () => {
+    console.log(data);
     let validationErrors: { [key: string]: string[] } = {
-      passengerNameError: [],
       all: [],
       purposeError: [],
       numberOfPassengersError: [],
@@ -244,12 +364,7 @@ export default function RequestForm() {
       if (!data.purpose) {
         validationErrors.purposeError = ["This field is required"];
       }
-      validationErrors.passengerNameError = [];
-      data.passenger_name.forEach((name, index) => {
-        if (!name || name.trim().length === 0) {
-          validationErrors.passengerNameError[index] = "This field is required";
-        }
-      });
+
       if (exceedsCapacity) {
         validationErrors.numberOfPassengersExceedError = [
           "Exceeds seating capacity of the vehicle",
@@ -263,7 +378,6 @@ export default function RequestForm() {
     console.log(data);
     if (
       validationErrors.numberOfPassengersError.length === 0 &&
-      validationErrors.passengerNameError.length === 0 &&
       validationErrors.purposeError.length === 0 &&
       validationErrors.numberOfPassengersExceedError.length === 0 &&
       validationErrors.all.length === 0
@@ -281,18 +395,6 @@ export default function RequestForm() {
         setLoadingBarProgress
       );
     }
-  };
-
-  const vehicles = useSelector((state: RootState) => state.vehiclesData.data);
-
-  const [plate_Number, setPlateNumber] = useState("");
-  const [vehicle_Name, setVehicleName] = useState("");
-
-  const handleCategoryChange = (selectedOption: string) => {
-    // Assuming the selectedOption is in the format "Vehicle Model - Plate Number"
-    const [selectedModel, selectedPlate] = selectedOption.split(" - ");
-    setVehicleName(selectedModel); // Update the vehicle name state
-    setPlateNumber(selectedPlate); // Update the plate number state
   };
 
   return (
@@ -314,7 +416,7 @@ export default function RequestForm() {
         <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />
-            <h1>Vehicle Request Form</h1>
+            <h1>Request Form</h1>
             <img src={DocumentCode} alt="Document Code" />
           </div>
           <div className="form-body">
@@ -324,21 +426,29 @@ export default function RequestForm() {
                 <div className="first-row-column">
                   <div className="requester-info-name">
                     <strong>Requester's name:</strong>
-                    <input
+                    {/* <input
                       className="destination-input"
                       type="text"
                       value={requesterName}
                       onChange={(e) => setRequesterName(e.target.value)}
+                    /> */}
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={requesters}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select requester" />
+                      )}
+                      getOptionLabel={(option) =>
+                        `${option.first_name} ${option.middle_name} ${option.last_name}`
+                      }
+                      onChange={handleSelectRequester}
                     />
                   </div>
                   <div className="requester-office">
                     <strong>Office:</strong>
-                    <input
-                      className="office-input"
-                      type="text"
-                      value={requesterOffice}
-                      onChange={(e) => setRequesterOffice(e.target.value)}
-                    />
+                    <p>{data.office}</p>
                   </div>
                 </div>
               </div>
@@ -348,19 +458,24 @@ export default function RequestForm() {
                     <strong>Travel Type:</strong>
                     <select
                       className="type-options"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      value={data.type}
+                      onChange={(e) => {
+                        setData({
+                          ...data,
+                          type: e.target.value,
+                        });
+                      }}
                     >
-                      <option value="Round Trip">Select Type</option>
+                      <option value="">Select Type</option>
                       <option value="Round Trip">Round Trip</option>
-                      <option value="One-way - Fetch">One-way - Fetch</option>
                       <option value="One-way - Drop">One-way - Drop</option>
+                      <option value="One-way - Fetch">One-way - Fetch</option>
                     </select>
                   </div>
                 </div>
                 <div className="input-passenger-number">
                   <p className="maximum-capacity-note">
-                    Vehicle maximum capacity: {capacity}
+                    No. of passenger{"("}s{")"}: {capacity}
                   </p>
                   <InputField
                     icon={faUsers}
@@ -381,151 +496,257 @@ export default function RequestForm() {
                   )}
                 </div>
               </div>
-              <div className="forth-row">
-                <div className="calendar-containerr">
-                  <strong>Date of Travel:</strong>
-                  <div className="date-and-time">
-                    <CalendarInput
-                      containerClassName="calendar-container"
-                      calendarClassName="calendar-input"
-                      iconClassName="calendar-input-icon"
-                      onChange={handleStartDateChange}
-                      selectedDate={
-                        data.travel_date ? new Date(data.travel_date) : null
-                      }
-                    />
+              {data.type === "Round Trip" && (
+                <>
+                  <div className="forth-row">
+                    <div className="calendar-containerr">
+                      <strong>Date of Travel:</strong>
+                      <div className="date-and-time">
+                        <CalendarInput
+                          containerClassName="calendar-container"
+                          calendarClassName="calendar-input"
+                          iconClassName="calendar-input-icon"
+                          onChange={handleStartDateChange}
+                          selectedDate={
+                            data.travel_date ? new Date(data.travel_date) : null
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="calendar-containerr">
+                      <strong>Time of Travel:</strong>
+                      <div className="date-and-time">
+                        <TimeInput
+                          onChange={handleStartTimeChange}
+                          selectedDate={data.travel_date}
+                          handleDateChange={handleStartDateChange}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="calendar-containerr">
-                  <strong>Time of Travel:</strong>
-                  <div className="date-and-time">
-                    <TimeInput
-                      onChange={handleStartTimeChange}
-                      selectedDate={data.travel_date}
-                      handleDateChange={handleStartDateChange}
-                    />
+                  <div className="forth-row">
+                    <div className="calendar-containerr">
+                      <strong>Return Date:</strong>
+                      {data.type === "Round Trip" ? (
+                        <div className="date-and-time">
+                          <CalendarInput
+                            containerClassName="calendar-container"
+                            calendarClassName="calendar-input"
+                            iconClassName="calendar-input-icon"
+                            selectedDate={
+                              data.return_date
+                                ? new Date(data.return_date)
+                                : null
+                            }
+                            onChange={handleEndDateChange}
+                            disableDaysBefore={3}
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <p>{formatDate(data.return_date)}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="calendar-containerr">
+                      <strong>Return Time </strong>
+                      {data.type === "Round Trip" ? (
+                        <div className="date-and-time">
+                          <TimeInput
+                            onChange={handleEndTimeChange}
+                            selectedDate={data.return_date}
+                            handleDateChange={handleEndDateChange}
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <p>{formatTime(data.return_time)}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="forth-row">
-                <div className="calendar-containerr">
-                  <strong>Return Date:</strong>
-                  {category === "Round Trip" ? (
-                    <div className="date-and-time">
-                      <CalendarInput
-                        containerClassName="calendar-container"
-                        calendarClassName="calendar-input"
-                        iconClassName="calendar-input-icon"
-                        selectedDate={
-                          data.return_date ? new Date(data.return_date) : null
-                        }
-                        onChange={handleEndDateChange}
-                        disableDaysBefore={3}
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      <p>{formatDate(data.return_date)}</p>
-                    </div>
+                  {data.travel_date && data.travel_time && (
+                    <>
+                      <div className="destinationn-row">
+                        <div className="destination-info">
+                          <strong>Destination: </strong>
+                          <AutoCompleteAddressGoogle
+                            travel_date={data.travel_date}
+                            travel_time={data.travel_time}
+                            setData={setData}
+                            setAddressData={setAddressData}
+                            category={data.type}
+                            removeDestinationError={() =>
+                              setErrorMessages((prev) => ({
+                                ...prev,
+                                destinationError: undefined,
+                              }))
+                            }
+                            className="googledestination"
+                          />
+                        </div>
+
+                        <div className="kilometer-info">
+                          <strong>Distance:</strong>
+                          <p>{distance} km</p>
+                        </div>
+                      </div>
+                    </>
                   )}
-                </div>
+                </>
+              )}
+              {(data.type === "One-way - Drop" ||
+                data.type === "One-way - Fetch") && (
+                <>
+                  <div className="forth-row">
+                    <div className="calendar-containerr">
+                      <strong>Date of Travel:</strong>
+                      <div className="date-and-time">
+                        <CalendarInput
+                          containerClassName="calendar-container"
+                          calendarClassName="calendar-input"
+                          iconClassName="calendar-input-icon"
+                          onChange={handleStartDateChange}
+                          selectedDate={
+                            data.travel_date ? new Date(data.travel_date) : null
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="calendar-containerr">
+                      <strong>Time of Travel:</strong>
+                      <div className="date-and-time">
+                        <TimeInput
+                          onChange={handleStartTimeChange}
+                          selectedDate={data.travel_date}
+                          handleDateChange={handleStartDateChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {data.travel_date && data.travel_time && (
+                    <>
+                      <div className="destinationn-row">
+                        <div className="destination-info">
+                          <strong>Destination: </strong>
+                          <AutoCompleteAddressGoogle
+                            travel_date={data.travel_date}
+                            travel_time={data.travel_time}
+                            setData={setData}
+                            setAddressData={setAddressData}
+                            category={data.type}
+                            removeDestinationError={() =>
+                              setErrorMessages((prev) => ({
+                                ...prev,
+                                destinationError: undefined,
+                              }))
+                            }
+                            className="googledestination"
+                          />
+                        </div>
 
-                <div className="calendar-containerr">
-                  <strong>Return Time </strong>
-                  {category === "Round Trip" ? (
-                    <div className="date-and-time">
-                      <TimeInput
-                        onChange={handleEndTimeChange}
-                        selectedDate={data.return_date}
-                        handleDateChange={handleEndDateChange}
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      <p>{formatTime(data.return_time)}</p>
-                    </div>
+                        <div className="kilometer-info">
+                          <strong>Distance:</strong>
+                          <p>{distance} km</p>
+                        </div>
+                      </div>
+                    </>
                   )}
-                </div>
-              </div>
 
-              <div className="third-row2">
-                <div className="vehicle-info-name">
-                  <strong>Vehicle:</strong>
-                  <p>
-                    <div className="vehicle-options">
-                      <select
-                        className="select-options"
-                        value={`${vehicle_Name} - ${plate_Number}`} // Ensure the value reflects the current state
-                        onChange={(e) => handleCategoryChange(e.target.value)}
-                      >
-                        <option value="">Select Vehicle</option>
-                        {vehicles.map((vehicle) => (
-                          <option
-                            key={vehicle.plate_number}
-                            value={`${vehicle.model} - ${vehicle.plate_number}`}
-                          >
-                            {`${vehicle.model} - ${vehicle.plate_number}`}
-                          </option>
-                        ))}
-                      </select>
+                  {data.return_date && data.return_time && (
+                    <>
+                      <div className="forth-row">
+                        <div className="calendar-containerr">
+                          <strong>Estimated Return Date:</strong>
+
+                          <div>
+                            <p>{formatDate(data.return_date)}</p>
+                          </div>
+                        </div>
+
+                        <div className="calendar-containerr">
+                          <strong>Estimated Return Time </strong>=
+                          <div>
+                            <p>{formatTime(data.return_time)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+              {data.travel_date &&
+                data.travel_time &&
+                data.return_date &&
+                data.return_time &&
+                data.number_of_passenger && (
+                  <>
+                    <div className="third-row2">
+                      <div className="vehicle-info-name">
+                        <strong>Vehicle:</strong>
+                        <p>
+                          <div className="vehicle-options">
+                            <div onClick={handleFetchVehicles}>
+                              <Dropdown
+                                status={dropdownVehicles}
+                                onCategoryChange={handleChooseVehicle}
+                                dropdownClassName="dropdown-custom"
+                                menuClassName="menu-custom"
+                              />
+                            </div>
+                          </div>
+                        </p>
+                      </div>
+                      <div className="vehicle-info-name">
+                        <strong>Driver:</strong>
+                        <div onClick={handleFetchDrivers}>
+                          <Dropdown
+                            status={dropdownDrivers}
+                            onCategoryChange={handleChooseDriver}
+                            dropdownClassName="dropdown-custom"
+                            menuClassName="menu-custom"
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </p>
-                </div>
-                <div className="destination-info">
-                  <strong>Destination: </strong>
-                  <AutoCompleteAddressGoogle
-                    travel_date={data.travel_date}
-                    travel_time={data.travel_time}
-                    setData={setData}
-                    setAddressData={setAddressData}
-                    category={category}
-                    removeDestinationError={() =>
-                      setErrorMessages((prev) => ({
-                        ...prev,
-                        destinationError: undefined,
-                      }))
-                    }
-                    className="googledestination"
-                  />
-                </div>
+                    <div className="sixth-row">
+                      <div className="purpose-row">
+                        <InputField
+                          className="purpose-width"
+                          icon={faClipboard}
+                          value={data.purpose}
+                          label="Purpose"
+                          placeholder="Purpose"
+                          onChange={(event) => {
+                            setData((prevData: any) => ({
+                              ...prevData,
+                              purpose: event.target.value,
+                            }));
+                            if (event.target.value) {
+                              const updatedErrors = { ...errorMessages };
+                              delete updatedErrors[0]?.purposeError;
+                              delete updatedErrors[0]?.all;
+                              setErrorMessages(updatedErrors);
+                            }
+                          }}
+                        />
 
-                <div className="kilometer-info">
-                  <strong>Distance:</strong>
-                  <p>{distance} km</p>
-                </div>
-              </div>
-              <div className="sixth-row">
-                <div className="purpose-row">
-                  <InputField
-                    className="purpose-width"
-                    icon={faClipboard}
-                    value={data.purpose}
-                    label="Purpose"
-                    placeholder="Purpose"
-                    onChange={(event) => {
-                      setData({ ...data, purpose: event.target.value });
-                      if (event.target.value) {
-                        const updatedErrors = { ...errorMessages };
-                        delete updatedErrors[0]?.purposeError;
-                        delete updatedErrors[0]?.all;
-                        setErrorMessages(updatedErrors);
-                      }
-                    }}
-                  />
-
-                  <p className="set-trip-text-error">
-                    {errorMessages[0]?.purposeError}
-                  </p>
-                </div>
-              </div>
-              <div className="sixth-row">
-                <div className="requester-info-name">
-                  <strong>Passenger's name(s):</strong>
-                </div>
-                <div className="passenger-input-fields">
-                  {generatePassengerInputs()}
-                </div>
-              </div>
+                        <p className="set-trip-text-error">
+                          {errorMessages[0]?.purposeError}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="sixth-row">
+                      <div className="requester-info-name">
+                        <strong>Passenger's name(s):</strong>
+                      </div>
+                      <div className="passenger-input-fields">
+                        {generatePassengerInputs()}
+                      </div>
+                    </div>
+                  </>
+                )}
 
               <div className="seventh-row">
                 {isFifthyKilometers && (

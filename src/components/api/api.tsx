@@ -983,7 +983,7 @@ export function checkVehicleAvailability(
   preferred_end_travel_time: any,
   preferred_capacity: any,
   setLoadingBarProgress: any,
-  handleButtonClick: any
+  handleButtonClick?: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -1173,7 +1173,8 @@ export async function handlePlaceSelect(
   travel_time: any,
   setData: (data: any) => void,
   setAddressData: (addressData: any) => void,
-  category: any
+  category: any,
+  setIsLoading: any
 ) {
   try {
     const response = await api.get("api/v1/request/place-details/", {
@@ -1183,6 +1184,7 @@ export async function handlePlaceSelect(
         travel_time: travel_time,
       },
     });
+    setIsLoading(false);
     if (category === "Round Trip") {
       const distanceString = response.data.distance;
       const distance = parseFloat(distanceString);
@@ -1203,7 +1205,7 @@ export async function handlePlaceSelect(
         distance: distance,
         destination: fullAddress,
       }));
-      console.log(distanceString)
+      console.log(distanceString);
     } else if (
       category === "One-way - Drop" ||
       category === "One-way - Fetch" ||
@@ -1237,6 +1239,7 @@ export async function handlePlaceSelect(
       }));
     }
   } catch (error) {
+    setIsLoading(false);
     console.log("Error:", error);
   }
 }

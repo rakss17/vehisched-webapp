@@ -9,8 +9,6 @@ const PromptDialog: React.FC<ModalProps> = ({
   header,
   content,
   footer,
-  buttonText1,
-  buttonText2,
   onRequestClose,
   onProceed,
 }) => {
@@ -20,16 +18,8 @@ const PromptDialog: React.FC<ModalProps> = ({
       <p>{content}</p>
       <p>{footer}</p>
       <div className="yesno-btn">
-        <CommonButton
-        onClick={onRequestClose}
-        text="No"
-        secondaryStyle
-        />
-        <CommonButton
-        onClick={onProceed}
-        text="Yes"
-        primaryStyle
-        />
+        <CommonButton onClick={onRequestClose} text="No" secondaryStyle />
+        <CommonButton onClick={onProceed} text="Yes" primaryStyle />
       </div>
     </Modal>
   );

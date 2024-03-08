@@ -10,7 +10,6 @@ const AddEdit: React.FC<AddEditProps> = ({
   isOpen,
   onRequestClose,
   header,
-  buttonText,
   onRequestAddEdit,
   lastNameProps,
   firstNameProps,
@@ -143,14 +142,8 @@ const AddEdit: React.FC<AddEditProps> = ({
         </div>
 
         <div className="btns">
-          <CommonButton 
-          
-          onClick={onRequestClose} 
-          secondaryStyle 
-          text="Close" 
-          />
+          <CommonButton onClick={onRequestClose} secondaryStyle text="Close" />
           <CommonButton
-           
             onClick={onRequestAddEdit}
             primaryStyle
             text="+ Add User"

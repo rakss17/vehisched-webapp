@@ -335,6 +335,7 @@ export default function RequestForm() {
       requester_name: value.id,
       office: value.office,
     });
+    console.log(event);
   };
 
   const handleGoBack = () => {

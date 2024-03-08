@@ -10,7 +10,6 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   isOpen,
   onRequestClose,
   header,
-  buttonText,
   onRequestAddEdit,
   plateNoProps,
   modelProps,
@@ -138,17 +137,13 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
             )}
           </div>
         </div>
-        
+
         <div className="addvehicle-btns">
+          <CommonButton onClick={onRequestClose} secondaryStyle text="Cancel" />
           <CommonButton
-          onClick={onRequestClose}
-          secondaryStyle
-          text="Cancel"
-          />
-          <CommonButton
-          onClick={onRequestAddEdit}
-          primaryStyle
-          text="Add Vehicle +"
+            onClick={onRequestAddEdit}
+            primaryStyle
+            text="Add Vehicle +"
           />
         </div>
       </div>

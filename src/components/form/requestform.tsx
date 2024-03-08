@@ -174,35 +174,6 @@ export default function RequestForm() {
     }
   }, []);
 
-  useEffect(() => {
-    // Check if data.passenger_name exists before creating a copy
-    const updatedPassengerNames = data.passenger_name
-      ? [...data.passenger_name]
-      : [];
-
-    if (numPassengers > updatedPassengerNames.length) {
-      const additionalPassengers = new Array(
-        numPassengers - updatedPassengerNames.length
-      ).fill("");
-      updatedPassengerNames.push(...additionalPassengers);
-    } else if (numPassengers < updatedPassengerNames.length) {
-      updatedPassengerNames.splice(numPassengers); // Remove excess passengers
-    }
-    const numberOfPassenger = updatedPassengerNames.reduce(
-      (count, name) => (name ? count + 1 : count),
-      0
-    );
-    const filteredPassengerData = updatedPassengerNames.filter(
-      (name) => name !== ""
-    );
-
-    setData((prevData: any) => ({
-      ...prevData,
-      passenger_name: filteredPassengerData,
-      number_of_passenger: numberOfPassenger,
-    }));
-  }, [numPassengers]);
-
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData((prevData: any) => ({
@@ -308,11 +279,14 @@ export default function RequestForm() {
             onChange={(event) => {
               const newPassengerNames = [...data.passenger_name];
               newPassengerNames[i] = event.target.value;
+              const countNumberOfPassenger = newPassengerNames.filter(
+                (name) => name !== ""
+              ).length;
               setData((prevData: any) => ({
                 ...prevData,
                 passenger_name: newPassengerNames,
+                number_of_passenger: countNumberOfPassenger,
               }));
-              // Update error messages if any
             }}
           />
         </div>

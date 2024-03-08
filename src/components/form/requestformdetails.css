@@ -419,7 +419,7 @@
   align-items: center;
   width: 45vw;
   height: 85vh;
-  gap: 10%;
+  gap: 1vh;
 }
 .merge-trip-modal-dropdown-container {
   flex-direction: row;
@@ -511,6 +511,17 @@
   text-align: center;
   justify-content: flex-end;
   margin-right: 9%;
+}
+
+.merge-trip-modal-passenger-names-container{
+  display: flex;
+  flex-direction: row;
+  width: 40vw;
+  text-align: center;
+  justify-content: flex-end;
+  margin-right: 9%;
+  flex-wrap: wrap;
+  gap: 1%;
 }
 .merge-trip-modal-destination-field-container {
   display: flex;

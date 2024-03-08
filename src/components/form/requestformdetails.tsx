@@ -945,7 +945,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div className="merge-trip-modal-field-container">
             <p>Passenger's name</p>
           </div>
-          <div className="merge-trip-modal-select-field-container">
+          <div className="merge-trip-modal-passenger-names-container">
             {generatePassengerInputs()}
           </div>
           <div className="merge-trip-modal-button-container">

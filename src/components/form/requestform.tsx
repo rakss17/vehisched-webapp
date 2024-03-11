@@ -506,7 +506,6 @@ export default function RequestForm() {
                                 : null
                             }
                             onChange={handleEndDateChange}
-                            disableDaysBefore={3}
                           />
                         </div>
                       ) : (

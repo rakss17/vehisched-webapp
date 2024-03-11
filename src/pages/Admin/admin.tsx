@@ -1122,7 +1122,7 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleDeleteVehicleButton}
+        onProceed={handleDeleteVehicleButton}
       />
       <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
 

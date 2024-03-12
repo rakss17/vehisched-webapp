@@ -28,6 +28,7 @@ import Confirmation from "../confirmation/confirmation";
 import { formatDate, formatTime } from "../functions/getTimeElapsed";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
+import Reschedule from "../reschedule/reschedule";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -381,6 +382,14 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       arrival_time_to_office = arrivalTimeParts[0];
     }
   }
+
+  const [showModal, setShowModal] = useState(false);
+
+  const onChangeTime = () => {
+    setShowModal(!showModal);
+   };
+   
+
   return (
     <>
       <LoadingBar
@@ -450,6 +459,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 {formatDate(selectedRequest.return_date)},{" "}
                 {formatTime(selectedRequest.return_time)}
               </p>
+              <CommonButton
+              width={10}
+              height={7}
+              underlinedStyle
+              text="Reschedule"
+              onClick={onChangeTime}
+            />
             </div>
           </div>
           <div>
@@ -1067,6 +1083,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         isOpen={isConfirmationApprovedOpen}
         header="Request Approved!"
       />
+      <Reschedule
+      isOpen={showModal}
+      header="Reschedule"
+      onRequestClose={onChangeTime}
+      onProceed={() => {
+        onChangeTime(); // Close the modal after proceeding
+      }}/>
     </>
   );
 };

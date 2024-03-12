@@ -36,7 +36,6 @@ import HoverDescription from "../../../components/hoverdescription/hoverdescript
 import CommonButton from "../../../components/button/commonbutton";
 import { useNavigate } from "react-router-dom";
 
-
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
@@ -177,12 +176,19 @@ export default function Requests() {
       )
     : [];
 
-  filteredRequestList.reverse();
+  filteredRequestList.sort((a, b) => {
+    const dateA =
+      typeof a.travel_date === "string" ? new Date(a.travel_date) : new Date();
+    const dateB =
+      typeof b.travel_date === "string" ? new Date(b.travel_date) : new Date();
+
+    return dateA.getTime() - dateB.getTime();
+  });
 
   const navigate = useNavigate();
   const handleCreateRequest = () => {
     navigate("/RequestForm");
- };
+  };
 
   return (
     <>
@@ -227,7 +233,11 @@ export default function Requests() {
             ]}
             onCategoryChange={handleCategoryChange}
           />
-          <CommonButton onClick={handleCreateRequest} text="Create Request" primaryStyle />
+          <CommonButton
+            onClick={handleCreateRequest}
+            text="Create Request"
+            primaryStyle
+          />
         </div>
         <div className="request-container">
           <table
@@ -238,9 +248,9 @@ export default function Requests() {
           >
             <thead>
               <tr>
-                <th>Request No.</th>
-                <th>Requested by</th>
+                <th>Vehicle</th>
                 <th>Travel Date</th>
+                <th>Purpose</th>
                 <th>Status</th>
                 <th></th>
               </tr>
@@ -257,9 +267,11 @@ export default function Requests() {
                       key={request.request_id}
                       onClick={() => handleOpenRequestForm(request)}
                     >
-                      <td>{request.request_id}</td>
-                      <td>{request.requester_full_name}</td>
+                      <td>{request.vehicle}</td>
                       <td>{formatDate(request.travel_date)}</td>
+                      <td style={{ wordWrap: "break-word", maxWidth: "150px" }}>
+                        {request.purpose}
+                      </td>
                       <td>
                         {request.vehicle_driver_status === "On Trip"
                           ? request.vehicle_driver_status

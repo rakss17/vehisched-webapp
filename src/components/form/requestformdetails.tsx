@@ -56,7 +56,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [isChangeDriverOpen, setIsChangeDriverOpen] = useState(false);
-
+  const [travelDateDayGap, setTravelDateDayGap] = useState(0);
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [mergeTripData, setMergeTripData] = useState<RequestFormProps>({
     requester_name: "",
@@ -103,6 +103,40 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       }));
     }
   }, [mergeTripData.type]);
+
+  useEffect(() => {
+    if (
+      selectedRequest?.type === "One-way - Drop" ||
+      selectedRequest?.type === "One-way - Fetch"
+    ) {
+      const travelDateTime = `${selectedRequest?.travel_date}T${selectedRequest?.travel_time}`;
+      const returnDateTime = `${selectedRequest?.return_date}T${selectedRequest?.return_time}`;
+
+      const travelDate = new Date(travelDateTime);
+      const returnDate = new Date(returnDateTime);
+
+      const differenceInMilliseconds =
+        returnDate.getTime() - travelDate.getTime();
+      const differenceInSeconds = Math.ceil(differenceInMilliseconds / 1000);
+
+      const days = Math.floor(differenceInSeconds / (3600 * 24));
+      const hours = Math.floor((differenceInSeconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((differenceInSeconds % 3600) / 60);
+      const seconds = differenceInSeconds % 60;
+
+      const totalDays =
+        days + hours / 24 + minutes / (24 * 60) + seconds / (24 * 60 * 60);
+
+      setTravelDateDayGap(totalDays);
+    }
+  }, [
+    selectedRequest?.travel_date,
+    selectedRequest?.travel_time,
+    selectedRequest?.return_date,
+    selectedRequest?.return_time,
+    selectedRequest?.type === "One-way - Drop",
+    selectedRequest?.type === "One-way - Fetch",
+  ]);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -1092,6 +1126,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         }}
         fetchRequestOfficeStaffAPI={fetchRequestOfficeStaffAPI}
         setRequestList={setRequestList}
+        travelDateDayGap={travelDateDayGap}
       />
     </>
   );

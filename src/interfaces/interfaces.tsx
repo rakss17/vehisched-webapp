@@ -195,6 +195,7 @@ export interface ModalProps {
   selectedRequest: RequestFormProps | null;
   fetchRequestOfficeStaffAPI?: any;
   setRequestList?: any;
+  travelDateDayGap?: any;
 }
 
 export interface ButtonProps {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { ModalProps, RequestFormProps } from "../../interfaces/interfaces";
 import CommonButton from "../button/commonbutton";
@@ -8,6 +8,7 @@ import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import format from "date-fns/format";
 import { rescheduleRequestAPI } from "../api/api";
+import { formatDate, formatTime } from "../functions/getTimeElapsed";
 
 const Reschedule: React.FC<ModalProps> = ({
   isOpen,
@@ -16,14 +17,64 @@ const Reschedule: React.FC<ModalProps> = ({
   selectedRequest,
   fetchRequestOfficeStaffAPI,
   setRequestList,
+  travelDateDayGap,
 }) => {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [data, setData] = useState<any>({
-    travel_date: selectedRequest?.travel_date,
-    travel_time: selectedRequest?.travel_time,
-    return_date: selectedRequest?.return_date,
-    return_time: selectedRequest?.return_time,
+    travel_date: null,
+    travel_time: null,
+    return_date: null,
+    return_time: null,
   });
+  useEffect(() => {
+    if (
+      (selectedRequest?.travel_date,
+      selectedRequest?.travel_time,
+      selectedRequest?.return_date,
+      selectedRequest?.return_time)
+    ) {
+      setData({
+        ...data,
+        travel_date: selectedRequest?.travel_date,
+        travel_time: selectedRequest?.travel_time,
+        return_date: selectedRequest?.return_date,
+        return_time: selectedRequest?.return_time,
+      });
+    }
+  }, [
+    selectedRequest?.travel_date,
+    selectedRequest?.travel_time,
+    selectedRequest?.return_date,
+    selectedRequest?.return_time,
+  ]);
+
+  useEffect(() => {
+    if (
+      (selectedRequest?.type === "One-way - Drop" ||
+        selectedRequest?.type === "One-way - Fetch") &&
+      (data.travel_date || data.travel_time)
+    ) {
+      const travelDateTime = `${data.travel_date}T${data.travel_time}`;
+      const travelDate = new Date(travelDateTime);
+
+      const returnDate = new Date(travelDate);
+      returnDate.setDate(returnDate.getDate() + travelDateDayGap);
+
+      const returnDateFormat = returnDate.toISOString().split("T")[0];
+
+      const returnTimeFormat = returnDate.toTimeString().split(" ")[0];
+
+      setData({
+        ...data,
+        return_date: returnDateFormat,
+        return_time: returnTimeFormat,
+      });
+    }
+  }, [
+    selectedRequest?.type === "One-way - Drop",
+    selectedRequest?.type === "One-way - Fetch",
+  ]);
+
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
     setData((prevData: any) => ({
@@ -104,26 +155,49 @@ const Reschedule: React.FC<ModalProps> = ({
               />
             </div>
           </div>
-          <div>
-            <p>Return date & time</p>
-            <div>
-              <CalendarInput
-                containerClassName="calendar-container"
-                calendarClassName="calendar-input"
-                iconClassName="calendar-input-icon"
-                selectedDate={
-                  data.return_date ? new Date(data.return_date) : null
-                }
-                onChange={handleEndDateChange}
-              />
-              <TimeInput
-                onChange={handleEndTimeChange}
-                selectedDate={data.return_date}
-                handleDateChange={handleEndDateChange}
-                timeSelected={selectedRequest?.return_time}
-              />
-            </div>
-          </div>
+          {selectedRequest?.type === "Round Trip" ? (
+            <>
+              <div>
+                <p>Return date & time</p>
+                <div>
+                  <CalendarInput
+                    containerClassName="calendar-container"
+                    calendarClassName="calendar-input"
+                    iconClassName="calendar-input-icon"
+                    selectedDate={
+                      data.return_date ? new Date(data.return_date) : null
+                    }
+                    onChange={handleEndDateChange}
+                  />
+                  <TimeInput
+                    onChange={handleEndTimeChange}
+                    selectedDate={data.return_date}
+                    handleDateChange={handleEndDateChange}
+                    timeSelected={selectedRequest?.return_time}
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <p>{travelDateDayGap}</p>
+                <p>Estimated return date & time</p>
+                <div>
+                  <p>
+                    {data.return_date
+                      ? formatDate(data.return_date)
+                      : formatDate(selectedRequest?.return_date)}
+                  </p>
+                  <p>
+                    {data.return_time
+                      ? formatTime(data.return_time)
+                      : formatTime(selectedRequest?.return_time)}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         <div className="yesno-reschedule-btn">
           <CommonButton onClick={onRequestClose} text="Cancel" secondaryStyle />

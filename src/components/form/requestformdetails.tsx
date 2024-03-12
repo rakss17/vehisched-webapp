@@ -387,8 +387,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
   const onChangeTime = () => {
     setShowModal(!showModal);
-   };
-   
+  };
 
   return (
     <>
@@ -460,12 +459,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 {formatTime(selectedRequest.return_time)}
               </p>
               <CommonButton
-              width={10}
-              height={7}
-              underlinedStyle
-              text="Reschedule"
-              onClick={onChangeTime}
-            />
+                width={10}
+                height={7}
+                underlinedStyle
+                text="Reschedule"
+                onClick={onChangeTime}
+              />
             </div>
           </div>
           <div>
@@ -1084,12 +1083,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         header="Request Approved!"
       />
       <Reschedule
-      isOpen={showModal}
-      header="Reschedule"
-      onRequestClose={onChangeTime}
-      onProceed={() => {
-        onChangeTime(); // Close the modal after proceeding
-      }}/>
+        isOpen={showModal}
+        selectedRequest={selectedRequest}
+        header="Reschedule"
+        onRequestClose={onChangeTime}
+        onProceed={() => {
+          onChangeTime(); // Close the modal after proceeding
+        }}
+        fetchRequestOfficeStaffAPI={fetchRequestOfficeStaffAPI}
+        setRequestList={setRequestList}
+      />
     </>
   );
 };

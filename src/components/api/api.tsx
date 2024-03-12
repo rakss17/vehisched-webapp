@@ -19,10 +19,10 @@ export let serverSideUrl: any;
 export let api: any;
 
 if (debug) {
-  serverSideUrl = "http://172.20.12.158:8000/media/";
+  serverSideUrl = "http://172.20.12.21:8000/media/";
 
   api = axios.create({
-    baseURL: "http://172.20.12.158:8000/",
+    baseURL: "http://172.20.12.21:8000/",
   });
 } else {
   serverSideUrl = "https://vehisched-backend.keannu1.duckdns.org/media/";
@@ -796,6 +796,31 @@ export function approveRequestAPI(
         setIsConfirmationOpen(false);
         window.location.reload();
       }, 3000);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
+}
+export function rescheduleRequestAPI(
+  requestId: any,
+  onRequestClose: any,
+  data: any,
+  setLoadingBarProgress: (progress: number) => void,
+  fetchAPI: any,
+  setDataAPI: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .patch(`/api/v1/request/reschedule/${requestId}/`, data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then(() => {
+      onRequestClose();
+      setLoadingBarProgress(100);
+      fetchAPI(setDataAPI);
     })
     .catch((error: any) => {
       console.log(error);

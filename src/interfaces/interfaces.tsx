@@ -163,6 +163,7 @@ export interface TimeInputProps {
   onChange: (time: string | null) => void;
   selectedDate?: string | null;
   handleDateChange?: (date: Date | null) => void;
+  timeSelected?: any;
 }
 
 export interface CalendarInputProps {
@@ -191,6 +192,9 @@ export interface ModalProps {
   setIsConfirmationOpenDriverAbsence?: any;
   selectedDriver?: any;
   onProceed?: any;
+  selectedRequest: RequestFormProps | null;
+  fetchRequestOfficeStaffAPI?: any;
+  setRequestList?: any;
 }
 
 export interface ButtonProps {

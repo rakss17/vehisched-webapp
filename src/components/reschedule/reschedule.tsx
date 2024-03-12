@@ -135,9 +135,9 @@ const Reschedule: React.FC<ModalProps> = ({
       <Modal className="modal-reschedule" isOpen={isOpen}>
         <h1>{header}</h1>
         <div>
-          <div>
+          <div className="resched-title">
             <p>Travel date & time</p>
-            <div>
+            <div className="resched-date">
               <CalendarInput
                 containerClassName="calendar-container"
                 calendarClassName="calendar-input"
@@ -157,9 +157,9 @@ const Reschedule: React.FC<ModalProps> = ({
           </div>
           {selectedRequest?.type === "Round Trip" ? (
             <>
-              <div>
+              <div className="resched-title">
                 <p>Return date & time</p>
-                <div>
+                <div className="resched-date">
                   <CalendarInput
                     containerClassName="calendar-container"
                     calendarClassName="calendar-input"

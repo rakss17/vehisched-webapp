@@ -3,10 +3,12 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 .time-input-wrapper {
   position: relative;
   border: none;
 }
+
 .arrow-buttons {
   display: flex;
   flex-direction: column;
@@ -15,7 +17,7 @@
   margin-top: 0px;
   position: absolute;
   left: 38%;
-  top: 50%;
+  top: 55%;
   transform: translateY(-50%);
 }
 
@@ -31,7 +33,7 @@
 .am-pm-container {
   position: absolute;
   left: 60%;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   color: black;
   font-size: 1.3rem;
@@ -44,7 +46,7 @@
   margin-top: 0px;
   position: absolute;
   left: 75%;
-  top: 50%;
+  top: 55%;
   transform: translateY(-50%);
 }
 
@@ -67,6 +69,7 @@
   height: 5vh;
   border-radius: 5px;
   position: relative;
+  justify-content: center;
 }
 
 .react-time-picker,

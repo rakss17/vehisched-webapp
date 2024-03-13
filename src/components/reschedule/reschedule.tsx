@@ -57,19 +57,24 @@ const Reschedule: React.FC<ModalProps> = ({
         travel_date: formattedDate,
       }));
 
-      const travelDateTime = new Date(
-        `${formattedDate}T${selectedRequest?.travel_time}`
-      );
-      const newDateTime = addGapToDate(travelDateTime, travelDateDayGap);
+      if (
+        selectedRequest?.type === "One-way - Drop" ||
+        selectedRequest?.type === "One-way - Fetch"
+      ) {
+        const travelDateTime = new Date(
+          `${formattedDate}T${selectedRequest?.travel_time}`
+        );
+        const newDateTime = addGapToDate(travelDateTime, travelDateDayGap);
 
-      const returnDateFormat = newDateTime.split("T")[0];
-      const returnTimeFormat = newDateTime.split("T")[1];
+        const returnDateFormat = newDateTime.split("T")[0];
+        const returnTimeFormat = newDateTime.split("T")[1];
 
-      setData((prevData: any) => ({
-        ...prevData,
-        return_date: returnDateFormat,
-        return_time: returnTimeFormat,
-      }));
+        setData((prevData: any) => ({
+          ...prevData,
+          return_date: returnDateFormat,
+          return_time: returnTimeFormat,
+        }));
+      }
     }
   };
   const handleEndDateChange = (date: Date | null) => {
@@ -86,18 +91,22 @@ const Reschedule: React.FC<ModalProps> = ({
         ...prevData,
         travel_time: time,
       }));
+      if (
+        selectedRequest?.type === "One-way - Drop" ||
+        selectedRequest?.type === "One-way - Fetch"
+      ) {
+        const travelDateTime = new Date(`${data.travel_date}T${time}:00`);
+        const newDateTime = addGapToDate(travelDateTime, travelDateDayGap);
 
-      const travelDateTime = new Date(`${data.travel_date}T${time}:00`);
-      const newDateTime = addGapToDate(travelDateTime, travelDateDayGap);
+        const returnDateFormat = newDateTime.split("T")[0];
+        const returnTimeFormat = newDateTime.split("T")[1];
 
-      const returnDateFormat = newDateTime.split("T")[0];
-      const returnTimeFormat = newDateTime.split("T")[1];
-
-      setData((prevData: any) => ({
-        ...prevData,
-        return_date: returnDateFormat,
-        return_time: returnTimeFormat,
-      }));
+        setData((prevData: any) => ({
+          ...prevData,
+          return_date: returnDateFormat,
+          return_time: returnTimeFormat,
+        }));
+      }
     }
   };
 

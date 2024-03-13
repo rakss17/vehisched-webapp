@@ -1,3 +1,14 @@
+import {
+  differenceInMilliseconds,
+  differenceInSeconds,
+  differenceInMinutes,
+  differenceInHours,
+  differenceInDays,
+  add,
+  addMilliseconds,
+  formatISO,
+} from "date-fns";
+
 export const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 3000 },
@@ -48,4 +59,29 @@ export const formatDateTime = (dateTimeString: any) => {
     dateStyle: "short",
     timeStyle: "short",
   });
+};
+
+export const calculateDateGap = (dateTime1: any, dateTime2: any) => {
+  const date1 = new Date(dateTime1);
+  const date2 = new Date(dateTime2);
+
+  return {
+    milliseconds: differenceInMilliseconds(date2, date1),
+    seconds: differenceInSeconds(date2, date1),
+    minutes: differenceInMinutes(date2, date1),
+    hours: differenceInHours(date2, date1),
+    days: differenceInDays(date2, date1),
+  };
+};
+
+export const addGapToDate = (
+  baseDateTime: Date,
+  gapInMilliseconds: number
+): string => {
+  const newDate = addMilliseconds(baseDateTime, gapInMilliseconds);
+  return (
+    formatISO(newDate, { representation: "date" }) +
+    "T" +
+    formatISO(newDate, { representation: "time" })
+  );
 };

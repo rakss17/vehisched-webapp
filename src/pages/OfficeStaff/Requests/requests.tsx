@@ -30,7 +30,7 @@ import { NotificationCreatedCancelWebsocket } from "../../../components/api/webs
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingBar from "react-top-loading-bar";
-import { formatDate } from "../../../components/functions/getTimeElapsed";
+import { formatDate } from "../../../components/functions/functions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HoverDescription from "../../../components/hoverdescription/hoverdescription";
 import CommonButton from "../../../components/button/commonbutton";

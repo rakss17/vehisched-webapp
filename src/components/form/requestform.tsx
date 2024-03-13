@@ -28,7 +28,7 @@ import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import { format } from "date-fns";
-import { formatDate, formatTime } from "../functions/getTimeElapsed";
+import { formatDate, formatTime } from "../functions/functions";
 import Dropdown from "../dropdown/dropdown";
 
 export default function RequestForm() {

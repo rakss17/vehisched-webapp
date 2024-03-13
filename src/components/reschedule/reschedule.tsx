@@ -8,7 +8,8 @@ import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import format from "date-fns/format";
 import { rescheduleRequestAPI } from "../api/api";
-import { formatDate, formatTime } from "../functions/getTimeElapsed";
+import { addGapToDate, formatDate, formatTime } from "../functions/functions";
+import { formatISO } from "date-fns";
 
 const Reschedule: React.FC<ModalProps> = ({
   isOpen,
@@ -33,13 +34,13 @@ const Reschedule: React.FC<ModalProps> = ({
       selectedRequest?.return_date,
       selectedRequest?.return_time)
     ) {
-      setData({
-        ...data,
+      setData((...prevData: any) => ({
+        ...prevData,
         travel_date: selectedRequest?.travel_date,
         travel_time: selectedRequest?.travel_time,
         return_date: selectedRequest?.return_date,
         return_time: selectedRequest?.return_time,
-      });
+      }));
     }
   }, [
     selectedRequest?.travel_date,
@@ -48,41 +49,28 @@ const Reschedule: React.FC<ModalProps> = ({
     selectedRequest?.return_time,
   ]);
 
-  useEffect(() => {
-    if (
-      (selectedRequest?.type === "One-way - Drop" ||
-        selectedRequest?.type === "One-way - Fetch") &&
-      (data.travel_date || data.travel_time)
-    ) {
-      const travelDateTime = `${data.travel_date}T${data.travel_time}`;
-      const travelDate = new Date(travelDateTime);
+  const handleStartDateChange = (date: Date | null) => {
+    if (date) {
+      const formattedDate = formatISO(date, { representation: "date" });
+      setData((prevData: any) => ({
+        ...prevData,
+        travel_date: formattedDate,
+      }));
 
-      const returnDate = new Date(travelDate);
-      returnDate.setDate(returnDate.getDate() + travelDateDayGap);
+      const travelDateTime = new Date(
+        `${formattedDate}T${selectedRequest?.travel_time}`
+      );
+      const newDateTime = addGapToDate(travelDateTime, travelDateDayGap);
 
-      const returnDateFormat = returnDate.toISOString().split("T")[0];
+      const returnDateFormat = newDateTime.split("T")[0];
+      const returnTimeFormat = newDateTime.split("T")[1];
 
-      const returnTimeFormat = returnDate.toTimeString().split(" ")[0];
-
-      setData({
-        ...data,
+      setData((prevData: any) => ({
+        ...prevData,
         return_date: returnDateFormat,
         return_time: returnTimeFormat,
-      });
+      }));
     }
-  }, [
-    selectedRequest?.type === "One-way - Drop",
-    selectedRequest?.type === "One-way - Fetch",
-  ]);
-
-  const handleStartDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData((prevData: any) => ({
-      ...prevData,
-      travel_date: formattedDate,
-    }));
-
-    // checkAutocompleteDisability();
   };
   const handleEndDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
@@ -97,6 +85,18 @@ const Reschedule: React.FC<ModalProps> = ({
       setData((prevData: any) => ({
         ...prevData,
         travel_time: time,
+      }));
+
+      const travelDateTime = new Date(`${data.travel_date}T${time}:00`);
+      const newDateTime = addGapToDate(travelDateTime, travelDateDayGap);
+
+      const returnDateFormat = newDateTime.split("T")[0];
+      const returnTimeFormat = newDateTime.split("T")[1];
+
+      setData((prevData: any) => ({
+        ...prevData,
+        return_date: returnDateFormat,
+        return_time: returnTimeFormat,
       }));
     }
   };
@@ -114,7 +114,7 @@ const Reschedule: React.FC<ModalProps> = ({
 
   const handleSubmit = () => {
     setLoadingBarProgress(20);
-    console.log("data", data);
+
     rescheduleRequestAPI(
       selectedRequest?.request_id,
       onRequestClose,
@@ -180,7 +180,7 @@ const Reschedule: React.FC<ModalProps> = ({
             </>
           ) : (
             <>
-              <div>
+              <div className="resched-title">
                 <p>{travelDateDayGap}</p>
                 <p>Estimated return date & time</p>
                 <div>

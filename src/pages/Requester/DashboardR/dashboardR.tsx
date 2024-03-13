@@ -27,7 +27,7 @@ import {
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
-import { responsive } from "../../../components/functions/getTimeElapsed";
+import { responsive } from "../../../components/functions/functions";
 import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 import Guidelines from "../../../components/guidelines/guidelines";
 import CommonButton from "../../../components/button/commonbutton";

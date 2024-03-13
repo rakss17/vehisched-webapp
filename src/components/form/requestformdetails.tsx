@@ -25,7 +25,11 @@ import {
 import CommonButton from "../button/commonbutton";
 import LoadingBar from "react-top-loading-bar";
 import Confirmation from "../confirmation/confirmation";
-import { formatDate, formatTime } from "../functions/getTimeElapsed";
+import {
+  calculateDateGap,
+  formatDate,
+  formatTime,
+} from "../functions/functions";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
 import Reschedule from "../reschedule/reschedule";
@@ -104,39 +108,39 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     }
   }, [mergeTripData.type]);
 
-  useEffect(() => {
-    if (
-      selectedRequest?.type === "One-way - Drop" ||
-      selectedRequest?.type === "One-way - Fetch"
-    ) {
-      const travelDateTime = `${selectedRequest?.travel_date}T${selectedRequest?.travel_time}`;
-      const returnDateTime = `${selectedRequest?.return_date}T${selectedRequest?.return_time}`;
+  // useEffect(() => {
+  //   if (
+  //     selectedRequest?.type === "One-way - Drop" ||
+  //     selectedRequest?.type === "One-way - Fetch"
+  //   ) {
+  //     const travelDateTime = `${selectedRequest?.travel_date}T${selectedRequest?.travel_time}`;
+  //     const returnDateTime = `${selectedRequest?.return_date}T${selectedRequest?.return_time}`;
 
-      const travelDate = new Date(travelDateTime);
-      const returnDate = new Date(returnDateTime);
+  //     const travelDate = new Date(travelDateTime);
+  //     const returnDate = new Date(returnDateTime);
 
-      const differenceInMilliseconds =
-        returnDate.getTime() - travelDate.getTime();
-      const differenceInSeconds = Math.ceil(differenceInMilliseconds / 1000);
+  //     const differenceInMilliseconds =
+  //       returnDate.getTime() - travelDate.getTime();
+  //     const differenceInSeconds = Math.ceil(differenceInMilliseconds / 1000);
 
-      const days = Math.floor(differenceInSeconds / (3600 * 24));
-      const hours = Math.floor((differenceInSeconds % (3600 * 24)) / 3600);
-      const minutes = Math.floor((differenceInSeconds % 3600) / 60);
-      const seconds = differenceInSeconds % 60;
+  //     const days = Math.floor(differenceInSeconds / (3600 * 24));
+  //     const hours = Math.floor((differenceInSeconds % (3600 * 24)) / 3600);
+  //     const minutes = Math.floor((differenceInSeconds % 3600) / 60);
+  //     const seconds = differenceInSeconds % 60;
 
-      const totalDays =
-        days + hours / 24 + minutes / (24 * 60) + seconds / (24 * 60 * 60);
+  //     const totalDays =
+  //       days + hours / 24 + minutes / (24 * 60) + seconds / (24 * 60 * 60);
 
-      setTravelDateDayGap(totalDays);
-    }
-  }, [
-    selectedRequest?.travel_date,
-    selectedRequest?.travel_time,
-    selectedRequest?.return_date,
-    selectedRequest?.return_time,
-    selectedRequest?.type === "One-way - Drop",
-    selectedRequest?.type === "One-way - Fetch",
-  ]);
+  //     setTravelDateDayGap(totalDays);
+  //   }
+  // }, [
+  //   selectedRequest?.travel_date,
+  //   selectedRequest?.travel_time,
+  //   selectedRequest?.return_date,
+  //   selectedRequest?.return_time,
+  //   selectedRequest?.type === "One-way - Drop",
+  //   selectedRequest?.type === "One-way - Fetch",
+  // ]);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -421,6 +425,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
   const onChangeTime = () => {
     setShowModal(!showModal);
+    const travelDateTime = `${selectedRequest?.travel_date}T${selectedRequest?.travel_time}`;
+    const returnDateTime = `${selectedRequest?.return_date}T${selectedRequest?.return_time}`;
+    const gap = calculateDateGap(travelDateTime, returnDateTime);
+    console.log("gap: ", gap.milliseconds);
+    setTravelDateDayGap(gap.milliseconds);
   };
 
   return (
@@ -1121,9 +1130,6 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         selectedRequest={selectedRequest}
         header="Reschedule"
         onRequestClose={onChangeTime}
-        onProceed={() => {
-          onChangeTime(); // Close the modal after proceeding
-        }}
         fetchRequestOfficeStaffAPI={fetchRequestOfficeStaffAPI}
         setRequestList={setRequestList}
         travelDateDayGap={travelDateDayGap}

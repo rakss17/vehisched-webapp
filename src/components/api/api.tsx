@@ -19,10 +19,10 @@ export let serverSideUrl: any;
 export let api: any;
 
 if (debug) {
-  serverSideUrl = "http://172.20.12.21:8000/media/";
+  serverSideUrl = "http://172.20.12.158:8000/media/";
 
   api = axios.create({
-    baseURL: "http://172.20.12.21:8000/",
+    baseURL: "http://172.20.12.158:8000/",
   });
 } else {
   serverSideUrl = "https://vehisched-backend.keannu1.duckdns.org/media/";

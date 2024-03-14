@@ -190,7 +190,6 @@ const Reschedule: React.FC<ModalProps> = ({
           ) : (
             <>
               <div className="resched-title">
-                <p>{travelDateDayGap}</p>
                 <p>Estimated return date & time</p>
                 <div>
                   <p>

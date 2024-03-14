@@ -192,7 +192,7 @@ export interface ModalProps {
   setIsConfirmationOpenDriverAbsence?: any;
   selectedDriver?: any;
   onProceed?: any;
-  selectedRequest: RequestFormProps | null;
+  selectedRequest?: RequestFormProps | null;
   fetchRequestOfficeStaffAPI?: any;
   setRequestList?: any;
   travelDateDayGap?: any;

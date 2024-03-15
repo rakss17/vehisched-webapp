@@ -263,3 +263,5 @@ export interface HoverDescriptionProps {
   width?: number;
   height?: number;
 }
+
+export interface SchedulePickerProps {}

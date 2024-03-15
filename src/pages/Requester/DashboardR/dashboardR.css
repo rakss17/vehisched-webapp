@@ -11,6 +11,7 @@
   justify-content: center;
   display: flex;
   align-items: center;
+
 }
 .requester-row {
   margin-top: 2vw;
@@ -29,14 +30,16 @@
   background-color: transparent;
   color: #060e57;
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   text-align: center;
   border: none;
   margin-top: 0vh;
+
 }
 .requester-row button.active {
-  border-bottom: 5px solid #060e57;
+  border-bottom: 4px solid #060e57;
   border-radius: 0px;
+  outline: none;
 }
 .requester-row button:hover {
   border-top: 0;
@@ -44,6 +47,7 @@
   border-right: 0;
   border-bottom: 5px solid #060e57;
   border-radius: 0px;
+  outline: none;
 }
 .requester-dashboard-container {
   display: flex;
@@ -56,7 +60,7 @@
   width: 88vw;
   margin-left: 8vw;
   margin-top: 1vh;
-  border-top: 8px solid #060e57;
+  border-top: 5px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
   gap: 5%;

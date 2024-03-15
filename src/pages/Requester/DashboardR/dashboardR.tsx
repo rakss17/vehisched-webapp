@@ -4,11 +4,8 @@ import Modal from "react-modal";
 import Container from "../../../components/container/container";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
-import Label from "../../../components/label/label";
-import "./dashboardR.css";
+import "./dashboardR.css"
 import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
-import CalendarInput from "../../../components/calendarinput/calendarinput";
-import TimeInput from "../../../components/timeinput/timeinput";
 import Countdown from "../../../components/countdown/countdown";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
 import { ToastContainer } from "react-toastify";
@@ -512,22 +509,13 @@ export default function DashboardR() {
       <Sidebar sidebarData={sidebarData} />
       <Container>
         <ToastContainer />
-        <div className="margin-top-dashboard">
-          <Label label="Dashboard" />
-        </div>
         <div className="requester-row-container">
           <div className="requester-row">
-            <button
-              onClick={() => handleButtonClick("Set Trip Schedule")}
-              className={selectedButton === "Set Trip Schedule" ? "active" : ""}
-            >
-              Set Trip Schedule
-            </button>
             <button
               onClick={() => handleButtonClick("Available Vehicle")}
               className={selectedButton === "Available Vehicle" ? "active" : ""}
             >
-              Available Vehicle
+              Vehicles
             </button>
             <button
               onClick={() => handleButtonClick("Ongoing Schedule")}
@@ -538,242 +526,7 @@ export default function DashboardR() {
           </div>
         </div>
         <div className="requester-dashboard-container">
-          {isTripScheduleClick && (
-            <>
-              <div className="modal-set-trip">
-                <div className="modal-set-trip-body">
-                  <h1>Set Trip</h1>
-                  <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
-                  <div className="trip-category">
-                    <p>Category: </p>
-                    <div>
-                      <button
-                        onClick={() => handleButtonClickTrip("Round Trip")}
-                        className={
-                          selectedTripButton === "Round Trip" ? "active" : ""
-                        }
-                      >
-                        Round Trip
-                      </button>
-                      <button
-                        onClick={() => handleButtonClickTrip("One-way")}
-                        className={
-                          selectedTripButton === "One-way" ? "active" : ""
-                        }
-                      >
-                        One-way
-                      </button>
-                    </div>
-                  </div>
-                  {isOneWayClick && (
-                    <>
-                      <div className="one-way-sub-category">
-                        <p>Type: </p>
-                        <div>
-                          <select
-                            value={data.sub_category}
-                            onChange={(event) => {
-                              const selectedValue = event.target.value;
-
-                              setData((prevData: any) => ({
-                                ...prevData,
-                                category:
-                                  selectedValue === "Drop"
-                                    ? "One-way - Drop"
-                                    : selectedValue === "Fetch"
-                                    ? "One-way - Fetch"
-                                    : "One-way",
-                              }));
-                              if (selectedValue === "Fetch") {
-                                setIsFetchSelect(true);
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.categoryError;
-                                setErrorMessages(updatedErrors);
-                              } else if (selectedValue === "Drop") {
-                                setIsFetchSelect(false);
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.categoryError;
-                                setErrorMessages(updatedErrors);
-                              } else {
-                                setIsFetchSelect(false);
-                              }
-                            }}
-                          >
-                            <option>--------- Select Type --------</option>
-                            <option value="Drop">Drop</option>
-                            <option value="Fetch">Fetch</option>
-                          </select>
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.categoryError}
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  <div className="trip-destination">
-                    {!isFetchSelect ? (
-                      <p>Destination: </p>
-                    ) : (
-                      <p>Your Location: </p>
-                    )}
-
-                    <div className="trip-destination-autocomplete-oneway">
-                      <AutoCompleteAddressGoogle
-                        travel_date={data.travel_date}
-                        travel_time={data.travel_time}
-                        setData={setData}
-                        setAddressData={setAddressData}
-                        category={data.category}
-                        removeDestinationError={removeDestinationError}
-                      />
-
-                      {isTravelDateSelected ? (
-                        <p>Select travel date and time first</p>
-                      ) : (
-                        <p>{errorMessages[0]?.destinationError}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {selectedTripButton === "Round Trip" ? (
-                    <div className="date-from-roundtrip">
-                      {!isOneWayClick ? (
-                        <p>From: </p>
-                      ) : (
-                        <p className="travel-datee">Travel Date: </p>
-                      )}
-                      <div>
-                        <div className="separate-date">
-                          <CalendarInput
-                            selectedDate={
-                              data.travel_date
-                                ? new Date(data.travel_date)
-                                : null
-                            }
-                            onChange={handleStartDateChange}
-                            disableDaysBefore={3}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelDateError}
-                          </p>
-                        </div>
-
-                        <div className="separate-time">
-                          <TimeInput
-                            onChange={handleStartTimeChange}
-                            selectedDate={data.travel_date}
-                            handleDateChange={handleStartDateChange}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelTimeError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="date-from-oneway">
-                      {!isOneWayClick ? (
-                        <p>From: </p>
-                      ) : (
-                        <p className="travel-datee">Travel Date: </p>
-                      )}
-                      <div>
-                        <div className="separate-date">
-                          <CalendarInput
-                            selectedDate={
-                              data.travel_date
-                                ? new Date(data.travel_date)
-                                : null
-                            }
-                            onChange={handleStartDateChange}
-                            disableDaysBefore={3}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelDateOnewayError}
-                          </p>
-                        </div>
-
-                        <div className="separate-time">
-                          <TimeInput
-                            onChange={handleStartTimeChange}
-                            selectedDate={data.travel_date}
-                            handleDateChange={handleStartDateChange}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelTimeOnewayError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {!isOneWayClick && (
-                    <div className="date-to">
-                      <p>To: </p>
-                      <div>
-                        <div className="separate-date">
-                          <CalendarInput
-                            selectedDate={
-                              data.return_date
-                                ? new Date(data.return_date)
-                                : null
-                            }
-                            onChange={handleEndDateChange}
-                            disableDaysBefore={3}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.returnDateError}
-                          </p>
-                        </div>
-
-                        <div className="separate-time">
-                          <TimeInput
-                            onChange={handleEndTimeChange}
-                            selectedDate={data.return_date}
-                            handleDateChange={handleEndDateChange}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.returnTimeError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="number-of-pass">
-                    <p>
-                      Number of Passenger{"("}s{"):"}
-                    </p>
-                    <div>
-                      <input
-                        value={data.capacity}
-                        onChange={(event) => {
-                          setData({ ...data, capacity: event.target.value });
-                          if (event.target.value) {
-                            const updatedErrors = { ...errorMessages };
-                            delete updatedErrors[0]?.capacityError;
-                            setErrorMessages(updatedErrors);
-                          }
-                        }}
-                        type="number"
-                        onKeyDown={handleKeyDown}
-                      />
-                      <p className="set-trip-text-error">
-                        {errorMessages[0]?.capacityError}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="modal-button-container">
-                    <CommonButton
-                      onClick={handleSetTripModal}
-                      text="Set Trip"
-                      primaryStyle
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+         
           {isAvailableVehicleClick && (
             <>
               {vehiclesData.length === 0 ? (

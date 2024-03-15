@@ -7,7 +7,7 @@ const debug = true;
 let serverSideUrl: any;
 
 if (debug) {
-  serverSideUrl = "ws://172.20.12.158:8000";
+  serverSideUrl = "ws://172.20.12.21:8000";
 } else {
   serverSideUrl = "wss://vehisched-backend.keannu1.duckdns.org";
 }

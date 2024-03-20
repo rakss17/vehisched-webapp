@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import Container from "../../../components/container/container";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
-import "./dashboardR.css"
+import "./dashboardR.css";
 import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import Countdown from "../../../components/countdown/countdown";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
@@ -21,6 +21,7 @@ import {
   acceptVehicleAPI,
   cancelRequestAPI,
   fetchVehicleVIPAPI,
+  fetchEachVehicleSchedule,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
@@ -35,6 +36,7 @@ import LoadingBar from "react-top-loading-bar";
 import InitialFormVip from "../../../components/form/initialformvip";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import RequesterTripMergingForm from "../../../components/form/requestertripmerging";
+import SchedulePicker from "../../../components/schedulepicker/schedulepicker";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -47,9 +49,13 @@ export default function DashboardR() {
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
   const [isOneWayClick, setIsOneWayClick] = useState(false);
-  const [isFetchSelect, setIsFetchSelect] = useState(false);
+  const [isScheduleClick, setIsScheduleClick] = useState(false);
+  const [
+    selectedVehicleExisitingSchedule,
+    setSelectedVehicleExisitingSchedule,
+  ] = useState<any[]>([]);
   const [selectedButton, setSelectedButton] =
-    useState<string>("Set Trip Schedule");
+    useState<string>("Available Vehicle");
   const [selectedVehicleRecommendation, setSelectedVehicleRecommendation] =
     useState<string>("");
   const [selectedTrip, setSelectedTrip] = useState<string>("");
@@ -105,9 +111,8 @@ export default function DashboardR() {
   ];
   const role = personalInfo?.role;
 
-  fetchNotification(setNotifList);
-
   useEffect(() => {
+    // fetchNotification(setNotifList);
     if (role === "vip") {
       fetchVehicleVIPAPI(setVehiclesData, handleButtonClick);
     }
@@ -291,6 +296,10 @@ export default function DashboardR() {
     setData({ ...data, category: "Round Trip" });
     setSelectedTripButton("Round Trip");
   }, []);
+
+  useEffect(() => {
+    fetchEachVehicleSchedule(setVehiclesData);
+  }, []);
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {
       setIsTravelDateSelected(false);
@@ -300,7 +309,7 @@ export default function DashboardR() {
   const handleButtonClick = (button: string) => {
     switch (button) {
       case "Set Trip Schedule":
-        setIsTripScheduleClick(true);
+        setIsTripScheduleClick(false);
         setIsAvailableVehicleClick(false);
         setIsOngoingScheduleClick(false);
         break;
@@ -371,7 +380,7 @@ export default function DashboardR() {
     handleButtonClickTrip("Round Trip");
   }, []);
   useEffect(() => {
-    handleButtonClick("Set Trip Schedule");
+    handleButtonClick("Available Vehicle");
   }, []);
 
   const formatTime = (timeString: any) => {
@@ -489,6 +498,8 @@ export default function DashboardR() {
   pendingSchedule.reverse();
   schedule.reverse();
 
+  console.log("vehicle data", vehiclesData);
+
   return (
     <>
       <Modal
@@ -526,70 +537,58 @@ export default function DashboardR() {
           </div>
         </div>
         <div className="requester-dashboard-container">
-         
           {isAvailableVehicleClick && (
             <>
               {vehiclesData.length === 0 ? (
-                <p className="vehicles-null">
-                  No vehicles available or Please set your trip schedule to
-                  display available vehicles
-                </p>
+                <p className="vehicles-null">No vehicles found.</p>
               ) : (
                 <>
-                  {role === "vip" ? null : (
-                    <p className="date-available-range">
-                      Available vehicles from {data.travel_date},{" "}
-                      {formatTime(data.travel_time)} to {data.return_date},{" "}
-                      {formatTime(data.return_time)}
-                    </p>
-                  )}
-
                   <div className="vehicle-container">
-                    {vehiclesData.map((vehicle) => (
+                    {Object.entries(vehiclesData).map(([vehicleId, data]) => (
                       <a
                         onClick={() => {
-                          {
-                            role === "vip"
-                              ? (setIsInitialFormVIPOpen(true),
-                                setSelectedPlateNumber(vehicle.plate_number),
-                                setSelectedModel(vehicle.model),
-                                setSelectedCapacity(vehicle.capacity))
-                              : vehicle.is_vip === true
-                              ? (setIsDisclaimerOpen(true),
-                                setSelectedPlateNumber(vehicle.plate_number),
-                                setSelectedModel(vehicle.model),
-                                setSelectedCapacity(vehicle.capacity))
-                              : vehicle.merge_trip === true
-                              ? (setIsRequesterTripMergingFormOpen(true),
-                                setSelectedRequestId(vehicle.request_id))
-                              : openRequestForm(
-                                  vehicle.plate_number,
-                                  vehicle.model,
-                                  vehicle.capacity
-                                );
-                          }
+                          // {
+                          //   role === "vip"
+                          //     ? (setIsInitialFormVIPOpen(true),
+                          //       setSelectedPlateNumber(vehicle.plate_number),
+                          //       setSelectedModel(vehicle.model),
+                          //       setSelectedCapacity(vehicle.capacity))
+                          //     : vehicle.is_vip === true
+                          //     ? (setIsDisclaimerOpen(true),
+                          //       setSelectedPlateNumber(vehicle.plate_number),
+                          //       setSelectedModel(vehicle.model),
+                          //       setSelectedCapacity(vehicle.capacity))
+                          //     : vehicle.merge_trip === true
+                          //     ? (setIsRequesterTripMergingFormOpen(true),
+                          //       setSelectedRequestId(vehicle.request_id))
+                          //     : openRequestForm(
+                          //         vehicle.plate_number,
+                          //         vehicle.model,
+                          //         vehicle.capacity
+                          //       );
+                          // }
+                          setIsScheduleClick(true);
+                          setSelectedVehicleExisitingSchedule(data.schedules);
                         }}
                         className="vehicle-card"
-                        key={vehicle.plate_number}
+                        key={vehicleId}
                       >
                         <div className="vehicle-row">
                           <div className="vehicle-column">
                             <p className="vehicle-name">
-                              {vehicle.plate_number}
+                              {data.plate_number}
                               <br />
-                              {vehicle.model}
+                              {data.model}
                             </p>
                             <p className="vehicle-detail">
-                              Seating Capacity: {vehicle.capacity}
+                              Seating Capacity: {data.capacity}
                             </p>
-                            <p className="vehicle-detail">
-                              Type: {vehicle.type}
-                            </p>
+                            <p className="vehicle-detail">Type: {data.type}</p>
                           </div>
                           <img
                             className="vehicle-image"
-                            src={vehicle.image}
-                            alt={vehicle.model}
+                            src={serverSideUrl + data.image}
+                            alt={data.model}
                           />
                         </div>
                       </a>
@@ -899,6 +898,10 @@ export default function DashboardR() {
         onRequestClose={handleClose}
         given_capacity={givenCapacity}
         requestId={selectedRequestId}
+      />
+      <SchedulePicker
+        isOpen={isScheduleClick}
+        selectedVehicleExisitingSchedule={selectedVehicleExisitingSchedule}
       />
     </>
   );

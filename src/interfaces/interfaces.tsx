@@ -158,6 +158,12 @@ export interface RequestFormDetailsProps {
   fetchRequestOfficeStaffAPI: any;
   setRequestList: any;
 }
+export interface CheckScheduleProps {
+  travel_date?: any;
+  return_date?: any;
+  travel_time?: any;
+  return_time?: any;
+}
 
 export interface TimeInputProps {
   onChange: (time: string | null) => void;
@@ -199,7 +205,7 @@ export interface ModalProps {
 }
 
 export interface ButtonProps {
-  onClick?: () => void;
+  onClick?: (text: string) => void;
   text?: any;
   primaryStyle?: any;
   secondaryStyle?: any;
@@ -207,6 +213,7 @@ export interface ButtonProps {
   underlinedStyle?: any;
   width?: any;
   height?: any;
+  whiteStyle?: any;
 }
 
 export interface QuestionProps {
@@ -264,4 +271,7 @@ export interface HoverDescriptionProps {
   height?: number;
 }
 
-export interface SchedulePickerProps {}
+export interface SchedulePickerProps {
+  isOpen?: any;
+  selectedVehicleExisitingSchedule?: any;
+}

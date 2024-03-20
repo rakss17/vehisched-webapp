@@ -19,10 +19,10 @@ export let serverSideUrl: any;
 export let api: any;
 
 if (debug) {
-  serverSideUrl = "http://172.20.12.21:8000/media/";
+  serverSideUrl = "http://localhost:8000";
 
   api = axios.create({
-    baseURL: "http://172.20.12.21:8000/",
+    baseURL: "http://localhost:8000/",
   });
 } else {
   serverSideUrl = "https://vehisched-backend.keannu1.duckdns.org/media/";
@@ -1035,6 +1035,88 @@ export function checkVehicleAvailability(
       if (error.response && error.response.data) {
         setLoadingBarProgress(50);
         setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching vehicle list:", error);
+    });
+}
+
+export function checkTimeAvailability(
+  preferred_start_travel_date: any,
+  preferred_end_travel_date: any,
+  setAvailableTimes: any,
+  setIsLoading: any
+) {
+  console.log(
+    "api preferred_start_travel_date before server",
+    preferred_start_travel_date
+  );
+  console.log(
+    "api preferred_end_travel_date before server",
+    preferred_end_travel_date
+  );
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/trip/check-time-availability/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_end_travel_date: preferred_end_travel_date,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setIsLoading(false);
+      console.log(
+        "api preferred_start_travel_date after server",
+        preferred_start_travel_date
+      );
+      console.log(
+        "api preferred_end_travel_date after server",
+        preferred_end_travel_date
+      );
+      // Assuming response.data is the object with dates as keys
+      const data = response.data;
+      console.log("data from server", data);
+
+      // Initialize new state to merge with existing state
+      let newState = { travelDateTimes: [], returnDateTimes: [] };
+
+      // Check if the response contains data for the preferred start travel date
+      if (data[preferred_start_travel_date]) {
+        console.log(
+          "data[preferred_start_travel_date]",
+          data[preferred_start_travel_date]
+        );
+        newState.travelDateTimes =
+          data[preferred_start_travel_date].available_time;
+      }
+
+      // Check if the response contains data for the preferred end travel date
+      if (data[preferred_end_travel_date]) {
+        newState.returnDateTimes =
+          data[preferred_end_travel_date].available_time;
+      }
+
+      // Update the state in the parent component
+      setAvailableTimes(newState);
+    })
+    .catch((error: any) => {
+      setIsLoading(false);
+      if (error.response && error.response.data) {
+        // setLoadingBarProgress(50);
+        // setLoadingBarProgress(100);
         const errorMessage = error.response.data.error || "An error occurred.";
         toast.error(errorMessage, {
           position: toast.POSITION.TOP_CENTER,

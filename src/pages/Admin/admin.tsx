@@ -243,7 +243,7 @@ export default function Admin() {
       ...prevUserData,
       password: `${userData.last_name.toLowerCase()}@${userData.first_name.toLowerCase()}`,
     }));
-  }, [userData]);
+  }, [userData.last_name && userData.first_name]);
 
   useEffect(() => {
     dispatch(fetchUsersAPI() as any);

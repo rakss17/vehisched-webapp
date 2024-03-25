@@ -158,3 +158,17 @@ export function convertTo12HourFormat(timeString: any) {
   // Return the formatted time string
   return `${formattedHours}:${minutes} ${period}`;
 }
+
+export function convertTo24HourFormat(timeString: any) {
+  // Split the time string into hours and minutes
+  const [hours, minutes] = timeString.split(":");
+
+  // Ensure the hours are in 24-hour format
+  const formattedHours = parseInt(hours, 10);
+
+  // Return the formatted time string in 24-hour format
+  return `${formattedHours.toString().padStart(2, "0")}:${minutes.padStart(
+    2,
+    "0"
+  )}`;
+}

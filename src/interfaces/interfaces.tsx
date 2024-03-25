@@ -164,6 +164,7 @@ export interface CheckScheduleProps {
   return_date?: any;
   travel_time?: any;
   return_time?: any;
+  type?: any;
 }
 
 export interface TimeInputProps {
@@ -275,4 +276,5 @@ export interface HoverDescriptionProps {
 export interface SchedulePickerProps {
   isOpen?: any;
   selectedVehicleExisitingSchedule?: any;
+  setIsScheduleClick?: any;
 }

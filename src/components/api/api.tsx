@@ -1054,7 +1054,8 @@ export function checkTimeAvailability(
   preferred_start_travel_date: any,
   preferred_end_travel_date: any,
   setAvailableTimes: any,
-  setIsLoading: any
+  setIsLoading: any,
+  setUnavailableTimeInRange: any
 ) {
   console.log(
     "api preferred_start_travel_date before server",
@@ -1108,6 +1109,37 @@ export function checkTimeAvailability(
         newState.returnDateTimes =
           data[preferred_end_travel_date].available_time;
       }
+
+      if (
+        data &&
+        data["unavailable_time_in_date_range"] &&
+        data["unavailable_time_in_date_range"][
+          "unavailable_time_in_date_range"
+        ] &&
+        data["unavailable_time_in_date_range"]["unavailable_time_in_date_range"]
+          .length > 0
+      ) {
+        console.log(
+          "First unavailable time in date range:",
+          data["unavailable_time_in_date_range"][
+            "unavailable_time_in_date_range"
+          ][0]
+        );
+        setUnavailableTimeInRange(
+          data["unavailable_time_in_date_range"][
+            "unavailable_time_in_date_range"
+          ][0]
+        );
+        const new_available_time =
+          data["unavailable_time_in_date_range"][
+            "unavailable_time_in_date_range"
+          ][0];
+        newState.returnDateTimes = data[new_available_time].available_time;
+      } else {
+        setUnavailableTimeInRange(null);
+        console.log("No unavailable times found in the date range.");
+      }
+      // setUnavailableTimeInRange(data["unavailable_time_in_date_range"][0]);
 
       // Update the state in the parent component
       setAvailableTimes(newState);

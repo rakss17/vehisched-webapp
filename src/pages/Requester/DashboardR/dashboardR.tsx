@@ -902,6 +902,7 @@ export default function DashboardR() {
       <SchedulePicker
         isOpen={isScheduleClick}
         selectedVehicleExisitingSchedule={selectedVehicleExisitingSchedule}
+        setIsScheduleClick={setIsScheduleClick}
       />
     </>
   );

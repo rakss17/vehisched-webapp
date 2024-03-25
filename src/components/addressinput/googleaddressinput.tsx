@@ -71,6 +71,7 @@ export default function AutoCompleteAddressGoogle({
         }}
         apiKey={apiKey}
         onPlaceSelected={(place) => onPlaceSelectedRef.current(place)}
+        placeholder="Type here..."
       />
       {isLoading && <CircularProgress color="primary" size={25} />}
     </div>

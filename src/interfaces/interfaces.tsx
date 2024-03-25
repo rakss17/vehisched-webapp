@@ -144,6 +144,7 @@ export interface RequestFormProps {
   driver_name?: any;
   merged_with?: any;
   main_merge?: any;
+  vehicle_model?: any;
 }
 
 export interface RequestFormDetailsProps {

@@ -267,7 +267,7 @@ export default function Requests() {
                       key={request.request_id}
                       onClick={() => handleOpenRequestForm(request)}
                     >
-                      <td>{request.vehicle}</td>
+                      <td>{request.vehicle_model}</td>
                       <td>{formatDate(request.travel_date)}</td>
                       <td style={{ wordWrap: "break-word", maxWidth: "150px" }}>
                         {request.purpose}

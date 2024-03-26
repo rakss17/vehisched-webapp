@@ -25,8 +25,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
 }) => {
   const [state, setState] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date(new Date().setDate(new Date().getDate() + 3)),
+      endDate: new Date(new Date().setDate(new Date().getDate() + 3)),
       key: "selection",
     },
   ]);
@@ -287,6 +287,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     }
   };
 
+  const today = new Date();
+  today.setDate(today.getDate() + 3);
+
   return (
     <Modal className="schedule-picker-modal" isOpen={isOpen}>
       {!isCalendarDateRangePickerShow && (
@@ -432,6 +435,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               showPreview={selectedTravelType === "Round Trip" ? true : false}
               disabledDates={disableDates}
               rangeColors={["#060e57"]}
+              minDate={today}
             />
             <div className="available-times-container">
               <h3>Available Times</h3>

@@ -90,9 +90,9 @@ export default function DashboardR() {
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const userName = personalInfo?.username;
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
-  const [plateNumber, setSelectedPlateNumber] = useState("");
-  const [vehicleName, setSelectedModel] = useState("");
-  const [capacity, setSelectedCapacity] = useState("");
+  const [plateNumber, setSelectedVehiclePlateNumber] = useState("");
+  const [vehicleName, setSelectedVehicleModel] = useState("");
+  const [capacity, setSelectedVehicleCapacity] = useState(0);
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -569,6 +569,7 @@ export default function DashboardR() {
                           // }
                           setIsScheduleClick(true);
                           setSelectedVehicleExisitingSchedule(data.schedules);
+                          setSelectedVehicleCapacity(data.capacity);
                         }}
                         className="vehicle-card"
                         key={vehicleId}
@@ -903,6 +904,9 @@ export default function DashboardR() {
         isOpen={isScheduleClick}
         selectedVehicleExisitingSchedule={selectedVehicleExisitingSchedule}
         setIsScheduleClick={setIsScheduleClick}
+        selectedVehicleCapacity={capacity}
+        selectedVehiclePlateNumber={plateNumber}
+        selectedVehicleModel={vehicleName}
       />
     </>
   );

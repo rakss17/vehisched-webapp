@@ -165,6 +165,9 @@ export interface CheckScheduleProps {
   travel_time?: any;
   return_time?: any;
   type?: any;
+  purpose?: any;
+  passenger_name?: string[];
+  vehicle_capacity?: any;
 }
 
 export interface TimeInputProps {
@@ -277,4 +280,7 @@ export interface SchedulePickerProps {
   isOpen?: any;
   selectedVehicleExisitingSchedule?: any;
   setIsScheduleClick?: any;
+  selectedVehicleCapacity?: any;
+  selectedVehiclePlateNumber?: any;
+  selectedVehicleModel?: any;
 }

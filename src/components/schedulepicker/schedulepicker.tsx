@@ -13,16 +13,24 @@ import {
   convertTo12HourFormat,
   formatDateToYYYYMMDD,
   convertTo24HourFormat,
+  formatDate,
+  formatTime,
 } from "../functions/functions";
 import CircularProgress from "@mui/material/CircularProgress";
 import { checkTimeAvailability } from "../api/api";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
+import InputField from "../inputfield/inputfield";
+import { faClipboard, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const SchedulePicker: React.FC<SchedulePickerProps> = ({
   isOpen,
   selectedVehicleExisitingSchedule,
   setIsScheduleClick,
+  selectedVehicleCapacity,
+  selectedVehicleModel,
+  selectedVehiclePlateNumber,
 }) => {
+  console.log("selected vehicle", selectedVehicleExisitingSchedule);
   const [state, setState] = useState([
     {
       startDate: new Date(new Date().setDate(new Date().getDate() + 3)),
@@ -34,8 +42,10 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [selectedEndTime, setSelectedEndTime] = useState(null);
   const [disableDates, setDisableDates] = useState<any[]>([]);
   const [UnavailableTimeInRange, setUnavailableTimeInRange] = useState(null);
+  const [isFromAutoComplete, setIsFromAutoComplete] = useState(false);
   const [isCalendarDateRangePickerShow, setIsCalendarDateRangePickerShow] =
     useState(false);
+  const [isOtherFieldsShow, setIsOtherFieldsShow] = useState(false);
   const [addressData, setAddressData] = useState<any>({
     destination: "",
     distance: null,
@@ -46,6 +56,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     travel_time: null,
     return_date: null,
     return_time: null,
+    purpose: "",
+    passenger_name: [],
   });
   const [selectedTimes, setSelectedTimes] = useState<{
     start: Date | null;
@@ -260,14 +272,57 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   //     returnDateTimes,
   //   });
   // }, [selectedTimes]);
+  const generatePassengerInputs = () => {
+    const inputs = [];
+    for (let i = 0; i < selectedVehicleCapacity; i++) {
+      inputs.push(
+        <div key={i} className="passenger-name-column">
+          <InputField
+            className="passenger_name_width"
+            value={(data.passenger_name && data.passenger_name[i]) || ""}
+            key={i}
+            icon={faUser}
+            label={`Passenger ${i + 1}`}
+            placeholder={`Passenger ${i + 1}`}
+            onChange={(event) => {
+              const newPassengerNames = [...(data.passenger_name || "")];
+              newPassengerNames[i] = event.target.value;
+              const countNumberOfPassenger = newPassengerNames.filter(
+                (name) => name !== ""
+              ).length;
+              setData((prevData: any) => ({
+                ...prevData,
+                passenger_name: newPassengerNames,
+                number_of_passenger: countNumberOfPassenger,
+              }));
+            }}
+          />
+        </div>
+      );
+    }
+    return inputs;
+  };
+  console.log("isFromAutoCompleteBool", isFromAutoComplete);
+  useEffect(() => {
+    if (isFromAutoComplete) {
+      console.log("isFrom", data.travel_date, data.return_date);
+      checkTimeAvailability(
+        data.travel_date,
+        data.return_date,
+        setAvailableTimes,
+        setIsLoading,
+        setUnavailableTimeInRange
+      );
+    }
+  }, [isFromAutoComplete]);
 
   const handleCheckTimeAvailability = () => {
     console.log(data);
     console.log(availableTimes);
     setIsLoading(true);
     checkTimeAvailability(
-      formatDateToYYYYMMDD(data.travel_date),
-      formatDateToYYYYMMDD(data.return_date),
+      data.travel_date,
+      data.return_date,
       setAvailableTimes,
       setIsLoading,
       setUnavailableTimeInRange
@@ -292,7 +347,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
 
   return (
     <Modal className="schedule-picker-modal" isOpen={isOpen}>
-      {!isCalendarDateRangePickerShow && (
+      {!isCalendarDateRangePickerShow && !isOtherFieldsShow && (
         <div className="select-travel-type-container">
           <h2>Select travel type</h2>
           <div className="select-travel-type-button-container">
@@ -400,16 +455,22 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                   if (selectedTravelType === "Round Trip") {
                     setState([item.selection]);
                     setData({
-                      travel_date: item.selection.startDate,
-                      return_date: item.selection.endDate,
+                      travel_date: formatDateToYYYYMMDD(
+                        item.selection.startDate
+                      ),
+                      return_date: formatDateToYYYYMMDD(item.selection.endDate),
                     });
                   } else if (
                     selectedTravelType === "One-way - Drop" ||
                     selectedTravelType === "One-way - Fetch"
                   ) {
                     setData({
-                      travel_date: item.selection.startDate,
-                      return_date: item.selection.startDate,
+                      travel_date: formatDateToYYYYMMDD(
+                        item.selection.startDate
+                      ),
+                      return_date: formatDateToYYYYMMDD(
+                        item.selection.startDate
+                      ),
                     });
                     setState([
                       {
@@ -511,6 +572,14 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                             ...selectedTimes,
                                             start: text,
                                           });
+                                          console.log(
+                                            "not yet converted",
+                                            text
+                                          );
+                                          console.log(
+                                            "converted already",
+                                            convertTo24HourFormat(text)
+                                          );
                                           setData({
                                             ...data,
                                             travel_time:
@@ -595,7 +664,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                           </>
                         ) : (
                           <div className="autocomplete-address-container">
-                            <p>
+                            <p className="strong">
                               Please input destination to fetch estimated return
                               date and time of the vehicle
                             </p>
@@ -613,9 +682,17 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                 console.log("ye")
                               }
                               className="googledestination"
+                              setIsFromAutoComplete={setIsFromAutoComplete}
                             />
-                            {/* <p>{data.return_date && data.return_date}</p> */}
-                            <p>{data.return_time && data.return_time}</p>
+                            <p className="strong">
+                              Estimated return date and time:{" "}
+                            </p>
+                            <p>
+                              {data.return_date && formatDate(data.return_date)}
+                              {data.return_time && (
+                                <>, {convertTo12HourFormat(data.return_time)}</>
+                              )}
+                            </p>
                           </div>
                         )}
                       </>
@@ -657,8 +734,94 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               primaryStyle
               text="Next"
               onClick={() => {
+                setIsCalendarDateRangePickerShow(false);
+
+                setIsOtherFieldsShow(true);
+                // console.log("dataaaaaa", data);
+              }}
+            />
+          </div>
+        </>
+      )}
+      {isOtherFieldsShow && !isCalendarDateRangePickerShow && (
+        <>
+          <div className="other-fields-container">
+            {selectedTravelType === "Round Trip" && (
+              <>
+                <div className="other-fields-child-one">
+                  <strong>Input destination</strong>
+                  <AutoCompleteAddressGoogle
+                    travel_date={data.travel_date}
+                    travel_time={data.travel_time}
+                    setData={setData}
+                    setAddressData={setAddressData}
+                    category={selectedTravelType}
+                    removeDestinationError={() =>
+                      // setErrorMessages((prev) => ({
+                      //   ...prev,
+                      //   destinationError: undefined,
+                      // }))
+                      console.log("ye")
+                    }
+                    className="googledestination"
+                    setIsFromAutoComplete={setIsFromAutoComplete}
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="other-fields-child-two">
+              <strong>Input purpose</strong>
+              <div className="purpose-width-container">
+                <InputField
+                  className="purpose-width"
+                  icon={faClipboard}
+                  value={data.purpose}
+                  label="Purpose"
+                  placeholder="Purpose"
+                  onChange={(event) => {
+                    setData((prevData: any) => ({
+                      ...prevData,
+                      purpose: event.target.value,
+                    }));
+                    // if (event.target.value) {
+                    //   const updatedErrors = { ...errorMessages };
+                    //   delete updatedErrors[0]?.purposeError;
+                    //   delete updatedErrors[0]?.all;
+                    //   setErrorMessages(updatedErrors);
+                    // }
+                  }}
+                />
+              </div>
+            </div>
+            <div className="other-fields-child-three">
+              <strong>Input passenger's name(s)</strong>
+              <div className="passenger-input-fieldss">
+                {generatePassengerInputs()}
+              </div>
+            </div>
+          </div>
+          <div className="footer-button-container2">
+            <CommonButton
+              width={9}
+              height={7}
+              whiteStyle
+              text="Back"
+              onClick={() => {
                 setIsCalendarDateRangePickerShow(true);
-                console.log("wwweeeew", data);
+                setIsOtherFieldsShow(false);
+              }}
+            />
+            <CommonButton
+              width={9}
+              height={7}
+              primaryStyle
+              text="Next"
+              onClick={() => {
+                setIsCalendarDateRangePickerShow(false);
+
+                setIsOtherFieldsShow(true);
+                // console.log("dataaaaaa", data);
               }}
             />
           </div>

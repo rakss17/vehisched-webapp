@@ -39,9 +39,8 @@ export default function Landing() {
         navigate("/Admin");
       } else if (role === "office staff") {
         navigate("/DashboardOS");
-        // } else if (role === "requester" || role === "vip") {
-        //   navigate("/DashboardR");
-        // }
+      } else if (role === "requester" || role === "vip") {
+        navigate("/DashboardR");
       }
     }
   }, []);
@@ -50,8 +49,7 @@ export default function Landing() {
 
   const toggleModal = () => {
     setShowModal(!showModal);
-   };
-   
+  };
 
   const handleToggleVisibility = () => {
     setShowPassword(!showPassword);
@@ -152,7 +150,9 @@ export default function Landing() {
             </div>
           </div>
           <div className="forgotpassword">
-            <a className="forgottext" onClick={toggleModal}>Forgot password?</a>
+            <a className="forgottext" onClick={toggleModal}>
+              Forgot password?
+            </a>
           </div>
           <div className="buttoncontainer">
             <div className="rememberme">

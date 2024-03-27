@@ -392,8 +392,8 @@ export default function RequestForm() {
         <div className="request-form-body">
           <div className="request-form-header">
             <img src={USTPLogo} alt="USTP Logo" />
-            <h1>Request Form</h1>
-            <img src={DocumentCode} alt="Document Code" />
+            <h1>Reservation Form</h1>
+            <div className="occupied-space"></div>
           </div>
           <div className="form-body">
             <div className="form-body-shadow">

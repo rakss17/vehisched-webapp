@@ -15,6 +15,7 @@ interface AutoCompleteAddressGoogleProps
   category?: any;
   removeDestinationError: () => void;
   className?: any;
+  setIsFromAutoComplete?: any;
 }
 
 export default function AutoCompleteAddressGoogle({
@@ -25,6 +26,7 @@ export default function AutoCompleteAddressGoogle({
   category,
   removeDestinationError,
   className,
+  setIsFromAutoComplete,
 }: AutoCompleteAddressGoogleProps) {
   const [travel_date, setTravelDate] = useState(travelDateProp);
   const [travel_time, setTravelTime] = useState(travelTimeProp);
@@ -44,6 +46,7 @@ export default function AutoCompleteAddressGoogle({
         category,
         setIsLoading
       );
+      setIsFromAutoComplete(true);
       setIsLoading(true);
       removeDestinationError();
     };
@@ -54,6 +57,7 @@ export default function AutoCompleteAddressGoogle({
     setAddressData,
     category,
     removeDestinationError,
+    setIsFromAutoComplete,
   ]);
 
   useEffect(() => {

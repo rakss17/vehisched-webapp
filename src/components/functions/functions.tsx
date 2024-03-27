@@ -160,11 +160,19 @@ export function convertTo12HourFormat(timeString: any) {
 }
 
 export function convertTo24HourFormat(timeString: any) {
-  // Split the time string into hours and minutes
-  const [hours, minutes] = timeString.split(":");
+  // Split the time string into hours, minutes, and period (AM/PM)
+  const [time, period] = timeString.split(" ");
+  const [hours, minutes] = time.split(":");
 
-  // Ensure the hours are in 24-hour format
-  const formattedHours = parseInt(hours, 10);
+  // Convert hours to a number
+  let formattedHours = parseInt(hours, 10);
+
+  // Adjust hours based on AM/PM
+  if (period.toLowerCase() === "pm" && formattedHours !== 12) {
+    formattedHours += 12;
+  } else if (period.toLowerCase() === "am" && formattedHours === 12) {
+    formattedHours = 0;
+  }
 
   // Return the formatted time string in 24-hour format
   return `${formattedHours.toString().padStart(2, "0")}:${minutes.padStart(

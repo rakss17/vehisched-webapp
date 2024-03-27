@@ -104,9 +104,76 @@
   display: flex;
   flex-direction: column;
   height: 20vh;
-  gap: 2vw;
+  gap: 1vw;
 }
 .autocomplete-address-container p {
   width: 15vw;
+}
+.autocomplete-address-container .strong {
   font-weight: bold;
+}
+.other-fields-container {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  width: 45vw;
+}
+.other-fields-container strong {
+  font-size: 1rem;
+}
+
+.other-fields-child-one {
+  display: flex;
+  flex-direction: row;
+  height: 10vh;
+  align-items: center;
+}
+.other-fields-child-one .googledestination {
+  color: #000000;
+  font-size: 1rem;
+  border: 1px solid black;
+  width: 30vw;
+  margin-left: 5vw;
+  margin-top: 7vh;
+  padding: 10px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  background: transparent;
+}
+.other-fields-child-two {
+  display: flex;
+  flex-direction: row;
+  height: 10vh;
+  align-items: center;
+
+  width: 50vw;
+}
+
+.other-fields-child-two .purpose-width-container {
+  margin-left: 4.5vw;
+
+  width: 30vw;
+}
+.other-fields-child-two .purpose-width {
+  width: 30vw;
+}
+
+.other-fields-child-three {
+  margin-top: 1vh;
+}
+.passenger-input-fieldss {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 0vw;
+  display: flex;
+  flex-direction: row;
+  margin-left: 0vh;
+  width: auto;
+  color: black;
+  gap: 1vw;
+  height: 25vh;
+  overflow: auto;
 }

@@ -177,3 +177,24 @@
   height: 25vh;
   overflow: auto;
 }
+.confirm-details-container {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  width: 45vw;
+  overflow-y: auto;
+}
+.details-row {
+  margin-top: 1vh;
+  display: flex;
+  flex-direction: row;
+}
+.details-row div:nth-child(1) {
+  width: 30vw;
+}
+.inline-row {
+  margin-top: 1vh;
+  display: flex;
+  flex-direction: row;
+  gap: 1vw;
+}

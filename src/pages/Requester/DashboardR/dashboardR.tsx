@@ -93,6 +93,7 @@ export default function DashboardR() {
   const [plateNumber, setSelectedVehiclePlateNumber] = useState("");
   const [vehicleName, setSelectedVehicleModel] = useState("");
   const [capacity, setSelectedVehicleCapacity] = useState(0);
+  const [assignedDriver, setSelectedVehicleDriver] = useState("");
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
@@ -570,6 +571,9 @@ export default function DashboardR() {
                           setIsScheduleClick(true);
                           setSelectedVehicleExisitingSchedule(data.schedules);
                           setSelectedVehicleCapacity(data.capacity);
+                          setSelectedVehicleDriver(data.driver_assigned_to);
+                          setSelectedVehiclePlateNumber(data.plate_number);
+                          setSelectedVehicleModel(data.model);
                         }}
                         className="vehicle-card"
                         key={vehicleId}
@@ -907,6 +911,7 @@ export default function DashboardR() {
         selectedVehicleCapacity={capacity}
         selectedVehiclePlateNumber={plateNumber}
         selectedVehicleModel={vehicleName}
+        selectedVehicleDriver={assignedDriver}
       />
     </>
   );

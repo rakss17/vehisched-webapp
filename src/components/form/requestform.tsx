@@ -277,7 +277,7 @@ export default function RequestForm() {
             label={`Passenger ${i + 1}`}
             placeholder={`Passenger ${i + 1}`}
             onChange={(event) => {
-              const newPassengerNames = [...data.passenger_name];
+              const newPassengerNames = [...(data.passenger_name || "")];
               newPassengerNames[i] = event.target.value;
               const countNumberOfPassenger = newPassengerNames.filter(
                 (name) => name !== ""

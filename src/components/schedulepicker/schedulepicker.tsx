@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import {
   CheckScheduleProps,
+  RequestFormProps,
   SchedulePickerProps,
 } from "../../interfaces/interfaces";
 import "react-date-range/dist/styles.css";
@@ -21,6 +22,8 @@ import { checkTimeAvailability } from "../api/api";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
 import { faClipboard, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const SchedulePicker: React.FC<SchedulePickerProps> = ({
   isOpen,
@@ -29,6 +32,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   selectedVehicleCapacity,
   selectedVehicleModel,
   selectedVehiclePlateNumber,
+  selectedVehicleDriver,
 }) => {
   console.log("selected vehicle", selectedVehicleExisitingSchedule);
   const [state, setState] = useState([
@@ -38,6 +42,15 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
       key: "selection",
     },
   ]);
+  const personalInfo = useSelector(
+    (state: RootState) => state.personalInfo.data
+  );
+  const firstName = personalInfo?.first_name;
+  const lastName = personalInfo?.last_name;
+  const middleName = personalInfo?.middle_name;
+  const userID = personalInfo?.id;
+  const office = personalInfo?.office;
+  const role = personalInfo?.role;
   const [selectedStartTime, setSelectedStartTime] = useState(null);
   const [selectedEndTime, setSelectedEndTime] = useState(null);
   const [disableDates, setDisableDates] = useState<any[]>([]);
@@ -46,19 +59,33 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [isCalendarDateRangePickerShow, setIsCalendarDateRangePickerShow] =
     useState(false);
   const [isOtherFieldsShow, setIsOtherFieldsShow] = useState(false);
+  const [isDetailsConfirmationShow, setIsDetailsConfirmationShow] =
+    useState(false);
   const [addressData, setAddressData] = useState<any>({
     destination: "",
     distance: null,
   });
   const [selectedTravelType, setSelectedTravelType] = useState("");
-  const [data, setData] = useState<CheckScheduleProps>({
+  const [data, setData] = useState<RequestFormProps>({
+    purpose: "",
+    number_of_passenger: null,
+    passenger_name: [],
     travel_date: null,
     travel_time: null,
     return_date: null,
     return_time: null,
-    purpose: "",
-    passenger_name: [],
+    destination: addressData.destination,
+    vehicle: selectedVehiclePlateNumber,
+    type: "",
+    distance: addressData.distance,
+    merge_trip: false,
+    role: role,
+    driver_name: selectedVehicleDriver,
+    office: office,
+    requester_name: userID,
+    vehicle_capacity: null,
   });
+
   const [selectedTimes, setSelectedTimes] = useState<{
     start: Date | null;
     end: Date | null;
@@ -347,97 +374,99 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
 
   return (
     <Modal className="schedule-picker-modal" isOpen={isOpen}>
-      {!isCalendarDateRangePickerShow && !isOtherFieldsShow && (
-        <div className="select-travel-type-container">
-          <h2>Select travel type</h2>
-          <div className="select-travel-type-button-container">
-            {selectedTravelType === "Round Trip" ? (
-              <>
-                <CommonButton
-                  width={9}
-                  height={7}
-                  primaryStyle
-                  text="Round Trip"
-                  onClick={handleChangeTravelType}
-                />
-              </>
-            ) : (
-              <>
-                <CommonButton
-                  width={9}
-                  height={7}
-                  whiteStyle
-                  text="Round Trip"
-                  onClick={handleChangeTravelType}
-                />
-              </>
-            )}
+      {!isCalendarDateRangePickerShow &&
+        !isOtherFieldsShow &&
+        !isDetailsConfirmationShow && (
+          <div className="select-travel-type-container">
+            <h2>Select travel type</h2>
+            <div className="select-travel-type-button-container">
+              {selectedTravelType === "Round Trip" ? (
+                <>
+                  <CommonButton
+                    width={9}
+                    height={7}
+                    primaryStyle
+                    text="Round Trip"
+                    onClick={handleChangeTravelType}
+                  />
+                </>
+              ) : (
+                <>
+                  <CommonButton
+                    width={9}
+                    height={7}
+                    whiteStyle
+                    text="Round Trip"
+                    onClick={handleChangeTravelType}
+                  />
+                </>
+              )}
 
-            {selectedTravelType === "One-way - Drop" ? (
-              <>
-                <CommonButton
-                  width={11}
-                  height={7}
-                  primaryStyle
-                  text="One-way - Drop"
-                  onClick={handleChangeTravelType}
-                />
-              </>
-            ) : (
-              <>
-                <CommonButton
-                  width={11}
-                  height={7}
-                  whiteStyle
-                  text="One-way - Drop"
-                  onClick={handleChangeTravelType}
-                />
-              </>
-            )}
-            {selectedTravelType === "One-way - Fetch" ? (
-              <>
-                <CommonButton
-                  width={12}
-                  height={7}
-                  primaryStyle
-                  text="One-way - Fetch"
-                  onClick={handleChangeTravelType}
-                />
-              </>
-            ) : (
-              <>
-                <CommonButton
-                  width={12}
-                  height={7}
-                  whiteStyle
-                  text="One-way - Fetch"
-                  onClick={handleChangeTravelType}
-                />
-              </>
-            )}
+              {selectedTravelType === "One-way - Drop" ? (
+                <>
+                  <CommonButton
+                    width={11}
+                    height={7}
+                    primaryStyle
+                    text="One-way - Drop"
+                    onClick={handleChangeTravelType}
+                  />
+                </>
+              ) : (
+                <>
+                  <CommonButton
+                    width={11}
+                    height={7}
+                    whiteStyle
+                    text="One-way - Drop"
+                    onClick={handleChangeTravelType}
+                  />
+                </>
+              )}
+              {selectedTravelType === "One-way - Fetch" ? (
+                <>
+                  <CommonButton
+                    width={12}
+                    height={7}
+                    primaryStyle
+                    text="One-way - Fetch"
+                    onClick={handleChangeTravelType}
+                  />
+                </>
+              ) : (
+                <>
+                  <CommonButton
+                    width={12}
+                    height={7}
+                    whiteStyle
+                    text="One-way - Fetch"
+                    onClick={handleChangeTravelType}
+                  />
+                </>
+              )}
+            </div>
+            <div className="footer-button-container">
+              <CommonButton
+                width={9}
+                height={7}
+                whiteStyle
+                text="Back"
+                onClick={() => {
+                  setIsScheduleClick(false);
+                }}
+              />
+              <CommonButton
+                width={9}
+                height={7}
+                primaryStyle
+                text="Next"
+                onClick={() => {
+                  setIsCalendarDateRangePickerShow(true);
+                }}
+              />
+            </div>
           </div>
-          <div className="footer-button-container">
-            <CommonButton
-              width={9}
-              height={7}
-              whiteStyle
-              text="Back"
-              onClick={() => {
-                setIsScheduleClick(false);
-              }}
-            />
-            <CommonButton
-              width={9}
-              height={7}
-              primaryStyle
-              text="Next"
-              onClick={() => {
-                setIsCalendarDateRangePickerShow(true);
-              }}
-            />
-          </div>
-        </div>
-      )}
+        )}
       {isCalendarDateRangePickerShow && (
         <>
           <div className="calendar-date-range-picker-container">
@@ -818,10 +847,124 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               primaryStyle
               text="Next"
               onClick={() => {
-                setIsCalendarDateRangePickerShow(false);
-
+                setIsOtherFieldsShow(false);
+                setIsDetailsConfirmationShow(true);
+                console.log("final data", data);
+                setData((prevData: any) => ({
+                  ...prevData,
+                  requester_name: userID,
+                  office: office,
+                  type: selectedTravelType,
+                  role: role,
+                  destination: addressData.destination,
+                  distance: addressData.distance,
+                  driver_name: selectedVehicleDriver,
+                  vehicle_capacity: selectedVehicleCapacity,
+                  vehicle: selectedVehiclePlateNumber,
+                  merge_trip: false,
+                }));
+              }}
+            />
+          </div>
+        </>
+      )}
+      {isDetailsConfirmationShow && !isCalendarDateRangePickerShow && (
+        <>
+          <div className="confirm-details-container">
+            <h3>Reservation details</h3>
+            <p>Please confirm details before submitting. Thank you.</p>
+            <div className="details-row">
+              <div>
+                <strong>Requester's name</strong>
+                <p>
+                  {firstName} {lastName}
+                </p>
+              </div>
+              <div>
+                <strong>Office</strong>
+                <p>{office}</p>
+              </div>
+            </div>
+            <div className="details-row">
+              <div>
+                <strong>Vehicle</strong>
+                <p>
+                  {selectedVehiclePlateNumber} {selectedVehicleModel}
+                </p>
+              </div>
+              <div>
+                <strong>Travel type</strong>
+                <p>{selectedTravelType}</p>
+              </div>
+            </div>
+            <div className="details-row">
+              <div>
+                <strong>Travel date and time</strong>
+                <p>
+                  {formatDate(data.travel_date)},{" "}
+                  {convertTo12HourFormat(data.travel_time)}
+                </p>
+              </div>
+              <div>
+                <strong>Return date and time</strong>
+                <p>
+                  {formatDate(data.return_date)},{" "}
+                  {convertTo12HourFormat(data.return_time)}
+                </p>
+              </div>
+            </div>
+            <div className="details-row">
+              <div>
+                <strong>Destination</strong>
+                <p>{addressData.destination}</p>
+              </div>
+              <div>
+                <strong>Distance</strong>
+                <p>{addressData.distance} km</p>
+              </div>
+            </div>
+            <div className="inline-row">
+              <strong>Passenger's name(s)</strong>
+              <p>{data.passenger_name?.join(", ")}</p>
+            </div>
+            <div className="inline-row">
+              <strong>Purpose</strong>
+              <p>{data.purpose}</p>
+            </div>
+          </div>
+          <div className="footer-button-container2">
+            <CommonButton
+              width={9}
+              height={7}
+              whiteStyle
+              text="Back"
+              onClick={() => {
                 setIsOtherFieldsShow(true);
-                // console.log("dataaaaaa", data);
+                setIsDetailsConfirmationShow(false);
+              }}
+            />
+            <CommonButton
+              width={9}
+              height={7}
+              primaryStyle
+              text="Submit"
+              onClick={() => {
+                // setIsOtherFieldsShow(false);
+                // setIsDetailsConfirmationShow(true)
+                console.log("final data", data);
+                setData((prevData: any) => ({
+                  ...prevData,
+                  requester_name: userID,
+                  office: office,
+                  type: selectedTravelType,
+                  role: role,
+                  destination: addressData.destination,
+                  distance: addressData.distance,
+                  driver_name: selectedVehicleDriver,
+                  vehicle_capacity: selectedVehicleCapacity,
+                  vehicle: selectedVehiclePlateNumber,
+                  merge_trip: false,
+                }));
               }}
             />
           </div>

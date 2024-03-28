@@ -115,7 +115,7 @@ export interface AddressInputProps {
 export interface RequestFormProps {
   office?: any;
   purpose?: any;
-  passenger_name: string[];
+  passenger_name?: string[];
   vehicle?: any;
   destination?: any;
   travel_date?: any;
@@ -283,4 +283,5 @@ export interface SchedulePickerProps {
   selectedVehicleCapacity?: any;
   selectedVehiclePlateNumber?: any;
   selectedVehicleModel?: any;
+  selectedVehicleDriver?: any;
 }

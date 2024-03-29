@@ -5,16 +5,15 @@
 }
 
 .schedule-picker-modal {
-  margin-top: 20vh;
+  margin-top: 15vh;
   margin-left: 23vw;
   background-color: #d9d9d9;
   width: 55vw;
-  height: 70vh;
+  height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
   gap: 1vh;
   color: black;
 }
@@ -127,6 +126,11 @@
   flex-direction: row;
   height: 10vh;
   align-items: center;
+  position: relative;
+}
+.error-text-container-absolute {
+  position: absolute;
+  margin: 10vh 0vw 00vh 20vw;
 }
 .other-fields-child-one .googledestination {
   color: #000000;
@@ -176,6 +180,11 @@
   gap: 1vw;
   height: 25vh;
   overflow: auto;
+  position: relative;
+}
+.error-text-container-absolute-passenger {
+  position: absolute;
+  margin: 22vh 0vw 00vh 11vw;
 }
 .confirm-details-container {
   display: flex;
@@ -197,4 +206,10 @@
   display: flex;
   flex-direction: row;
   gap: 1vw;
+}
+.error-text-container {
+  text-align: center;
+}
+.error-text {
+  color: red;
 }

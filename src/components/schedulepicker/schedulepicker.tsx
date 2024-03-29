@@ -66,6 +66,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     distance: null,
   });
   const [selectedTravelType, setSelectedTravelType] = useState("");
+  const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [data, setData] = useState<RequestFormProps>({
     purpose: "",
     number_of_passenger: null,
@@ -301,7 +302,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   // }, [selectedTimes]);
   const generatePassengerInputs = () => {
     const inputs = [];
-    for (let i = 0; i < selectedVehicleCapacity; i++) {
+    for (let i = 0; i < 10; i++) {
       inputs.push(
         <div key={i} className="passenger-name-column">
           <InputField
@@ -322,6 +323,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 passenger_name: newPassengerNames,
                 number_of_passenger: countNumberOfPassenger,
               }));
+              const updatedErrors = { ...errorMessages };
+              delete updatedErrors[0]?.passengerNameError;
+              setErrorMessages(updatedErrors);
             }}
           />
         </div>
@@ -343,6 +347,14 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     }
   }, [isFromAutoComplete]);
 
+  useEffect(() => {
+    if (addressData.destination && addressData.distance) {
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[0]?.destinationError;
+      setErrorMessages(updatedErrors);
+    }
+  }, [addressData.destination, addressData.distance]);
+
   const handleCheckTimeAvailability = () => {
     console.log(data);
     console.log(availableTimes);
@@ -356,10 +368,10 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     );
   };
 
-  console.log("Available Times state", availableTimes);
-
   const handleChangeTravelType = (text: any) => {
-    console.log("travel type", text);
+    const updatedErrors = { ...errorMessages };
+    delete updatedErrors[0]?.travelTypeError;
+    setErrorMessages(updatedErrors);
     if (text === "Round Trip") {
       setSelectedTravelType("Round Trip");
     } else if (text === "One-way - Drop") {
@@ -445,6 +457,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 </>
               )}
             </div>
+            <div className="error-text-container">
+              <p className="error-text">{errorMessages[0]?.travelTypeError}</p>
+            </div>
             <div className="footer-button-container">
               <CommonButton
                 width={9}
@@ -452,6 +467,10 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 whiteStyle
                 text="Back"
                 onClick={() => {
+                  setSelectedTravelType("");
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.travelTypeError;
+                  setErrorMessages(updatedErrors);
                   setIsScheduleClick(false);
                 }}
               />
@@ -461,7 +480,18 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 primaryStyle
                 text="Next"
                 onClick={() => {
-                  setIsCalendarDateRangePickerShow(true);
+                  let validationErrors: { [key: string]: string } = {};
+                  if (!selectedTravelType) {
+                    validationErrors.travelTypeError =
+                      "Please select travel type.";
+                  }
+
+                  const errorArray = [validationErrors];
+
+                  setErrorMessages(errorArray);
+                  if (Object.keys(validationErrors).length === 0) {
+                    setIsCalendarDateRangePickerShow(true);
+                  }
                 }}
               />
             </div>
@@ -474,6 +504,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               onChange={(item: any) => {
                 const localStartDate = localStorage.getItem("startDate");
                 const localEndDate = localStorage.getItem("endDate");
+                const updatedErrors = { ...errorMessages };
+                delete updatedErrors[0]?.travelDateError;
+                setErrorMessages(updatedErrors);
                 if (
                   localStartDate !==
                     formatDateToYYYYMMDD(item.selection.startDate) &&
@@ -614,6 +647,12 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                             travel_time:
                                               convertTo24HourFormat(text),
                                           });
+                                          const updatedErrors = {
+                                            ...errorMessages,
+                                          };
+                                          delete updatedErrors[0]
+                                            ?.travelTimeError;
+                                          setErrorMessages(updatedErrors);
                                         }}
                                       />
                                     </>
@@ -681,6 +720,12 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                                 return_time:
                                                   convertTo24HourFormat(text),
                                               });
+                                              const updatedErrors = {
+                                                ...errorMessages,
+                                              };
+                                              delete updatedErrors[0]
+                                                ?.travelTimeError;
+                                              setErrorMessages(updatedErrors);
                                             }}
                                           />
                                         </>
@@ -731,6 +776,15 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               </div>
             </div>
           </div>
+          <div className="error-text-container">
+            <p className="error-text">{errorMessages[0]?.travelDateError}</p>
+          </div>
+          <div className="error-text-container">
+            <p className="error-text">{errorMessages[0]?.travelTimeError}</p>
+          </div>
+          <div className="error-text-container">
+            <p className="error-text">{errorMessages[0]?.destinationError}</p>
+          </div>
           <div className="footer-button-container2">
             <CommonButton
               width={9}
@@ -763,9 +817,48 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               primaryStyle
               text="Next"
               onClick={() => {
-                setIsCalendarDateRangePickerShow(false);
+                console.log("data with destination", data);
+                let validationErrors: { [key: string]: string } = {};
+                if (!data.travel_date && !data.return_date) {
+                  validationErrors.travelDateError =
+                    "Please select travel date.";
+                } else {
+                  if (!data.travel_time && !data.return_time) {
+                    validationErrors.travelTimeError =
+                      "Please select travel time";
+                  } else {
+                    if (selectedTravelType === "Round Trip") {
+                      if (!data.travel_time) {
+                        validationErrors.travelTimeError =
+                          "Please select start time";
+                      } else if (!data.return_time) {
+                        validationErrors.travelTimeError =
+                          "Please select end time";
+                      }
+                    } else {
+                      if (!data.travel_time) {
+                        validationErrors.travelTimeError =
+                          "Please select start time";
+                      } else if (
+                        !addressData.destination &&
+                        !addressData.distance
+                      ) {
+                        validationErrors.destinationError =
+                          "Please input destination";
+                      }
+                    }
+                  }
+                }
 
-                setIsOtherFieldsShow(true);
+                const errorArray = [validationErrors];
+
+                setErrorMessages(errorArray);
+                if (Object.keys(validationErrors).length === 0) {
+                  setIsCalendarDateRangePickerShow(false);
+
+                  setIsOtherFieldsShow(true);
+                }
+
                 // console.log("dataaaaaa", data);
               }}
             />
@@ -779,6 +872,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               <>
                 <div className="other-fields-child-one">
                   <strong>Input destination</strong>
+
                   <AutoCompleteAddressGoogle
                     travel_date={data.travel_date}
                     travel_time={data.travel_time}
@@ -795,6 +889,11 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                     className="googledestination"
                     setIsFromAutoComplete={setIsFromAutoComplete}
                   />
+                  <div className="error-text-container-absolute">
+                    <p className="error-text">
+                      {errorMessages[0]?.destinationError}
+                    </p>
+                  </div>
                 </div>
               </>
             )}
@@ -813,20 +912,28 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                       ...prevData,
                       purpose: event.target.value,
                     }));
-                    // if (event.target.value) {
-                    //   const updatedErrors = { ...errorMessages };
-                    //   delete updatedErrors[0]?.purposeError;
-                    //   delete updatedErrors[0]?.all;
-                    //   setErrorMessages(updatedErrors);
-                    // }
+                    if (event.target.value) {
+                      const updatedErrors = { ...errorMessages };
+                      delete updatedErrors[0]?.purposeError;
+                      setErrorMessages(updatedErrors);
+                    }
                   }}
                 />
+              </div>
+              <div className="error-text-container-absolute">
+                <p className="error-text">{errorMessages[0]?.purposeError}</p>
               </div>
             </div>
             <div className="other-fields-child-three">
               <strong>Input passenger's name(s)</strong>
+
               <div className="passenger-input-fieldss">
                 {generatePassengerInputs()}
+                <div className="error-text-container-absolute-passenger">
+                  <p className="error-text">
+                    {errorMessages[0]?.passengerNameError}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -847,8 +954,25 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
               primaryStyle
               text="Next"
               onClick={() => {
-                setIsOtherFieldsShow(false);
-                setIsDetailsConfirmationShow(true);
+                let validationErrors: { [key: string]: string } = {};
+                if (!addressData.destination && !addressData.distance) {
+                  validationErrors.destinationError =
+                    "Please input destination";
+                }
+                if (!data.purpose) {
+                  validationErrors.purposeError = "Please input purpose";
+                }
+                if (!data.passenger_name || data.number_of_passenger === 0) {
+                  validationErrors.passengerNameError =
+                    "Please input at least one passenger";
+                }
+                const errorArray = [validationErrors];
+
+                setErrorMessages(errorArray);
+                if (Object.keys(validationErrors).length === 0) {
+                  setIsOtherFieldsShow(false);
+                  setIsDetailsConfirmationShow(true);
+                }
                 console.log("final data", data);
                 setData((prevData: any) => ({
                   ...prevData,

@@ -18,12 +18,14 @@ import {
   formatTime,
 } from "../functions/functions";
 import CircularProgress from "@mui/material/CircularProgress";
-import { checkTimeAvailability } from "../api/api";
+import { checkTimeAvailability, postRequestFormAPI } from "../api/api";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
 import { faClipboard, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import Confirmation from "../confirmation/confirmation";
+import LoadingBar from "react-top-loading-bar";
 
 const SchedulePicker: React.FC<SchedulePickerProps> = ({
   isOpen,
@@ -47,15 +49,16 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   );
   const firstName = personalInfo?.first_name;
   const lastName = personalInfo?.last_name;
-  const middleName = personalInfo?.middle_name;
   const userID = personalInfo?.id;
   const office = personalInfo?.office;
   const role = personalInfo?.role;
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [selectedStartTime, setSelectedStartTime] = useState(null);
   const [selectedEndTime, setSelectedEndTime] = useState(null);
   const [disableDates, setDisableDates] = useState<any[]>([]);
   const [UnavailableTimeInRange, setUnavailableTimeInRange] = useState(null);
   const [isFromAutoComplete, setIsFromAutoComplete] = useState(false);
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [isCalendarDateRangePickerShow, setIsCalendarDateRangePickerShow] =
     useState(false);
   const [isOtherFieldsShow, setIsOtherFieldsShow] = useState(false);
@@ -123,7 +126,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         },
       ]);
     }
-  }, [UnavailableTimeInRange, data.travel_date]);
+  }, [UnavailableTimeInRange, data.travel_date, data.return_date]);
 
   useEffect(() => {
     let disabledDatesArray: any = [];
@@ -302,7 +305,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   // }, [selectedTimes]);
   const generatePassengerInputs = () => {
     const inputs = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < selectedVehicleCapacity; i++) {
       inputs.push(
         <div key={i} className="passenger-name-column">
           <InputField
@@ -385,93 +388,590 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   today.setDate(today.getDate() + 3);
 
   return (
-    <Modal className="schedule-picker-modal" isOpen={isOpen}>
-      {!isCalendarDateRangePickerShow &&
-        !isOtherFieldsShow &&
-        !isDetailsConfirmationShow && (
-          <div className="select-travel-type-container">
-            <h2>Select travel type</h2>
-            <div className="select-travel-type-button-container">
-              {selectedTravelType === "Round Trip" ? (
-                <>
-                  <CommonButton
-                    width={9}
-                    height={7}
-                    primaryStyle
-                    text="Round Trip"
-                    onClick={handleChangeTravelType}
-                  />
-                </>
-              ) : (
-                <>
-                  <CommonButton
-                    width={9}
-                    height={7}
-                    whiteStyle
-                    text="Round Trip"
-                    onClick={handleChangeTravelType}
-                  />
-                </>
-              )}
+    <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
+      <Modal className="schedule-picker-modal" isOpen={isOpen}>
+        {!isCalendarDateRangePickerShow &&
+          !isOtherFieldsShow &&
+          !isDetailsConfirmationShow && (
+            <div className="select-travel-type-container">
+              <h2>Select travel type</h2>
+              <div className="select-travel-type-button-container">
+                {selectedTravelType === "Round Trip" ? (
+                  <>
+                    <CommonButton
+                      width={9}
+                      height={7}
+                      primaryStyle
+                      text="Round Trip"
+                      onClick={handleChangeTravelType}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <CommonButton
+                      width={9}
+                      height={7}
+                      whiteStyle
+                      text="Round Trip"
+                      onClick={handleChangeTravelType}
+                    />
+                  </>
+                )}
 
-              {selectedTravelType === "One-way - Drop" ? (
-                <>
-                  <CommonButton
-                    width={11}
-                    height={7}
-                    primaryStyle
-                    text="One-way - Drop"
-                    onClick={handleChangeTravelType}
-                  />
-                </>
-              ) : (
-                <>
-                  <CommonButton
-                    width={11}
-                    height={7}
-                    whiteStyle
-                    text="One-way - Drop"
-                    onClick={handleChangeTravelType}
-                  />
-                </>
-              )}
-              {selectedTravelType === "One-way - Fetch" ? (
-                <>
-                  <CommonButton
-                    width={12}
-                    height={7}
-                    primaryStyle
-                    text="One-way - Fetch"
-                    onClick={handleChangeTravelType}
-                  />
-                </>
-              ) : (
-                <>
-                  <CommonButton
-                    width={12}
-                    height={7}
-                    whiteStyle
-                    text="One-way - Fetch"
-                    onClick={handleChangeTravelType}
-                  />
-                </>
-              )}
+                {selectedTravelType === "One-way - Drop" ? (
+                  <>
+                    <CommonButton
+                      width={11}
+                      height={7}
+                      primaryStyle
+                      text="One-way - Drop"
+                      onClick={handleChangeTravelType}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <CommonButton
+                      width={11}
+                      height={7}
+                      whiteStyle
+                      text="One-way - Drop"
+                      onClick={handleChangeTravelType}
+                    />
+                  </>
+                )}
+                {selectedTravelType === "One-way - Fetch" ? (
+                  <>
+                    <CommonButton
+                      width={12}
+                      height={7}
+                      primaryStyle
+                      text="One-way - Fetch"
+                      onClick={handleChangeTravelType}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <CommonButton
+                      width={12}
+                      height={7}
+                      whiteStyle
+                      text="One-way - Fetch"
+                      onClick={handleChangeTravelType}
+                    />
+                  </>
+                )}
+              </div>
+              <div className="error-text-container">
+                <p className="error-text">
+                  {errorMessages[0]?.travelTypeError}
+                </p>
+              </div>
+              <div className="footer-button-container">
+                <CommonButton
+                  width={9}
+                  height={7}
+                  whiteStyle
+                  text="Back"
+                  onClick={() => {
+                    setSelectedTravelType("");
+                    const updatedErrors = { ...errorMessages };
+                    delete updatedErrors[0]?.travelTypeError;
+                    setErrorMessages(updatedErrors);
+                    setIsScheduleClick(false);
+                  }}
+                />
+                <CommonButton
+                  width={9}
+                  height={7}
+                  primaryStyle
+                  text="Next"
+                  onClick={() => {
+                    let validationErrors: { [key: string]: string } = {};
+                    if (!selectedTravelType) {
+                      validationErrors.travelTypeError =
+                        "Please select travel type.";
+                    }
+
+                    const errorArray = [validationErrors];
+
+                    setErrorMessages(errorArray);
+                    if (Object.keys(validationErrors).length === 0) {
+                      setIsCalendarDateRangePickerShow(true);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        {isCalendarDateRangePickerShow && (
+          <>
+            <div className="calendar-date-range-picker-container">
+              <DateRange
+                onChange={(item: any) => {
+                  const localStartDate = localStorage.getItem("startDate");
+                  const localEndDate = localStorage.getItem("endDate");
+                  const updatedErrors = { ...errorMessages };
+                  delete updatedErrors[0]?.travelDateError;
+                  setErrorMessages(updatedErrors);
+                  if (
+                    localStartDate !==
+                      formatDateToYYYYMMDD(item.selection.startDate) &&
+                    localEndDate !==
+                      formatDateToYYYYMMDD(item.selection.endDate)
+                  ) {
+                    localStorage.setItem("startDate", item.selection.startDate);
+                    localStorage.setItem("endDate", item.selection.endDate);
+                    if (selectedTravelType === "Round Trip") {
+                      setState([item.selection]);
+                      setData({
+                        travel_date: formatDateToYYYYMMDD(
+                          item.selection.startDate
+                        ),
+                        return_date: formatDateToYYYYMMDD(
+                          item.selection.endDate
+                        ),
+                      });
+                    } else if (
+                      selectedTravelType === "One-way - Drop" ||
+                      selectedTravelType === "One-way - Fetch"
+                    ) {
+                      setData({
+                        travel_date: formatDateToYYYYMMDD(
+                          item.selection.startDate
+                        ),
+                        return_date: formatDateToYYYYMMDD(
+                          item.selection.startDate
+                        ),
+                      });
+                      setState([
+                        {
+                          startDate: item.selection.startDate,
+                          endDate: item.selection.startDate,
+                          key: "selection",
+                        },
+                      ]);
+                    }
+
+                    setAvailableTimes({
+                      travelDateTimes: [],
+                      returnDateTimes: [],
+                    });
+                    setUnavailableTimeInRange(null);
+                  }
+                }}
+                moveRangeOnFirstSelection={false}
+                months={1}
+                ranges={state}
+                direction="horizontal"
+                showMonthAndYearPickers={false}
+                showDateDisplay={false}
+                showPreview={selectedTravelType === "Round Trip" ? true : false}
+                disabledDates={disableDates}
+                rangeColors={["#060e57"]}
+                minDate={today}
+              />
+              <div className="available-times-container">
+                <h3>Available Times</h3>
+                <div className="available-times-header-container">
+                  <h4>Start time</h4>
+
+                  {selectedTravelType === "Round Trip" ? (
+                    <h4>End time</h4>
+                  ) : (
+                    <h4></h4>
+                  )}
+                </div>
+                <div className="times-containers">
+                  {data.travel_date && (
+                    <>
+                      {availableTimes.travelDateTimes.length === 0 &&
+                      availableTimes.returnDateTimes.length === 0 ? (
+                        <div className="check-time-availability-container">
+                          {isLoading ? (
+                            <CircularProgress color="primary" size={45} />
+                          ) : (
+                            <CommonButton
+                              width={13}
+                              height={9}
+                              primaryStyle
+                              text="Check time availability"
+                              onClick={handleCheckTimeAvailability}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <div className="travel-time-container">
+                            {availableTimes.travelDateTimes.map(
+                              (timeString: string) => {
+                                // Convert the time string to a Date object
+
+                                return (
+                                  <>
+                                    {selectedStartTime ===
+                                    convertTo12HourFormat(timeString) ? (
+                                      <>
+                                        <CommonButton
+                                          key={convertTo12HourFormat(
+                                            timeString
+                                          )}
+                                          width={9}
+                                          height={7}
+                                          primaryStyle
+                                          text={convertTo12HourFormat(
+                                            timeString
+                                          )}
+                                          onClick={(text: any) => {
+                                            setSelectedStartTime(null);
+                                            setSelectedTimes({
+                                              ...selectedTimes,
+                                              start: null,
+                                            });
+                                            setData({
+                                              ...data,
+                                              travel_time: null,
+                                            });
+                                          }}
+                                        />
+                                      </>
+                                    ) : (
+                                      <>
+                                        <CommonButton
+                                          key={convertTo12HourFormat(
+                                            timeString
+                                          )}
+                                          width={9}
+                                          height={7}
+                                          whiteStyle
+                                          text={convertTo12HourFormat(
+                                            timeString
+                                          )}
+                                          onClick={(text: any) => {
+                                            setSelectedStartTime(text);
+                                            setSelectedTimes({
+                                              ...selectedTimes,
+                                              start: text,
+                                            });
+                                            console.log(
+                                              "not yet converted",
+                                              text
+                                            );
+                                            console.log(
+                                              "converted already",
+                                              convertTo24HourFormat(text)
+                                            );
+                                            setData({
+                                              ...data,
+                                              travel_time:
+                                                convertTo24HourFormat(text),
+                                            });
+                                            const updatedErrors = {
+                                              ...errorMessages,
+                                            };
+                                            delete updatedErrors[0]
+                                              ?.travelTimeError;
+                                            setErrorMessages(updatedErrors);
+                                          }}
+                                        />
+                                      </>
+                                    )}
+                                  </>
+                                );
+                              }
+                            )}
+                          </div>
+                          {selectedTravelType === "Round Trip" ? (
+                            <>
+                              <div className="return-time-container">
+                                {availableTimes.returnDateTimes.map(
+                                  (timeString: string) => {
+                                    // Convert the time string to a Date object
+
+                                    return (
+                                      <>
+                                        {selectedEndTime ===
+                                        convertTo12HourFormat(timeString) ? (
+                                          <>
+                                            <CommonButton
+                                              key={convertTo12HourFormat(
+                                                timeString
+                                              )}
+                                              width={9}
+                                              height={7}
+                                              primaryStyle
+                                              text={convertTo12HourFormat(
+                                                timeString
+                                              )}
+                                              onClick={(text: any) => {
+                                                setSelectedEndTime(null);
+                                                setSelectedTimes({
+                                                  ...selectedTimes,
+                                                  end: null,
+                                                });
+                                                setData({
+                                                  ...data,
+                                                  return_time: null,
+                                                });
+                                              }}
+                                            />
+                                          </>
+                                        ) : (
+                                          <>
+                                            <CommonButton
+                                              key={convertTo12HourFormat(
+                                                timeString
+                                              )}
+                                              width={9}
+                                              height={7}
+                                              whiteStyle
+                                              text={convertTo12HourFormat(
+                                                timeString
+                                              )}
+                                              onClick={(text: any) => {
+                                                setSelectedEndTime(text);
+                                                setSelectedTimes({
+                                                  ...selectedTimes,
+                                                  end: text,
+                                                });
+                                                setData({
+                                                  ...data,
+                                                  return_time:
+                                                    convertTo24HourFormat(text),
+                                                });
+                                                const updatedErrors = {
+                                                  ...errorMessages,
+                                                };
+                                                delete updatedErrors[0]
+                                                  ?.travelTimeError;
+                                                setErrorMessages(updatedErrors);
+                                              }}
+                                            />
+                                          </>
+                                        )}
+                                      </>
+                                    );
+                                  }
+                                )}
+                              </div>
+                            </>
+                          ) : (
+                            <div className="autocomplete-address-container">
+                              <p className="strong">
+                                Please input destination to fetch estimated
+                                return date and time of the vehicle
+                              </p>
+                              <AutoCompleteAddressGoogle
+                                travel_date={data.travel_date}
+                                travel_time={data.travel_time}
+                                setData={setData}
+                                setAddressData={setAddressData}
+                                category={selectedTravelType}
+                                removeDestinationError={() =>
+                                  // setErrorMessages((prev) => ({
+                                  //   ...prev,
+                                  //   destinationError: undefined,
+                                  // }))
+                                  console.log("ye")
+                                }
+                                className="googledestination"
+                                setIsFromAutoComplete={setIsFromAutoComplete}
+                              />
+                              <p className="strong">
+                                Estimated return date and time:{" "}
+                              </p>
+                              <p>
+                                {data.return_date &&
+                                  formatDate(data.return_date)}
+                                {data.return_time && (
+                                  <>
+                                    , {convertTo12HourFormat(data.return_time)}
+                                  </>
+                                )}
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="error-text-container">
-              <p className="error-text">{errorMessages[0]?.travelTypeError}</p>
+              <p className="error-text">{errorMessages[0]?.travelDateError}</p>
             </div>
-            <div className="footer-button-container">
+            <div className="error-text-container">
+              <p className="error-text">{errorMessages[0]?.travelTimeError}</p>
+            </div>
+            <div className="error-text-container">
+              <p className="error-text">{errorMessages[0]?.destinationError}</p>
+            </div>
+            <div className="footer-button-container2">
               <CommonButton
                 width={9}
                 height={7}
                 whiteStyle
                 text="Back"
                 onClick={() => {
-                  setSelectedTravelType("");
-                  const updatedErrors = { ...errorMessages };
-                  delete updatedErrors[0]?.travelTypeError;
-                  setErrorMessages(updatedErrors);
-                  setIsScheduleClick(false);
+                  setIsCalendarDateRangePickerShow(false);
+                  setUnavailableTimeInRange(null);
+                  setState([
+                    {
+                      startDate: new Date(),
+                      endDate: new Date(),
+                      key: "selection",
+                    },
+                  ]);
+                  setAvailableTimes({
+                    travelDateTimes: [],
+                    returnDateTimes: [],
+                  });
+                  setData({
+                    travel_date: null,
+                    return_date: null,
+                  });
+                }}
+              />
+              <CommonButton
+                width={9}
+                height={7}
+                primaryStyle
+                text="Next"
+                onClick={() => {
+                  console.log("data with destination", data);
+                  let validationErrors: { [key: string]: string } = {};
+                  if (!data.travel_date && !data.return_date) {
+                    validationErrors.travelDateError =
+                      "Please select travel date.";
+                  } else {
+                    if (!data.travel_time && !data.return_time) {
+                      validationErrors.travelTimeError =
+                        "Please select travel time";
+                    } else {
+                      if (selectedTravelType === "Round Trip") {
+                        if (!data.travel_time) {
+                          validationErrors.travelTimeError =
+                            "Please select start time";
+                        } else if (!data.return_time) {
+                          validationErrors.travelTimeError =
+                            "Please select end time";
+                        }
+                      } else {
+                        if (!data.travel_time) {
+                          validationErrors.travelTimeError =
+                            "Please select start time";
+                        } else if (
+                          !addressData.destination &&
+                          !addressData.distance
+                        ) {
+                          validationErrors.destinationError =
+                            "Please input destination";
+                        }
+                      }
+                    }
+                  }
+
+                  const errorArray = [validationErrors];
+
+                  setErrorMessages(errorArray);
+                  if (Object.keys(validationErrors).length === 0) {
+                    setIsCalendarDateRangePickerShow(false);
+
+                    setIsOtherFieldsShow(true);
+                  }
+
+                  // console.log("dataaaaaa", data);
+                }}
+              />
+            </div>
+          </>
+        )}
+        {isOtherFieldsShow && !isCalendarDateRangePickerShow && (
+          <>
+            <div className="other-fields-container">
+              {selectedTravelType === "Round Trip" && (
+                <>
+                  <div className="other-fields-child-one">
+                    <strong>Input destination</strong>
+
+                    <AutoCompleteAddressGoogle
+                      travel_date={data.travel_date}
+                      travel_time={data.travel_time}
+                      setData={setData}
+                      setAddressData={setAddressData}
+                      category={selectedTravelType}
+                      removeDestinationError={() =>
+                        // setErrorMessages((prev) => ({
+                        //   ...prev,
+                        //   destinationError: undefined,
+                        // }))
+                        console.log("ye")
+                      }
+                      className="googledestination"
+                      setIsFromAutoComplete={setIsFromAutoComplete}
+                    />
+                    <div className="error-text-container-absolute">
+                      <p className="error-text">
+                        {errorMessages[0]?.destinationError}
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className="other-fields-child-two">
+                <strong>Input purpose</strong>
+                <div className="purpose-width-container">
+                  <InputField
+                    className="purpose-width"
+                    icon={faClipboard}
+                    value={data.purpose}
+                    label="Purpose"
+                    placeholder="Purpose"
+                    onChange={(event) => {
+                      setData((prevData: any) => ({
+                        ...prevData,
+                        purpose: event.target.value,
+                      }));
+                      if (event.target.value) {
+                        const updatedErrors = { ...errorMessages };
+                        delete updatedErrors[0]?.purposeError;
+                        setErrorMessages(updatedErrors);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="error-text-container-absolute">
+                  <p className="error-text">{errorMessages[0]?.purposeError}</p>
+                </div>
+              </div>
+              <div className="other-fields-child-three">
+                <strong>Input passenger's name(s)</strong>
+
+                <div className="passenger-input-fieldss">
+                  {generatePassengerInputs()}
+                  <div className="error-text-container-absolute-passenger">
+                    <p className="error-text">
+                      {errorMessages[0]?.passengerNameError}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="footer-button-container2">
+              <CommonButton
+                width={9}
+                height={7}
+                whiteStyle
+                text="Back"
+                onClick={() => {
+                  setIsCalendarDateRangePickerShow(true);
+                  setIsOtherFieldsShow(false);
                 }}
               />
               <CommonButton
@@ -481,620 +981,146 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 text="Next"
                 onClick={() => {
                   let validationErrors: { [key: string]: string } = {};
-                  if (!selectedTravelType) {
-                    validationErrors.travelTypeError =
-                      "Please select travel type.";
+                  if (!addressData.destination && !addressData.distance) {
+                    validationErrors.destinationError =
+                      "Please input destination";
                   }
-
+                  if (!data.purpose) {
+                    validationErrors.purposeError = "Please input purpose";
+                  }
+                  if (!data.passenger_name || data.number_of_passenger === 0) {
+                    validationErrors.passengerNameError =
+                      "Please input at least one passenger";
+                  }
                   const errorArray = [validationErrors];
 
                   setErrorMessages(errorArray);
                   if (Object.keys(validationErrors).length === 0) {
-                    setIsCalendarDateRangePickerShow(true);
+                    setIsOtherFieldsShow(false);
+                    setIsDetailsConfirmationShow(true);
                   }
+                  console.log("final data", data);
+                  setData((prevData: any) => ({
+                    ...prevData,
+                    requester_name: userID,
+                    office: office,
+                    type: selectedTravelType,
+                    role: role,
+                    destination: addressData.destination,
+                    distance: addressData.distance,
+                    driver_name: selectedVehicleDriver,
+                    vehicle_capacity: selectedVehicleCapacity,
+                    vehicle: selectedVehiclePlateNumber,
+                    merge_trip: false,
+                  }));
                 }}
               />
             </div>
-          </div>
+          </>
         )}
-      {isCalendarDateRangePickerShow && (
-        <>
-          <div className="calendar-date-range-picker-container">
-            <DateRange
-              onChange={(item: any) => {
-                const localStartDate = localStorage.getItem("startDate");
-                const localEndDate = localStorage.getItem("endDate");
-                const updatedErrors = { ...errorMessages };
-                delete updatedErrors[0]?.travelDateError;
-                setErrorMessages(updatedErrors);
-                if (
-                  localStartDate !==
-                    formatDateToYYYYMMDD(item.selection.startDate) &&
-                  localEndDate !== formatDateToYYYYMMDD(item.selection.endDate)
-                ) {
-                  localStorage.setItem("startDate", item.selection.startDate);
-                  localStorage.setItem("endDate", item.selection.endDate);
-                  if (selectedTravelType === "Round Trip") {
-                    setState([item.selection]);
-                    setData({
-                      travel_date: formatDateToYYYYMMDD(
-                        item.selection.startDate
-                      ),
-                      return_date: formatDateToYYYYMMDD(item.selection.endDate),
-                    });
-                  } else if (
-                    selectedTravelType === "One-way - Drop" ||
-                    selectedTravelType === "One-way - Fetch"
-                  ) {
-                    setData({
-                      travel_date: formatDateToYYYYMMDD(
-                        item.selection.startDate
-                      ),
-                      return_date: formatDateToYYYYMMDD(
-                        item.selection.startDate
-                      ),
-                    });
-                    setState([
-                      {
-                        startDate: item.selection.startDate,
-                        endDate: item.selection.startDate,
-                        key: "selection",
-                      },
-                    ]);
-                  }
-
-                  setAvailableTimes({
-                    travelDateTimes: [],
-                    returnDateTimes: [],
-                  });
-                }
-              }}
-              moveRangeOnFirstSelection={false}
-              months={1}
-              ranges={state}
-              direction="horizontal"
-              showMonthAndYearPickers={false}
-              showDateDisplay={false}
-              showPreview={selectedTravelType === "Round Trip" ? true : false}
-              disabledDates={disableDates}
-              rangeColors={["#060e57"]}
-              minDate={today}
-            />
-            <div className="available-times-container">
-              <h3>Available Times</h3>
-              <div className="available-times-header-container">
-                <h4>Start time</h4>
-
-                {selectedTravelType === "Round Trip" ? (
-                  <h4>End time</h4>
-                ) : (
-                  <h4></h4>
-                )}
-              </div>
-              <div className="times-containers">
-                {data.travel_date && (
-                  <>
-                    {availableTimes.travelDateTimes.length === 0 &&
-                    availableTimes.returnDateTimes.length === 0 ? (
-                      <div className="check-time-availability-container">
-                        {isLoading ? (
-                          <CircularProgress color="primary" size={45} />
-                        ) : (
-                          <CommonButton
-                            width={13}
-                            height={9}
-                            primaryStyle
-                            text="Check time availability"
-                            onClick={handleCheckTimeAvailability}
-                          />
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        <div className="travel-time-container">
-                          {availableTimes.travelDateTimes.map(
-                            (timeString: string) => {
-                              // Convert the time string to a Date object
-
-                              return (
-                                <>
-                                  {selectedStartTime ===
-                                  convertTo12HourFormat(timeString) ? (
-                                    <>
-                                      <CommonButton
-                                        key={convertTo12HourFormat(timeString)}
-                                        width={9}
-                                        height={7}
-                                        primaryStyle
-                                        text={convertTo12HourFormat(timeString)}
-                                        onClick={(text: any) => {
-                                          setSelectedStartTime(null);
-                                          setSelectedTimes({
-                                            ...selectedTimes,
-                                            start: null,
-                                          });
-                                          setData({
-                                            ...data,
-                                            travel_time: null,
-                                          });
-                                        }}
-                                      />
-                                    </>
-                                  ) : (
-                                    <>
-                                      <CommonButton
-                                        key={convertTo12HourFormat(timeString)}
-                                        width={9}
-                                        height={7}
-                                        whiteStyle
-                                        text={convertTo12HourFormat(timeString)}
-                                        onClick={(text: any) => {
-                                          setSelectedStartTime(text);
-                                          setSelectedTimes({
-                                            ...selectedTimes,
-                                            start: text,
-                                          });
-                                          console.log(
-                                            "not yet converted",
-                                            text
-                                          );
-                                          console.log(
-                                            "converted already",
-                                            convertTo24HourFormat(text)
-                                          );
-                                          setData({
-                                            ...data,
-                                            travel_time:
-                                              convertTo24HourFormat(text),
-                                          });
-                                          const updatedErrors = {
-                                            ...errorMessages,
-                                          };
-                                          delete updatedErrors[0]
-                                            ?.travelTimeError;
-                                          setErrorMessages(updatedErrors);
-                                        }}
-                                      />
-                                    </>
-                                  )}
-                                </>
-                              );
-                            }
-                          )}
-                        </div>
-                        {selectedTravelType === "Round Trip" ? (
-                          <>
-                            <div className="return-time-container">
-                              {availableTimes.returnDateTimes.map(
-                                (timeString: string) => {
-                                  // Convert the time string to a Date object
-
-                                  return (
-                                    <>
-                                      {selectedEndTime ===
-                                      convertTo12HourFormat(timeString) ? (
-                                        <>
-                                          <CommonButton
-                                            key={convertTo12HourFormat(
-                                              timeString
-                                            )}
-                                            width={9}
-                                            height={7}
-                                            primaryStyle
-                                            text={convertTo12HourFormat(
-                                              timeString
-                                            )}
-                                            onClick={(text: any) => {
-                                              setSelectedEndTime(null);
-                                              setSelectedTimes({
-                                                ...selectedTimes,
-                                                end: null,
-                                              });
-                                              setData({
-                                                ...data,
-                                                return_time: null,
-                                              });
-                                            }}
-                                          />
-                                        </>
-                                      ) : (
-                                        <>
-                                          <CommonButton
-                                            key={convertTo12HourFormat(
-                                              timeString
-                                            )}
-                                            width={9}
-                                            height={7}
-                                            whiteStyle
-                                            text={convertTo12HourFormat(
-                                              timeString
-                                            )}
-                                            onClick={(text: any) => {
-                                              setSelectedEndTime(text);
-                                              setSelectedTimes({
-                                                ...selectedTimes,
-                                                end: text,
-                                              });
-                                              setData({
-                                                ...data,
-                                                return_time:
-                                                  convertTo24HourFormat(text),
-                                              });
-                                              const updatedErrors = {
-                                                ...errorMessages,
-                                              };
-                                              delete updatedErrors[0]
-                                                ?.travelTimeError;
-                                              setErrorMessages(updatedErrors);
-                                            }}
-                                          />
-                                        </>
-                                      )}
-                                    </>
-                                  );
-                                }
-                              )}
-                            </div>
-                          </>
-                        ) : (
-                          <div className="autocomplete-address-container">
-                            <p className="strong">
-                              Please input destination to fetch estimated return
-                              date and time of the vehicle
-                            </p>
-                            <AutoCompleteAddressGoogle
-                              travel_date={data.travel_date}
-                              travel_time={data.travel_time}
-                              setData={setData}
-                              setAddressData={setAddressData}
-                              category={selectedTravelType}
-                              removeDestinationError={() =>
-                                // setErrorMessages((prev) => ({
-                                //   ...prev,
-                                //   destinationError: undefined,
-                                // }))
-                                console.log("ye")
-                              }
-                              className="googledestination"
-                              setIsFromAutoComplete={setIsFromAutoComplete}
-                            />
-                            <p className="strong">
-                              Estimated return date and time:{" "}
-                            </p>
-                            <p>
-                              {data.return_date && formatDate(data.return_date)}
-                              {data.return_time && (
-                                <>, {convertTo12HourFormat(data.return_time)}</>
-                              )}
-                            </p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="error-text-container">
-            <p className="error-text">{errorMessages[0]?.travelDateError}</p>
-          </div>
-          <div className="error-text-container">
-            <p className="error-text">{errorMessages[0]?.travelTimeError}</p>
-          </div>
-          <div className="error-text-container">
-            <p className="error-text">{errorMessages[0]?.destinationError}</p>
-          </div>
-          <div className="footer-button-container2">
-            <CommonButton
-              width={9}
-              height={7}
-              whiteStyle
-              text="Back"
-              onClick={() => {
-                setIsCalendarDateRangePickerShow(false);
-                setUnavailableTimeInRange(null);
-                setState([
-                  {
-                    startDate: new Date(),
-                    endDate: new Date(),
-                    key: "selection",
-                  },
-                ]);
-                setAvailableTimes({
-                  travelDateTimes: [],
-                  returnDateTimes: [],
-                });
-                setData({
-                  travel_date: null,
-                  return_date: null,
-                });
-              }}
-            />
-            <CommonButton
-              width={9}
-              height={7}
-              primaryStyle
-              text="Next"
-              onClick={() => {
-                console.log("data with destination", data);
-                let validationErrors: { [key: string]: string } = {};
-                if (!data.travel_date && !data.return_date) {
-                  validationErrors.travelDateError =
-                    "Please select travel date.";
-                } else {
-                  if (!data.travel_time && !data.return_time) {
-                    validationErrors.travelTimeError =
-                      "Please select travel time";
-                  } else {
-                    if (selectedTravelType === "Round Trip") {
-                      if (!data.travel_time) {
-                        validationErrors.travelTimeError =
-                          "Please select start time";
-                      } else if (!data.return_time) {
-                        validationErrors.travelTimeError =
-                          "Please select end time";
-                      }
-                    } else {
-                      if (!data.travel_time) {
-                        validationErrors.travelTimeError =
-                          "Please select start time";
-                      } else if (
-                        !addressData.destination &&
-                        !addressData.distance
-                      ) {
-                        validationErrors.destinationError =
-                          "Please input destination";
-                      }
-                    }
-                  }
-                }
-
-                const errorArray = [validationErrors];
-
-                setErrorMessages(errorArray);
-                if (Object.keys(validationErrors).length === 0) {
-                  setIsCalendarDateRangePickerShow(false);
-
-                  setIsOtherFieldsShow(true);
-                }
-
-                // console.log("dataaaaaa", data);
-              }}
-            />
-          </div>
-        </>
-      )}
-      {isOtherFieldsShow && !isCalendarDateRangePickerShow && (
-        <>
-          <div className="other-fields-container">
-            {selectedTravelType === "Round Trip" && (
-              <>
-                <div className="other-fields-child-one">
-                  <strong>Input destination</strong>
-
-                  <AutoCompleteAddressGoogle
-                    travel_date={data.travel_date}
-                    travel_time={data.travel_time}
-                    setData={setData}
-                    setAddressData={setAddressData}
-                    category={selectedTravelType}
-                    removeDestinationError={() =>
-                      // setErrorMessages((prev) => ({
-                      //   ...prev,
-                      //   destinationError: undefined,
-                      // }))
-                      console.log("ye")
-                    }
-                    className="googledestination"
-                    setIsFromAutoComplete={setIsFromAutoComplete}
-                  />
-                  <div className="error-text-container-absolute">
-                    <p className="error-text">
-                      {errorMessages[0]?.destinationError}
-                    </p>
-                  </div>
+        {isDetailsConfirmationShow && !isCalendarDateRangePickerShow && (
+          <>
+            <div className="confirm-details-container">
+              <h3>Reservation details</h3>
+              <p>Please confirm details before submitting. Thank you.</p>
+              <div className="details-row">
+                <div>
+                  <strong>Requester's name</strong>
+                  <p>
+                    {firstName} {lastName}
+                  </p>
                 </div>
-              </>
-            )}
-
-            <div className="other-fields-child-two">
-              <strong>Input purpose</strong>
-              <div className="purpose-width-container">
-                <InputField
-                  className="purpose-width"
-                  icon={faClipboard}
-                  value={data.purpose}
-                  label="Purpose"
-                  placeholder="Purpose"
-                  onChange={(event) => {
-                    setData((prevData: any) => ({
-                      ...prevData,
-                      purpose: event.target.value,
-                    }));
-                    if (event.target.value) {
-                      const updatedErrors = { ...errorMessages };
-                      delete updatedErrors[0]?.purposeError;
-                      setErrorMessages(updatedErrors);
-                    }
-                  }}
-                />
+                <div>
+                  <strong>Office</strong>
+                  <p>{office}</p>
+                </div>
               </div>
-              <div className="error-text-container-absolute">
-                <p className="error-text">{errorMessages[0]?.purposeError}</p>
+              <div className="details-row">
+                <div>
+                  <strong>Vehicle</strong>
+                  <p>
+                    {selectedVehiclePlateNumber} {selectedVehicleModel}
+                  </p>
+                </div>
+                <div>
+                  <strong>Travel type</strong>
+                  <p>{selectedTravelType}</p>
+                </div>
               </div>
-            </div>
-            <div className="other-fields-child-three">
-              <strong>Input passenger's name(s)</strong>
-
-              <div className="passenger-input-fieldss">
-                {generatePassengerInputs()}
-                <div className="error-text-container-absolute-passenger">
-                  <p className="error-text">
-                    {errorMessages[0]?.passengerNameError}
+              <div className="details-row">
+                <div>
+                  <strong>Travel date and time</strong>
+                  <p>
+                    {formatDate(data.travel_date)},{" "}
+                    {convertTo12HourFormat(data.travel_time)}
+                  </p>
+                </div>
+                <div>
+                  <strong>Return date and time</strong>
+                  <p>
+                    {formatDate(data.return_date)},{" "}
+                    {convertTo12HourFormat(data.return_time)}
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="footer-button-container2">
-            <CommonButton
-              width={9}
-              height={7}
-              whiteStyle
-              text="Back"
-              onClick={() => {
-                setIsCalendarDateRangePickerShow(true);
-                setIsOtherFieldsShow(false);
-              }}
-            />
-            <CommonButton
-              width={9}
-              height={7}
-              primaryStyle
-              text="Next"
-              onClick={() => {
-                let validationErrors: { [key: string]: string } = {};
-                if (!addressData.destination && !addressData.distance) {
-                  validationErrors.destinationError =
-                    "Please input destination";
-                }
-                if (!data.purpose) {
-                  validationErrors.purposeError = "Please input purpose";
-                }
-                if (!data.passenger_name || data.number_of_passenger === 0) {
-                  validationErrors.passengerNameError =
-                    "Please input at least one passenger";
-                }
-                const errorArray = [validationErrors];
-
-                setErrorMessages(errorArray);
-                if (Object.keys(validationErrors).length === 0) {
-                  setIsOtherFieldsShow(false);
-                  setIsDetailsConfirmationShow(true);
-                }
-                console.log("final data", data);
-                setData((prevData: any) => ({
-                  ...prevData,
-                  requester_name: userID,
-                  office: office,
-                  type: selectedTravelType,
-                  role: role,
-                  destination: addressData.destination,
-                  distance: addressData.distance,
-                  driver_name: selectedVehicleDriver,
-                  vehicle_capacity: selectedVehicleCapacity,
-                  vehicle: selectedVehiclePlateNumber,
-                  merge_trip: false,
-                }));
-              }}
-            />
-          </div>
-        </>
-      )}
-      {isDetailsConfirmationShow && !isCalendarDateRangePickerShow && (
-        <>
-          <div className="confirm-details-container">
-            <h3>Reservation details</h3>
-            <p>Please confirm details before submitting. Thank you.</p>
-            <div className="details-row">
-              <div>
-                <strong>Requester's name</strong>
-                <p>
-                  {firstName} {lastName}
-                </p>
+              <div className="details-row">
+                <div>
+                  <strong>Destination</strong>
+                  <p>{addressData.destination}</p>
+                </div>
+                <div>
+                  <strong>Distance</strong>
+                  <p>{addressData.distance} km</p>
+                </div>
               </div>
-              <div>
-                <strong>Office</strong>
-                <p>{office}</p>
+              <div className="inline-row">
+                <strong>Passenger's name(s)</strong>
+                <p>{data.passenger_name?.join(", ")}</p>
+              </div>
+              <div className="inline-row">
+                <strong>Purpose</strong>
+                <p>{data.purpose}</p>
               </div>
             </div>
-            <div className="details-row">
-              <div>
-                <strong>Vehicle</strong>
-                <p>
-                  {selectedVehiclePlateNumber} {selectedVehicleModel}
-                </p>
-              </div>
-              <div>
-                <strong>Travel type</strong>
-                <p>{selectedTravelType}</p>
-              </div>
+            <div className="footer-button-container2">
+              <CommonButton
+                width={9}
+                height={7}
+                whiteStyle
+                text="Back"
+                onClick={() => {
+                  setIsOtherFieldsShow(true);
+                  setIsDetailsConfirmationShow(false);
+                }}
+              />
+              <CommonButton
+                width={9}
+                height={7}
+                primaryStyle
+                text="Submit"
+                onClick={() => {
+                  // setIsOtherFieldsShow(false);
+                  // setIsDetailsConfirmationShow(true)
+                  console.log("final data", data);
+                  setLoadingBarProgress(20);
+                  postRequestFormAPI(
+                    data,
+                    setIsConfirmationOpen,
+                    setLoadingBarProgress
+                  );
+                }}
+              />
             </div>
-            <div className="details-row">
-              <div>
-                <strong>Travel date and time</strong>
-                <p>
-                  {formatDate(data.travel_date)},{" "}
-                  {convertTo12HourFormat(data.travel_time)}
-                </p>
-              </div>
-              <div>
-                <strong>Return date and time</strong>
-                <p>
-                  {formatDate(data.return_date)},{" "}
-                  {convertTo12HourFormat(data.return_time)}
-                </p>
-              </div>
-            </div>
-            <div className="details-row">
-              <div>
-                <strong>Destination</strong>
-                <p>{addressData.destination}</p>
-              </div>
-              <div>
-                <strong>Distance</strong>
-                <p>{addressData.distance} km</p>
-              </div>
-            </div>
-            <div className="inline-row">
-              <strong>Passenger's name(s)</strong>
-              <p>{data.passenger_name?.join(", ")}</p>
-            </div>
-            <div className="inline-row">
-              <strong>Purpose</strong>
-              <p>{data.purpose}</p>
-            </div>
-          </div>
-          <div className="footer-button-container2">
-            <CommonButton
-              width={9}
-              height={7}
-              whiteStyle
-              text="Back"
-              onClick={() => {
-                setIsOtherFieldsShow(true);
-                setIsDetailsConfirmationShow(false);
-              }}
-            />
-            <CommonButton
-              width={9}
-              height={7}
-              primaryStyle
-              text="Submit"
-              onClick={() => {
-                // setIsOtherFieldsShow(false);
-                // setIsDetailsConfirmationShow(true)
-                console.log("final data", data);
-                setData((prevData: any) => ({
-                  ...prevData,
-                  requester_name: userID,
-                  office: office,
-                  type: selectedTravelType,
-                  role: role,
-                  destination: addressData.destination,
-                  distance: addressData.distance,
-                  driver_name: selectedVehicleDriver,
-                  vehicle_capacity: selectedVehicleCapacity,
-                  vehicle: selectedVehiclePlateNumber,
-                  merge_trip: false,
-                }));
-              }}
-            />
-          </div>
-        </>
-      )}
-    </Modal>
+          </>
+        )}
+      </Modal>
+      <Confirmation
+        isOpen={isConfirmationOpen}
+        header="Reservation Submitted!"
+        content="We will send you a notification about your reservation ASAP."
+        footer="Thank you!"
+      />
+    </>
   );
 };
 

@@ -633,10 +633,9 @@ export async function deleteVehicleAPI(
   }
 }
 
-export function postRequestFromAPI(
+export function postRequestFormAPI(
   data: any,
   setIsConfirmationOpen: any,
-  navigate: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
@@ -664,7 +663,6 @@ export function postRequestFromAPI(
       setTimeout(() => {
         setIsConfirmationOpen(false);
         window.location.reload();
-        navigate("/DashboardR");
       }, 3000);
     })
     .catch((error: any) => {

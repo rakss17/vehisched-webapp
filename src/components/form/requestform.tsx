@@ -19,7 +19,7 @@ import {
   checkVehicleAvailability,
   fetchDriversScheduleAPI,
   fetchRequestersAPI,
-  postRequestFromAPI,
+  postRequestFormAPI,
 } from "../api/api";
 import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
@@ -360,16 +360,7 @@ export default function RequestForm() {
     ) {
       setLoadingBarProgress(20);
       // setIsModalOpen(true);
-      postRequestFromAPI(
-        data,
-        // () => {
-        //   setIsConfirmationOpen(true);
-        //   setIsModalOpen(true); // Open the modal after the request is successful
-        // },
-        setIsConfirmationOpen,
-        navigate,
-        setLoadingBarProgress
-      );
+      postRequestFormAPI(data, setIsConfirmationOpen, setLoadingBarProgress);
     }
   };
 

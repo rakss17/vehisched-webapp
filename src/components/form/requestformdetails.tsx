@@ -19,7 +19,7 @@ import {
   downloadTripTicketAPI,
   fetchDriversScheduleAPI,
   fetchRequestersAPI,
-  postRequestFromAPI,
+  postRequestFormAPI,
   rejectRequestAPI,
 } from "../api/api";
 import CommonButton from "../button/commonbutton";
@@ -255,13 +255,19 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         <div key={i} className="passenger-name-column">
           <InputField
             className="passenger_name_width"
-            value={mergeTripData.passenger_name[i]}
+            value={
+              (mergeTripData.passenger_name &&
+                mergeTripData.passenger_name[i]) ||
+              ""
+            }
             key={i}
             icon={faUser}
             label={`Passenger ${i + 1}`}
             placeholder={`Passenger ${i + 1}`}
             onChange={(event) => {
-              const newPassengerNames = [...mergeTripData.passenger_name];
+              const newPassengerNames = [
+                ...(mergeTripData.passenger_name || ""),
+              ];
               newPassengerNames[i] = event.target.value;
               const countNumberOfPassenger = newPassengerNames.filter(
                 (name) => name !== ""
@@ -326,14 +332,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     console.log(mergeTripData);
     if (Object.keys(validationErrors).length === 0) {
       setLoadingBarProgress(20);
-      postRequestFromAPI(
+      postRequestFormAPI(
         mergeTripData,
         // () => {
         //   setIsConfirmationOpen(true);
         //   setIsModalOpen(true); // Open the modal after the request is successful
         // },
         setIsConfirmationOpen,
-        () => {},
         setLoadingBarProgress
       );
     }

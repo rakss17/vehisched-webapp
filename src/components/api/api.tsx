@@ -1158,7 +1158,71 @@ export function checkTimeAvailability(
           autoClose: false,
         });
       }
-      console.log("Error fetching vehicle list:", error);
+      console.log("Error fetching time availability:", error);
+    });
+}
+
+export function checkScheduleConflictsForOneway(
+  preferred_start_travel_date: any,
+  preferred_start_travel_time: any,
+  preferred_end_travel_date: any,
+  preferred_end_travel_time: any,
+  setIsLoading: any,
+  setErrorColor: any
+) {
+  console.log(
+    "check conflict return date before server",
+    preferred_end_travel_date
+  );
+  console.log(
+    "check conflict return time before server",
+    preferred_end_travel_time
+  );
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/trip/check-schedule-conflicts-for-oneway/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_start_travel_time: preferred_start_travel_time,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_end_travel_time: preferred_end_travel_time,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setIsLoading(false);
+
+      console.log(
+        "api preferred_end_travel_date after server",
+        preferred_end_travel_date
+      );
+      // Assuming response.data is the object with dates as keys
+      const data = response.data;
+      console.log("check conflict", data);
+      setErrorColor(false);
+    })
+    .catch((error: any) => {
+      console.log("check conflict", error.response);
+      setIsLoading(false);
+      if (error.response && error.response.data) {
+        // setLoadingBarProgress(50);
+        // setLoadingBarProgress(100);
+        setErrorColor(true);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching time availability:", error);
     });
 }
 

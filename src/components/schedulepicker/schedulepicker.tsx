@@ -18,7 +18,11 @@ import {
   formatTime,
 } from "../functions/functions";
 import CircularProgress from "@mui/material/CircularProgress";
-import { checkTimeAvailability, postRequestFormAPI } from "../api/api";
+import {
+  checkScheduleConflictsForOneway,
+  checkTimeAvailability,
+  postRequestFormAPI,
+} from "../api/api";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
 import { faClipboard, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -59,6 +63,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [UnavailableTimeInRange, setUnavailableTimeInRange] = useState(null);
   const [isFromAutoComplete, setIsFromAutoComplete] = useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
+  const [errorColor, setErrorColor] = useState(false);
   const [isCalendarDateRangePickerShow, setIsCalendarDateRangePickerShow] =
     useState(false);
   const [isOtherFieldsShow, setIsOtherFieldsShow] = useState(false);
@@ -336,19 +341,32 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     }
     return inputs;
   };
-  console.log("isFromAutoCompleteBool", isFromAutoComplete);
+
   useEffect(() => {
-    if (isFromAutoComplete) {
+    if (
+      (selectedTravelType === "One-way - Drop" ||
+        selectedTravelType === "One-way - Fetch") &&
+      isFromAutoComplete &&
+      addressData.destination &&
+      addressData.distance
+    ) {
       console.log("isFrom", data.travel_date, data.return_date);
-      checkTimeAvailability(
+      checkScheduleConflictsForOneway(
         data.travel_date,
+        data.travel_time,
         data.return_date,
-        setAvailableTimes,
+        data.return_time,
         setIsLoading,
-        setUnavailableTimeInRange
+        setErrorColor
       );
     }
-  }, [isFromAutoComplete]);
+  }, [
+    isFromAutoComplete,
+    addressData.destination,
+    addressData.distance,
+    data.return_date,
+    data.return_time,
+  ]);
 
   useEffect(() => {
     if (addressData.destination && addressData.distance) {
@@ -784,7 +802,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                               <p className="strong">
                                 Estimated return date and time:{" "}
                               </p>
-                              <p>
+                              <p className={errorColor ? "error-text" : ""}>
                                 {data.return_date &&
                                   formatDate(data.return_date)}
                                 {data.return_time && (
@@ -880,9 +898,39 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
 
                   setErrorMessages(errorArray);
                   if (Object.keys(validationErrors).length === 0) {
-                    setIsCalendarDateRangePickerShow(false);
+                    if (
+                      (selectedTravelType === "One-way - Drop" ||
+                        selectedTravelType === "One-way - Fetch") &&
+                      isFromAutoComplete &&
+                      addressData.destination &&
+                      addressData.distance
+                    ) {
+                      console.log("isFrom", data.travel_date, data.return_date);
+                      checkScheduleConflictsForOneway(
+                        data.travel_date,
+                        data.travel_time,
+                        data.return_date,
+                        data.return_time,
+                        setIsLoading,
+                        setErrorColor
+                      );
+                      if (errorColor) {
+                        setAddressData((prevData: any) => ({
+                          ...prevData,
+                          destination: "",
+                          distance: null,
+                        }));
+                        setErrorColor(true);
+                      } else {
+                        setIsCalendarDateRangePickerShow(false);
 
-                    setIsOtherFieldsShow(true);
+                        setIsOtherFieldsShow(true);
+                      }
+                    } else {
+                      setIsCalendarDateRangePickerShow(false);
+
+                      setIsOtherFieldsShow(true);
+                    }
                   }
 
                   // console.log("dataaaaaa", data);

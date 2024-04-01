@@ -16,6 +16,7 @@ import {
   approveRequestAPI,
   cancelRequestAPI,
   changeRequestDriverAPI,
+  downloadPrintedFormAPI,
   downloadTripTicketAPI,
   fetchDriversScheduleAPI,
   fetchRequestersAPI,
@@ -160,6 +161,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
   const handleDownloadTripTicket = () => {
     downloadTripTicketAPI(selectedRequest.request_id);
+  };
+
+  const handleDownloadPrintedForm = () => {
+    downloadPrintedFormAPI(selectedRequest.request_id);
   };
 
   const handleConfirmationApprove = (selectedDriverId: any) => {
@@ -828,40 +833,58 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.status !== "Canceled" &&
             selectedRequest.status !== "Completed" &&
             selectedRequest.vehicle_driver_status !== "On Trip" && (
-              <div className="button-details-container">
-                <CommonButton
-                  width={8}
-                  height={6}
-                  tertiaryStyle
-                  text="Cancel Trip"
-                  onClick={onCancelTrip}
-                />
-                {!selectedRequest.main_merge && (
+              <>
+                <div className="button-details-container">
                   <CommonButton
                     width={8}
                     height={6}
-                    secondaryStyle
-                    text="Merge trip"
-                    onClick={onMergeTripOpen}
+                    tertiaryStyle
+                    text="Cancel Trip"
+                    onClick={onCancelTrip}
                   />
-                )}
-                <CommonButton
-                  width={12}
-                  height={6}
-                  primaryStyle
-                  text="Download trip ticket"
-                  onClick={handleDownloadTripTicket}
-                />
-              </div>
+
+                  {!selectedRequest.main_merge && (
+                    <CommonButton
+                      width={8}
+                      height={6}
+                      secondaryStyle
+                      text="Merge trip"
+                      onClick={onMergeTripOpen}
+                    />
+                  )}
+
+                  <CommonButton
+                    width={12}
+                    height={6}
+                    underlinedStyle
+                    text="Download trip ticket"
+                    onClick={handleDownloadTripTicket}
+                  />
+                  <CommonButton
+                    width={12}
+                    height={6}
+                    underlinedStyle
+                    text="Download printed form"
+                    onClick={handleDownloadPrintedForm}
+                  />
+                </div>
+              </>
             )}
           {selectedRequest.vehicle_driver_status === "On Trip" && (
             <div>
               <CommonButton
                 width={12}
                 height={6}
-                primaryStyle
+                underlinedStyle
                 text="Download trip ticket"
                 onClick={handleDownloadTripTicket}
+              />
+              <CommonButton
+                width={12}
+                height={6}
+                underlinedStyle
+                text="Download printed form"
+                onClick={handleDownloadPrintedForm}
               />
             </div>
           )}
@@ -872,9 +895,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 <CommonButton
                   width={12}
                   height={6}
-                  primaryStyle
+                  underlinedStyle
                   text="Download trip ticket"
                   onClick={handleDownloadTripTicket}
+                />
+                <CommonButton
+                  width={12}
+                  height={6}
+                  underlinedStyle
+                  text="Download printed form"
+                  onClick={handleDownloadPrintedForm}
                 />
               </div>
             )}

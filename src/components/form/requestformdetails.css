@@ -431,20 +431,19 @@
   width: 40vw;
   gap: 2vw;
   position: relative;
-
 }
-.merge-trip-modal-dropdown-child-container{ 
+.merge-trip-modal-dropdown-child-container {
   height: 15vh;
   width: 20vw;
   margin-left: 10%;
 }
 
-.set-trip-text-error-span{ 
+.set-trip-text-error-span {
   position: absolute;
   top: 6vh;
   color: red;
-  left: 18vw
-} 
+  left: 18vw;
+}
 
 .merge-trip-modal-container p {
   font-size: 1.1rem;
@@ -479,7 +478,7 @@
 .merge-trip-modal-container .dropdown-toggle-custom {
   margin-left: 5vw;
 }
-.merge-trip-modal-container .autocomplete-address-google-custom{
+.merge-trip-modal-container .autocomplete-address-google-custom {
   background-color: #d9d9d9;
   padding-left: 1vw;
   width: 20vw;
@@ -502,9 +501,8 @@
   height: 5vh;
   width: 40vw;
   gap: 2vw;
-
 }
-.merge-trip-modal-select-field-container{
+.merge-trip-modal-select-field-container {
   display: flex;
   flex-direction: row;
   width: 40vw;
@@ -513,7 +511,7 @@
   margin-right: 9%;
 }
 
-.merge-trip-modal-passenger-names-container{
+.merge-trip-modal-passenger-names-container {
   display: flex;
   flex-direction: row;
   width: 40vw;
@@ -534,7 +532,7 @@
   width: 12.5vw;
   text-align: center;
 }
-.merge-trip-modal-field-container-purpose{
+.merge-trip-modal-field-container-purpose {
   width: 50vw;
 }
 .merge-trip-modal-passenger-container {

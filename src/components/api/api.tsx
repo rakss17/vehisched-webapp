@@ -1697,6 +1697,33 @@ export const downloadTripTicketAPI = async (requestId: any) => {
     console.error("Download failed", error);
   }
 };
+export const downloadPrintedFormAPI = async (requestId: any) => {
+  try {
+    const response = await api.get(
+      `/api/v1/trip/download-printedform/${requestId}/`,
+      {
+        responseType: "blob",
+      }
+    );
+
+    const contentDisposition = response.headers["content-disposition"] || "";
+    const match = contentDisposition.match(/filename="(.+)"/);
+    const filename = match ? match[1] : "file.pdf";
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download failed", error);
+  }
+};
 
 export async function fetchQuestion(setQuestions: any) {
   const token = localStorage.getItem("token");

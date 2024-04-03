@@ -1051,6 +1051,7 @@ export function checkVehicleAvailability(
 export function checkTimeAvailability(
   preferred_start_travel_date: any,
   preferred_end_travel_date: any,
+  selected_vehicle: any,
   setAvailableTimes: any,
   setIsLoading: any,
   setUnavailableTimeInRange: any
@@ -1069,6 +1070,7 @@ export function checkTimeAvailability(
       params: {
         preferred_start_travel_date: preferred_start_travel_date,
         preferred_end_travel_date: preferred_end_travel_date,
+        selected_vehicle: selected_vehicle,
       },
       headers: {
         Authorization: `Token ${token}`,

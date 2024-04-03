@@ -383,6 +383,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     checkTimeAvailability(
       data.travel_date,
       data.return_date,
+      selectedVehiclePlateNumber,
       setAvailableTimes,
       setIsLoading,
       setUnavailableTimeInRange
@@ -878,6 +879,22 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                         } else if (!data.return_time) {
                           validationErrors.travelTimeError =
                             "Please select end time";
+                        }
+                        const [travelHours, travelMinutes] = data.travel_time
+                          .split(":")
+                          .map(Number);
+                        const [returnHours, returnMinutes] = data.return_time
+                          .split(":")
+                          .map(Number);
+
+                        const travelTimeInMinutes =
+                          travelHours * 60 + travelMinutes;
+                        const returnTimeInMinutes =
+                          returnHours * 60 + returnMinutes;
+
+                        if (travelTimeInMinutes > returnTimeInMinutes) {
+                          validationErrors.travelTimeError =
+                            "Please check the start time, it may be after the end time";
                         }
                       } else {
                         if (!data.travel_time) {

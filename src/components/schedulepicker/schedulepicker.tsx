@@ -356,6 +356,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         data.travel_time,
         data.return_date,
         data.return_time,
+        selectedVehiclePlateNumber,
         setIsLoading,
         setErrorColor
       );
@@ -850,10 +851,15 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                     travelDateTimes: [],
                     returnDateTimes: [],
                   });
+                  setIsFromAutoComplete(false);
+                  setSelectedTravelType("");
                   setData({
                     travel_date: null,
                     return_date: null,
+                    travel_time: null,
+                    return_time: null,
                   });
+                  setErrorColor(false);
                 }}
               />
               <CommonButton
@@ -928,6 +934,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                         data.travel_time,
                         data.return_date,
                         data.return_time,
+                        selectedVehiclePlateNumber,
                         setIsLoading,
                         setErrorColor
                       );

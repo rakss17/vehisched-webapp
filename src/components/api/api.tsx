@@ -1169,6 +1169,7 @@ export function checkScheduleConflictsForOneway(
   preferred_start_travel_time: any,
   preferred_end_travel_date: any,
   preferred_end_travel_time: any,
+  selected_vehicle: any,
   setIsLoading: any,
   setErrorColor: any
 ) {
@@ -1188,6 +1189,7 @@ export function checkScheduleConflictsForOneway(
         preferred_start_travel_time: preferred_start_travel_time,
         preferred_end_travel_date: preferred_end_travel_date,
         preferred_end_travel_time: preferred_end_travel_time,
+        selected_vehicle: selected_vehicle,
       },
       headers: {
         Authorization: `Token ${token}`,

@@ -694,20 +694,7 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       },
     })
     .then((response: any) => {
-      const responseData = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-
-      const updatedData = responseData.map((item: any) => {
-        if (item.passenger_name) {
-          const validJson = item.passenger_name.replace(/'/g, '"');
-          const passengerNamesArray = JSON.parse(validJson);
-          item.passenger_name = passengerNamesArray.join(", ");
-        }
-        return item;
-      });
-
-      setRequestFilteredData(updatedData);
+      setRequestFilteredData(response.data);
     })
     .catch((error: any) => {
       console.error("Error fetching request list:", error);
@@ -745,19 +732,7 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
       },
     })
     .then((response: any) => {
-      const responseData = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-
-      const updatedData = responseData.map((item: any) => {
-        if (item.passenger_name) {
-          const validJson = item.passenger_name.replace(/'/g, '"');
-          const passengerNamesArray = JSON.parse(validJson);
-          item.passenger_name = passengerNamesArray.join(", ");
-        }
-        return item;
-      });
-      setRequestList(updatedData);
+      setRequestList(response.data);
     })
     .catch((error: any) => {
       console.error("Error fetching request list:", error);

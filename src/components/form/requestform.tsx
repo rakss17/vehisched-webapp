@@ -93,12 +93,13 @@ export default function RequestForm() {
     );
   };
 
-  const handleChooseVehicle = (vehicleName: string) => {
+  const handleChooseVehicle = (event: any, value: any) => {
     const selectedVehicle = vehicles.find((vehicle) => {
       const { plate_number, model } = vehicle;
       const fullName = `${plate_number} ${model}`;
-      return fullName === vehicleName;
+      return fullName === value;
     });
+    console.log("selectedVehicle", selectedVehicle)
 
     if (selectedVehicle) {
       setData((prevData: any) => ({
@@ -316,6 +317,34 @@ export default function RequestForm() {
     console.log(event);
   };
 
+  const handleSelectVehicle = (event: any, value: any) => {
+    setData({
+      ...data,
+      vehicle_model: value.id,
+    });
+  };
+
+  const handleTravelTypeChange = (event: any, newValue: any) => {
+    setData({
+      ...data,
+      type: newValue ? newValue.value : "",
+    });
+  };
+
+  const travelTypes = [
+    { label: "Select Type", value: "" },
+    { label: "Round Trip", value: "Round Trip" },
+    { label: "One-way - Drop", value: "One-way - Drop" },
+    { label: "One-way - Fetch", value: "One-way - Fetch" },
+  ];
+
+  const handleSelectDriver = (event:any, value:any) => {
+    setData({
+      ...data,
+      driver_full_name: value.id
+    })
+  }
+
   const handleGoBack = () => {
     window.history.back();
   };
@@ -381,11 +410,6 @@ export default function RequestForm() {
           </div>
         )} */}
         <div className="request-form-body">
-          <div className="request-form-header">
-            <img src={USTPLogo} alt="USTP Logo" />
-            <h1>Reservation Form</h1>
-            <div className="occupied-space"></div>
-          </div>
           <div className="form-body">
             <div className="form-body-shadow">
               <div className="first-row">
@@ -423,7 +447,7 @@ export default function RequestForm() {
                 <div className="fifth-row">
                   <div className="travel-type">
                     <strong>Travel Type:</strong>
-                    <select
+                    {/* <select
                       className="type-options"
                       value={data.type}
                       onChange={(e) => {
@@ -437,7 +461,21 @@ export default function RequestForm() {
                       <option value="Round Trip">Round Trip</option>
                       <option value="One-way - Drop">One-way - Drop</option>
                       <option value="One-way - Fetch">One-way - Fetch</option>
-                    </select>
+                    </select> */}
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={travelTypes}
+                      sx={{ width: 300 }}
+                      getOptionLabel={(option) => option.label}
+                      onChange={handleTravelTypeChange}
+                      value={travelTypes.find(
+                        (type) => type.value === data.type
+                      )}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select Type" />
+                      )}
+                    />
                   </div>
                 </div>
                 <div className="input-passenger-number">
@@ -641,7 +679,7 @@ export default function RequestForm() {
                     <div className="third-row2">
                       <div className="vehicle-info-name">
                         <strong>Vehicle:</strong>
-                        <p>
+                        {/* <p>
                           <div className="vehicle-options">
                             <div onClick={handleFetchVehicles}>
                               <Dropdown
@@ -652,18 +690,46 @@ export default function RequestForm() {
                               />
                             </div>
                           </div>
-                        </p>
+                        </p> */}
+                        <div onClick={handleFetchVehicles}>
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={vehicles}
+                          sx={{ width: 300 }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select Vehicle" />
+                          )}
+                          getOptionLabel={(option) =>
+                            `${option.model} ${option.plate_number} `
+                          }
+                          onChange={handleChooseVehicle}
+                        />
+                        </div>
                       </div>
                       <div className="vehicle-info-name">
                         <strong>Driver:</strong>
-                        <div onClick={handleFetchDrivers}>
+                        {/* <div onClick={handleFetchDrivers}>
                           <Dropdown
                             status={dropdownDrivers}
                             onCategoryChange={handleChooseDriver}
                             dropdownClassName="dropdown-custom"
                             menuClassName="menu-custom"
                           />
-                        </div>
+                        </div> */}
+                       <div onClick={handleFetchDrivers}>
+                       <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={dropdownDrivers}
+                          sx={{ width: 300 }}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Select Vehicle" />
+                          )}
+                          getOptionLabel={(option) => option} // Correctly handle string options
+                          onChange={handleSelectDriver}
+                        />
+                       </div>
                       </div>
                     </div>
                     <div className="sixth-row">

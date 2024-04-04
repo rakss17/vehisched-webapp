@@ -38,8 +38,8 @@
   margin: 0vw 0vw 0vw 2vw;
   width: 94vw;
   height: 76vh;
-  border-top: 8px solid #060e57;
-  border-image: linear-gradient(to right, #e8a51c, #060e57);
+  /* border-top: 8px solid #060e57;
+  border-image: linear-gradient(to right, #e8a51c, #060e57); */
   border-image-slice: 1;
   display: flex;
   align-items: center;
@@ -53,7 +53,7 @@
   flex-direction: column;
   overflow-y: auto;
   width: 70vw;
-  height: 70vh;
+  height: 80vh;
   box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #cccccc;
   padding-bottom: 2rem;
@@ -84,6 +84,8 @@
   color: black;
   gap: 1vw;
   height: auto;
+  width: 42vw;
+
 }
 .requester-info-name strong {
   font-size: 1rem;
@@ -182,7 +184,7 @@
   display: flex;
   flex-direction: row;
   margin-left: 3vw;
-  gap: 6vw;
+  gap: 10vw;
   width: 60vw;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -192,10 +194,10 @@
   display: flex;
   flex-direction: row;
   margin-left: 0vh;
-  width: auto;
+  width: 40vw;
   color: black;
   white-space: nowrap;
-  gap: 5%;
+  gap: 5vw;
   align-items: center;
 }
 
@@ -214,8 +216,8 @@
   margin-bottom: 2vh;
 }
 .destination-info {
-  width: auto;
-  height: auto;
+  width: 24.7vw;
+  height: 10vh;
   display: flex;
   flex-direction: row;
   gap: 5vw;
@@ -453,7 +455,11 @@
 }
 
 .travel-type {
-  width: 25vw;
+  width: 30vw;
+  display: flex;
+  flex-direction: row;
+  gap: 10%;
+
 }
 .type-options {
   color: #000000;

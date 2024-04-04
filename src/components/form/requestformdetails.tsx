@@ -911,6 +911,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       onClick={onMergeTripOpen}
                     />
                   )}
+                  <CommonButton
+                    width={8}
+                    height={6}
+                    primaryStyle
+                    text="Completed"
+                    
+                  />
                 </div>
               </>
             )}

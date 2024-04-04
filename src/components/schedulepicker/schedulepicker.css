@@ -98,17 +98,17 @@
 .googledestination {
   outline: none;
 }
-.autocomplete-address-container {
+.autocompleteaddress-container {
   margin-left: -2vw;
   display: flex;
   flex-direction: column;
   height: 20vh;
   gap: 1vw;
 }
-.autocomplete-address-container p {
+.autocompleteaddress-container p {
   width: 15vw;
 }
-.autocomplete-address-container .strong {
+.autocompleteaddress-container .strong {
   font-weight: bold;
 }
 .other-fields-container {

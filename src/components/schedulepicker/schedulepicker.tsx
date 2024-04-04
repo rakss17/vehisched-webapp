@@ -780,7 +780,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                               </div>
                             </>
                           ) : (
-                            <div className="autocomplete-address-container">
+                            <div className="autocompleteaddress-container">
                               <p className="strong">
                                 Please input destination to fetch estimated
                                 return date and time of the vehicle

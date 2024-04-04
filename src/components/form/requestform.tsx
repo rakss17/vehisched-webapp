@@ -97,9 +97,9 @@ export default function RequestForm() {
     const selectedVehicle = vehicles.find((vehicle) => {
       const { plate_number, model } = vehicle;
       const fullName = `${plate_number} ${model}`;
-      return fullName === value;
+      const fullValueName = `${value.plate_number} ${value.model}`;
+      return fullName === fullValueName;
     });
-    console.log("selectedVehicle", selectedVehicle)
 
     if (selectedVehicle) {
       setData((prevData: any) => ({
@@ -126,21 +126,14 @@ export default function RequestForm() {
     );
   };
 
-  const dropdownDrivers = [
-    "Select Driver",
-    ...driversData.map(
-      (driver) =>
-        `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
-    ),
-  ];
-
-  const handleChooseDriver = (driverName: string) => {
+  const handleChooseDriver = (event: any, value: any) => {
     const selectedDriver = driversData.find((driver) => {
       const { first_name, middle_name, last_name } = driver;
       const fullName = `${first_name} ${middle_name} ${last_name}`;
-      return fullName === driverName;
+      const fullValueName = `${value.first_name} ${value.middle_name} ${value.last_name}`;
+      return fullName === fullValueName;
     });
-
+    console.log("select driver value", value);
     if (selectedDriver) {
       setData((prevData: any) => ({
         ...prevData,
@@ -317,13 +310,6 @@ export default function RequestForm() {
     console.log(event);
   };
 
-  const handleSelectVehicle = (event: any, value: any) => {
-    setData({
-      ...data,
-      vehicle_model: value.id,
-    });
-  };
-
   const handleTravelTypeChange = (event: any, newValue: any) => {
     setData({
       ...data,
@@ -332,18 +318,10 @@ export default function RequestForm() {
   };
 
   const travelTypes = [
-    { label: "Select Type", value: "" },
     { label: "Round Trip", value: "Round Trip" },
     { label: "One-way - Drop", value: "One-way - Drop" },
     { label: "One-way - Fetch", value: "One-way - Fetch" },
   ];
-
-  const handleSelectDriver = (event:any, value:any) => {
-    setData({
-      ...data,
-      driver_full_name: value.id
-    })
-  }
 
   const handleGoBack = () => {
     window.history.back();
@@ -473,7 +451,7 @@ export default function RequestForm() {
                         (type) => type.value === data.type
                       )}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select Type" />
+                        <TextField {...params} label="Select type" />
                       )}
                     />
                   </div>
@@ -651,20 +629,16 @@ export default function RequestForm() {
 
                   {data.return_date && data.return_time && (
                     <>
-                      <div className="forth-row">
-                        <div className="calendar-containerr">
+                      <div className="estimated-date-row-container">
+                        <div className="estimated-date-container">
                           <strong>Estimated Return Date:</strong>
 
-                          <div>
-                            <p>{formatDate(data.return_date)}</p>
-                          </div>
+                          <p>{formatDate(data.return_date)}</p>
                         </div>
 
-                        <div className="calendar-containerr">
-                          <strong>Estimated Return Time </strong>=
-                          <div>
-                            <p>{formatTime(data.return_time)}</p>
-                          </div>
+                        <div className="estimated-date-container">
+                          <strong>Estimated Return Time </strong>
+                          <p>{formatTime(data.return_time)}</p>
                         </div>
                       </div>
                     </>
@@ -692,19 +666,19 @@ export default function RequestForm() {
                           </div>
                         </p> */}
                         <div onClick={handleFetchVehicles}>
-                        <Autocomplete
-                          disablePortal
-                          id="combo-box-demo"
-                          options={vehicles}
-                          sx={{ width: 300 }}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Select Vehicle" />
-                          )}
-                          getOptionLabel={(option) =>
-                            `${option.model} ${option.plate_number} `
-                          }
-                          onChange={handleChooseVehicle}
-                        />
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={vehicles}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select vehicle" />
+                            )}
+                            getOptionLabel={(option) =>
+                              `${option.model} ${option.plate_number} `
+                            }
+                            onChange={handleChooseVehicle}
+                          />
                         </div>
                       </div>
                       <div className="vehicle-info-name">
@@ -717,19 +691,21 @@ export default function RequestForm() {
                             menuClassName="menu-custom"
                           />
                         </div> */}
-                       <div onClick={handleFetchDrivers}>
-                       <Autocomplete
-                          disablePortal
-                          id="combo-box-demo"
-                          options={dropdownDrivers}
-                          sx={{ width: 300 }}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Select Vehicle" />
-                          )}
-                          getOptionLabel={(option) => option} // Correctly handle string options
-                          onChange={handleSelectDriver}
-                        />
-                       </div>
+                        <div onClick={handleFetchDrivers}>
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={driversData}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select driver" />
+                            )}
+                            getOptionLabel={(option) =>
+                              `${option.first_name} ${option.middle_name} ${option.last_name}`
+                            }
+                            onChange={handleChooseDriver}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="sixth-row">

@@ -15,7 +15,7 @@ interface AutoCompleteAddressGoogleProps
   category?: any;
   removeDestinationError: () => void;
   className?: any;
-  setIsFromAutoComplete?: any;
+  setIsFromAutoComplete?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function AutoCompleteAddressGoogle({
@@ -46,9 +46,6 @@ export default function AutoCompleteAddressGoogle({
         category,
         setIsLoading
       );
-      setIsFromAutoComplete(true);
-      setIsLoading(true);
-      removeDestinationError();
     };
   }, [
     travel_date,
@@ -57,7 +54,6 @@ export default function AutoCompleteAddressGoogle({
     setAddressData,
     category,
     removeDestinationError,
-    setIsFromAutoComplete,
   ]);
 
   useEffect(() => {
@@ -74,7 +70,14 @@ export default function AutoCompleteAddressGoogle({
           componentRestrictions: { country: "PH" },
         }}
         apiKey={apiKey}
-        onPlaceSelected={(place) => onPlaceSelectedRef.current(place)}
+        onPlaceSelected={(place) => {
+          onPlaceSelectedRef.current(place);
+          if (setIsFromAutoComplete) {
+            setIsFromAutoComplete(true);
+          }
+          setIsLoading(true);
+          removeDestinationError();
+        }}
         placeholder="Type here..."
       />
       {isLoading && <CircularProgress color="primary" size={25} />}

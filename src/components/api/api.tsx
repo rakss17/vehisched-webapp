@@ -722,8 +722,12 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
     });
 }
 
-export function fetchRequestOfficeStaffAPI(setRequestList: any) {
+export function fetchRequestOfficeStaffAPI(
+  setRequestList: any,
+  setIsLoading: any
+) {
   const token = localStorage.getItem("token");
+  setIsLoading(true);
   api
     .get("api/v1/request/fetch/", {
       headers: {
@@ -732,9 +736,11 @@ export function fetchRequestOfficeStaffAPI(setRequestList: any) {
       },
     })
     .then((response: any) => {
+      setIsLoading(false);
       setRequestList(response.data);
     })
     .catch((error: any) => {
+      setIsLoading(false);
       console.error("Error fetching request list:", error);
     });
 }
@@ -1262,8 +1268,12 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
     });
 }
 
-export async function fetchEachVehicleSchedule(setSchedule: any) {
+export async function fetchEachVehicleSchedule(
+  setSchedule: any,
+  setIsLoading: any
+) {
   const token = localStorage.getItem("token");
+  setIsLoading(true);
   return api
     .get("api/v1/vehicles/fetch-each-vehicle-schedule/", {
       headers: {
@@ -1273,7 +1283,7 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
     })
     .then((response: any) => {
       const vehiclesData = response.data;
-
+      setIsLoading(false);
       Object.keys(vehiclesData).forEach((vehicleKey) => {
         const vehicleObj = vehiclesData[vehicleKey];
         const schedules = vehicleObj.schedules;
@@ -1297,6 +1307,7 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
       setSchedule(vehiclesData);
     })
     .catch((error: any) => {
+      setIsLoading(false);
       console.error("Error fetching schedule list:", error);
     });
 }

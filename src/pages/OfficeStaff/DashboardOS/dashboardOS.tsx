@@ -25,6 +25,8 @@ import {
 import RequestFormDetails from "../../../components/form/requestformdetails";
 import Confirmation from "../../../components/confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function DashboardOS() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -32,6 +34,7 @@ export default function DashboardOS() {
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
     useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
   const [notifList, setNotifList] = useState<any[]>([]);
@@ -70,7 +73,7 @@ export default function DashboardOS() {
   // }, []);
 
   useEffect(() => {
-    fetchEachVehicleSchedule(setSchedulesData);
+    fetchEachVehicleSchedule(setSchedulesData, setIsLoading);
   }, []);
 
   const handleCloseRequestForm = () => {
@@ -116,20 +119,52 @@ export default function DashboardOS() {
         {/* <div onClick={handleOnClickTodaysTrip} className="today-trip">
             <p>Today's Trip</p>
             <h2>{todayTrips}</h2>
+            
           </div> */}
-        <div className="calendar-column-container">
-          {Object.entries(schedulesData).map(([vehicleId, data]) => (
-            <React.Fragment key={vehicleId}>
-              <div>
-                <p>{data.vehicle}</p>
-                <CalendarSchedule
-                  schedulesData={data.schedules}
-                  onSelectEvent={handleOpenRequestForm}
-                />
+
+        {isLoading ? (
+          <div className="calendar-skeleton-container">
+            <div>
+              <div className="calendar-skeleton-label-container">
+                <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                  <Skeleton count={1} height={60} width={400} />
+                </SkeletonTheme>
               </div>
-            </React.Fragment>
-          ))}
-        </div>
+
+              <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                <Skeleton count={1} height={500} width={600} />
+              </SkeletonTheme>
+            </div>
+            <div>
+              <div className="calendar-skeleton-label-container">
+                <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                  <Skeleton count={1} height={60} width={400} />
+                </SkeletonTheme>
+              </div>
+              <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                <Skeleton count={1} height={500} width={600} />
+              </SkeletonTheme>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="calendar-column-container">
+              <>
+                {Object.entries(schedulesData).map(([vehicleId, data]) => (
+                  <React.Fragment key={vehicleId}>
+                    <div>
+                      <p>{data.vehicle}</p>
+                      <CalendarSchedule
+                        schedulesData={data.schedules}
+                        onSelectEvent={handleOpenRequestForm}
+                      />
+                    </div>
+                  </React.Fragment>
+                ))}
+              </>
+            </div>
+          </>
+        )}
       </div>
       <RequestFormDetails
         isOpen={isRequestFormOpen}

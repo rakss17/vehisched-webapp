@@ -35,6 +35,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HoverDescription from "../../../components/hoverdescription/hoverdescription";
 import CommonButton from "../../../components/button/commonbutton";
 import { useNavigate } from "react-router-dom";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -56,6 +58,7 @@ export default function Requests() {
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
   const [notifList, setNotifList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -79,7 +82,7 @@ export default function Requests() {
   );
 
   useEffect(() => {
-    fetchRequestOfficeStaffAPI(setRequestList);
+    fetchRequestOfficeStaffAPI(setRequestList, setIsLoading);
 
     // const intervalId = setInterval(() => {
     //   fetchRequestOfficeStaffAPI(setRequestList);
@@ -256,7 +259,15 @@ export default function Requests() {
               </tr>
             </thead>
             <tbody>
-              {filteredRequestList.length === 0 ? (
+              {isLoading ? (
+                <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
+                  <tr>
+                    <td colSpan={4}>
+                      <Skeleton count={10} height={60} />
+                    </td>
+                  </tr>
+                </SkeletonTheme>
+              ) : filteredRequestList.length === 0 ? (
                 <tr>
                   <td colSpan={4}>No request available</td>
                 </tr>

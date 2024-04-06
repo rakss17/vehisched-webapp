@@ -37,6 +37,8 @@ import InitialFormVip from "../../../components/form/initialformvip";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import RequesterTripMergingForm from "../../../components/form/requestertripmerging";
 import SchedulePicker from "../../../components/schedulepicker/schedulepicker";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -542,7 +544,20 @@ export default function DashboardR() {
           {isAvailableVehicleClick && (
             <>
               {vehiclesData.length === 0 ? (
-                <p className="vehicles-null">No vehicles found.</p>
+                <>
+                  {isLoading ? (
+                    <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                      <Skeleton
+                        count={6}
+                        height={200}
+                        width={500}
+                        containerClassName="vehicle-container"
+                      />
+                    </SkeletonTheme>
+                  ) : (
+                    <p className="vehicles-null">No vehicles found.</p>
+                  )}
+                </>
               ) : (
                 <>
                   <div className="vehicle-container">

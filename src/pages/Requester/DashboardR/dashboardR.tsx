@@ -71,6 +71,7 @@ export default function DashboardR() {
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
+  const [isLoading, setIsLoading] = useState(false);
   const [isConfirmationAcceptOpen, setIsConfirmationAcceptOpen] =
     useState(false);
   const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
@@ -299,7 +300,7 @@ export default function DashboardR() {
   }, []);
 
   useEffect(() => {
-    fetchEachVehicleSchedule(setVehiclesData);
+    fetchEachVehicleSchedule(setVehiclesData, setIsLoading);
   }, []);
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {

@@ -58,19 +58,11 @@ export default function DashboardOS() {
     () => {},
     () => {},
     fetchNotification,
-    setNotifList
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
   );
-
-  // useEffect(() => {
-  //   const currentDate = format(new Date(), "yyyy-MM-dd");
-  //   fetchScheduleOfficeStaff((data: any) => {
-  //     const todayTrips = data.filter(
-  //       (schedule: any) => schedule.travel_date === currentDate
-  //     ).length;
-  //     setTodayTrips(todayTrips);
-  //     setSchedulesData(data);
-  //   });
-  // }, []);
 
   useEffect(() => {
     fetchEachVehicleSchedule(setSchedulesData, setIsLoading);

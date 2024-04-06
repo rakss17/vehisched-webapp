@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   faColumns,
   faClipboardList,
@@ -42,7 +42,9 @@ export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    "All"
+  );
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [isTravelOrderNoteHovered, setIsTravelOrderNoteHovered] =
     useState(false);
@@ -57,8 +59,10 @@ export default function Requests() {
     useState(false);
   const requestId = selectedRequest?.request_id;
   const currentDate = new Date();
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [notifList, setNotifList] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -75,77 +79,81 @@ export default function Requests() {
   ];
 
   NotificationCreatedCancelWebsocket(
-    fetchRequestOfficeStaffAPI,
-    setRequestList,
+    () => {},
+    setSelectedCategory,
     fetchNotification,
-    setNotifList
+    setNotifList,
+    setRequestList,
+    setPage,
+    setHasMore
+  );
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRequestElementRef = useCallback(
+    (node: any) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((old) => old + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
   );
 
   useEffect(() => {
-    fetchRequestOfficeStaffAPI(setRequestList, setIsLoading);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const newRequests = await fetchRequestOfficeStaffAPI(
+          page,
+          selectedCategory,
+          searchTerm
+        );
+        console.log("new request", newRequests);
+        if (newRequests.data && newRequests.data.length > 0) {
+          // Correctly merge the new data with the existing state
+          setRequestList((old) => {
+            // Filter out any new items that already exist in the old state based on their request_id
+            const newData = newRequests.data.filter(
+              (newItem: any) =>
+                !old.some(
+                  (oldItem) => oldItem.request_id === newItem.request_id
+                )
+            );
+            // Merge the filtered new data with the old state
+            return [...old, ...newData];
+          });
+          if (!newRequests.next_page) {
+            setHasMore(false);
+          }
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching request list:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // const intervalId = setInterval(() => {
-    //   fetchRequestOfficeStaffAPI(setRequestList);
-    // }, 60000);
-
-    // return () => clearInterval(intervalId);
-  }, []);
+    fetchData();
+  }, [page, selectedCategory, searchTerm]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
+    setRequestList([]);
+    setPage(1);
+    setHasMore(true);
   };
 
-  const filteredRequestList = requestList.filter((request) => {
-    const isCategoryMatch =
-      selectedCategory === "All" ||
-      request.status === selectedCategory ||
-      request.purpose === selectedCategory ||
-      selectedCategory === "Logs" ||
-      selectedCategory === null;
-
-    if (isCategoryMatch && selectedCategory === "Logs" && request.travel_date) {
-      const [year, month, day] = request.travel_date.split("-");
-      const [hours, minutes] = request.travel_time.split(":");
-      const requestDate = new Date(year, month - 1, day, hours, minutes);
-      return requestDate < currentDate;
-    }
-
-    const isSearchMatch =
-      searchTerm === "" ||
-      request.requester_full_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      (request.travel_date &&
-        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (request.destination &&
-        request.destination.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (selectedCategory === "Logs" &&
-        (request.requester_full_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-          (request.travel_date &&
-            request.travel_date
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())) ||
-          (request.destination &&
-            request.destination
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())))) ||
-      (selectedCategory !== "Logs" &&
-        request.requester_full_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())) ||
-      request.request_id.toString().includes(searchTerm.toLowerCase()) ||
-      (request.travel_date &&
-        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (request.destination &&
-        request.destination.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    return isCategoryMatch && isSearchMatch;
-  });
-
   const handleCategoryChange = (status: string) => {
+    setRequestList([]);
+    setPage(1);
     setSelectedCategory(status);
+    setHasMore(true);
   };
 
   const handleOpenRequestForm = (request: RequestFormProps) => {
@@ -179,7 +187,7 @@ export default function Requests() {
       )
     : [];
 
-  filteredRequestList.sort((a, b) => {
+  requestList.sort((a, b) => {
     const dateA =
       typeof a.travel_date === "string" ? new Date(a.travel_date) : new Date();
     const dateB =
@@ -206,7 +214,10 @@ export default function Requests() {
         <ToastContainer />
         <div className="margin-top"></div>
         <div className="request-row">
-          <SearchBar onSearchChange={handleSearchChange} />
+          <SearchBar
+            onSearchChange={handleSearchChange}
+            placeholder="Search by requester's name or office name"
+          />
           {/* <div className="status-legend">
             <div className="ontrip-yess-container">
               <div className="ontrip-yess"></div>
@@ -234,6 +245,7 @@ export default function Requests() {
               "Driver Absence",
               "Logs",
             ]}
+            selectedLabel={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
           <CommonButton
@@ -259,23 +271,32 @@ export default function Requests() {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
-                <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
-                  <tr>
-                    <td colSpan={4}>
-                      <Skeleton count={10} height={60} />
-                    </td>
-                  </tr>
-                </SkeletonTheme>
-              ) : filteredRequestList.length === 0 ? (
-                <tr>
-                  <td colSpan={4}>No request available</td>
-                </tr>
+              {requestList.length === 0 ? (
+                <>
+                  {isLoading ? (
+                    <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
+                      <tr>
+                        <td colSpan={4}>
+                          <Skeleton count={10} height={60} />
+                        </td>
+                      </tr>
+                    </SkeletonTheme>
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>No reservation found.</td>
+                    </tr>
+                  )}
+                </>
               ) : (
-                filteredRequestList.map((request) => (
+                requestList.map((request, index) => (
                   <>
                     <tr
                       key={request.request_id}
+                      ref={
+                        index === requestList.length - 1
+                          ? lastRequestElementRef
+                          : null
+                      }
                       onClick={() => handleOpenRequestForm(request)}
                     >
                       <td>{request.vehicle_model}</td>
@@ -451,6 +472,11 @@ export default function Requests() {
               )}
             </tbody>
           </table>
+          {isLoading && requestList.length > 0 && (
+            <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
+              <Skeleton count={3} height={60} width={1250} />
+            </SkeletonTheme>
+          )}
         </div>
       </Container>
 

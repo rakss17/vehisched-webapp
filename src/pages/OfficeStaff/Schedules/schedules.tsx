@@ -43,7 +43,15 @@ export default function Schedules() {
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
 
-  NotificationCreatedCancelWebsocket(()=>{}, () => {}, fetchNotification, setNotifList);
+  NotificationCreatedCancelWebsocket(
+    () => {},
+    () => {},
+    fetchNotification,
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
+  );
 
   useEffect(() => {
     fetchScheduleOfficeStaff(setSchedulesData);

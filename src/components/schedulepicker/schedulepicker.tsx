@@ -886,6 +886,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                           validationErrors.travelTimeError =
                             "Please select end time";
                         }
+
                         const [travelHours, travelMinutes] = data.travel_time
                           .split(":")
                           .map(Number);
@@ -898,7 +899,10 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                         const returnTimeInMinutes =
                           returnHours * 60 + returnMinutes;
 
-                        if (travelTimeInMinutes > returnTimeInMinutes) {
+                        if (
+                          data.travel_date === data.return_date &&
+                          travelTimeInMinutes > returnTimeInMinutes
+                        ) {
                           validationErrors.travelTimeError =
                             "Please check the start time, it may be after the end time";
                         }

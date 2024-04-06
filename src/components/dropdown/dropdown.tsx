@@ -7,6 +7,7 @@ type DropdownProps = {
   dropdownClassName?: string;
   toggleClassName?: string;
   menuClassName?: string;
+  selectedLabel?: any;
 };
 
 export default function Dropdown(props: DropdownProps) {
@@ -29,7 +30,9 @@ export default function Dropdown(props: DropdownProps) {
         className={`dropdown-toggle ${props.toggleClassName}`}
         onClick={handleMenuToggle}
       >
-        <span className="dropdown-default">{selectedOption}</span>
+        <span className="dropdown-default">
+          {props.selectedLabel ? props.selectedLabel : selectedOption}
+        </span>
         <span className="downarrow">▼</span>
       </div>
       {isOpen && (

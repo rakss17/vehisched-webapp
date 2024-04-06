@@ -5,6 +5,7 @@ import "./searchbar.css";
 
 interface SearchBarProps {
   onSearchChange: (term: string) => void;
+  placeholder?: any;
 }
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
@@ -25,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
         <input
           className="search-bar"
           type="text"
-          placeholder="Search..."
+          placeholder={props.placeholder ? props.placeholder : "Search..."}
           value={searchTerm}
           onChange={handleSearchChange}
         />

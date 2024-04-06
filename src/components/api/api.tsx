@@ -722,27 +722,28 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
     });
 }
 
-export function fetchRequestOfficeStaffAPI(
-  setRequestList: any,
-  setIsLoading: any
-) {
+export async function fetchRequestOfficeStaffAPI(
+  page: number,
+  status: any,
+  searchTerm: any
+): Promise<any> {
+  console.log("statussss", status);
   const token = localStorage.getItem("token");
-  setIsLoading(true);
-  api
-    .get("api/v1/request/fetch/", {
-      headers: {
-        Authorization: `Token ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .then((response: any) => {
-      setIsLoading(false);
-      setRequestList(response.data);
-    })
-    .catch((error: any) => {
-      setIsLoading(false);
-      console.error("Error fetching request list:", error);
-    });
+  try {
+    const response = await api.get(
+      `api/v1/request/fetch/?page=${page}&status_filter=${status}&search=${searchTerm}`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request list:", error);
+    throw error; // Rethrow the error to handle it in the calling component
+  }
 }
 
 export function approveRequestAPI(

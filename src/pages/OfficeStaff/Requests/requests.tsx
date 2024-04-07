@@ -187,15 +187,6 @@ export default function Requests() {
       )
     : [];
 
-  requestList.sort((a, b) => {
-    const dateA =
-      typeof a.travel_date === "string" ? new Date(a.travel_date) : new Date();
-    const dateB =
-      typeof b.travel_date === "string" ? new Date(b.travel_date) : new Date();
-
-    return dateA.getTime() - dateB.getTime();
-  });
-
   const navigate = useNavigate();
   const handleCreateRequest = () => {
     navigate("/RequestForm");
@@ -216,7 +207,7 @@ export default function Requests() {
         <div className="request-row">
           <SearchBar
             onSearchChange={handleSearchChange}
-            placeholder="Search by requester's name or office name"
+            placeholder="Search by requester's name or office name or purpose"
           />
           {/* <div className="status-legend">
             <div className="ontrip-yess-container">

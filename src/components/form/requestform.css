@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-
+  align-items: center;
 }
 
 .form-body {
   display: flex;
   flex-direction: column;
   width: 80%;
-  height: auto;
+  height: 70vh;
 }
 
 .first-row {

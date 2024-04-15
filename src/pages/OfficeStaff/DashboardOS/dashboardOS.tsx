@@ -1,5 +1,5 @@
 import "./dashboardOS.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Header from "../../../components/header/header";
 import {
   faColumns,
@@ -37,6 +37,8 @@ export default function DashboardOS() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRequest, setSelectedRequest] =
     useState<RequestFormProps | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const [notifList, setNotifList] = useState<any[]>([]);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const requestId = selectedRequest?.request_id;
@@ -64,9 +66,75 @@ export default function DashboardOS() {
     () => {}
   );
 
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRequestElementRef = useCallback(
+    (node: any) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          console.log("Intersection detected, incrementing page.");
+          setPage((old) => old + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
+
   useEffect(() => {
-    fetchEachVehicleSchedule(setSchedulesData, setIsLoading);
-  }, []);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const newRequests = await fetchEachVehicleSchedule(page);
+
+        if (newRequests && newRequests.data) {
+          const updatedData: any = {};
+
+          Object.keys(newRequests.data).forEach((vehicleKey) => {
+            const vehicleObj = newRequests.data[vehicleKey];
+            if (vehicleObj) {
+              updatedData[vehicleKey] = vehicleObj;
+            } else {
+              console.error(
+                `Vehicle object for key ${vehicleKey} is undefined.`
+              );
+            }
+          });
+
+          setSchedulesData((prevData) => {
+            const mergedData = { ...prevData };
+
+            Object.keys(updatedData).forEach((vehicleKey: any) => {
+              const newVehicle = updatedData[vehicleKey];
+              const prevVehicle = prevData[vehicleKey];
+
+              if (
+                !prevVehicle ||
+                prevVehicle.plate_number !== newVehicle.plate_number
+              ) {
+                mergedData[vehicleKey] = newVehicle;
+              }
+            });
+
+            return mergedData;
+          });
+
+          if (!newRequests.next_page) {
+            setHasMore(false);
+          }
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching request list:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page]);
 
   const handleCloseRequestForm = () => {
     setIsRequestFormOpen(false);
@@ -108,51 +176,83 @@ export default function DashboardOS() {
           <Label label="Dashboard" />
         </div>
 
-        {/* <div onClick={handleOnClickTodaysTrip} className="today-trip">
-            <p>Today's Trip</p>
-            <h2>{todayTrips}</h2>
-            
-          </div> */}
+        {Object.keys(schedulesData).length === 0 ? (
+          <>
+            {isLoading ? (
+              <div className="calendar-skeleton-container">
+                <div>
+                  <div className="calendar-skeleton-label-container">
+                    <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                      <Skeleton count={1} height={60} width={400} />
+                    </SkeletonTheme>
+                  </div>
 
-        {isLoading ? (
-          <div className="calendar-skeleton-container">
-            <div>
-              <div className="calendar-skeleton-label-container">
-                <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
-                  <Skeleton count={1} height={60} width={400} />
-                </SkeletonTheme>
+                  <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                    <Skeleton count={1} height={500} width={600} />
+                  </SkeletonTheme>
+                </div>
+                <div>
+                  <div className="calendar-skeleton-label-container">
+                    <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                      <Skeleton count={1} height={60} width={400} />
+                    </SkeletonTheme>
+                  </div>
+                  <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                    <Skeleton count={1} height={500} width={600} />
+                  </SkeletonTheme>
+                </div>
               </div>
-
-              <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
-                <Skeleton count={1} height={500} width={600} />
-              </SkeletonTheme>
-            </div>
-            <div>
-              <div className="calendar-skeleton-label-container">
-                <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
-                  <Skeleton count={1} height={60} width={400} />
-                </SkeletonTheme>
+            ) : (
+              <div>
+                <p>No vehicle found.</p>
               </div>
-              <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
-                <Skeleton count={1} height={500} width={600} />
-              </SkeletonTheme>
-            </div>
-          </div>
+            )}
+          </>
         ) : (
           <>
             <div className="calendar-column-container">
               <>
-                {Object.entries(schedulesData).map(([vehicleId, data]) => (
-                  <React.Fragment key={vehicleId}>
+                {Object.entries(schedulesData).map(
+                  ([vehicleId, data], index) => (
+                    <React.Fragment key={vehicleId}>
+                      <div
+                        key={index}
+                        ref={
+                          index === Object.keys(schedulesData).length - 1
+                            ? lastRequestElementRef
+                            : null
+                        }
+                      >
+                        <p>{data.vehicle}</p>
+                        <CalendarSchedule
+                          schedulesData={data.schedules}
+                          onSelectEvent={handleOpenRequestForm}
+                        />
+                      </div>
+                    </React.Fragment>
+                  )
+                )}
+                {isLoading && Object.keys(schedulesData).length > 0 && (
+                  <div className="calendar-skeleton-container">
                     <div>
-                      <p>{data.vehicle}</p>
-                      <CalendarSchedule
-                        schedulesData={data.schedules}
-                        onSelectEvent={handleOpenRequestForm}
-                      />
+                      <div className="calendar-skeleton-label-container">
+                        <SkeletonTheme
+                          baseColor="#d9d9d9"
+                          highlightColor="#f5f5f5"
+                        >
+                          <Skeleton count={1} height={60} width={400} />
+                        </SkeletonTheme>
+                      </div>
+
+                      <SkeletonTheme
+                        baseColor="#d9d9d9"
+                        highlightColor="#f5f5f5"
+                      >
+                        <Skeleton count={1} height={500} width={600} />
+                      </SkeletonTheme>
                     </div>
-                  </React.Fragment>
-                ))}
+                  </div>
+                )}
               </>
             </div>
           </>

@@ -727,7 +727,6 @@ export async function fetchRequestOfficeStaffAPI(
   status: any,
   searchTerm: any
 ): Promise<any> {
-  console.log("statussss", status);
   const token = localStorage.getItem("token");
   try {
     const response = await api.get(
@@ -1269,46 +1268,20 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
     });
 }
 
-export async function fetchEachVehicleSchedule(
-  setSchedule: any,
-  setIsLoading: any
-) {
+export async function fetchEachVehicleSchedule(page: any): Promise<any> {
   const token = localStorage.getItem("token");
-  setIsLoading(true);
+
   return api
-    .get("api/v1/vehicles/fetch-each-vehicle-schedule/", {
+    .get(`api/v1/vehicles/fetch-each-vehicle-schedule/?page=${page}`, {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
     })
     .then((response: any) => {
-      const vehiclesData = response.data;
-      setIsLoading(false);
-      Object.keys(vehiclesData).forEach((vehicleKey) => {
-        const vehicleObj = vehiclesData[vehicleKey];
-        const schedules = vehicleObj.schedules;
-
-        const updatedSchedules = schedules.map((scheduleItem: any) => {
-          if (scheduleItem.passenger_name) {
-            const validJson = scheduleItem.passenger_name.replace(/'/g, '"');
-            try {
-              const passengerNamesArray = JSON.parse(validJson);
-              scheduleItem.passenger_name = passengerNamesArray.join(", ");
-            } catch (error) {
-              console.error("Error parsing passenger names:", error);
-            }
-          }
-          return scheduleItem;
-        });
-
-        vehicleObj.schedules = updatedSchedules;
-      });
-
-      setSchedule(vehiclesData);
+      return response.data;
     })
     .catch((error: any) => {
-      setIsLoading(false);
       console.error("Error fetching schedule list:", error);
     });
 }

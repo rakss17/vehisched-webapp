@@ -114,16 +114,13 @@ export default function Requests() {
         );
         console.log("new request", newRequests);
         if (newRequests.data && newRequests.data.length > 0) {
-          // Correctly merge the new data with the existing state
           setRequestList((old) => {
-            // Filter out any new items that already exist in the old state based on their request_id
             const newData = newRequests.data.filter(
               (newItem: any) =>
                 !old.some(
                   (oldItem) => oldItem.request_id === newItem.request_id
                 )
             );
-            // Merge the filtered new data with the old state
             return [...old, ...newData];
           });
           if (!newRequests.next_page) {

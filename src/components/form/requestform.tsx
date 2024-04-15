@@ -381,428 +381,422 @@ export default function RequestForm() {
       />
       <ToastContainer />
       <Header />
-      <Container>
-        {/* Conditionally render the CSM component as a modal */}
-        {/* {isModalOpen && (
-          <div className="modal-overlay">
-            <Csm />
-          </div>
-        )} */}
-        <div className="request-form-body">
-          <div className="form-body">
-            <div className="form-body-shadow">
-              <div className="first-row">
-                <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
-                <div className="first-row-column">
-                  <div className="requester-info-name">
-                    <strong className="strong">Requester's name:</strong>
-                    <div className="new-input-style">
-                      <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        options={requesters}
-                        sx={{ width: 300 }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select requester" />
-                        )}
-                        getOptionLabel={(option) =>
-                          `${option.first_name} ${option.middle_name} ${option.last_name}`
-                        }
-                        onChange={handleSelectRequester}
-                      />
-                    </div>
-                  </div>
-                  <div className="requester-info-name">
-                    <strong className="strong">Travel Type:</strong>
-                    <div className="new-input-style">
-                      <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        options={travelTypes}
-                        sx={{ width: 300 }}
-                        getOptionLabel={(option) => option.label}
-                        onChange={handleTravelTypeChange}
-                        value={travelTypes.find(
-                          (type) => type.value === data.type
-                        )}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Select type" />
-                        )}
-                      />
-                    </div>
+
+      <div className="request-form-body">
+        <div className="form-body">
+          <div className="form-body-shadow">
+            <div className="first-row">
+              <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
+              <div className="first-row-column">
+                <div className="requester-info-name">
+                  <strong className="strong">Requester's name:</strong>
+                  <div className="new-input-style">
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={requesters}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select requester" />
+                      )}
+                      getOptionLabel={(option) =>
+                        `${option.first_name} ${option.middle_name} ${option.last_name}`
+                      }
+                      onChange={handleSelectRequester}
+                    />
                   </div>
                 </div>
-                <div className="first-row-column">
-                  <div className="requester-info-name">
-                    <strong className="strong">Office:</strong>
-                    <p className="new-input-style">{data.office}</p>
-                  </div>
-                  <div className="requester-info-name">
-                    <p className="strong">
-                      No. of passenger{"("}s{")"}: {capacity}
-                    </p>
-                    <div className="new-input-style">
-                      <InputField
-                        icon={faUsers}
-                        onKeyDown={handleKeyDown}
-                        label="No. of passengers"
-                        value={numPassengers}
-                        onChange={handlePassengerChange}
-                        type="number"
-                      />
-                    </div>
+                <div className="requester-info-name">
+                  <strong className="strong">Travel Type:</strong>
+                  <div className="new-input-style">
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={travelTypes}
+                      sx={{ width: 300 }}
+                      getOptionLabel={(option) => option.label}
+                      onChange={handleTravelTypeChange}
+                      value={travelTypes.find(
+                        (type) => type.value === data.type
+                      )}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select type" />
+                      )}
+                    />
                   </div>
                 </div>
               </div>
-              {/* ----------------------------------------------------------------------------------------- */}
-              <div className="first">
-                {data.type === "Round Trip" && (
-                  <>
-                    <div className="first-row">
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Date of Travel:</strong>
+              <div className="first-row-column">
+                <div className="requester-info-name">
+                  <strong className="strong">Office:</strong>
+                  <p className="new-input-style">{data.office}</p>
+                </div>
+                <div className="requester-info-name">
+                  <p className="strong">
+                    No. of passenger{"("}s{")"}: {capacity}
+                  </p>
+                  <div className="new-input-style">
+                    <InputField
+                      icon={faUsers}
+                      onKeyDown={handleKeyDown}
+                      label="No. of passengers"
+                      value={numPassengers}
+                      onChange={handlePassengerChange}
+                      type="number"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* ----------------------------------------------------------------------------------------- */}
+            <div className="first">
+              {data.type === "Round Trip" && (
+                <>
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Date of Travel:</strong>
+                        <div className="new-input-style">
+                          <CalendarInput
+                            containerClassName="calendar-container"
+                            calendarClassName="calendar-input"
+                            iconClassName="calendar-input-icon"
+                            onChange={handleStartDateChange}
+                            selectedDate={
+                              data.travel_date
+                                ? new Date(data.travel_date)
+                                : null
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Time of Travel:</strong>
+                        <div className="new-input-style">
+                          <TimeInput
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* ----------------------------------------------------------------------- */}
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Return Date:</strong>
+                        {data.type === "Round Trip" ? (
                           <div className="new-input-style">
                             <CalendarInput
                               containerClassName="calendar-container"
                               calendarClassName="calendar-input"
                               iconClassName="calendar-input-icon"
-                              onChange={handleStartDateChange}
                               selectedDate={
-                                data.travel_date
-                                  ? new Date(data.travel_date)
+                                data.return_date
+                                  ? new Date(data.return_date)
                                   : null
                               }
+                              onChange={handleEndDateChange}
                             />
+                          </div>
+                        ) : (
+                          <div>
+                            <p>{formatDate(data.return_date)}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Return Time </strong>
+                        {data.type === "Round Trip" ? (
+                          <div className="new-input-style ">
+                            <TimeInput
+                              onChange={handleEndTimeChange}
+                              selectedDate={data.return_date}
+                              handleDateChange={handleEndDateChange}
+                            />
+                          </div>
+                        ) : (
+                          <div>
+                            <p>{formatTime(data.return_time)}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {data.travel_date && data.travel_time && (
+                    <>
+                      <div className="first-row">
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Destination: </strong>
+                            <div className="new-input-style">
+                              <AutoCompleteAddressGoogle
+                                travel_date={data.travel_date}
+                                travel_time={data.travel_time}
+                                setData={setData}
+                                setAddressData={setAddressData}
+                                category={data.type}
+                                removeDestinationError={() =>
+                                  setErrorMessages((prev) => ({
+                                    ...prev,
+                                    destinationError: undefined,
+                                  }))
+                                }
+                                className="googledestination"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Distance:</strong>
+                            <div className="new-input-style">
+                              <p>{distance} km</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Time of Travel:</strong>
-                          <div className="new-input-style">
-                            <TimeInput
-                              onChange={handleStartTimeChange}
-                              selectedDate={data.travel_date}
-                              handleDateChange={handleStartDateChange}
-                            />
-                          </div>
+                    </>
+                  )}
+                </>
+              )}
+              {(data.type === "One-way - Drop" ||
+                data.type === "One-way - Fetch") && (
+                <>
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong>Date of Travel:</strong>
+                        <div className="new-input-style">
+                          <CalendarInput
+                            containerClassName="calendar-container"
+                            calendarClassName="calendar-input"
+                            iconClassName="calendar-input-icon"
+                            onChange={handleStartDateChange}
+                            selectedDate={
+                              data.travel_date
+                                ? new Date(data.travel_date)
+                                : null
+                            }
+                          />
                         </div>
                       </div>
                     </div>
-                    {/* ----------------------------------------------------------------------- */}
-                    <div className="first-row">
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Return Date:</strong>
-                          {data.type === "Round Trip" ? (
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Time of Travel:</strong>
+                        <div className="new-input-style">
+                          <TimeInput
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {data.travel_date && data.travel_time && (
+                    <>
+                      <div className="first-row">
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Destination: </strong>
                             <div className="new-input-style">
-                              <CalendarInput
-                                containerClassName="calendar-container"
-                                calendarClassName="calendar-input"
-                                iconClassName="calendar-input-icon"
-                                selectedDate={
-                                  data.return_date
-                                    ? new Date(data.return_date)
-                                    : null
+                              <AutoCompleteAddressGoogle
+                                travel_date={data.travel_date}
+                                travel_time={data.travel_time}
+                                setData={setData}
+                                setAddressData={setAddressData}
+                                category={data.type}
+                                removeDestinationError={() =>
+                                  setErrorMessages((prev) => ({
+                                    ...prev,
+                                    destinationError: undefined,
+                                  }))
                                 }
-                                onChange={handleEndDateChange}
+                                className="googledestination"
                               />
                             </div>
-                          ) : (
-                            <div>
+                          </div>
+                        </div>
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Distance:</strong>
+                            <div className="new-input-style">
+                              <p>{distance} km</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {data.return_date && data.return_time && (
+                    <>
+                      <div className="first-row">
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">
+                              Estimated Return Date:
+                            </strong>
+                            <div className="new-input-style">
                               <p>{formatDate(data.return_date)}</p>
                             </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Return Time </strong>
-                          {data.type === "Round Trip" ? (
-                            <div className="new-input-style ">
-                              <TimeInput
-                                onChange={handleEndTimeChange}
-                                selectedDate={data.return_date}
-                                handleDateChange={handleEndDateChange}
-                              />
-                            </div>
-                          ) : (
-                            <div>
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong>Estimated Return Time </strong>
+                            <div className="new-input-style">
                               <p>{formatTime(data.return_time)}</p>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {data.travel_date && data.travel_time && (
-                      <>
-                        <div className="first-row">
-                          <div className="first-row-column-2">
-                            <div className="requester-info-name">
-                              <strong className="strong">Destination: </strong>
-                              <div className="new-input-style">
-                                <AutoCompleteAddressGoogle
-                                  travel_date={data.travel_date}
-                                  travel_time={data.travel_time}
-                                  setData={setData}
-                                  setAddressData={setAddressData}
-                                  category={data.type}
-                                  removeDestinationError={() =>
-                                    setErrorMessages((prev) => ({
-                                      ...prev,
-                                      destinationError: undefined,
-                                    }))
-                                  }
-                                  className="googledestination"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="first-row-column-2">
-                            <div className="requester-info-name">
-                              <strong className="strong">Distance:</strong>
-                              <div className="new-input-style">
-                                <p>{distance} km</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
-                {(data.type === "One-way - Drop" ||
-                  data.type === "One-way - Fetch") && (
-                  <>
-                    <div className="first-row">
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong>Date of Travel:</strong>
-                          <div className="new-input-style">
-                            <CalendarInput
-                              containerClassName="calendar-container"
-                              calendarClassName="calendar-input"
-                              iconClassName="calendar-input-icon"
-                              onChange={handleStartDateChange}
-                              selectedDate={
-                                data.travel_date
-                                  ? new Date(data.travel_date)
-                                  : null
-                              }
-                            />
                           </div>
                         </div>
                       </div>
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Time of Travel:</strong>
-                          <div className="new-input-style">
-                            <TimeInput
-                              onChange={handleStartTimeChange}
-                              selectedDate={data.travel_date}
-                              handleDateChange={handleStartDateChange}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {data.travel_date && data.travel_time && (
-                      <>
-                        <div className="first-row">
-                          <div className="first-row-column-2">
-                            <div className="requester-info-name">
-                              <strong className="strong">Destination: </strong>
-                              <div className="new-input-style">
-                                <AutoCompleteAddressGoogle
-                                  travel_date={data.travel_date}
-                                  travel_time={data.travel_time}
-                                  setData={setData}
-                                  setAddressData={setAddressData}
-                                  category={data.type}
-                                  removeDestinationError={() =>
-                                    setErrorMessages((prev) => ({
-                                      ...prev,
-                                      destinationError: undefined,
-                                    }))
-                                  }
-                                  className="googledestination"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="first-row-column-2">
-                            <div className="requester-info-name">
-                              <strong className="strong">Distance:</strong>
-                              <div className="new-input-style">
-                                <p>{distance} km</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {data.return_date && data.return_time && (
-                      <>
-                        <div className="first-row">
-                          <div className="first-row-column-2">
-                            <div className="requester-info-name">
-                              <strong className="strong">
-                                Estimated Return Date:
-                              </strong>
-                              <div className="new-input-style">
-                                <p>{formatDate(data.return_date)}</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="first-row-column-2">
-                            <div className="requester-info-name">
-                              <strong>Estimated Return Time </strong>
-                              <div className="new-input-style">
-                                <p>{formatTime(data.return_time)}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-              {/* -------------------------------------------------------------------------------------------- */}
-              {data.travel_date &&
-                data.travel_time &&
-                data.return_date &&
-                data.return_time && (
-                  <>
-                    <div className="first-row">
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Vehicle:</strong>
-                          <div
-                            className="new-input-style"
-                            onClick={handleFetchVehicles}
-                          >
-                            <Autocomplete
-                              disablePortal
-                              id="combo-box-demo"
-                              options={vehicles}
-                              sx={{ width: 300 }}
-                              renderInput={(params) => (
-                                <TextField {...params} label="Select vehicle" />
-                              )}
-                              getOptionLabel={(option) =>
-                                `${option.model} ${option.plate_number} `
-                              }
-                              onChange={handleChooseVehicle}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="first-row-column-2">
-                        <div className="requester-info-name">
-                          <strong className="strong">Driver:</strong>
-                          <div
-                            className="new-input-style"
-                            onClick={handleFetchDrivers}
-                          >
-                            <Autocomplete
-                              disablePortal
-                              id="combo-box-demo"
-                              options={driversData}
-                              sx={{ width: 300 }}
-                              renderInput={(params) => (
-                                <TextField {...params} label="Select driver" />
-                              )}
-                              getOptionLabel={(option) =>
-                                `${option.first_name} ${option.middle_name} ${option.last_name}`
-                              }
-                              onChange={handleChooseDriver}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* -------------------------------------------------------------------------------------- */}
-                    <div className="first-row">
-                      <div className="second-row">
-                        <div className="first-row-column-3">
-                          <InputField
-                            className="purpose-width"
-                            icon={faClipboard}
-                            value={data.purpose}
-                            label="Purpose"
-                            placeholder="Purpose"
-                            onChange={(event) => {
-                              setData((prevData: any) => ({
-                                ...prevData,
-                                purpose: event.target.value,
-                              }));
-                              if (event.target.value) {
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.purposeError;
-                                delete updatedErrors[0]?.all;
-                                setErrorMessages(updatedErrors);
-                              }
-                            }}
-                          />
-
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.purposeError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    {/* ------------------------------------------------------------------------- */}
-                    <div className="third-row">
-                      <div className="third-row-passenger">
-                        <strong>Passenger's name(s):</strong>
-                      </div>
-                      <div className="passenger-fields-new">
-                        <div className="passenger-input-fields">
-                          {generatePassengerInputs()}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="note-new-style">
-                      <div className="first-row-column-4">
-                        {isFifthyKilometers && (
-                          <p>
-                            Note: Requesters traveling to destinations exceed 50
-                            kilometers are required to provide a travel order
-                            for the vehicle's fuel and
-                            <br></br>
-                            the driver's per diem.
-                          </p>
-                        )}
-
-                        <div className="button-row-container">
-                          <CommonButton
-                            width={8}
-                            height={6}
-                            secondaryStyle
-                            onClick={handleGoBack}
-                            text={"Go back"}
-                          />
-
-                          <CommonButton
-                            width={8}
-                            height={6}
-                            primaryStyle
-                            onClick={handleSubmit}
-                            text={"Submit"}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </>
+              )}
             </div>
+            {/* -------------------------------------------------------------------------------------------- */}
+            {data.travel_date &&
+              data.travel_time &&
+              data.return_date &&
+              data.return_time && (
+                <>
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Vehicle:</strong>
+                        <div
+                          className="new-input-style"
+                          onClick={handleFetchVehicles}
+                        >
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={vehicles}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select vehicle" />
+                            )}
+                            getOptionLabel={(option) =>
+                              `${option.model} ${option.plate_number} `
+                            }
+                            onChange={handleChooseVehicle}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Driver:</strong>
+                        <div
+                          className="new-input-style"
+                          onClick={handleFetchDrivers}
+                        >
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={driversData}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select driver" />
+                            )}
+                            getOptionLabel={(option) =>
+                              `${option.first_name} ${option.middle_name} ${option.last_name}`
+                            }
+                            onChange={handleChooseDriver}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* -------------------------------------------------------------------------------------- */}
+                  <div className="first-row">
+                    <div className="second-row">
+                      <div className="first-row-column-3">
+                        <InputField
+                          className="purpose-width"
+                          icon={faClipboard}
+                          value={data.purpose}
+                          label="Purpose"
+                          placeholder="Purpose"
+                          onChange={(event) => {
+                            setData((prevData: any) => ({
+                              ...prevData,
+                              purpose: event.target.value,
+                            }));
+                            if (event.target.value) {
+                              const updatedErrors = { ...errorMessages };
+                              delete updatedErrors[0]?.purposeError;
+                              delete updatedErrors[0]?.all;
+                              setErrorMessages(updatedErrors);
+                            }
+                          }}
+                        />
+
+                        <p className="set-trip-text-error">
+                          {errorMessages[0]?.purposeError}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* ------------------------------------------------------------------------- */}
+                  <div className="third-row">
+                    <div className="third-row-passenger">
+                      <strong>Passenger's name(s):</strong>
+                    </div>
+                    <div className="passenger-fields-new">
+                      <div className="passenger-input-fields">
+                        {generatePassengerInputs()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="note-new-style">
+                    <div className="first-row-column-4">
+                      {isFifthyKilometers && (
+                        <p>
+                          Note: Requesters traveling to destinations exceed 50
+                          kilometers are required to provide a travel order for
+                          the vehicle's fuel and
+                          <br></br>
+                          the driver's per diem.
+                        </p>
+                      )}
+
+                      <div className="button-row-container">
+                        <CommonButton
+                          width={8}
+                          height={6}
+                          secondaryStyle
+                          onClick={handleGoBack}
+                          text={"Go back"}
+                        />
+
+                        <CommonButton
+                          width={8}
+                          height={6}
+                          primaryStyle
+                          onClick={handleSubmit}
+                          text={"Submit"}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
           </div>
         </div>
-      </Container>
+      </div>
+
       <Confirmation
         isOpen={isConfirmationOpen}
         header="Request Submitted!"

@@ -9,8 +9,8 @@
   display: flex;
   flex-direction: column;
   width: 80%;
-  height: 70vh;
-  color: black;
+  height: auto;
+
 }
 
 .first-row {

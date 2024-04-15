@@ -7,7 +7,7 @@ const debug = true;
 let serverSideUrl: any;
 
 if (debug) {
-  serverSideUrl = "ws://172.20.12.21:8000";
+  serverSideUrl = "ws://localhost:8000";
 } else {
   serverSideUrl = "wss://vehisched-backend.keannu1.duckdns.org";
 }
@@ -95,7 +95,10 @@ export function NotificationCreatedCancelWebsocket(
   fetchAPI?: any,
   setData?: any,
   fetchAPI2?: any,
-  setData2?: any
+  setData2?: any,
+  setData3?: any,
+  setData4?: any,
+  setData5?: any
 ) {
   useEffect(() => {
     const newSocket = new WebSocket(
@@ -116,13 +119,17 @@ export function NotificationCreatedCancelWebsocket(
 
     newSocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      fetchAPI(setData);
+
       fetchAPI2(setData2);
       if (
         data.type === "notify.request_created" &&
         data.status === "Created" &&
         data.message != "Notification message goes here for created"
       ) {
+        setData("Pending");
+        setData3([]);
+        setData4(1);
+        setData5(true);
       } else if (
         data.type === "notify.request_completed" &&
         data.status === "Completed" &&
@@ -154,11 +161,10 @@ export function NotificationCreatedCancelWebsocket(
         data.status === "Canceled" &&
         data.message != "Notification message goes here for canceled"
       ) {
-        const justnow = "Just Now";
-        toast.info(<ToastContent message={data.message} timeago={justnow} />, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: false,
-        });
+        setData("Canceled");
+        setData3([]);
+        setData4(1);
+        setData5(true);
       }
     };
 

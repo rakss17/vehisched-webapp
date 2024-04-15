@@ -164,16 +164,14 @@
     align-items: end;
     margin-left: auto;
     margin-right: auto;
-    
   }
-  .request-row > :nth-child(1){
+  .request-row > :nth-child(1) {
     margin-bottom: 1.5vh;
     margin-top: 3.5rem;
   }
-  .request-row > :nth-child(2){
+  .request-row > :nth-child(2) {
     width: 40%;
-    
-  } 
+  }
   .margin-top {
     margin-top: 0rem;
   }

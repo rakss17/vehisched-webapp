@@ -62,7 +62,10 @@ export default function Drivers() {
     () => {},
     () => {},
     fetchNotification,
-    setNotifList
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
   );
 
   const handleSearchChange = (term: string) => {

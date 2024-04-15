@@ -4,17 +4,16 @@
   box-sizing: border-box;
 }
 .margin-top-dashboard {
-  margin-top: 5rem;
+  margin-top: 5vh;
 }
 
 .requester-row-container {
   justify-content: center;
   display: flex;
   align-items: center;
-
 }
 .requester-row {
-  margin-top: 2vw;
+  margin-top: 15vh;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -34,7 +33,6 @@
   text-align: center;
   border: none;
   margin-top: 0vh;
-
 }
 .requester-row button.active {
   border-bottom: 4px solid #060e57;
@@ -54,9 +52,9 @@
   flex-direction: row;
   overflow-y: auto;
   flex-wrap: wrap;
-  max-height: 70vh;
+  max-height: 80vh;
   padding: 2%;
-  height: 68vh;
+  height: 80vh;
   width: 88vw;
   margin-left: 8vw;
   margin-top: 1vh;
@@ -71,8 +69,9 @@
   flex-direction: row;
   flex-wrap: wrap;
   height: 55vh;
-  width: 88vw;
-  gap: 5%;
+  width: 80vw;
+  row-gap: 8%;
+  column-gap: 1%;
   padding-left: 5vh;
 }
 .date-available-range {
@@ -526,7 +525,6 @@
   flex-direction: row;
   align-items: center;
   gap: 15%;
-
 }
 .trip-category div {
   width: 20vw;
@@ -599,7 +597,6 @@
   display: flex;
   flex-direction: column;
   height: 30vh;
-
 }
 .date-from-roundtrip .separate-date {
   display: flex;
@@ -832,7 +829,6 @@
     display: flex;
     padding-left: 5vw;
     justify-content: space-evenly;
-
   }
   .trip-category button {
     width: auto;
@@ -868,7 +864,6 @@
     margin-top: 1vh;
     margin-left: 0vh;
     gap: 17px;
-
   }
   .trip-destination p {
     color: #060e57;
@@ -935,7 +930,7 @@
     width: 50vw;
     height: auto;
     margin-left: 4%;
-    gap: 12%
+    gap: 12%;
   }
   .date-from-oneway .separate-date {
     display: flex;

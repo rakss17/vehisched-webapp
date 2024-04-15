@@ -722,21 +722,28 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
     });
 }
 
-export function fetchRequestOfficeStaffAPI(setRequestList: any) {
+export async function fetchRequestOfficeStaffAPI(
+  page: number,
+  status: any,
+  searchTerm: any
+): Promise<any> {
+  console.log("statussss", status);
   const token = localStorage.getItem("token");
-  api
-    .get("api/v1/request/fetch/", {
-      headers: {
-        Authorization: `Token ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .then((response: any) => {
-      setRequestList(response.data);
-    })
-    .catch((error: any) => {
-      console.error("Error fetching request list:", error);
-    });
+  try {
+    const response = await api.get(
+      `api/v1/request/fetch/?page=${page}&status_filter=${status}&search=${searchTerm}`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request list:", error);
+    throw error; // Rethrow the error to handle it in the calling component
+  }
 }
 
 export function approveRequestAPI(
@@ -1262,8 +1269,12 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
     });
 }
 
-export async function fetchEachVehicleSchedule(setSchedule: any) {
+export async function fetchEachVehicleSchedule(
+  setSchedule: any,
+  setIsLoading: any
+) {
   const token = localStorage.getItem("token");
+  setIsLoading(true);
   return api
     .get("api/v1/vehicles/fetch-each-vehicle-schedule/", {
       headers: {
@@ -1273,7 +1284,7 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
     })
     .then((response: any) => {
       const vehiclesData = response.data;
-
+      setIsLoading(false);
       Object.keys(vehiclesData).forEach((vehicleKey) => {
         const vehicleObj = vehiclesData[vehicleKey];
         const schedules = vehicleObj.schedules;
@@ -1297,6 +1308,7 @@ export async function fetchEachVehicleSchedule(setSchedule: any) {
       setSchedule(vehiclesData);
     })
     .catch((error: any) => {
+      setIsLoading(false);
       console.error("Error fetching schedule list:", error);
     });
 }

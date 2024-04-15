@@ -81,7 +81,10 @@ export default function Vehicles() {
     () => {},
     () => {},
     fetchNotification,
-    setNotifList
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
   );
 
   const handleSearchChange = (term: string) => {

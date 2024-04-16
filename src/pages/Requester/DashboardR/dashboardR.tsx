@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import Container from "../../../components/container/container";
@@ -99,6 +99,8 @@ export default function DashboardR() {
   const [assignedDriver, setSelectedVehicleDriver] = useState("");
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     {
@@ -301,9 +303,75 @@ export default function DashboardR() {
     setSelectedTripButton("Round Trip");
   }, []);
 
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRequestElementRef = useCallback(
+    (node: any) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          console.log("Intersection detected, incrementing page.");
+          setPage((old) => old + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
+
   useEffect(() => {
-    fetchEachVehicleSchedule(setVehiclesData, setIsLoading);
-  }, []);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const newRequests = await fetchEachVehicleSchedule(page);
+
+        if (newRequests && newRequests.data) {
+          const updatedData: any = {};
+
+          Object.keys(newRequests.data).forEach((vehicleKey) => {
+            const vehicleObj = newRequests.data[vehicleKey];
+            if (vehicleObj) {
+              updatedData[vehicleKey] = vehicleObj;
+            } else {
+              console.error(
+                `Vehicle object for key ${vehicleKey} is undefined.`
+              );
+            }
+          });
+
+          setVehiclesData((prevData) => {
+            const mergedData = { ...prevData };
+
+            Object.keys(updatedData).forEach((vehicleKey: any) => {
+              const newVehicle = updatedData[vehicleKey];
+              const prevVehicle = prevData[vehicleKey];
+
+              if (
+                !prevVehicle ||
+                prevVehicle.plate_number !== newVehicle.plate_number
+              ) {
+                mergedData[vehicleKey] = newVehicle;
+              }
+            });
+
+            return mergedData;
+          });
+
+          if (!newRequests.next_page) {
+            setHasMore(false);
+          }
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching request list:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page]);
   const checkAutocompleteDisability = () => {
     if (data.travel_date !== null && data.travel_time !== null) {
       setIsTravelDateSelected(false);
@@ -548,7 +616,7 @@ export default function DashboardR() {
                   {isLoading ? (
                     <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
                       <Skeleton
-                        count={6}
+                        count={2}
                         height={200}
                         width={500}
                         containerClassName="vehicle-container"
@@ -561,59 +629,81 @@ export default function DashboardR() {
               ) : (
                 <>
                   <div className="vehicle-container">
-                    {Object.entries(vehiclesData).map(([vehicleId, data]) => (
-                      <a
-                        onClick={() => {
-                          // {
-                          //   role === "vip"
-                          //     ? (setIsInitialFormVIPOpen(true),
-                          //       setSelectedPlateNumber(vehicle.plate_number),
-                          //       setSelectedModel(vehicle.model),
-                          //       setSelectedCapacity(vehicle.capacity))
-                          //     : vehicle.is_vip === true
-                          //     ? (setIsDisclaimerOpen(true),
-                          //       setSelectedPlateNumber(vehicle.plate_number),
-                          //       setSelectedModel(vehicle.model),
-                          //       setSelectedCapacity(vehicle.capacity))
-                          //     : vehicle.merge_trip === true
-                          //     ? (setIsRequesterTripMergingFormOpen(true),
-                          //       setSelectedRequestId(vehicle.request_id))
-                          //     : openRequestForm(
-                          //         vehicle.plate_number,
-                          //         vehicle.model,
-                          //         vehicle.capacity
-                          //       );
-                          // }
-                          setIsScheduleClick(true);
-                          setSelectedVehicleExisitingSchedule(data.schedules);
-                          setSelectedVehicleCapacity(data.capacity);
-                          setSelectedVehicleDriver(data.driver_assigned_to);
-                          setSelectedVehiclePlateNumber(data.plate_number);
-                          setSelectedVehicleModel(data.model);
-                        }}
-                        className="vehicle-card"
-                        key={vehicleId}
-                      >
-                        <div className="vehicle-row">
-                          <div className="vehicle-column">
-                            <p className="vehicle-name">
-                              {data.plate_number}
-                              <br />
-                              {data.model}
-                            </p>
-                            <p className="vehicle-detail">
-                              Seating Capacity: {data.capacity}
-                            </p>
-                            <p className="vehicle-detail">Type: {data.type}</p>
+                    {Object.entries(vehiclesData).map(
+                      ([vehicleId, data], index) => (
+                        <a
+                          onClick={() => {
+                            // {
+                            //   role === "vip"
+                            //     ? (setIsInitialFormVIPOpen(true),
+                            //       setSelectedPlateNumber(vehicle.plate_number),
+                            //       setSelectedModel(vehicle.model),
+                            //       setSelectedCapacity(vehicle.capacity))
+                            //     : vehicle.is_vip === true
+                            //     ? (setIsDisclaimerOpen(true),
+                            //       setSelectedPlateNumber(vehicle.plate_number),
+                            //       setSelectedModel(vehicle.model),
+                            //       setSelectedCapacity(vehicle.capacity))
+                            //     : vehicle.merge_trip === true
+                            //     ? (setIsRequesterTripMergingFormOpen(true),
+                            //       setSelectedRequestId(vehicle.request_id))
+                            //     : openRequestForm(
+                            //         vehicle.plate_number,
+                            //         vehicle.model,
+                            //         vehicle.capacity
+                            //       );
+                            // }
+                            setIsScheduleClick(true);
+                            setSelectedVehicleExisitingSchedule(data.schedules);
+                            setSelectedVehicleCapacity(data.capacity);
+                            setSelectedVehicleDriver(data.driver_assigned_to);
+                            setSelectedVehiclePlateNumber(data.plate_number);
+                            setSelectedVehicleModel(data.model);
+                          }}
+                          className="vehicle-card"
+                          key={vehicleId}
+                          ref={
+                            index === Object.keys(vehiclesData).length - 1
+                              ? lastRequestElementRef
+                              : null
+                          }
+                        >
+                          <div className="vehicle-row">
+                            <div className="vehicle-column">
+                              <p className="vehicle-name">
+                                {data.plate_number}
+                                <br />
+                                {data.model}
+                              </p>
+                              <p className="vehicle-detail">
+                                Seating Capacity: {data.capacity}
+                              </p>
+                              <p className="vehicle-detail">
+                                Type: {data.type}
+                              </p>
+                            </div>
+                            <img
+                              className="vehicle-image"
+                              src={serverSideUrl + data.image}
+                              alt={data.model}
+                            />
                           </div>
-                          <img
-                            className="vehicle-image"
-                            src={serverSideUrl + data.image}
-                            alt={data.model}
-                          />
-                        </div>
-                      </a>
-                    ))}
+                        </a>
+                      )
+                    )}
+                    {isLoading && (
+                      <SkeletonTheme
+                        baseColor="#d9d9d9"
+                        highlightColor="#f5f5f5"
+                      >
+                        <Skeleton
+                          count={2}
+                          height={200}
+                          width={550}
+                          containerClassName="vehicle-container"
+                        />
+                      </SkeletonTheme>
+                    )}
                   </div>
                 </>
               )}

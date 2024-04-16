@@ -251,6 +251,22 @@ export default function DashboardOS() {
                         <Skeleton count={1} height={500} width={600} />
                       </SkeletonTheme>
                     </div>
+                    <div>
+                      <div className="calendar-skeleton-label-container">
+                        <SkeletonTheme
+                          baseColor="#d9d9d9"
+                          highlightColor="#f5f5f5"
+                        >
+                          <Skeleton count={1} height={60} width={400} />
+                        </SkeletonTheme>
+                      </div>
+                      <SkeletonTheme
+                        baseColor="#d9d9d9"
+                        highlightColor="#f5f5f5"
+                      >
+                        <Skeleton count={1} height={500} width={600} />
+                      </SkeletonTheme>
+                    </div>
                   </div>
                 )}
               </>

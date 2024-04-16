@@ -1,15 +1,20 @@
 .request-form-body {
+  padding-top: 7%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fbfbfb;
 }
 
 .form-body {
   display: flex;
   flex-direction: column;
-  width: 80%;
-  height: 70vh;
+  width: 100%;
+  height: auto;
+  background-color: #fbfbfb;
+  padding: 0vh 10vw 0vh 10vw;
 }
 
 .first-row {
@@ -81,7 +86,6 @@
   padding: 10px;
   height: 15vh;
   margin-left: 2%;
-
 }
 
 .purpose-width {
@@ -96,19 +100,17 @@
   justify-content: center;
   margin-top: 5px;
   margin-left: 2%;
- 
 }
 
-.passenger-fields-new {
+.third-row strong {
+  color: black;
 }
-
 .passenger-input-fields {
   gap: 3px;
   margin-top: 20px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
- 
 }
 
 .first-row-column-4 {
@@ -116,7 +118,6 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
-
 }
 
 .note-new-style {
@@ -129,5 +130,4 @@
   flex-direction: row;
   justify-content: flex-end;
   gap: 5%;
-
 }

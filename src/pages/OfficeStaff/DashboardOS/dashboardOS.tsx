@@ -203,8 +203,8 @@ export default function DashboardOS() {
                 </div>
               </div>
             ) : (
-              <div>
-                <p>No vehicle found.</p>
+              <div className="no-sched">
+                <p>No schedules found.</p>
               </div>
             )}
           </>

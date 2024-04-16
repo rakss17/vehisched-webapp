@@ -459,7 +459,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div className="request-form-downloads">
             <CommonButton
-              width={10}
+              width={12}
               height={7}
               underlinedStyle
               text="Reschedule"
@@ -895,7 +895,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <>
                 <div className="button-details-container">
                   <CommonButton
-                    width={8}
+                    width={10}
                     height={6}
                     tertiaryStyle
                     text="Cancel Trip"
@@ -904,7 +904,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
                   {!selectedRequest.main_merge && (
                     <CommonButton
-                      width={8}
+                      width={10}
                       height={6}
                       secondaryStyle
                       text="Merge trip"
@@ -912,7 +912,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     />
                   )}
                   <CommonButton
-                    width={8}
+                    width={10}
                     height={6}
                     primaryStyle
                     text="Completed"

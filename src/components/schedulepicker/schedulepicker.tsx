@@ -18,9 +18,10 @@ import {
   formatTime,
 } from "../functions/functions";
 import CircularProgress from "@mui/material/CircularProgress";
-import {
+import useHeartbeat, {
   checkScheduleConflictsForOneway,
   checkTimeAvailability,
+  checkVehicleOnProcess,
   postRequestFormAPI,
 } from "../api/api";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
@@ -54,6 +55,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const firstName = personalInfo?.first_name;
   const lastName = personalInfo?.last_name;
   const userID = personalInfo?.id;
+  const userName = personalInfo?.username;
   const office = personalInfo?.office;
   const role = personalInfo?.role;
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -75,6 +77,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   });
   const [selectedTravelType, setSelectedTravelType] = useState("");
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<RequestFormProps>({
     purpose: "",
     number_of_passenger: null,
@@ -106,7 +109,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     travelDateTimes: [],
     returnDateTimes: [],
   });
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (UnavailableTimeInRange) {
@@ -118,6 +120,10 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
           key: "selection",
         },
       ]);
+      setData({
+        travel_date: data.travel_date,
+        return_date: UnavailableTimeInRange,
+      });
     } else if (
       UnavailableTimeInRange !== null &&
       (data.travel_date !== UnavailableTimeInRange ||
@@ -132,6 +138,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
       ]);
     }
   }, [UnavailableTimeInRange, data.travel_date, data.return_date]);
+
+  useHeartbeat(isOtherFieldsShow, isDetailsConfirmationShow);
 
   useEffect(() => {
     let disabledDatesArray: any = [];
@@ -950,14 +958,35 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                         }));
                         setErrorColor(true);
                       } else {
-                        setIsCalendarDateRangePickerShow(false);
-
-                        setIsOtherFieldsShow(true);
+                        const button_action = "select_vehicle";
+                        checkVehicleOnProcess(
+                          data.travel_date,
+                          data.travel_time,
+                          data.return_date,
+                          data.return_time,
+                          selectedVehiclePlateNumber,
+                          userName,
+                          button_action,
+                          setIsLoading,
+                          setIsCalendarDateRangePickerShow,
+                          setIsOtherFieldsShow
+                        );
                       }
                     } else {
-                      setIsCalendarDateRangePickerShow(false);
+                      const button_action = "select_vehicle";
 
-                      setIsOtherFieldsShow(true);
+                      checkVehicleOnProcess(
+                        data.travel_date,
+                        data.travel_time,
+                        data.return_date,
+                        data.return_time,
+                        selectedVehiclePlateNumber,
+                        userName,
+                        button_action,
+                        setIsLoading,
+                        setIsCalendarDateRangePickerShow,
+                        setIsOtherFieldsShow
+                      );
                     }
                   }
 
@@ -1046,8 +1075,19 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 whiteStyle
                 text="Back"
                 onClick={() => {
-                  setIsCalendarDateRangePickerShow(true);
-                  setIsOtherFieldsShow(false);
+                  const button_action = "deselect_vehicle";
+                  checkVehicleOnProcess(
+                    data.travel_date,
+                    data.travel_time,
+                    data.return_date,
+                    data.return_time,
+                    selectedVehiclePlateNumber,
+                    userName,
+                    button_action,
+                    setIsLoading,
+                    setIsCalendarDateRangePickerShow,
+                    setIsOtherFieldsShow
+                  );
                 }}
               />
               <CommonButton

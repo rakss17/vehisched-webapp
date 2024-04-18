@@ -459,7 +459,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div className="request-form-downloads">
             <CommonButton
-              width={12}
+              width={10}
               height={7}
               underlinedStyle
               text="Reschedule"

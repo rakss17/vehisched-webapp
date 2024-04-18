@@ -40,6 +40,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   selectedVehicleModel,
   selectedVehiclePlateNumber,
   selectedVehicleDriver,
+  selectedVehicleIsVIP,
 }) => {
   console.log("selected vehicle", selectedVehicleExisitingSchedule);
   const [state, setState] = useState([
@@ -423,6 +424,17 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         onLoaderFinished={() => setLoadingBarProgress(0)}
       />
       <Modal className="schedule-picker-modal" isOpen={isOpen}>
+        {selectedVehicleIsVIP && (
+          <div className="disclaimer-message">
+            <p>
+              <strong>Disclaimer: </strong>
+              This vehicle is prioritized for the higher official, and your
+              reservation will be canceled once the higher official uses it
+              during your reservation.
+            </p>
+          </div>
+        )}
+
         {!isCalendarDateRangePickerShow &&
           !isOtherFieldsShow &&
           !isDetailsConfirmationShow && (

@@ -95,6 +95,7 @@ export default function DashboardR() {
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const [plateNumber, setSelectedVehiclePlateNumber] = useState("");
   const [vehicleName, setSelectedVehicleModel] = useState("");
+  const [isVIP, setSelectedVehicleIsVIP] = useState(false);
   const [capacity, setSelectedVehicleCapacity] = useState(0);
   const [assignedDriver, setSelectedVehicleDriver] = useState("");
   const navigate = useNavigate();
@@ -659,6 +660,7 @@ export default function DashboardR() {
                             setSelectedVehicleDriver(data.driver_assigned_to);
                             setSelectedVehiclePlateNumber(data.plate_number);
                             setSelectedVehicleModel(data.model);
+                            setSelectedVehicleIsVIP(data.is_vip);
                           }}
                           className="vehicle-card"
                           key={vehicleId}
@@ -1018,6 +1020,7 @@ export default function DashboardR() {
         selectedVehiclePlateNumber={plateNumber}
         selectedVehicleModel={vehicleName}
         selectedVehicleDriver={assignedDriver}
+        selectedVehicleIsVIP={isVIP}
       />
     </>
   );

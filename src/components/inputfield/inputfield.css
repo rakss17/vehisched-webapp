@@ -48,9 +48,9 @@
   margin-right: 10px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 480px) {
   .inputfield {
-    width: 30vw;
+    width: 70vw;
     height: 7vh;
     font-size: 15px;
     padding-left: 0px;

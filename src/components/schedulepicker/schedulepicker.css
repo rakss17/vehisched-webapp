@@ -219,3 +219,10 @@
   color: #060e57;
   border: 2px solid #060e57;
 }
+
+.other-vehicle-button-for-vip {
+  width: 50vw;
+  height: 7vh;
+  display: flex;
+  justify-content: flex-end;
+}

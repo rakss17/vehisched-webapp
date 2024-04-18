@@ -41,6 +41,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   selectedVehiclePlateNumber,
   selectedVehicleDriver,
   selectedVehicleIsVIP,
+  setIsAnotherVehicle,
 }) => {
   console.log("selected vehicle", selectedVehicleExisitingSchedule);
   const [state, setState] = useState([
@@ -79,6 +80,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [selectedTravelType, setSelectedTravelType] = useState("");
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const [data, setData] = useState<RequestFormProps>({
     purpose: "",
     number_of_passenger: null,
@@ -396,7 +398,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
       selectedVehiclePlateNumber,
       setAvailableTimes,
       setIsLoading,
-      setUnavailableTimeInRange
+      setUnavailableTimeInRange,
+      role
     );
   };
 
@@ -424,7 +427,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         onLoaderFinished={() => setLoadingBarProgress(0)}
       />
       <Modal className="schedule-picker-modal" isOpen={isOpen}>
-        {selectedVehicleIsVIP && (
+        {selectedVehicleIsVIP && role === "requester" && (
           <div className="disclaimer-message">
             <p>
               <strong>Disclaimer: </strong>
@@ -434,7 +437,19 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
             </p>
           </div>
         )}
-
+        {role === "vip" && isCalendarDateRangePickerShow && (
+          <div className="other-vehicle-button-for-vip">
+            <CommonButton
+              width={15}
+              height={7}
+              primaryStyle
+              text="Choose another vehicle"
+              onClick={() => {
+                setIsAnotherVehicle(true);
+              }}
+            />
+          </div>
+        )}
         {!isCalendarDateRangePickerShow &&
           !isOtherFieldsShow &&
           !isDetailsConfirmationShow && (

@@ -254,13 +254,10 @@ export async function fetchVIPAPI(setVIPData: any) {
   }
 }
 
-export async function fetchVehicleVIPAPI(
-  setVehiclesData: any,
-  handleButtonClick: any
-) {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await api.get("api/v1/vehicles/fetch-vehicle-vip/", {
+export async function fetchVehicleVIPAPI(): Promise<any> {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/vehicles/fetch-vehicle-vip/", {
       params: {
         role: "vip",
       },
@@ -268,13 +265,13 @@ export async function fetchVehicleVIPAPI(
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
+    })
+    .then((response: any) => {
+      return response.data;
+    })
+    .catch((error: any) => {
+      console.error("Error fetching vehicle list:", error);
     });
-
-    setVehiclesData(response.data);
-    handleButtonClick("Available Vehicle");
-  } catch (error) {
-    console.log(error);
-  }
 }
 export function fetchUsersAPI() {
   return async (dispatch: Dispatch) => {
@@ -1036,7 +1033,8 @@ export function checkTimeAvailability(
   selected_vehicle: any,
   setAvailableTimes: any,
   setIsLoading: any,
-  setUnavailableTimeInRange: any
+  setUnavailableTimeInRange: any,
+  role: any
 ) {
   console.log(
     "api preferred_start_travel_date before server",
@@ -1053,6 +1051,7 @@ export function checkTimeAvailability(
         preferred_start_travel_date: preferred_start_travel_date,
         preferred_end_travel_date: preferred_end_travel_date,
         selected_vehicle: selected_vehicle,
+        role: role,
       },
       headers: {
         Authorization: `Token ${token}`,

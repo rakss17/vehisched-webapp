@@ -43,6 +43,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
+  const [isAnotherVehicle, setIsAnotherVehicle] = useState(false);
   const [schedule, setSchedule] = useState<any[]>([]);
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
@@ -119,13 +120,6 @@ export default function DashboardR() {
   const role = personalInfo?.role;
 
   useEffect(() => {
-    // fetchNotification(setNotifList);
-    if (role === "vip") {
-      fetchVehicleVIPAPI(setVehiclesData, handleButtonClick);
-    }
-  }, []);
-
-  useEffect(() => {
     fetchSchedule(
       setSchedule,
       setNextSchedule,
@@ -167,100 +161,6 @@ export default function DashboardR() {
 
   NotificationApprovalScheduleReminderWebsocket(userName);
 
-  const handleSetTripModal = () => {
-    let validationErrors: { [key: string]: string } = {};
-    if (data.category === "Round Trip") {
-      const allFieldsBlank =
-        !data.travel_date &&
-        !data.travel_time &&
-        !data.return_date &&
-        !data.return_time &&
-        !data.capacity &&
-        !addressData.destination;
-
-      if (allFieldsBlank) {
-        validationErrors.all = "Required all fields!";
-      } else {
-        if (!data.travel_date) {
-          validationErrors.travelDateError = "This field is required";
-        }
-        if (!data.travel_time) {
-          validationErrors.travelTimeError = "This field is required";
-        }
-
-        if (!data.return_date) {
-          validationErrors.returnDateError = "This field is required";
-        }
-
-        if (!data.return_time) {
-          validationErrors.returnTimeError = "This field is required";
-        }
-        if (!data.capacity) {
-          validationErrors.capacityError = "This field is required";
-        }
-
-        if (!addressData.destination) {
-          validationErrors.destinationError = "This field is required";
-        }
-      }
-    } else if (
-      data.category === "One-way" ||
-      data.category === "One-way - Fetch" ||
-      data.category === "One-way - Drop"
-    ) {
-      const allFieldsBlank =
-        !data.travel_date &&
-        !data.travel_time &&
-        !data.capacity &&
-        data.category !== "One-way - Fetch" &&
-        data.category !== "One-way - Drop";
-      !data.category && !addressData.destination;
-
-      if (allFieldsBlank) {
-        validationErrors.all = "Required all fields!";
-      } else {
-        if (!data.travel_date) {
-          validationErrors.travelDateOnewayError = "This field is required";
-        }
-        if (!data.travel_time) {
-          validationErrors.travelTimeOnewayError = "This field is required";
-        }
-        if (!data.capacity) {
-          validationErrors.capacityError = "This field is required";
-        }
-
-        if (
-          data.category !== "One-way - Fetch" &&
-          data.category !== "One-way - Drop"
-        ) {
-          validationErrors.categoryError = "This field is required";
-        }
-
-        if (!addressData.destination) {
-          validationErrors.destinationError = "This field is required";
-        }
-      }
-    }
-
-    const errorArray = [validationErrors];
-
-    setErrorMessages(errorArray);
-
-    if (Object.keys(validationErrors).length === 0) {
-      setLoadingBarProgress(20);
-      checkVehicleAvailability(
-        setVehiclesData,
-        data.travel_date,
-        data.travel_time,
-        data.return_date,
-        data.return_time,
-        data.capacity,
-        setLoadingBarProgress,
-        handleButtonClick
-      );
-    }
-  };
-
   const handleOpenRequestFormForVIP = () => {
     navigate("/RequestForm", {
       state: { plateNumber, vehicleName, capacity, data, addressData },
@@ -271,22 +171,6 @@ export default function DashboardR() {
     setIsInitialFormVIPOpen(false);
     setIsDisclaimerOpen(false);
     setIsRequesterTripMergingFormOpen(false);
-  };
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    const key = event.key;
-
-    if (key !== "Backspace" && isNaN(Number(key))) {
-      event.preventDefault();
-    }
-  };
-  const openRequestForm = (
-    plateNumber: string,
-    vehicleName: string,
-    capacity: any
-  ) => {
-    navigate("/RequestForm", {
-      state: { plateNumber, vehicleName, capacity, data, addressData },
-    });
   };
 
   // const availableVehicles = vehiclesData.filter((vehicle) => {
@@ -302,6 +186,55 @@ export default function DashboardR() {
   useEffect(() => {
     setData({ ...data, category: "Round Trip" });
     setSelectedTripButton("Round Trip");
+  }, []);
+
+  useEffect(() => {
+    // fetchNotification(setNotifList);
+    if (role === "vip") {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const vehiclesVIP = await fetchVehicleVIPAPI();
+          if (vehiclesVIP && vehiclesVIP.data) {
+            const updatedData: any = {};
+
+            Object.keys(vehiclesVIP.data).forEach((vehicleKey) => {
+              const vehicleObj = vehiclesVIP.data[vehicleKey];
+              if (vehicleObj) {
+                updatedData[vehicleKey] = vehicleObj;
+              } else {
+                console.error(
+                  `Vehicle object for key ${vehicleKey} is undefined.`
+                );
+              }
+            });
+
+            setVehiclesData((prevData) => {
+              const mergedData = { ...prevData };
+
+              Object.keys(updatedData).forEach((vehicleKey: any) => {
+                const newVehicle = updatedData[vehicleKey];
+                const prevVehicle = prevData[vehicleKey];
+
+                if (
+                  !prevVehicle ||
+                  prevVehicle.plate_number !== newVehicle.plate_number
+                ) {
+                  mergedData[vehicleKey] = newVehicle;
+                }
+              });
+
+              return mergedData;
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching vehicles list:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
   }, []);
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -321,63 +254,60 @@ export default function DashboardR() {
   );
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const newRequests = await fetchEachVehicleSchedule(page);
+    if (role === "requester") {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const newRequests = await fetchEachVehicleSchedule(page);
 
-        if (newRequests && newRequests.data) {
-          const updatedData: any = {};
+          if (newRequests && newRequests.data) {
+            const updatedData: any = {};
 
-          Object.keys(newRequests.data).forEach((vehicleKey) => {
-            const vehicleObj = newRequests.data[vehicleKey];
-            if (vehicleObj) {
-              updatedData[vehicleKey] = vehicleObj;
-            } else {
-              console.error(
-                `Vehicle object for key ${vehicleKey} is undefined.`
-              );
-            }
-          });
-
-          setVehiclesData((prevData) => {
-            const mergedData = { ...prevData };
-
-            Object.keys(updatedData).forEach((vehicleKey: any) => {
-              const newVehicle = updatedData[vehicleKey];
-              const prevVehicle = prevData[vehicleKey];
-
-              if (
-                !prevVehicle ||
-                prevVehicle.plate_number !== newVehicle.plate_number
-              ) {
-                mergedData[vehicleKey] = newVehicle;
+            Object.keys(newRequests.data).forEach((vehicleKey) => {
+              const vehicleObj = newRequests.data[vehicleKey];
+              if (vehicleObj) {
+                updatedData[vehicleKey] = vehicleObj;
+              } else {
+                console.error(
+                  `Vehicle object for key ${vehicleKey} is undefined.`
+                );
               }
             });
 
-            return mergedData;
-          });
+            setVehiclesData((prevData) => {
+              const mergedData = { ...prevData };
 
-          if (!newRequests.next_page) {
+              Object.keys(updatedData).forEach((vehicleKey: any) => {
+                const newVehicle = updatedData[vehicleKey];
+                const prevVehicle = prevData[vehicleKey];
+
+                if (
+                  !prevVehicle ||
+                  prevVehicle.plate_number !== newVehicle.plate_number
+                ) {
+                  mergedData[vehicleKey] = newVehicle;
+                }
+              });
+
+              return mergedData;
+            });
+
+            if (!newRequests.next_page) {
+              setHasMore(false);
+            }
+          } else {
             setHasMore(false);
           }
-        } else {
-          setHasMore(false);
+        } catch (error) {
+          console.error("Error fetching vehicles list:", error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching request list:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    fetchData();
-  }, [page]);
-  const checkAutocompleteDisability = () => {
-    if (data.travel_date !== null && data.travel_time !== null) {
-      setIsTravelDateSelected(false);
+      fetchData();
     }
-  };
+  }, [page, role === "requester"]);
 
   const handleButtonClick = (button: string) => {
     switch (button) {
@@ -459,71 +389,6 @@ export default function DashboardR() {
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  };
-
-  const handleStartDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, travel_date: formattedDate });
-    if (data.category === "Round Trip") {
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.travelDateError;
-      setErrorMessages(updatedErrors);
-    } else if (
-      data.category === "One-way" ||
-      data.category === "One-way - Fetch" ||
-      data.category === "One-way - Drop"
-    ) {
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.travelDateOnewayError;
-      setErrorMessages(updatedErrors);
-    }
-
-    checkAutocompleteDisability();
-  };
-  const handleEndDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, return_date: formattedDate });
-    const updatedErrors = { ...errorMessages };
-    delete updatedErrors[0]?.returnDateError;
-    setErrorMessages(updatedErrors);
-  };
-
-  const handleStartTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, travel_time: time });
-      if (data.category === "Round Trip") {
-        const updatedErrors = { ...errorMessages };
-        delete updatedErrors[0]?.travelTimeError;
-        setErrorMessages(updatedErrors);
-      } else if (
-        data.category === "One-way" ||
-        data.category === "One-way - Fetch" ||
-        data.category === "One-way - Drop"
-      ) {
-        const updatedErrors = { ...errorMessages };
-        delete updatedErrors[0]?.travelTimeOnewayError;
-        setErrorMessages(updatedErrors);
-      }
-      checkAutocompleteDisability();
-    } else {
-      console.log("No time selected.");
-    }
-  };
-  const handleEndTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, return_time: time });
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.returnTimeError;
-      setErrorMessages(updatedErrors);
-    } else {
-      console.log("No time selected.");
-    }
-  };
-
-  const removeDestinationError = () => {
-    const updatedErrors = [...errorMessages];
-    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
-    setErrorMessages(updatedErrors);
   };
 
   useEffect(() => {
@@ -1021,6 +886,7 @@ export default function DashboardR() {
         selectedVehicleModel={vehicleName}
         selectedVehicleDriver={assignedDriver}
         selectedVehicleIsVIP={isVIP}
+        setIsAnotherVehicle={setIsAnotherVehicle}
       />
     </>
   );

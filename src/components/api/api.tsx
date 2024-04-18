@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useEffect } from "react";
 import {
   SigninParams,
   SignupParams,
@@ -1763,4 +1764,142 @@ export function submitTripMerge(
       setLoadingBarProgress(100);
       console.log(error);
     });
+}
+
+export async function checkVehicleOnProcess(
+  preferred_start_travel_date: any,
+  preferred_start_travel_timee: any,
+  preferred_end_travel_date: any,
+  preferred_end_travel_timee: any,
+  preferred_vehicle: any,
+  requester: any,
+  button_action: any,
+  setIsLoading: any,
+  setIsCalendarDateRangePickerShow: any,
+  setIsOtherFieldsShow: any
+) {
+  // const start_time_format = getTimeFormat(preferred_start_travel_timee);
+
+  // let preferred_start_travel_time = preferred_start_travel_timee;
+  // if (start_time_format) {
+  //   const date = parse(
+  //     preferred_start_travel_timee,
+  //     start_time_format,
+  //     new Date()
+  //   );
+  //   if (!isValid(date)) {
+  //     throw new Error("Invalid date for preferred_start_travel_timee");
+  //   }
+  //   preferred_start_travel_time = format(date, "HH:mm");
+  // }
+
+  // let preferred_end_travel_time = preferred_end_travel_timee;
+  // const end_time_format = getTimeFormat(preferred_end_travel_timee);
+  // if (end_time_format) {
+  //   const datee = parse(
+  //     preferred_end_travel_timee,
+  //     end_time_format,
+  //     new Date()
+  //   );
+  //   if (!isValid(datee)) {
+  //     throw new Error("Invalid date for preferred_end_travel_timee");
+  //   }
+  //   preferred_end_travel_time = format(datee, "HH:mm");
+  // }
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/vehicles/check-vehicle-on-process/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_start_travel_time: preferred_start_travel_timee,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_end_travel_time: preferred_end_travel_timee,
+        preferred_vehicle: preferred_vehicle,
+        button_action: button_action,
+        requester: requester,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then(async (response: any) => {
+      setIsLoading(false);
+      if (response.data.message === "Vacant") {
+        localStorage.setItem(
+          "on_process_id",
+          JSON.stringify(response.data.on_process_id)
+        );
+        setIsCalendarDateRangePickerShow(false);
+        setIsOtherFieldsShow(true);
+      }
+      if (response.data.message === "Deselect vehicle") {
+        localStorage.removeItem("on_process_id");
+        setIsCalendarDateRangePickerShow(true);
+        setIsOtherFieldsShow(false);
+      }
+    })
+    .catch((error: any) => {
+      console.log(error.response.data.message);
+      if (error.response && error.response.data) {
+        setIsLoading(false);
+        const errorMessage =
+          error.response.data.message || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
+}
+
+export default function useHeartbeat(
+  isOtherFieldsShow: boolean,
+  isDetailsConfirmationShow: boolean
+) {
+  useEffect(() => {
+    let intervalId: any;
+
+    const heartBeatOnProcessVehicle = async () => {
+      try {
+        const onProcessId = localStorage.getItem("on_process_id");
+        const token = localStorage.getItem("token");
+
+        if (onProcessId && token) {
+          api
+            .patch(
+              `/api/v1/vehicles/heartbeat-on-process-vehicle/${onProcessId}/`,
+              {},
+              {
+                headers: {
+                  Authorization: `Token ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+            .then(() => {})
+            .catch((error: any) => {
+              console.error("Heartbeat failed:", error);
+            });
+        }
+      } catch (error) {
+        console.error("Failed to retrieve on_process_id or token:", error);
+      }
+    };
+
+    if (isOtherFieldsShow || isDetailsConfirmationShow) {
+      intervalId = setInterval(heartBeatOnProcessVehicle, 30000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isOtherFieldsShow, isDetailsConfirmationShow]);
 }

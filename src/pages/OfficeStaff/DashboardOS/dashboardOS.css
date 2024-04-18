@@ -57,6 +57,16 @@
   align-items: center;
   justify-content: center;
 }
+.no-sched {
+  padding-left: 15vw;
+  height: 15vh;
+  align-items: center;
+  display: flex;
+}
+.no-sched p {
+  color: black;
+  font-size: 1.3rem;
+}
 
 @media screen and (max-width: 767px) {
   .dashboard-container {

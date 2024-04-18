@@ -779,7 +779,6 @@ export default function RequestForm() {
                           secondaryStyle
                           onClick={handleGoBack}
                           text={"Go back"}
-                         
                         />
 
                         <CommonButton
@@ -788,7 +787,6 @@ export default function RequestForm() {
                           primaryStyle
                           onClick={handleSubmit}
                           text={"Submit"}
-                          
                         />
                       </div>
                     </div>

@@ -31,6 +31,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Confirmation from "../confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { Any } from "@react-spring/web";
 
 const SchedulePicker: React.FC<SchedulePickerProps> = ({
   isOpen,
@@ -419,6 +422,16 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const today = new Date();
   today.setDate(today.getDate() + 3);
 
+  // dummy data
+  const dummyVehicles = [
+    { label: "Toyota Camry", number: "ABC123" },
+    { label: "Honda Civic", number: "DEF456" },
+    { label: "Ford Mustang", number: "GHI789" },
+    { label: "Chevrolet Silverado", number: "JKL012" },
+    { label: "Tesla Model S", number: "MNO345" },
+    // Add more dummy data as needed
+  ];
+
   return (
     <>
       <LoadingBar
@@ -439,14 +452,12 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         )}
         {role === "vip" && isCalendarDateRangePickerShow && (
           <div className="other-vehicle-button-for-vip">
-            <CommonButton
-              width={15}
-              height={7}
-              primaryStyle
-              text="Choose another vehicle"
-              onClick={() => {
-                setIsAnotherVehicle(true);
-              }}
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={dummyVehicles}
+              sx={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Choose Other Vehicle" />}
             />
           </div>
         )}

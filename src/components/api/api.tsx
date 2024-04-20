@@ -254,12 +254,19 @@ export async function fetchVIPAPI(setVIPData: any) {
   }
 }
 
-export async function fetchVehicleVIPAPI(): Promise<any> {
+export async function fetchVehicleVIPAPI(
+  isAnotherVehicle: any,
+  userID: any,
+  existingVehicle: any
+): Promise<any> {
   const token = localStorage.getItem("token");
   return api
     .get("api/v1/vehicles/fetch-vehicle-vip/", {
       params: {
         role: "vip",
+        is_another_vehicle: isAnotherVehicle,
+        user_id: userID,
+        existing_vehicle: existingVehicle,
       },
       headers: {
         Authorization: `Token ${token}`,
@@ -271,6 +278,41 @@ export async function fetchVehicleVIPAPI(): Promise<any> {
     })
     .catch((error: any) => {
       console.error("Error fetching vehicle list:", error);
+    });
+}
+export function fetchAnotherVehicle(
+  setAnotherVehicleData: any,
+  existingVehicle: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/vehicles/another-vehicle/", {
+      params: {
+        existing_vehicle: existingVehicle,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setAnotherVehicleData(response.data);
+      console.log(response.data);
+    })
+    .catch((error: any) => {
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching vehicle list:", error);
     });
 }
 export function fetchUsersAPI() {
@@ -1034,7 +1076,9 @@ export function checkTimeAvailability(
   setAvailableTimes: any,
   setIsLoading: any,
   setUnavailableTimeInRange: any,
-  role: any
+  role: any,
+  userID: any,
+  isAnotherVehiclee: any
 ) {
   console.log(
     "api preferred_start_travel_date before server",
@@ -1052,6 +1096,8 @@ export function checkTimeAvailability(
         preferred_end_travel_date: preferred_end_travel_date,
         selected_vehicle: selected_vehicle,
         role: role,
+        user_id: userID,
+        is_another_vehicle: isAnotherVehiclee,
       },
       headers: {
         Authorization: `Token ${token}`,

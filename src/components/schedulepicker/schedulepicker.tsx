@@ -44,9 +44,13 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   selectedVehiclePlateNumber,
   selectedVehicleDriver,
   selectedVehicleIsVIP,
+  selectedVehicleVIPAssignedTo,
   setIsAnotherVehicle,
+  anotherVehicleData,
+  setSelectedAnotherVehicle,
+  isLoadingVehicles,
 }) => {
-  console.log("selected vehicle", selectedVehicleExisitingSchedule);
+  console.log("anotherVehicleData", anotherVehicleData);
   const [state, setState] = useState([
     {
       startDate: new Date(new Date().setDate(new Date().getDate() + 3)),
@@ -69,6 +73,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [disableDates, setDisableDates] = useState<any[]>([]);
   const [UnavailableTimeInRange, setUnavailableTimeInRange] = useState(null);
   const [isFromAutoComplete, setIsFromAutoComplete] = useState(false);
+  const [isAnotherVehiclee, setIsAnotherVehiclee] = useState(false);
+  const [requestForAnotherVehicle, setRequestForAnotherVehicle] =
+    useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [errorColor, setErrorColor] = useState(false);
   const [isCalendarDateRangePickerShow, setIsCalendarDateRangePickerShow] =
@@ -402,7 +409,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
       setAvailableTimes,
       setIsLoading,
       setUnavailableTimeInRange,
-      role
+      role,
+      userID,
+      isAnotherVehiclee
     );
   };
 
@@ -423,14 +432,24 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   today.setDate(today.getDate() + 3);
 
   // dummy data
-  const dummyVehicles = [
-    { label: "Toyota Camry", number: "ABC123" },
-    { label: "Honda Civic", number: "DEF456" },
-    { label: "Ford Mustang", number: "GHI789" },
-    { label: "Chevrolet Silverado", number: "JKL012" },
-    { label: "Tesla Model S", number: "MNO345" },
-    // Add more dummy data as needed
-  ];
+  // const dummyVehicles = [
+  //   { label: "Toyota Camry", number: "ABC123" },
+  //   { label: "Honda Civic", number: "DEF456" },
+  //   { label: "Ford Mustang", number: "GHI789" },
+  //   { label: "Chevrolet Silverado", number: "JKL012" },
+  //   { label: "Tesla Model S", number: "MNO345" },
+  //   // Add more dummy data as needed
+  // ];
+
+  const formattedVehicleData = anotherVehicleData.map((vehicle: any) => ({
+    label: vehicle.plate_number + " " + vehicle.model, // Assuming you want to display the plate number as the label
+    value: vehicle, // Keep the entire vehicle object as the value
+  }));
+
+  const handleSelectAnotherVehicle = (event: any, value: any) => {
+    setSelectedAnotherVehicle(value.value.plate_number);
+    setIsAnotherVehiclee(true);
+  };
 
   return (
     <>
@@ -452,13 +471,48 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         )}
         {role === "vip" && isCalendarDateRangePickerShow && (
           <div className="other-vehicle-button-for-vip">
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={dummyVehicles}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Choose Other Vehicle" />}
-            />
+            <strong>
+              {selectedVehiclePlateNumber} {selectedVehicleModel}
+            </strong>
+
+            {requestForAnotherVehicle ? (
+              <>
+                {isLoadingVehicles ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "20vw",
+                    }}
+                  >
+                    <CircularProgress color="primary" size={35} />
+                  </div>
+                ) : (
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={formattedVehicleData}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Choose Other Vehicle" />
+                    )}
+                    onChange={handleSelectAnotherVehicle}
+                  />
+                )}
+              </>
+            ) : (
+              <CommonButton
+                width={18}
+                height={7}
+                primaryStyle
+                text="Request for another vehicles"
+                onClick={() => {
+                  setIsAnotherVehicle(true);
+                  setRequestForAnotherVehicle(true);
+                }}
+              />
+            )}
           </div>
         )}
         {!isCalendarDateRangePickerShow &&

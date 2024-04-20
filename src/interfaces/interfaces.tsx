@@ -285,5 +285,9 @@ export interface SchedulePickerProps {
   selectedVehicleModel?: any;
   selectedVehicleDriver?: any;
   selectedVehicleIsVIP?: any;
+  selectedVehicleVIPAssignedTo?: any;
   setIsAnotherVehicle?: any;
+  anotherVehicleData?: any;
+  setSelectedAnotherVehicle?: any;
+  isLoadingVehicles?: any;
 }

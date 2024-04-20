@@ -22,6 +22,7 @@ import {
   cancelRequestAPI,
   fetchVehicleVIPAPI,
   fetchEachVehicleSchedule,
+  fetchAnotherVehicle,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
 import { format } from "date-fns";
@@ -43,6 +44,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
+  const [anotherVehiclesData, setAnotherVehiclesData] = useState<Vehicle[]>([]);
   const [isAnotherVehicle, setIsAnotherVehicle] = useState(false);
   const [schedule, setSchedule] = useState<any[]>([]);
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
@@ -71,6 +73,9 @@ export default function DashboardR() {
   const [selectedRequestId, setSelectedRequestId] = useState("");
   const [givenCapacity, setGivenCapacity] = useState(0);
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+  const [anotherVehicleData, setAnotherVehicleData] = useState<Vehicle[]>([]);
+  const [selectedAnotherVehicle, setSelectedAnotherVehicle] = useState("");
+
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
@@ -93,12 +98,15 @@ export default function DashboardR() {
   });
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const userName = personalInfo?.username;
+  const userID = personalInfo?.id;
   const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
   const [plateNumber, setSelectedVehiclePlateNumber] = useState("");
   const [vehicleName, setSelectedVehicleModel] = useState("");
   const [isVIP, setSelectedVehicleIsVIP] = useState(false);
   const [capacity, setSelectedVehicleCapacity] = useState(0);
   const [assignedDriver, setSelectedVehicleDriver] = useState("");
+  const [selectedVehicleVIPAssignedTo, setSelectedVehicleVIPAssignedTo] =
+    useState("");
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -189,43 +197,80 @@ export default function DashboardR() {
   }, []);
 
   useEffect(() => {
+    fetchAnotherVehicle(setAnotherVehicleData, plateNumber);
+  }, [isAnotherVehicle]);
+
+  useEffect(() => {
     // fetchNotification(setNotifList);
-    if (role === "vip") {
+    if (role === "vip" || isAnotherVehicle) {
+      console.log("another vehicle", isAnotherVehicle);
       const fetchData = async () => {
         setIsLoading(true);
         try {
-          const vehiclesVIP = await fetchVehicleVIPAPI();
+          const vehiclesVIP = await fetchVehicleVIPAPI(
+            isAnotherVehicle,
+            userID,
+            plateNumber
+          );
           if (vehiclesVIP && vehiclesVIP.data) {
-            const updatedData: any = {};
+            if (vehiclesVIP.another_set_of_vehicles === "true") {
+              const updatedData: any = {};
 
-            Object.keys(vehiclesVIP.data).forEach((vehicleKey) => {
-              const vehicleObj = vehiclesVIP.data[vehicleKey];
-              if (vehicleObj) {
-                updatedData[vehicleKey] = vehicleObj;
-              } else {
-                console.error(
-                  `Vehicle object for key ${vehicleKey} is undefined.`
-                );
-              }
-            });
-
-            setVehiclesData((prevData) => {
-              const mergedData = { ...prevData };
-
-              Object.keys(updatedData).forEach((vehicleKey: any) => {
-                const newVehicle = updatedData[vehicleKey];
-                const prevVehicle = prevData[vehicleKey];
-
-                if (
-                  !prevVehicle ||
-                  prevVehicle.plate_number !== newVehicle.plate_number
-                ) {
-                  mergedData[vehicleKey] = newVehicle;
+              Object.keys(vehiclesVIP.data).forEach((vehicleKey) => {
+                const vehicleObj = vehiclesVIP.data[vehicleKey];
+                if (vehicleObj) {
+                  updatedData[vehicleKey] = vehicleObj;
+                } else {
+                  console.error(
+                    `Vehicle object for key ${vehicleKey} is undefined.`
+                  );
                 }
               });
+              console.log("vehiclesVIP", vehiclesVIP);
+              setAnotherVehiclesData((prevData) => {
+                // Directly use updatedData instead of merging it with prevData
+                return updatedData;
+              });
+            } else {
+              const updatedData: any = {};
 
-              return mergedData;
-            });
+              Object.keys(vehiclesVIP.data).forEach((vehicleKey) => {
+                const vehicleObj = vehiclesVIP.data[vehicleKey];
+                if (vehicleObj) {
+                  updatedData[vehicleKey] = vehicleObj;
+                } else {
+                  console.error(
+                    `Vehicle object for key ${vehicleKey} is undefined.`
+                  );
+                }
+              });
+              console.log("vehiclesVIP", vehiclesVIP);
+              setVehiclesData((prevData) => {
+                // Directly use updatedData instead of merging it with prevData
+                return updatedData;
+              });
+            }
+
+            // if (isAnotherVehicle) {
+            //   setAnotherVehicleData((prevData: any) => {
+            //     const mergedData = { ...prevData };
+
+            //     Object.keys(updatedNormalData).forEach((vehicleKey: any) => {
+            //       const newVehicle = updatedData[vehicleKey];
+            //       const prevVehicle = prevData[vehicleKey];
+
+            //       if (
+            //         !prevVehicle ||
+            //         prevVehicle.plate_number !== newVehicle.plate_number
+            //       ) {
+            //         mergedData[vehicleKey] =
+            //           newVehicle.plate_number + newVehicle.model;
+            //       }
+            //     });
+
+            //     return mergedData;
+            //   });
+            // }
           }
         } catch (error) {
           console.error("Error fetching vehicles list:", error);
@@ -235,7 +280,7 @@ export default function DashboardR() {
       };
       fetchData();
     }
-  }, []);
+  }, [role === "vip", isAnotherVehicle]);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastRequestElementRef = useCallback(
@@ -381,10 +426,25 @@ export default function DashboardR() {
 
   useEffect(() => {
     handleButtonClickTrip("Round Trip");
-  }, []);
-  useEffect(() => {
     handleButtonClick("Available Vehicle");
   }, []);
+
+  useEffect(() => {
+    if (selectedAnotherVehicle) {
+      const foundVehicle = Object.values(anotherVehiclesData).find(
+        (vehicle) => vehicle.plate_number === selectedAnotherVehicle
+      );
+      if (foundVehicle) {
+        setSelectedVehicleExisitingSchedule(foundVehicle.schedules);
+        setSelectedVehicleCapacity(foundVehicle.capacity);
+        setSelectedVehicleDriver(foundVehicle.driver_assigned_to);
+        setSelectedVehiclePlateNumber(foundVehicle.plate_number);
+        setSelectedVehicleModel(foundVehicle.model);
+        setSelectedVehicleIsVIP(foundVehicle.is_vip);
+        setSelectedVehicleVIPAssignedTo(foundVehicle.vip_assigned_to);
+      }
+    }
+  }, [selectedAnotherVehicle, anotherVehiclesData]);
 
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
@@ -526,6 +586,9 @@ export default function DashboardR() {
                             setSelectedVehiclePlateNumber(data.plate_number);
                             setSelectedVehicleModel(data.model);
                             setSelectedVehicleIsVIP(data.is_vip);
+                            setSelectedVehicleVIPAssignedTo(
+                              data.vip_assigned_to
+                            );
                           }}
                           className="vehicle-card"
                           key={vehicleId}
@@ -886,7 +949,11 @@ export default function DashboardR() {
         selectedVehicleModel={vehicleName}
         selectedVehicleDriver={assignedDriver}
         selectedVehicleIsVIP={isVIP}
+        selectedVehicleVIPAssignedTo={selectedVehicleVIPAssignedTo}
         setIsAnotherVehicle={setIsAnotherVehicle}
+        anotherVehicleData={anotherVehicleData}
+        setSelectedAnotherVehicle={setSelectedAnotherVehicle}
+        isLoadingVehicles={isLoading}
       />
     </>
   );

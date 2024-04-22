@@ -181,11 +181,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
     setErrorMessages(errorArray);
     if (Object.keys(validationErrors).length === 0) {
+      setLoadingBarProgress(20);
       approveRequestAPI(
         selectedRequest.request_id,
         selectedDriverId,
         onRequestClose,
-        setIsConfirmationApprovedOpen
+        setIsConfirmationApprovedOpen,
+        setLoadingBarProgress
       );
     }
   };

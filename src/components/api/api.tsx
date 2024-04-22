@@ -789,7 +789,8 @@ export function approveRequestAPI(
   requestId: any,
   selectedDriverId: any,
   onRequestClose: any,
-  setIsConfirmationOpen: any
+  setIsConfirmationOpen: any,
+  setLoadingBarProgress: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -808,15 +809,20 @@ export function approveRequestAPI(
       }
     )
     .then(() => {
+      setLoadingBarProgress(50);
       onRequestClose();
       setIsConfirmationOpen(true);
 
       setTimeout(() => {
+        setLoadingBarProgress(100);
         setIsConfirmationOpen(false);
+
         window.location.reload();
       }, 3000);
     })
     .catch((error: any) => {
+      setLoadingBarProgress(50);
+      setLoadingBarProgress(100);
       console.log(error);
     });
 }

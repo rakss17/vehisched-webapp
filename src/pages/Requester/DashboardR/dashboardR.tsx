@@ -244,7 +244,6 @@ export default function DashboardR() {
                   );
                 }
               });
-              console.log("vehiclesVIP", vehiclesVIP);
               setVehiclesData((prevData) => {
                 // Directly use updatedData instead of merging it with prevData
                 return updatedData;
@@ -665,7 +664,7 @@ export default function DashboardR() {
                           {recommend.return_date},{" "}
                           {formatTime(recommend.return_time)}
                         </span>{" "}
-                        {recommend.message}
+                        {recommend.message}. Please select a vehicle. Thank you!
                       </p>
                     </div>
                     <Carousel

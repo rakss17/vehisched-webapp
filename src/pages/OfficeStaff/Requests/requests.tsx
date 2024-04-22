@@ -229,7 +229,7 @@ export default function Requests() {
               "Approved - Alterate Vehicle",
               "Canceled",
               "Rejected",
-              "Vehicle Maintenance",
+              "Ongoing Vehicle Maintenance",
               "Driver Absence",
               "Logs",
             ]}

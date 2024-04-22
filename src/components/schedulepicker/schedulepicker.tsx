@@ -365,6 +365,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
 
   useEffect(() => {
     if (
+      ((role === "requester" && !isAnotherVehiclee) ||
+        (role === "vip" && isAnotherVehiclee)) &&
       (selectedTravelType === "One-way - Drop" ||
         selectedTravelType === "One-way - Fetch") &&
       isFromAutoComplete &&
@@ -388,6 +390,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     addressData.distance,
     data.return_date,
     data.return_time,
+    role,
   ]);
 
   useEffect(() => {
@@ -1026,13 +1029,14 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                   setErrorMessages(errorArray);
                   if (Object.keys(validationErrors).length === 0) {
                     if (
+                      ((role === "requester" && !isAnotherVehiclee) ||
+                        (role === "vip" && isAnotherVehiclee)) &&
                       (selectedTravelType === "One-way - Drop" ||
                         selectedTravelType === "One-way - Fetch") &&
                       isFromAutoComplete &&
                       addressData.destination &&
                       addressData.distance
                     ) {
-                      console.log("isFrom", data.travel_date, data.return_date);
                       checkScheduleConflictsForOneway(
                         data.travel_date,
                         data.travel_time,
@@ -1049,6 +1053,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                           distance: null,
                         }));
                         setErrorColor(true);
+                        setIsCalendarDateRangePickerShow(true);
+                        setIsOtherFieldsShow(false);
                       } else {
                         const button_action = "select_vehicle";
                         checkVehicleOnProcess(

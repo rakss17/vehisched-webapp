@@ -916,7 +916,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     height={6}
                     primaryStyle
                     text="Completed"
-                    
+                    onClick={onComplete}
                   />
                 </div>
               </>

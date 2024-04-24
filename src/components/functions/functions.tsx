@@ -180,3 +180,11 @@ export function convertTo24HourFormat(timeString: any) {
     "0"
   )}`;
 }
+
+export function removeLastZeroesOfTime(time: string) {
+  if (time.endsWith(":00")) {
+    return time.slice(0, -3);
+  }
+
+  return time;
+}

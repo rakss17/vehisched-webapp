@@ -30,6 +30,7 @@ import {
   calculateDateGap,
   formatDate,
   formatTime,
+  removeLastZeroesOfTime,
 } from "../functions/functions";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
@@ -66,7 +67,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [mergeTripData, setMergeTripData] = useState<RequestFormProps>({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
-    travel_time: selectedRequest.travel_time,
+    travel_time: removeLastZeroesOfTime(selectedRequest.travel_time),
     return_date: "",
     return_time: "",
     destination: "",
@@ -75,7 +76,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     type: "",
     distance: null,
     merge_trip: true,
-    role: null,
+    role: "office staff",
     driver_name: selectedRequest.driver_id,
     passenger_name: [],
     vehicle_capacity: "",
@@ -97,7 +98,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       distance: addressData.distance,
       merged_with: selectedRequest.request_id,
     }));
-  }, [addressData, mergeTripData]);
+  }, [addressData]);
 
   useEffect(() => {
     if (mergeTripData.type === "Round Trip") {
@@ -336,9 +337,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-    console.log(mergeTripData);
+    console.log("merge trip", mergeTripData);
+
     if (Object.keys(validationErrors).length === 0) {
       setLoadingBarProgress(20);
+
       postRequestFormAPI(
         mergeTripData,
         // () => {
@@ -904,7 +907,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                     onClick={onCancelTrip}
                   />
 
-                  {!selectedRequest.main_merge && (
+                  {selectedRequest.main_merge && (
                     <CommonButton
                       width={10}
                       height={6}
@@ -1007,7 +1010,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
 
           <div className="merge-trip-modal-field-container">
-            <p>Category: </p>
+            <p>Travel type: </p>
             <div className="merge-trip-modal-select-field-container">
               <select
                 value={mergeTripData.type}
@@ -1049,7 +1052,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <AutoCompleteAddressGoogle
                 className="autocomplete-address-google-custom"
                 travel_date={selectedRequest.travel_date}
-                travel_time={selectedRequest.travel_time}
+                travel_time={removeLastZeroesOfTime(
+                  selectedRequest.travel_time
+                )}
                 setData={setMergeTripData}
                 setAddressData={setAddressData}
                 category={mergeTripData.type}

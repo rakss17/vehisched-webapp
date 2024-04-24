@@ -30,7 +30,7 @@
   padding-right: 1vw;
 }
 
-.request-form-header{
+.request-form-header {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -40,20 +40,20 @@
   justify-content: center;
 }
 
-.request-form-header h1{
+.request-form-header h1 {
   font-size: 1.5rem;
   width: 45%;
   margin-left: 15%;
 }
 
-.request-form-header p{
+.request-form-header p {
   font-size: 1.2rem;
   width: 45%;
   text-align: right;
   margin-right: 5%;
 }
 
-.request-form-downloads{
+.request-form-downloads {
   width: 90%;
   display: flex;
   flex-direction: row;
@@ -62,13 +62,12 @@
   font-size: 1rem;
 }
 
-.request-form-details{
+.request-form-details {
   position: relative;
   width: 70%;
- 
 }
 
-.request-form-each-details{
+.request-form-each-details {
   position: inherit;
   width: 100%;
   display: flex;
@@ -77,25 +76,24 @@
   align-items: center;
 }
 
-.request-form-each-details h2{
+.request-form-each-details h2 {
   width: 50%;
   text-align: left;
   font-size: 1rem;
 }
 
-.request-form-each-details p{
+.request-form-each-details p {
   width: 50%;
   text-align: right;
   font-size: 1rem;
 }
 
-.request-form-details-driver{
+.request-form-details-driver {
   position: relative;
   width: 70%;
-
 }
 
-.request-form-each-details-driver{
+.request-form-each-details-driver {
   position: inherit;
   width: 104%;
   display: flex;
@@ -104,19 +102,19 @@
   align-items: center;
 }
 
-.request-form-each-details-driver h2{
+.request-form-each-details-driver h2 {
   width: 20%;
   text-align: left;
   font-size: 1rem;
 }
 
-.request-form-each-details-driver p{
+.request-form-each-details-driver p {
   width: 60%;
   text-align: right;
   font-size: 1rem;
 }
 
-.button-details-container{
+.button-details-container {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -124,8 +122,6 @@
   justify-content: center;
   align-items: center;
 }
-
-
 
 .merge-trip-modal {
   display: flex;
@@ -196,6 +192,7 @@
   top: 100%;
   left: 0%;
   width: 20vw;
+  height: 25vh;
   padding: 10px;
   background-color: #d9d9d9;
   border: 1px solid black;
@@ -203,6 +200,7 @@
   list-style: none;
   color: black;
   z-index: 20;
+  overflow: auto;
 }
 .merge-trip-modal-container .dropdown-toggle-custom {
   margin-left: 5vw;
@@ -245,7 +243,7 @@
   flex-direction: row;
   width: 40vw;
   text-align: center;
-  justify-content: flex-end;
+  justify-content: center;
   margin-right: 9%;
   flex-wrap: wrap;
   gap: 1%;
@@ -346,9 +344,5 @@
   justify-content: space-between;
 }
 
-
-@media (max-width: 480px){
-
-  
+@media (max-width: 480px) {
 }
-

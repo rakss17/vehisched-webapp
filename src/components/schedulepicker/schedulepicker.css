@@ -45,7 +45,8 @@
 .available-times-header-container {
   display: flex;
   flex-direction: row;
-  gap: 7.5vw;
+  gap: 3vw;
+  padding-left: 1.5vw;
 }
 .check-time-availability-container {
   align-items: center;
@@ -226,4 +227,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.return-time-note {
+  width: 10vw;
+}
+
+.return-time-circular-note {
+  width: 10vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

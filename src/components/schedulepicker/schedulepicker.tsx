@@ -19,6 +19,7 @@ import {
 } from "../functions/functions";
 import CircularProgress from "@mui/material/CircularProgress";
 import useHeartbeat, {
+  checkReturnTimeAvailability,
   checkScheduleConflictsForOneway,
   checkTimeAvailability,
   checkVehicleOnProcess,
@@ -74,6 +75,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [UnavailableTimeInRange, setUnavailableTimeInRange] = useState(null);
   const [isFromAutoComplete, setIsFromAutoComplete] = useState(false);
   const [isAnotherVehiclee, setIsAnotherVehiclee] = useState(false);
+  const [isUnavailableWithinDayOnly, setIsUnavailableWithinDayOnly] =
+    useState(false);
   const [requestForAnotherVehicle, setRequestForAnotherVehicle] =
     useState(false);
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
@@ -90,6 +93,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   const [selectedTravelType, setSelectedTravelType] = useState("");
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingReturnTime, setIsLoadingReturnTime] = useState(false);
 
   const [data, setData] = useState<RequestFormProps>({
     purpose: "",
@@ -122,7 +126,10 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     travelDateTimes: [],
     returnDateTimes: [],
   });
-
+  const [withinDayReturnTimes, setWithinDayReturnTimes] = useState({
+    travelDateTimes: [],
+    returnDateTimes: [],
+  });
   useEffect(() => {
     if (UnavailableTimeInRange) {
       console.log("parent", UnavailableTimeInRange);
@@ -209,126 +216,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
     setDisableDates(disabledDatesArray);
   }, [selectedVehicleExisitingSchedule]);
 
-  // const calculateAvailableTimes = (date: any, isTravelDate: boolean) => {
-  //   const availableTimes = [];
-
-  //   for (let hour = 0; hour < 24; hour++) {
-  //     for (let minute = 0; minute < 60; minute += 30) {
-  //       const time = new Date(date);
-
-  //       time.setHours(hour, minute);
-
-  //       const isWithinBookingRange = selectedVehicleExisitingSchedule.some(
-  //         (schedule: any) => {
-  //           const bookingStart = new Date(
-  //             `${schedule.travel_date}T${schedule.travel_time}`
-  //           );
-  //           const bookingEnd = new Date(
-  //             `${schedule.return_date}T${schedule.return_time}`
-  //           );
-
-  //           if (selectedDates.travelDate === selectedDates.returnDate) {
-  //             if (selectedTimes.start) {
-  //               console.log("selectedTimes.start", selectedTimes.start);
-
-  //               if (selectedTimes.start >= schedule.travel_time) {
-  //                 console.log("schedule.travel_time", schedule.travel_time);
-  //                 console.log("start timeee");
-  //                 return time >= bookingStart;
-  //               }
-  //               if (selectedTimes.start >= schedule.return_time) {
-  //                 console.log("triggered1");
-  //                 console.log("schedule.return_time", schedule.return_time);
-  //                 return time <= bookingEnd;
-  //               }
-
-  //               console.log("selected.start triggered", selectedTimes.start);
-  //             }
-  //             if (selectedTimes.end) {
-  //               if (selectedTimes.end >= schedule.travel_time) {
-  //                 console.log("start timeee");
-  //                 return time >= bookingStart;
-  //               }
-  //               if (selectedTimes.end >= schedule.return_time) {
-  //                 console.log("triggered1");
-  //                 return time <= bookingEnd;
-  //               }
-  //               console.log("selected.end triggered", selectedTimes.end);
-  //             }
-
-  //             return time >= bookingStart && time <= bookingEnd;
-  //           } else {
-  //             return time >= bookingStart && time <= bookingEnd;
-  //           }
-  //         }
-  //       );
-
-  //       if (!isWithinBookingRange) {
-  //         availableTimes.push(time);
-  //       }
-  //     }
-  //   }
-
-  //   return availableTimes;
-  // };
-
-  // useEffect(() => {
-  //   // Initialize available times with empty arrays
-  //   let travelDateTimes: any = [];
-  //   let returnDateTimes: any = [];
-
-  //   // Check if travelDate is selected
-  //   if (selectedDates.travelDate) {
-  //     travelDateTimes = calculateAvailableTimes(selectedDates.travelDate, true);
-  //   }
-
-  //   // Check if returnDate is selected
-  //   if (selectedDates.returnDate) {
-  //     returnDateTimes = calculateAvailableTimes(
-  //       selectedDates.returnDate,
-  //       false
-  //     );
-  //   }
-
-  //   // Update the state with the calculated times
-  //   setAvailableTimes({
-  //     travelDateTimes,
-  //     returnDateTimes,
-  //   });
-  // }, [selectedDates, selectedTimes]);
-
-  // useEffect(() => {
-  //   let travelDateTimes: any = [];
-  //   let returnDateTimes: any = [];
-
-  //   // Ensure selectedTimes.start and selectedTimes.end are valid dates
-  //   const componentsStartDate = splitDate(selectedDates.travelDate);
-  //   const startTime = selectedTimes.start
-  //     ? `${componentsStartDate} ${selectedTimes.start} GMT+0800 (Philippine Standard Time)`
-  //     : null;
-
-  //   const componentsEndDate = splitDate(selectedDates.travelDate);
-  //   const endTime = selectedTimes.end
-  //     ? `${componentsEndDate} ${selectedTimes.end} GMT+0800 (Philippine Standard Time)`
-  //     : null;
-
-  //   // console.log("date components", components);
-
-  //   // const startTime = selectedTimes.start ?
-
-  //   // Check if both start and end times are selected
-
-  //   // Only start time is selected, calculate available times for travel date
-  //   travelDateTimes = calculateAvailableTimes(startTime, true);
-  //   returnDateTimes = calculateAvailableTimes(endTime, false);
-  //   console.log("2nd triggered");
-
-  //   // Update the state with the calculated times
-  //   setAvailableTimes({
-  //     travelDateTimes,
-  //     returnDateTimes,
-  //   });
-  // }, [selectedTimes]);
   const generatePassengerInputs = () => {
     const inputs = [];
     for (let i = 0; i < selectedVehicleCapacity; i++) {
@@ -402,8 +289,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   }, [addressData.destination, addressData.distance]);
 
   const handleCheckTimeAvailability = () => {
-    console.log(data);
-    console.log(availableTimes);
+    setIsUnavailableWithinDayOnly(false);
     setIsLoading(true);
     checkTimeAvailability(
       data.travel_date,
@@ -414,7 +300,8 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
       setUnavailableTimeInRange,
       role,
       userID,
-      isAnotherVehiclee
+      isAnotherVehiclee,
+      setIsUnavailableWithinDayOnly
     );
   };
 
@@ -432,28 +319,28 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   };
 
   const today = new Date();
-  today.setDate(today.getDate() + 3);
-
-  // dummy data
-  // const dummyVehicles = [
-  //   { label: "Toyota Camry", number: "ABC123" },
-  //   { label: "Honda Civic", number: "DEF456" },
-  //   { label: "Ford Mustang", number: "GHI789" },
-  //   { label: "Chevrolet Silverado", number: "JKL012" },
-  //   { label: "Tesla Model S", number: "MNO345" },
-  //   // Add more dummy data as needed
-  // ];
+  if (role === "requester") {
+    today.setDate(today.getDate() + 3);
+  } else if (role === "vip" && selectedVehicleVIPAssignedTo !== userName) {
+    today.setDate(today.getDate() + 3);
+  }
 
   const formattedVehicleData = anotherVehicleData.map((vehicle: any) => ({
     label: vehicle.plate_number + " " + vehicle.model, // Assuming you want to display the plate number as the label
     value: vehicle, // Keep the entire vehicle object as the value
   }));
 
+  console.log("!selectedVehicleIsVIP ", selectedVehicleIsVIP);
+
   const handleSelectAnotherVehicle = (event: any, value: any) => {
     setSelectedAnotherVehicle(value.value.plate_number);
-    setIsAnotherVehiclee(true);
+    console.log("yawaa", value.value.is_vip, value.value.vip_assigned_to);
+    if (role === "vip" && !value.value.is_vip) {
+      setIsAnotherVehiclee(true);
+      console.log("giatay nga yawa");
+    }
   };
-
+  console.log("IsAnotherVehiclee", isAnotherVehiclee);
   return (
     <>
       <LoadingBar
@@ -466,9 +353,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
           <div className="disclaimer-message">
             <p>
               <strong>Disclaimer: </strong>
-              This vehicle is prioritized for the higher official, and your
-              reservation will be canceled once the higher official uses it
-              during your reservation.
+              This vehicle is prioritized for the {selectedVehicleVIPAssignedTo}
+              , and your reservation will be canceled once the{" "}
+              {selectedVehicleVIPAssignedTo} uses it during your reservation.
             </p>
           </div>
         )}
@@ -614,6 +501,13 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                   primaryStyle
                   text="Next"
                   onClick={() => {
+                    if (
+                      role === "vip" &&
+                      selectedVehicleVIPAssignedTo === userName &&
+                      selectedVehicleIsVIP
+                    ) {
+                      setIsAnotherVehiclee(false);
+                    }
                     let validationErrors: { [key: string]: string } = {};
                     if (!selectedTravelType) {
                       validationErrors.travelTypeError =
@@ -640,7 +534,17 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                   const localEndDate = localStorage.getItem("endDate");
                   const updatedErrors = { ...errorMessages };
                   delete updatedErrors[0]?.travelDateError;
+                  delete updatedErrors[0]?.travelTimeError;
+
                   setErrorMessages(updatedErrors);
+                  setSelectedStartTime(null);
+                  setSelectedEndTime(null);
+                  setIsLoadingReturnTime(false);
+                  setWithinDayReturnTimes({
+                    travelDateTimes: [],
+                    returnDateTimes: [],
+                  });
+
                   if (
                     localStartDate !==
                       formatDateToYYYYMMDD(item.selection.startDate) &&
@@ -699,14 +603,26 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 minDate={today}
               />
               <div className="available-times-container">
-                <h3>Available Times</h3>
+                <h3>Available times for: </h3>
                 <div className="available-times-header-container">
-                  <h4>Start time</h4>
-
+                  <h4>
+                    {data.travel_date
+                      ? formatDate(data.travel_date)
+                      : "Select travel date"}
+                  </h4>
+                  <h4>to</h4>
                   {selectedTravelType === "Round Trip" ? (
-                    <h4>End time</h4>
+                    <h4>
+                      {data.return_date
+                        ? formatDate(data.return_date)
+                        : "Select return date"}
+                    </h4>
                   ) : (
-                    <h4></h4>
+                    <h4>
+                      {data.return_date
+                        ? formatDate(data.return_date)
+                        : "Select return date"}
+                    </h4>
                   )}
                 </div>
                 <div className="times-containers">
@@ -759,6 +675,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                               ...data,
                                               travel_time: null,
                                             });
+                                            if (isUnavailableWithinDayOnly) {
+                                              setIsLoadingReturnTime(false);
+                                            }
                                           }}
                                         />
                                       </>
@@ -775,6 +694,22 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                             timeString
                                           )}
                                           onClick={(text: any) => {
+                                            if (isUnavailableWithinDayOnly) {
+                                              setIsLoadingReturnTime(true);
+                                              checkReturnTimeAvailability(
+                                                data.travel_date,
+                                                data.return_date,
+                                                convertTo24HourFormat(text),
+                                                selectedVehiclePlateNumber,
+                                                setWithinDayReturnTimes,
+                                                setIsLoadingReturnTime,
+                                                setUnavailableTimeInRange,
+                                                role,
+                                                userID,
+                                                isAnotherVehiclee,
+                                                setIsUnavailableWithinDayOnly
+                                              );
+                                            }
                                             setSelectedStartTime(text);
                                             setSelectedTimes({
                                               ...selectedTimes,
@@ -810,77 +745,195 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                           </div>
                           {selectedTravelType === "Round Trip" ? (
                             <>
-                              <div className="return-time-container">
-                                {availableTimes.returnDateTimes.map(
-                                  (timeString: string) => {
-                                    // Convert the time string to a Date object
-
-                                    return (
+                              {withinDayReturnTimes.returnDateTimes.length ===
+                                0 && isUnavailableWithinDayOnly ? (
+                                <>
+                                  {isLoadingReturnTime ? (
+                                    <div className="return-time-circular-note">
+                                      <CircularProgress
+                                        color="primary"
+                                        size={40}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <p className="return-time-note">
+                                        Please select travel time first
+                                      </p>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  <div className="return-time-container">
+                                    {isUnavailableWithinDayOnly ? (
                                       <>
-                                        {selectedEndTime ===
-                                        convertTo12HourFormat(timeString) ? (
-                                          <>
-                                            <CommonButton
-                                              key={convertTo12HourFormat(
-                                                timeString
-                                              )}
-                                              width={9}
-                                              height={7}
-                                              primaryStyle
-                                              text={convertTo12HourFormat(
-                                                timeString
-                                              )}
-                                              onClick={(text: any) => {
-                                                setSelectedEndTime(null);
-                                                setSelectedTimes({
-                                                  ...selectedTimes,
-                                                  end: null,
-                                                });
-                                                setData({
-                                                  ...data,
-                                                  return_time: null,
-                                                });
-                                              }}
-                                            />
-                                          </>
-                                        ) : (
-                                          <>
-                                            <CommonButton
-                                              key={convertTo12HourFormat(
-                                                timeString
-                                              )}
-                                              width={9}
-                                              height={7}
-                                              whiteStyle
-                                              text={convertTo12HourFormat(
-                                                timeString
-                                              )}
-                                              onClick={(text: any) => {
-                                                setSelectedEndTime(text);
-                                                setSelectedTimes({
-                                                  ...selectedTimes,
-                                                  end: text,
-                                                });
-                                                setData({
-                                                  ...data,
-                                                  return_time:
-                                                    convertTo24HourFormat(text),
-                                                });
-                                                const updatedErrors = {
-                                                  ...errorMessages,
-                                                };
-                                                delete updatedErrors[0]
-                                                  ?.travelTimeError;
-                                                setErrorMessages(updatedErrors);
-                                              }}
-                                            />
-                                          </>
+                                        {withinDayReturnTimes.returnDateTimes.map(
+                                          (timeString: string) => {
+                                            // Convert the time string to a Date object
+
+                                            return (
+                                              <>
+                                                {selectedEndTime ===
+                                                convertTo12HourFormat(
+                                                  timeString
+                                                ) ? (
+                                                  <>
+                                                    <CommonButton
+                                                      key={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      width={9}
+                                                      height={7}
+                                                      primaryStyle
+                                                      text={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      onClick={(text: any) => {
+                                                        setSelectedEndTime(
+                                                          null
+                                                        );
+                                                        setSelectedTimes({
+                                                          ...selectedTimes,
+                                                          end: null,
+                                                        });
+                                                        setData({
+                                                          ...data,
+                                                          return_time: null,
+                                                        });
+                                                      }}
+                                                    />
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    <CommonButton
+                                                      key={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      width={9}
+                                                      height={7}
+                                                      whiteStyle
+                                                      text={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      onClick={(text: any) => {
+                                                        setSelectedEndTime(
+                                                          text
+                                                        );
+                                                        setSelectedTimes({
+                                                          ...selectedTimes,
+                                                          end: text,
+                                                        });
+                                                        setData({
+                                                          ...data,
+                                                          return_time:
+                                                            convertTo24HourFormat(
+                                                              text
+                                                            ),
+                                                        });
+                                                        const updatedErrors = {
+                                                          ...errorMessages,
+                                                        };
+                                                        delete updatedErrors[0]
+                                                          ?.travelTimeError;
+                                                        setErrorMessages(
+                                                          updatedErrors
+                                                        );
+                                                      }}
+                                                    />
+                                                  </>
+                                                )}
+                                              </>
+                                            );
+                                          }
                                         )}
                                       </>
-                                    );
-                                  }
-                                )}
-                              </div>
+                                    ) : (
+                                      <>
+                                        {availableTimes.returnDateTimes.map(
+                                          (timeString: string) => {
+                                            // Convert the time string to a Date object
+
+                                            return (
+                                              <>
+                                                {selectedEndTime ===
+                                                convertTo12HourFormat(
+                                                  timeString
+                                                ) ? (
+                                                  <>
+                                                    <CommonButton
+                                                      key={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      width={9}
+                                                      height={7}
+                                                      primaryStyle
+                                                      text={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      onClick={(text: any) => {
+                                                        setSelectedEndTime(
+                                                          null
+                                                        );
+                                                        setSelectedTimes({
+                                                          ...selectedTimes,
+                                                          end: null,
+                                                        });
+                                                        setData({
+                                                          ...data,
+                                                          return_time: null,
+                                                        });
+                                                      }}
+                                                    />
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    <CommonButton
+                                                      key={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      width={9}
+                                                      height={7}
+                                                      whiteStyle
+                                                      text={convertTo12HourFormat(
+                                                        timeString
+                                                      )}
+                                                      onClick={(text: any) => {
+                                                        setSelectedEndTime(
+                                                          text
+                                                        );
+                                                        setSelectedTimes({
+                                                          ...selectedTimes,
+                                                          end: text,
+                                                        });
+                                                        setData({
+                                                          ...data,
+                                                          return_time:
+                                                            convertTo24HourFormat(
+                                                              text
+                                                            ),
+                                                        });
+                                                        const updatedErrors = {
+                                                          ...errorMessages,
+                                                        };
+                                                        delete updatedErrors[0]
+                                                          ?.travelTimeError;
+                                                        setErrorMessages(
+                                                          updatedErrors
+                                                        );
+                                                      }}
+                                                    />
+                                                  </>
+                                                )}
+                                              </>
+                                            );
+                                          }
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                </>
+                              )}
                             </>
                           ) : (
                             <div className="autocompleteaddress-container">
@@ -973,6 +1026,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 onClick={() => {
                   console.log("data with destination", data);
                   let validationErrors: { [key: string]: string } = {};
+
                   if (!data.travel_date && !data.return_date) {
                     validationErrors.travelDateError =
                       "Please select travel date.";

@@ -1084,7 +1084,8 @@ export function checkTimeAvailability(
   setUnavailableTimeInRange: any,
   role: any,
   userID: any,
-  isAnotherVehiclee: any
+  isAnotherVehiclee: any,
+  setIsUnavailableWithinDayOnly: any
 ) {
   console.log(
     "api preferred_start_travel_date before server",
@@ -1136,11 +1137,17 @@ export function checkTimeAvailability(
         newState.travelDateTimes =
           data[preferred_start_travel_date].available_time;
       }
-
-      // Check if the response contains data for the preferred end travel date
-      if (data[preferred_end_travel_date]) {
-        newState.returnDateTimes =
-          data[preferred_end_travel_date].available_time;
+      if (
+        data["is_unavailable_within_day_only"] &&
+        data["is_unavailable_within_day_only"] === true
+      ) {
+        setIsUnavailableWithinDayOnly(data["is_unavailable_within_day_only"]);
+      } else {
+        // Check if the response contains data for the preferred end travel date
+        if (data[preferred_end_travel_date]) {
+          newState.returnDateTimes =
+            data[preferred_end_travel_date].available_time;
+        }
       }
 
       if (
@@ -1197,6 +1204,80 @@ export function checkTimeAvailability(
     });
 }
 
+export function checkReturnTimeAvailability(
+  preferred_start_travel_date: any,
+  preferred_end_travel_date: any,
+  preferred_travel_time: any,
+  selected_vehicle: any,
+  setAvailableTimes: any,
+  setIsLoadingReturnTime: any,
+  setUnavailableTimeInRange: any,
+  role: any,
+  userID: any,
+  isAnotherVehiclee: any,
+  setIsUnavailableWithinDayOnly: any
+) {
+  console.log("isAnotherVehiclee", isAnotherVehiclee);
+
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/trip/check-return-time-availability/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_travel_time: preferred_travel_time,
+        selected_vehicle: selected_vehicle,
+        role: role,
+        user_id: userID,
+        is_another_vehicle: isAnotherVehiclee,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setIsLoadingReturnTime(false);
+      console.log(
+        "api preferred_start_travel_date after server",
+        preferred_start_travel_date
+      );
+      console.log(
+        "api preferred_end_travel_date after server",
+        preferred_end_travel_date
+      );
+      // Assuming response.data is the object with dates as keys
+      const data = response.data;
+      console.log("data from server", data);
+
+      // Initialize new state to merge with existing state
+      let newState = { travelDateTimes: [], returnDateTimes: [] };
+
+      if (data[preferred_end_travel_date]) {
+        newState.returnDateTimes = data[preferred_end_travel_date];
+      }
+
+      setAvailableTimes(newState);
+    })
+    .catch((error: any) => {
+      setIsLoadingReturnTime(false);
+      if (error.response && error.response.data) {
+        // setLoadingBarProgress(50);
+        // setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching time availability:", error);
+    });
+}
 export function checkScheduleConflictsForOneway(
   preferred_start_travel_date: any,
   preferred_start_travel_time: any,

@@ -359,171 +359,181 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
             </p>
           </div>
         )}
-        {role === "vip" && isCalendarDateRangePickerShow && (
+        {isCalendarDateRangePickerShow && (
           <div className="other-vehicle-button-for-vip">
             <strong>
               {selectedVehiclePlateNumber} {selectedVehicleModel}
             </strong>
-
-            {requestForAnotherVehicle ? (
+            {role === "vip" && (
               <>
-                {isLoadingVehicles ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "20vw",
-                    }}
-                  >
-                    <CircularProgress color="primary" size={35} />
-                  </div>
-                ) : (
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={formattedVehicleData}
-                    sx={{ width: 300 }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Choose Other Vehicle" />
+                {requestForAnotherVehicle ? (
+                  <>
+                    {isLoadingVehicles ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "20vw",
+                        }}
+                      >
+                        <CircularProgress color="primary" size={35} />
+                      </div>
+                    ) : (
+                      <Autocomplete
+                        disablePortal
+                        id="combo-box-demo"
+                        options={formattedVehicleData}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Choose Other Vehicle" />
+                        )}
+                        onChange={handleSelectAnotherVehicle}
+                      />
                     )}
-                    onChange={handleSelectAnotherVehicle}
+                  </>
+                ) : (
+                  <CommonButton
+                    width={18}
+                    height={7}
+                    primaryStyle
+                    text="Request for another vehicles"
+                    onClick={() => {
+                      setIsAnotherVehicle(true);
+                      setRequestForAnotherVehicle(true);
+                    }}
                   />
                 )}
               </>
-            ) : (
-              <CommonButton
-                width={18}
-                height={7}
-                primaryStyle
-                text="Request for another vehicles"
-                onClick={() => {
-                  setIsAnotherVehicle(true);
-                  setRequestForAnotherVehicle(true);
-                }}
-              />
             )}
           </div>
         )}
         {!isCalendarDateRangePickerShow &&
           !isOtherFieldsShow &&
           !isDetailsConfirmationShow && (
-            <div className="select-travel-type-container">
-              <h2>Select travel type</h2>
-              <div className="select-travel-type-button-container">
-                {selectedTravelType === "Round Trip" ? (
-                  <>
-                    <CommonButton
-                      width={9}
-                      height={7}
-                      primaryStyle
-                      text="Round Trip"
-                      onClick={handleChangeTravelType}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <CommonButton
-                      width={9}
-                      height={7}
-                      whiteStyle
-                      text="Round Trip"
-                      onClick={handleChangeTravelType}
-                    />
-                  </>
-                )}
-
-                {selectedTravelType === "One-way - Drop" ? (
-                  <>
-                    <CommonButton
-                      width={11}
-                      height={7}
-                      primaryStyle
-                      text="One-way - Drop"
-                      onClick={handleChangeTravelType}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <CommonButton
-                      width={11}
-                      height={7}
-                      whiteStyle
-                      text="One-way - Drop"
-                      onClick={handleChangeTravelType}
-                    />
-                  </>
-                )}
-                {selectedTravelType === "One-way - Fetch" ? (
-                  <>
-                    <CommonButton
-                      width={12}
-                      height={7}
-                      primaryStyle
-                      text="One-way - Fetch"
-                      onClick={handleChangeTravelType}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <CommonButton
-                      width={12}
-                      height={7}
-                      whiteStyle
-                      text="One-way - Fetch"
-                      onClick={handleChangeTravelType}
-                    />
-                  </>
-                )}
+            <>
+              <div className="other-vehicle-button-for-vip">
+                <strong>
+                  {selectedVehiclePlateNumber} {selectedVehicleModel}
+                </strong>
               </div>
-              <div className="error-text-container">
-                <p className="error-text">
-                  {errorMessages[0]?.travelTypeError}
-                </p>
-              </div>
-              <div className="footer-button-container">
-                <CommonButton
-                  width={9}
-                  height={7}
-                  whiteStyle
-                  text="Back"
-                  onClick={() => {
-                    setSelectedTravelType("");
-                    const updatedErrors = { ...errorMessages };
-                    delete updatedErrors[0]?.travelTypeError;
-                    setErrorMessages(updatedErrors);
-                    setIsScheduleClick(false);
-                  }}
-                />
-                <CommonButton
-                  width={9}
-                  height={7}
-                  primaryStyle
-                  text="Next"
-                  onClick={() => {
-                    if (
-                      role === "vip" &&
-                      selectedVehicleVIPAssignedTo === userName &&
-                      selectedVehicleIsVIP
-                    ) {
-                      setIsAnotherVehiclee(false);
-                    }
-                    let validationErrors: { [key: string]: string } = {};
-                    if (!selectedTravelType) {
-                      validationErrors.travelTypeError =
-                        "Please select travel type.";
-                    }
+              <div className="select-travel-type-container">
+                <h2>Select travel type</h2>
+                <div className="select-travel-type-button-container">
+                  {selectedTravelType === "Round Trip" ? (
+                    <>
+                      <CommonButton
+                        width={9}
+                        height={7}
+                        primaryStyle
+                        text="Round Trip"
+                        onClick={handleChangeTravelType}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <CommonButton
+                        width={9}
+                        height={7}
+                        whiteStyle
+                        text="Round Trip"
+                        onClick={handleChangeTravelType}
+                      />
+                    </>
+                  )}
 
-                    const errorArray = [validationErrors];
+                  {selectedTravelType === "One-way - Drop" ? (
+                    <>
+                      <CommonButton
+                        width={11}
+                        height={7}
+                        primaryStyle
+                        text="One-way - Drop"
+                        onClick={handleChangeTravelType}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <CommonButton
+                        width={11}
+                        height={7}
+                        whiteStyle
+                        text="One-way - Drop"
+                        onClick={handleChangeTravelType}
+                      />
+                    </>
+                  )}
+                  {selectedTravelType === "One-way - Fetch" ? (
+                    <>
+                      <CommonButton
+                        width={12}
+                        height={7}
+                        primaryStyle
+                        text="One-way - Fetch"
+                        onClick={handleChangeTravelType}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <CommonButton
+                        width={12}
+                        height={7}
+                        whiteStyle
+                        text="One-way - Fetch"
+                        onClick={handleChangeTravelType}
+                      />
+                    </>
+                  )}
+                </div>
+                <div className="error-text-container">
+                  <p className="error-text">
+                    {errorMessages[0]?.travelTypeError}
+                  </p>
+                </div>
+                <div className="footer-button-container">
+                  <CommonButton
+                    width={9}
+                    height={7}
+                    whiteStyle
+                    text="Back"
+                    onClick={() => {
+                      setSelectedTravelType("");
+                      const updatedErrors = { ...errorMessages };
+                      delete updatedErrors[0]?.travelTypeError;
+                      setErrorMessages(updatedErrors);
+                      setIsScheduleClick(false);
+                    }}
+                  />
+                  <CommonButton
+                    width={9}
+                    height={7}
+                    primaryStyle
+                    text="Next"
+                    onClick={() => {
+                      if (
+                        role === "vip" &&
+                        selectedVehicleVIPAssignedTo === userName &&
+                        selectedVehicleIsVIP
+                      ) {
+                        setIsAnotherVehiclee(false);
+                      }
+                      let validationErrors: { [key: string]: string } = {};
+                      if (!selectedTravelType) {
+                        validationErrors.travelTypeError =
+                          "Please select travel type.";
+                      }
 
-                    setErrorMessages(errorArray);
-                    if (Object.keys(validationErrors).length === 0) {
-                      setIsCalendarDateRangePickerShow(true);
-                    }
-                  }}
-                />
+                      const errorArray = [validationErrors];
+
+                      setErrorMessages(errorArray);
+                      if (Object.keys(validationErrors).length === 0) {
+                        setIsCalendarDateRangePickerShow(true);
+                      }
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            </>
           )}
         {isCalendarDateRangePickerShow && (
           <>
@@ -1150,6 +1160,11 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
         )}
         {isOtherFieldsShow && !isCalendarDateRangePickerShow && (
           <>
+            <div className="other-vehicle-button-for-vip">
+              <strong>
+                {selectedVehiclePlateNumber} {selectedVehicleModel}
+              </strong>
+            </div>
             <div className="other-fields-container">
               {selectedTravelType === "Round Trip" && (
                 <>

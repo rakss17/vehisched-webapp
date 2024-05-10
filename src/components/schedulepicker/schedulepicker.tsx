@@ -1364,6 +1364,16 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 <strong>Purpose</strong>
                 <p>{data.purpose}</p>
               </div>
+              {data.distance > 50 && (
+                <div className="inline-row">
+                  <strong>Note:</strong>
+                  <p>
+                    Requesters traveling to destinations exceed 50 kilometers
+                    are required to provide a travel order for the vehicle's
+                    fuel and the driver's per diem.
+                  </p>
+                </div>
+              )}
             </div>
             <div className="footer-button-container2">
               <CommonButton

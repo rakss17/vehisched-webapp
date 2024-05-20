@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { ModalProps, RequestFormProps } from "../../interfaces/interfaces";
+import { ModalProps } from "../../interfaces/interfaces";
 import CommonButton from "../button/commonbutton";
 import LoadingBar from "react-top-loading-bar";
 import "./reschedule.css";

@@ -2,7 +2,6 @@ import { DateRange } from "react-date-range";
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import {
-  CheckScheduleProps,
   RequestFormProps,
   SchedulePickerProps,
 } from "../../interfaces/interfaces";
@@ -15,7 +14,6 @@ import {
   formatDateToYYYYMMDD,
   convertTo24HourFormat,
   formatDate,
-  formatTime,
 } from "../functions/functions";
 import CircularProgress from "@mui/material/CircularProgress";
 import useHeartbeat, {
@@ -34,7 +32,6 @@ import Confirmation from "../confirmation/confirmation";
 import LoadingBar from "react-top-loading-bar";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Any } from "@react-spring/web";
 
 const SchedulePicker: React.FC<SchedulePickerProps> = ({
   isOpen,
@@ -51,7 +48,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   setSelectedAnotherVehicle,
   isLoadingVehicles,
 }) => {
-  console.log("anotherVehicleData", anotherVehicleData);
   const [state, setState] = useState([
     {
       startDate: new Date(new Date().setDate(new Date().getDate() + 3)),
@@ -132,7 +128,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   });
   useEffect(() => {
     if (UnavailableTimeInRange) {
-      console.log("parent", UnavailableTimeInRange);
       setState([
         {
           startDate: new Date(data.travel_date),
@@ -260,7 +255,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
       addressData.destination &&
       addressData.distance
     ) {
-      console.log("isFrom", data.travel_date, data.return_date);
       checkScheduleConflictsForOneway(
         data.travel_date,
         data.travel_time,
@@ -326,21 +320,18 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
   }
 
   const formattedVehicleData = anotherVehicleData.map((vehicle: any) => ({
-    label: vehicle.plate_number + " " + vehicle.model, // Assuming you want to display the plate number as the label
-    value: vehicle, // Keep the entire vehicle object as the value
+    label: vehicle.plate_number + " " + vehicle.model,
+    value: vehicle,
   }));
-
-  console.log("!selectedVehicleIsVIP ", selectedVehicleIsVIP);
 
   const handleSelectAnotherVehicle = (event: any, value: any) => {
     setSelectedAnotherVehicle(value.value.plate_number);
-    console.log("yawaa", value.value.is_vip, value.value.vip_assigned_to);
+    console.log(event);
     if (role === "vip" && !value.value.is_vip) {
       setIsAnotherVehiclee(true);
-      console.log("giatay nga yawa");
     }
   };
-  console.log("IsAnotherVehiclee", isAnotherVehiclee);
+
   return (
     <>
       <LoadingBar
@@ -675,7 +666,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                           text={convertTo12HourFormat(
                                             timeString
                                           )}
-                                          onClick={(text: any) => {
+                                          onClick={() => {
                                             setSelectedStartTime(null);
                                             setSelectedTimes({
                                               ...selectedTimes,
@@ -713,11 +704,9 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                                 selectedVehiclePlateNumber,
                                                 setWithinDayReturnTimes,
                                                 setIsLoadingReturnTime,
-                                                setUnavailableTimeInRange,
                                                 role,
                                                 userID,
-                                                isAnotherVehiclee,
-                                                setIsUnavailableWithinDayOnly
+                                                isAnotherVehiclee
                                               );
                                             }
                                             setSelectedStartTime(text);
@@ -725,14 +714,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                               ...selectedTimes,
                                               start: text,
                                             });
-                                            console.log(
-                                              "not yet converted",
-                                              text
-                                            );
-                                            console.log(
-                                              "converted already",
-                                              convertTo24HourFormat(text)
-                                            );
+
                                             setData({
                                               ...data,
                                               travel_time:
@@ -799,7 +781,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                                       text={convertTo12HourFormat(
                                                         timeString
                                                       )}
-                                                      onClick={(text: any) => {
+                                                      onClick={() => {
                                                         setSelectedEndTime(
                                                           null
                                                         );
@@ -881,7 +863,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                                                       text={convertTo12HourFormat(
                                                         timeString
                                                       )}
-                                                      onClick={(text: any) => {
+                                                      onClick={() => {
                                                         setSelectedEndTime(
                                                           null
                                                         );
@@ -1034,7 +1016,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 primaryStyle
                 text="Next"
                 onClick={() => {
-                  console.log("data with destination", data);
                   let validationErrors: { [key: string]: string } = {};
 
                   if (!data.travel_date && !data.return_date) {
@@ -1151,8 +1132,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                       );
                     }
                   }
-
-                  // console.log("dataaaaaa", data);
                 }}
               />
             </div>
@@ -1282,7 +1261,7 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                     setIsOtherFieldsShow(false);
                     setIsDetailsConfirmationShow(true);
                   }
-                  console.log("final data", data);
+
                   setData((prevData: any) => ({
                     ...prevData,
                     requester_name: userID,
@@ -1392,9 +1371,6 @@ const SchedulePicker: React.FC<SchedulePickerProps> = ({
                 primaryStyle
                 text="Submit"
                 onClick={() => {
-                  // setIsOtherFieldsShow(false);
-                  // setIsDetailsConfirmationShow(true)
-                  console.log("final data", data);
                   setLoadingBarProgress(20);
                   postRequestFormAPI(
                     data,

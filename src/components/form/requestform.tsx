@@ -1,6 +1,5 @@
 import { useState, ChangeEvent, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import Container from "../container/container";
+import { useLocation } from "react-router-dom";
 import Header from "../header/header";
 import InputField from "../inputfield/inputfield";
 import "./requestform.css";
@@ -12,8 +11,6 @@ import {
 import Confirmation from "../confirmation/confirmation";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import USTPLogo from "../../assets/USTP LOGO.png";
-import DocumentCode from "../../assets/documentcode.jpg";
 import { RequestFormProps } from "../../interfaces/interfaces";
 import {
   checkVehicleAvailability,
@@ -29,7 +26,6 @@ import TimeInput from "../timeinput/timeinput";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import { format } from "date-fns";
 import { formatDate, formatTime } from "../functions/functions";
-import Dropdown from "../dropdown/dropdown";
 import CommonButton from "../button/commonbutton";
 
 export default function RequestForm() {
@@ -71,15 +67,7 @@ export default function RequestForm() {
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
-  const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
-
-  const dropdownVehicles = [
-    "Select Vehicle",
-    ...vehicles.map(
-      (vehicle: any) => `${vehicle.plate_number} ${vehicle.model}`
-    ),
-  ];
 
   const handleFetchVehicles = () => {
     checkVehicleAvailability(
@@ -101,6 +89,7 @@ export default function RequestForm() {
       const fullValueName = `${value.plate_number} ${value.model}`;
       return fullName === fullValueName;
     });
+    console.log(event);
 
     if (selectedVehicle) {
       setData((prevData: any) => ({
@@ -134,16 +123,14 @@ export default function RequestForm() {
       const fullValueName = `${value.first_name} ${value.middle_name} ${value.last_name}`;
       return fullName === fullValueName;
     });
-    console.log("select driver value", value);
+    console.log(event);
     if (selectedDriver) {
       setData((prevData: any) => ({
         ...prevData,
         driver_name: selectedDriver.id,
       }));
     }
-    // if (driverName === "Select Driver") {
-    //   setSelectedDriverId(null);
-    // }
+
     const updatedErrors = { ...errorMessages };
     delete updatedErrors[0]?.driverSelectionError;
     setErrorMessages(updatedErrors);
@@ -222,7 +209,6 @@ export default function RequestForm() {
         delete updatedErrors[0]?.travelTimeOnewayError;
         setErrorMessages(updatedErrors);
       }
-      // checkAutocompleteDisability();
     } else {
       console.log("No time selected.");
     }
@@ -316,6 +302,7 @@ export default function RequestForm() {
       ...data,
       type: newValue ? newValue.value : "",
     });
+    console.log(event);
   };
 
   const travelTypes = [
@@ -329,7 +316,6 @@ export default function RequestForm() {
   };
 
   const handleSubmit = () => {
-    console.log(data);
     let validationErrors: { [key: string]: string[] } = {
       all: [],
       purposeError: [],
@@ -359,7 +345,6 @@ export default function RequestForm() {
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-    console.log(data);
     if (
       validationErrors.numberOfPassengersError.length === 0 &&
       validationErrors.purposeError.length === 0 &&

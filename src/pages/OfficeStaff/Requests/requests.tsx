@@ -58,7 +58,6 @@ export default function Requests() {
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
     useState(false);
   const requestId = selectedRequest?.request_id;
-  const currentDate = new Date();
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [notifList, setNotifList] = useState<any[]>([]);
@@ -79,7 +78,6 @@ export default function Requests() {
   ];
 
   NotificationCreatedCancelWebsocket(
-    () => {},
     setSelectedCategory,
     fetchNotification,
     setNotifList,
@@ -112,7 +110,7 @@ export default function Requests() {
           selectedCategory,
           searchTerm
         );
-        console.log("new request", newRequests);
+
         if (newRequests.data && newRequests.data.length > 0) {
           setRequestList((old) => {
             const newData = newRequests.data.filter(
@@ -206,20 +204,7 @@ export default function Requests() {
             onSearchChange={handleSearchChange}
             placeholder="Search by requester's name or office name or purpose"
           />
-          {/* <div className="status-legend">
-            <div className="ontrip-yess-container">
-              <div className="ontrip-yess"></div>
-              <p>On Trip</p>
-            </div>
-            <div className="ontrip-noo-container">
-              <div className="ontrip-noo"></div>
-              <p>Awaiting Trip</p>
-            </div>
-            <div className="ontrip-gray-container">
-              <div className="ontrip-gray"></div>
-              <p>No Awaiting Trip</p>
-            </div>
-          </div> */}
+
           <Dropdown
             status={[
               "All",

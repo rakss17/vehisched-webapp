@@ -4,7 +4,6 @@ import {
   differenceInMinutes,
   differenceInHours,
   differenceInDays,
-  add,
   addMilliseconds,
   formatISO,
 } from "date-fns";
@@ -91,7 +90,6 @@ export function splitDate(date: Date | null): string | null {
     return null;
   }
 
-  // Array of month names
   const monthNames = [
     "Jan",
     "Feb",
@@ -107,36 +105,26 @@ export function splitDate(date: Date | null): string | null {
     "Dec",
   ];
 
-  // Array of day names
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  // Get the day name, month name, and year
   const dayName = dayNames[date.getDay()];
   const monthName = monthNames[date.getMonth()];
   const year = date.getFullYear();
   const dayOfMonth = date.getDate();
 
-  // Format the date as "Thu Mar 21 2024"
   const formattedDate = `${dayName} ${monthName} ${dayOfMonth} ${year}`;
 
   return formattedDate;
 }
 
 export function formatDateToYYYYMMDD(dateString: any) {
-  // Parse the date string into a Date object
   const date = new Date(dateString);
-  console.log("from function new date", date);
 
-  // Convert the date to an ISO string
   date.setHours(date.getHours() + 8);
   const isoString = date.toISOString();
-  console.log("from isostring", isoString);
 
-  // Extract the date part from the ISO string
   const datePart = isoString.split("T")[0];
-  console.log("from function datepart extract", datePart);
 
-  // Return the formatted date
   return datePart;
 }
 

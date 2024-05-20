@@ -60,7 +60,6 @@ export default function Drivers() {
 
   NotificationCreatedCancelWebsocket(
     () => {},
-    () => {},
     fetchNotification,
     setNotifList,
     () => {},

@@ -1087,14 +1087,6 @@ export function checkTimeAvailability(
   isAnotherVehiclee: any,
   setIsUnavailableWithinDayOnly: any
 ) {
-  console.log(
-    "api preferred_start_travel_date before server",
-    preferred_start_travel_date
-  );
-  console.log(
-    "api preferred_end_travel_date before server",
-    preferred_end_travel_date
-  );
   const token = localStorage.getItem("token");
   api
     .get("/api/v1/trip/check-time-availability/", {
@@ -1113,27 +1105,12 @@ export function checkTimeAvailability(
     })
     .then((response: any) => {
       setIsLoading(false);
-      console.log(
-        "api preferred_start_travel_date after server",
-        preferred_start_travel_date
-      );
-      console.log(
-        "api preferred_end_travel_date after server",
-        preferred_end_travel_date
-      );
-      // Assuming response.data is the object with dates as keys
-      const data = response.data;
-      console.log("data from server", data);
 
-      // Initialize new state to merge with existing state
+      const data = response.data;
+
       let newState = { travelDateTimes: [], returnDateTimes: [] };
 
-      // Check if the response contains data for the preferred start travel date
       if (data[preferred_start_travel_date]) {
-        console.log(
-          "data[preferred_start_travel_date]",
-          data[preferred_start_travel_date]
-        );
         newState.travelDateTimes =
           data[preferred_start_travel_date].available_time;
       }
@@ -1143,7 +1120,6 @@ export function checkTimeAvailability(
       ) {
         setIsUnavailableWithinDayOnly(data["is_unavailable_within_day_only"]);
       } else {
-        // Check if the response contains data for the preferred end travel date
         if (data[preferred_end_travel_date]) {
           newState.returnDateTimes =
             data[preferred_end_travel_date].available_time;
@@ -1159,12 +1135,6 @@ export function checkTimeAvailability(
         data["unavailable_time_in_date_range"]["unavailable_time_in_date_range"]
           .length > 0
       ) {
-        console.log(
-          "First unavailable time in date range:",
-          data["unavailable_time_in_date_range"][
-            "unavailable_time_in_date_range"
-          ][0]
-        );
         setUnavailableTimeInRange(
           data["unavailable_time_in_date_range"][
             "unavailable_time_in_date_range"
@@ -1211,14 +1181,10 @@ export function checkReturnTimeAvailability(
   selected_vehicle: any,
   setAvailableTimes: any,
   setIsLoadingReturnTime: any,
-  setUnavailableTimeInRange: any,
   role: any,
   userID: any,
-  isAnotherVehiclee: any,
-  setIsUnavailableWithinDayOnly: any
+  isAnotherVehiclee: any
 ) {
-  console.log("isAnotherVehiclee", isAnotherVehiclee);
-
   const token = localStorage.getItem("token");
   api
     .get("/api/v1/trip/check-return-time-availability/", {
@@ -1238,19 +1204,9 @@ export function checkReturnTimeAvailability(
     })
     .then((response: any) => {
       setIsLoadingReturnTime(false);
-      console.log(
-        "api preferred_start_travel_date after server",
-        preferred_start_travel_date
-      );
-      console.log(
-        "api preferred_end_travel_date after server",
-        preferred_end_travel_date
-      );
-      // Assuming response.data is the object with dates as keys
-      const data = response.data;
-      console.log("data from server", data);
 
-      // Initialize new state to merge with existing state
+      const data = response.data;
+
       let newState = { travelDateTimes: [], returnDateTimes: [] };
 
       if (data[preferred_end_travel_date]) {
@@ -1287,14 +1243,6 @@ export function checkScheduleConflictsForOneway(
   setIsLoading: any,
   setErrorColor: any
 ) {
-  console.log(
-    "check conflict return date before server",
-    preferred_end_travel_date
-  );
-  console.log(
-    "check conflict return time before server",
-    preferred_end_travel_time
-  );
   const token = localStorage.getItem("token");
   api
     .get("/api/v1/trip/check-schedule-conflicts-for-oneway/", {
@@ -1313,21 +1261,14 @@ export function checkScheduleConflictsForOneway(
     .then((response: any) => {
       setIsLoading(false);
 
-      console.log(
-        "api preferred_end_travel_date after server",
-        preferred_end_travel_date
-      );
-      // Assuming response.data is the object with dates as keys
       const data = response.data;
-      console.log("check conflict", data);
+      console.log(data);
       setErrorColor(false);
     })
     .catch((error: any) => {
-      console.log("check conflict", error.response);
+      console.log(error.response);
       setIsLoading(false);
       if (error.response && error.response.data) {
-        // setLoadingBarProgress(50);
-        // setLoadingBarProgress(100);
         setErrorColor(true);
         const errorMessage = error.response.data.error || "An error occurred.";
         toast.error(errorMessage, {
@@ -1503,7 +1444,6 @@ export async function handlePlaceSelect(
         distance: distance,
         destination: fullAddress,
       }));
-      console.log(distanceString);
     } else if (
       category === "One-way - Drop" ||
       category === "One-way - Fetch" ||

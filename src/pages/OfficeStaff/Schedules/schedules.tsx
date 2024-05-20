@@ -45,7 +45,6 @@ export default function Schedules() {
 
   NotificationCreatedCancelWebsocket(
     () => {},
-    () => {},
     fetchNotification,
     setNotifList,
     () => {},

@@ -92,7 +92,6 @@ export function NotificationApprovalScheduleReminderWebsocket(userName: any) {
 }
 
 export function NotificationCreatedCancelWebsocket(
-  fetchAPI?: any,
   setData?: any,
   fetchAPI2?: any,
   setData2?: any,

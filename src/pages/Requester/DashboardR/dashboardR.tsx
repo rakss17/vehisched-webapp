@@ -14,10 +14,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
   serverSideUrl,
-  fetchNotification,
   fetchSchedule,
   fetchPendingRequestAPI,
-  checkVehicleAvailability,
   acceptVehicleAPI,
   cancelRequestAPI,
   fetchVehicleVIPAPI,
@@ -25,9 +23,7 @@ import {
   fetchAnotherVehicle,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
-import { format } from "date-fns";
 import { responsive } from "../../../components/functions/functions";
-import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
 import Guidelines from "../../../components/guidelines/guidelines";
 import CommonButton from "../../../components/button/commonbutton";
 import Carousel from "react-multi-carousel";
@@ -50,10 +46,8 @@ export default function DashboardR() {
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
   const [vehicleRecommendation, setVehicleRecommendation] = useState<any[]>([]);
-  const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
-  const [isOneWayClick, setIsOneWayClick] = useState(false);
   const [isScheduleClick, setIsScheduleClick] = useState(false);
   const [
     selectedVehicleExisitingSchedule,
@@ -64,13 +58,11 @@ export default function DashboardR() {
   const [selectedVehicleRecommendation, setSelectedVehicleRecommendation] =
     useState<string>("");
   const [selectedTrip, setSelectedTrip] = useState<string>("");
-  const [selectedTripButton, setSelectedTripButton] =
-    useState<string>("Round Trip");
+
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
   const [isInitialFormVIPOpen, setIsInitialFormVIPOpen] = useState(false);
   const [isRequesterTripMergingFormOpen, setIsRequesterTripMergingFormOpen] =
     useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState("");
   const [givenCapacity, setGivenCapacity] = useState(0);
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const [anotherVehicleData, setAnotherVehicleData] = useState<Vehicle[]>([]);
@@ -99,7 +91,7 @@ export default function DashboardR() {
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const userName = personalInfo?.username;
   const userID = personalInfo?.id;
-  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
+
   const [plateNumber, setSelectedVehiclePlateNumber] = useState("");
   const [vehicleName, setSelectedVehicleModel] = useState("");
   const [isVIP, setSelectedVehicleIsVIP] = useState(false);
@@ -193,7 +185,6 @@ export default function DashboardR() {
 
   useEffect(() => {
     setData({ ...data, category: "Round Trip" });
-    setSelectedTripButton("Round Trip");
   }, []);
 
   useEffect(() => {
@@ -201,9 +192,7 @@ export default function DashboardR() {
   }, [isAnotherVehicle]);
 
   useEffect(() => {
-    // fetchNotification(setNotifList);
     if (role === "vip" || isAnotherVehicle) {
-      console.log("another vehicle", isAnotherVehicle);
       const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -226,9 +215,8 @@ export default function DashboardR() {
                   );
                 }
               });
-              console.log("vehiclesVIP", vehiclesVIP);
-              setAnotherVehiclesData((prevData) => {
-                // Directly use updatedData instead of merging it with prevData
+
+              setAnotherVehiclesData(() => {
                 return updatedData;
               });
             } else {
@@ -244,32 +232,10 @@ export default function DashboardR() {
                   );
                 }
               });
-              setVehiclesData((prevData) => {
-                // Directly use updatedData instead of merging it with prevData
+              setVehiclesData(() => {
                 return updatedData;
               });
             }
-
-            // if (isAnotherVehicle) {
-            //   setAnotherVehicleData((prevData: any) => {
-            //     const mergedData = { ...prevData };
-
-            //     Object.keys(updatedNormalData).forEach((vehicleKey: any) => {
-            //       const newVehicle = updatedData[vehicleKey];
-            //       const prevVehicle = prevData[vehicleKey];
-
-            //       if (
-            //         !prevVehicle ||
-            //         prevVehicle.plate_number !== newVehicle.plate_number
-            //       ) {
-            //         mergedData[vehicleKey] =
-            //           newVehicle.plate_number + newVehicle.model;
-            //       }
-            //     });
-
-            //     return mergedData;
-            //   });
-            // }
           }
         } catch (error) {
           console.error("Error fetching vehicles list:", error);
@@ -288,7 +254,6 @@ export default function DashboardR() {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          console.log("Intersection detected, incrementing page.");
           setPage((old) => old + 1);
         }
       });
@@ -356,17 +321,14 @@ export default function DashboardR() {
   const handleButtonClick = (button: string) => {
     switch (button) {
       case "Set Trip Schedule":
-        setIsTripScheduleClick(false);
         setIsAvailableVehicleClick(false);
         setIsOngoingScheduleClick(false);
         break;
       case "Available Vehicle":
-        setIsTripScheduleClick(false);
         setIsAvailableVehicleClick(true);
         setIsOngoingScheduleClick(false);
         break;
       case "Ongoing Schedule":
-        setIsTripScheduleClick(false);
         setIsAvailableVehicleClick(false);
         setIsOngoingScheduleClick(true);
         break;
@@ -382,7 +344,6 @@ export default function DashboardR() {
 
     switch (button) {
       case "Round Trip":
-        setIsOneWayClick(false);
         delete updatedErrors[0];
         setErrorMessages(updatedErrors);
         setData({
@@ -399,8 +360,6 @@ export default function DashboardR() {
         break;
 
       case "One-way":
-        setIsOneWayClick(true);
-        setIsTravelDateSelected(true);
         delete updatedErrors[0];
         setErrorMessages(updatedErrors);
         setData({
@@ -420,7 +379,6 @@ export default function DashboardR() {
         break;
     }
     setData({ ...data, category: button });
-    setSelectedTripButton(button);
   };
 
   useEffect(() => {
@@ -558,26 +516,6 @@ export default function DashboardR() {
                       ([vehicleId, data], index) => (
                         <a
                           onClick={() => {
-                            // {
-                            //   role === "vip"
-                            //     ? (setIsInitialFormVIPOpen(true),
-                            //       setSelectedPlateNumber(vehicle.plate_number),
-                            //       setSelectedModel(vehicle.model),
-                            //       setSelectedCapacity(vehicle.capacity))
-                            //     : vehicle.is_vip === true
-                            //     ? (setIsDisclaimerOpen(true),
-                            //       setSelectedPlateNumber(vehicle.plate_number),
-                            //       setSelectedModel(vehicle.model),
-                            //       setSelectedCapacity(vehicle.capacity))
-                            //     : vehicle.merge_trip === true
-                            //     ? (setIsRequesterTripMergingFormOpen(true),
-                            //       setSelectedRequestId(vehicle.request_id))
-                            //     : openRequestForm(
-                            //         vehicle.plate_number,
-                            //         vehicle.model,
-                            //         vehicle.capacity
-                            //       );
-                            // }
                             setIsScheduleClick(true);
                             setSelectedVehicleExisitingSchedule(data.schedules);
                             setSelectedVehicleCapacity(data.capacity);
@@ -937,7 +875,6 @@ export default function DashboardR() {
         isOpen={isRequesterTripMergingFormOpen}
         onRequestClose={handleClose}
         given_capacity={givenCapacity}
-        requestId={selectedRequestId}
       />
       <SchedulePicker
         isOpen={isScheduleClick}

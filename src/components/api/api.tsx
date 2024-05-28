@@ -1325,8 +1325,12 @@ export function fetchSchedule(
     });
 }
 
-export async function fetchScheduleOfficeStaff(setSchedule: any) {
+export async function fetchScheduleOfficeStaff(
+  setSchedule: any,
+  setIsLoading: any
+) {
   const token = localStorage.getItem("token");
+  setIsLoading(true);
   return api
     .get("api/v1/trip/fetch-office-staff/", {
       headers: {
@@ -1336,9 +1340,11 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
     })
     .then((response: any) => {
       setSchedule(response.data);
+      setIsLoading(false);
     })
     .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
+      setIsLoading(false);
     });
 }
 

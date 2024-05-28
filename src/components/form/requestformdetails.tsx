@@ -497,7 +497,11 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div className="request-form-details">
             <div className="request-form-each-details">
               <h2>Request's name:</h2>
-              <p>{selectedRequest.requester_full_name}</p>
+              <p>
+                {selectedRequest.requester_full_name
+                  ? selectedRequest.requester_full_name
+                  : selectedRequest.requester_name}
+              </p>
             </div>
           </div>
           <div className="request-form-details">

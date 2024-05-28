@@ -61,7 +61,7 @@ export default function Requests() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [notifList, setNotifList] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -238,7 +238,7 @@ export default function Requests() {
               <tr>
                 <th>Vehicle</th>
                 <th>Travel Date</th>
-                <th>Purpose</th>
+                <th>Destination</th>
                 <th>Status</th>
                 <th></th>
               </tr>
@@ -275,7 +275,9 @@ export default function Requests() {
                       <td>{request.vehicle_model}</td>
                       <td>{formatDate(request.travel_date)}</td>
                       <td style={{ wordWrap: "break-word", maxWidth: "150px" }}>
-                        {request.purpose}
+                        {request.destination
+                          ? request.destination.split(",")[0].trim()
+                          : "N/A"}
                       </td>
                       <td>
                         {request.vehicle_driver_status === "On Trip"

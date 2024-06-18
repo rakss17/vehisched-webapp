@@ -8,6 +8,7 @@ const CommonButton: React.FC<ButtonProps> = ({
   primaryStyle,
   secondaryStyle,
   tertiaryStyle,
+  whiteStyle,
   underlinedStyle,
   height,
   width,
@@ -17,9 +18,15 @@ const CommonButton: React.FC<ButtonProps> = ({
     width: width ? `${width}vw` : "auto",
   };
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick(text);
+    }
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       style={buttonStyle}
       className={
         primaryStyle
@@ -28,6 +35,8 @@ const CommonButton: React.FC<ButtonProps> = ({
           ? "secondary-style"
           : tertiaryStyle
           ? "tertiary-style"
+          : whiteStyle
+          ? "white-style"
           : underlinedStyle
           ? "underlined-style"
           : ""

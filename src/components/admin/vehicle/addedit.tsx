@@ -21,6 +21,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
   vipDropdownProps,
   isVipProps,
   driverDropdownProps,
+  buttonText,
 }) => {
   const [vipData, setVIPData] = useState<any[]>([]);
   const [driversData, setDriversData] = useState<any[]>([]);
@@ -143,7 +144,7 @@ const AddEditVehicle: React.FC<AddEditVehicleProps> = ({
           <CommonButton
             onClick={onRequestAddEdit}
             primaryStyle
-            text="Add Vehicle +"
+            text={buttonText}
           />
         </div>
       </div>

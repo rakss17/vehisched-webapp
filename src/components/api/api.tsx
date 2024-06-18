@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useEffect } from "react";
 import {
   SigninParams,
   SignupParams,
@@ -19,10 +20,10 @@ export let serverSideUrl: any;
 export let api: any;
 
 if (debug) {
-  serverSideUrl = "http://172.20.12.158:8000/media/";
+  serverSideUrl = "http://localhost:8000";
 
   api = axios.create({
-    baseURL: "http://172.20.12.158:8000/",
+    baseURL: "http://localhost:8000/",
   });
 } else {
   serverSideUrl = "https://vehisched-backend.keannu1.duckdns.org/media/";
@@ -254,26 +255,65 @@ export async function fetchVIPAPI(setVIPData: any) {
 }
 
 export async function fetchVehicleVIPAPI(
-  setVehiclesData: any,
-  handleButtonClick: any
-) {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await api.get("api/v1/vehicles/fetch-vehicle-vip/", {
+  isAnotherVehicle: any,
+  userID: any,
+  existingVehicle: any
+): Promise<any> {
+  const token = localStorage.getItem("token");
+  return api
+    .get("api/v1/vehicles/fetch-vehicle-vip/", {
       params: {
         role: "vip",
+        is_another_vehicle: isAnotherVehicle,
+        user_id: userID,
+        existing_vehicle: existingVehicle,
       },
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
+    })
+    .then((response: any) => {
+      return response.data;
+    })
+    .catch((error: any) => {
+      console.error("Error fetching vehicle list:", error);
     });
-
-    setVehiclesData(response.data);
-    handleButtonClick("Available Vehicle");
-  } catch (error) {
-    console.log(error);
-  }
+}
+export function fetchAnotherVehicle(
+  setAnotherVehicleData: any,
+  existingVehicle: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/vehicles/another-vehicle/", {
+      params: {
+        existing_vehicle: existingVehicle,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setAnotherVehicleData(response.data);
+      console.log(response.data);
+    })
+    .catch((error: any) => {
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching vehicle list:", error);
+    });
 }
 export function fetchUsersAPI() {
   return async (dispatch: Dispatch) => {
@@ -633,10 +673,9 @@ export async function deleteVehicleAPI(
   }
 }
 
-export function postRequestFromAPI(
+export function postRequestFormAPI(
   data: any,
   setIsConfirmationOpen: any,
-  navigate: any,
   setLoadingBarProgress: (progress: number) => void
 ) {
   const token = localStorage.getItem("token");
@@ -664,7 +703,6 @@ export function postRequestFromAPI(
       setTimeout(() => {
         setIsConfirmationOpen(false);
         window.location.reload();
-        navigate("/DashboardR");
       }, 3000);
     })
     .catch((error: any) => {
@@ -696,20 +734,7 @@ export function fetchRequestAPI(setRequestFilteredData: any) {
       },
     })
     .then((response: any) => {
-      const responseData = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-
-      const updatedData = responseData.map((item: any) => {
-        if (item.passenger_name) {
-          const validJson = item.passenger_name.replace(/'/g, '"');
-          const passengerNamesArray = JSON.parse(validJson);
-          item.passenger_name = passengerNamesArray.join(", ");
-        }
-        return item;
-      });
-
-      setRequestFilteredData(updatedData);
+      setRequestFilteredData(response.data);
     })
     .catch((error: any) => {
       console.error("Error fetching request list:", error);
@@ -737,40 +762,35 @@ export function fetchPendingRequestAPI(setPendingSchedule: any) {
     });
 }
 
-export function fetchRequestOfficeStaffAPI(setRequestList: any) {
+export async function fetchRequestOfficeStaffAPI(
+  page: number,
+  status: any,
+  searchTerm: any
+): Promise<any> {
   const token = localStorage.getItem("token");
-  api
-    .get("api/v1/request/fetch/", {
-      headers: {
-        Authorization: `Token ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .then((response: any) => {
-      const responseData = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-
-      const updatedData = responseData.map((item: any) => {
-        if (item.passenger_name) {
-          const validJson = item.passenger_name.replace(/'/g, '"');
-          const passengerNamesArray = JSON.parse(validJson);
-          item.passenger_name = passengerNamesArray.join(", ");
-        }
-        return item;
-      });
-      setRequestList(updatedData);
-    })
-    .catch((error: any) => {
-      console.error("Error fetching request list:", error);
-    });
+  try {
+    const response = await api.get(
+      `api/v1/request/fetch/?page=${page}&status_filter=${status}&search=${searchTerm}`,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching request list:", error);
+    throw error; // Rethrow the error to handle it in the calling component
+  }
 }
 
 export function approveRequestAPI(
   requestId: any,
   selectedDriverId: any,
   onRequestClose: any,
-  setIsConfirmationOpen: any
+  setIsConfirmationOpen: any,
+  setLoadingBarProgress: any
 ) {
   const token = localStorage.getItem("token");
   api
@@ -789,13 +809,43 @@ export function approveRequestAPI(
       }
     )
     .then(() => {
+      setLoadingBarProgress(50);
       onRequestClose();
       setIsConfirmationOpen(true);
 
       setTimeout(() => {
+        setLoadingBarProgress(100);
         setIsConfirmationOpen(false);
+
         window.location.reload();
       }, 3000);
+    })
+    .catch((error: any) => {
+      setLoadingBarProgress(50);
+      setLoadingBarProgress(100);
+      console.log(error);
+    });
+}
+export function rescheduleRequestAPI(
+  requestId: any,
+  onRequestClose: any,
+  data: any,
+  setLoadingBarProgress: (progress: number) => void,
+  fetchAPI: any,
+  setDataAPI: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .patch(`/api/v1/request/reschedule/${requestId}/`, data, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then(() => {
+      onRequestClose();
+      setLoadingBarProgress(100);
+      fetchAPI(setDataAPI);
     })
     .catch((error: any) => {
       console.log(error);
@@ -1025,6 +1075,216 @@ export function checkVehicleAvailability(
     });
 }
 
+export function checkTimeAvailability(
+  preferred_start_travel_date: any,
+  preferred_end_travel_date: any,
+  selected_vehicle: any,
+  setAvailableTimes: any,
+  setIsLoading: any,
+  setUnavailableTimeInRange: any,
+  role: any,
+  userID: any,
+  isAnotherVehiclee: any,
+  setIsUnavailableWithinDayOnly: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/trip/check-time-availability/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_end_travel_date: preferred_end_travel_date,
+        selected_vehicle: selected_vehicle,
+        role: role,
+        user_id: userID,
+        is_another_vehicle: isAnotherVehiclee,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setIsLoading(false);
+
+      const data = response.data;
+
+      let newState = { travelDateTimes: [], returnDateTimes: [] };
+
+      if (data[preferred_start_travel_date]) {
+        newState.travelDateTimes =
+          data[preferred_start_travel_date].available_time;
+      }
+      if (
+        data["is_unavailable_within_day_only"] &&
+        data["is_unavailable_within_day_only"] === true
+      ) {
+        setIsUnavailableWithinDayOnly(data["is_unavailable_within_day_only"]);
+      } else {
+        if (data[preferred_end_travel_date]) {
+          newState.returnDateTimes =
+            data[preferred_end_travel_date].available_time;
+        }
+      }
+
+      if (
+        data &&
+        data["unavailable_time_in_date_range"] &&
+        data["unavailable_time_in_date_range"][
+          "unavailable_time_in_date_range"
+        ] &&
+        data["unavailable_time_in_date_range"]["unavailable_time_in_date_range"]
+          .length > 0
+      ) {
+        setUnavailableTimeInRange(
+          data["unavailable_time_in_date_range"][
+            "unavailable_time_in_date_range"
+          ][0]
+        );
+        const new_available_time =
+          data["unavailable_time_in_date_range"][
+            "unavailable_time_in_date_range"
+          ][0];
+        newState.returnDateTimes = data[new_available_time].available_time;
+      } else {
+        setUnavailableTimeInRange(null);
+        console.log("No unavailable times found in the date range.");
+      }
+      // setUnavailableTimeInRange(data["unavailable_time_in_date_range"][0]);
+
+      // Update the state in the parent component
+      setAvailableTimes(newState);
+    })
+    .catch((error: any) => {
+      setIsLoading(false);
+      if (error.response && error.response.data) {
+        // setLoadingBarProgress(50);
+        // setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching time availability:", error);
+    });
+}
+
+export function checkReturnTimeAvailability(
+  preferred_start_travel_date: any,
+  preferred_end_travel_date: any,
+  preferred_travel_time: any,
+  selected_vehicle: any,
+  setAvailableTimes: any,
+  setIsLoadingReturnTime: any,
+  role: any,
+  userID: any,
+  isAnotherVehiclee: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/trip/check-return-time-availability/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_travel_time: preferred_travel_time,
+        selected_vehicle: selected_vehicle,
+        role: role,
+        user_id: userID,
+        is_another_vehicle: isAnotherVehiclee,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setIsLoadingReturnTime(false);
+
+      const data = response.data;
+
+      let newState = { travelDateTimes: [], returnDateTimes: [] };
+
+      if (data[preferred_end_travel_date]) {
+        newState.returnDateTimes = data[preferred_end_travel_date];
+      }
+
+      setAvailableTimes(newState);
+    })
+    .catch((error: any) => {
+      setIsLoadingReturnTime(false);
+      if (error.response && error.response.data) {
+        // setLoadingBarProgress(50);
+        // setLoadingBarProgress(100);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching time availability:", error);
+    });
+}
+export function checkScheduleConflictsForOneway(
+  preferred_start_travel_date: any,
+  preferred_start_travel_time: any,
+  preferred_end_travel_date: any,
+  preferred_end_travel_time: any,
+  selected_vehicle: any,
+  setIsLoading: any,
+  setErrorColor: any
+) {
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/trip/check-schedule-conflicts-for-oneway/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_start_travel_time: preferred_start_travel_time,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_end_travel_time: preferred_end_travel_time,
+        selected_vehicle: selected_vehicle,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response: any) => {
+      setIsLoading(false);
+
+      const data = response.data;
+      console.log(data);
+      setErrorColor(false);
+    })
+    .catch((error: any) => {
+      console.log(error.response);
+      setIsLoading(false);
+      if (error.response && error.response.data) {
+        setErrorColor(true);
+        const errorMessage = error.response.data.error || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+      console.log("Error fetching time availability:", error);
+    });
+}
+
 export function fetchSchedule(
   setSchedule: any,
   setNextSchedule: any,
@@ -1065,8 +1325,12 @@ export function fetchSchedule(
     });
 }
 
-export async function fetchScheduleOfficeStaff(setSchedule: any) {
+export async function fetchScheduleOfficeStaff(
+  setSchedule: any,
+  setIsLoading: any
+) {
   const token = localStorage.getItem("token");
+  setIsLoading(true);
   return api
     .get("api/v1/trip/fetch-office-staff/", {
       headers: {
@@ -1076,45 +1340,26 @@ export async function fetchScheduleOfficeStaff(setSchedule: any) {
     })
     .then((response: any) => {
       setSchedule(response.data);
+      setIsLoading(false);
     })
     .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
+      setIsLoading(false);
     });
 }
 
-export async function fetchEachVehicleSchedule(setSchedule: any) {
+export async function fetchEachVehicleSchedule(page: any): Promise<any> {
   const token = localStorage.getItem("token");
+
   return api
-    .get("api/v1/vehicles/fetch-each-vehicle-schedule/", {
+    .get(`api/v1/vehicles/fetch-each-vehicle-schedule/?page=${page}`, {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
     })
     .then((response: any) => {
-      const vehiclesData = response.data;
-
-      Object.keys(vehiclesData).forEach((vehicleKey) => {
-        const vehicleObj = vehiclesData[vehicleKey];
-        const schedules = vehicleObj.schedules;
-
-        const updatedSchedules = schedules.map((scheduleItem: any) => {
-          if (scheduleItem.passenger_name) {
-            const validJson = scheduleItem.passenger_name.replace(/'/g, '"');
-            try {
-              const passengerNamesArray = JSON.parse(validJson);
-              scheduleItem.passenger_name = passengerNamesArray.join(", ");
-            } catch (error) {
-              console.error("Error parsing passenger names:", error);
-            }
-          }
-          return scheduleItem;
-        });
-
-        vehicleObj.schedules = updatedSchedules;
-      });
-
-      setSchedule(vehiclesData);
+      return response.data;
     })
     .catch((error: any) => {
       console.error("Error fetching schedule list:", error);
@@ -1205,7 +1450,6 @@ export async function handlePlaceSelect(
         distance: distance,
         destination: fullAddress,
       }));
-      console.log(distanceString);
     } else if (
       category === "One-way - Drop" ||
       category === "One-way - Fetch" ||
@@ -1496,6 +1740,33 @@ export const downloadTripTicketAPI = async (requestId: any) => {
     console.error("Download failed", error);
   }
 };
+export const downloadPrintedFormAPI = async (requestId: any) => {
+  try {
+    const response = await api.get(
+      `/api/v1/trip/download-printedform/${requestId}/`,
+      {
+        responseType: "blob",
+      }
+    );
+
+    const contentDisposition = response.headers["content-disposition"] || "";
+    const match = contentDisposition.match(/filename="(.+)"/);
+    const filename = match ? match[1] : "file.pdf";
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download failed", error);
+  }
+};
 
 export async function fetchQuestion(setQuestions: any) {
   const token = localStorage.getItem("token");
@@ -1571,4 +1842,142 @@ export function submitTripMerge(
       setLoadingBarProgress(100);
       console.log(error);
     });
+}
+
+export async function checkVehicleOnProcess(
+  preferred_start_travel_date: any,
+  preferred_start_travel_timee: any,
+  preferred_end_travel_date: any,
+  preferred_end_travel_timee: any,
+  preferred_vehicle: any,
+  requester: any,
+  button_action: any,
+  setIsLoading: any,
+  setIsCalendarDateRangePickerShow: any,
+  setIsOtherFieldsShow: any
+) {
+  // const start_time_format = getTimeFormat(preferred_start_travel_timee);
+
+  // let preferred_start_travel_time = preferred_start_travel_timee;
+  // if (start_time_format) {
+  //   const date = parse(
+  //     preferred_start_travel_timee,
+  //     start_time_format,
+  //     new Date()
+  //   );
+  //   if (!isValid(date)) {
+  //     throw new Error("Invalid date for preferred_start_travel_timee");
+  //   }
+  //   preferred_start_travel_time = format(date, "HH:mm");
+  // }
+
+  // let preferred_end_travel_time = preferred_end_travel_timee;
+  // const end_time_format = getTimeFormat(preferred_end_travel_timee);
+  // if (end_time_format) {
+  //   const datee = parse(
+  //     preferred_end_travel_timee,
+  //     end_time_format,
+  //     new Date()
+  //   );
+  //   if (!isValid(datee)) {
+  //     throw new Error("Invalid date for preferred_end_travel_timee");
+  //   }
+  //   preferred_end_travel_time = format(datee, "HH:mm");
+  // }
+  const token = localStorage.getItem("token");
+  api
+    .get("/api/v1/vehicles/check-vehicle-on-process/", {
+      params: {
+        preferred_start_travel_date: preferred_start_travel_date,
+        preferred_start_travel_time: preferred_start_travel_timee,
+        preferred_end_travel_date: preferred_end_travel_date,
+        preferred_end_travel_time: preferred_end_travel_timee,
+        preferred_vehicle: preferred_vehicle,
+        button_action: button_action,
+        requester: requester,
+      },
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then(async (response: any) => {
+      setIsLoading(false);
+      if (response.data.message === "Vacant") {
+        localStorage.setItem(
+          "on_process_id",
+          JSON.stringify(response.data.on_process_id)
+        );
+        setIsCalendarDateRangePickerShow(false);
+        setIsOtherFieldsShow(true);
+      }
+      if (response.data.message === "Deselect vehicle") {
+        localStorage.removeItem("on_process_id");
+        setIsCalendarDateRangePickerShow(true);
+        setIsOtherFieldsShow(false);
+      }
+    })
+    .catch((error: any) => {
+      console.log(error.response.data.message);
+      if (error.response && error.response.data) {
+        setIsLoading(false);
+        const errorMessage =
+          error.response.data.message || "An error occurred.";
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      } else {
+        toast.error("An unknown error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: false,
+        });
+      }
+    });
+}
+
+export default function useHeartbeat(
+  isOtherFieldsShow: boolean,
+  isDetailsConfirmationShow: boolean
+) {
+  useEffect(() => {
+    let intervalId: any;
+
+    const heartBeatOnProcessVehicle = async () => {
+      try {
+        const onProcessId = localStorage.getItem("on_process_id");
+        const token = localStorage.getItem("token");
+
+        if (onProcessId && token) {
+          api
+            .patch(
+              `/api/v1/vehicles/heartbeat-on-process-vehicle/${onProcessId}/`,
+              {},
+              {
+                headers: {
+                  Authorization: `Token ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            )
+            .then(() => {})
+            .catch((error: any) => {
+              console.error("Heartbeat failed:", error);
+            });
+        }
+      } catch (error) {
+        console.error("Failed to retrieve on_process_id or token:", error);
+      }
+    };
+
+    if (isOtherFieldsShow || isDetailsConfirmationShow) {
+      intervalId = setInterval(heartBeatOnProcessVehicle, 30000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isOtherFieldsShow, isDetailsConfirmationShow]);
 }

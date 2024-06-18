@@ -83,8 +83,7 @@
   cursor: pointer;
 }
 .table-container table tbody tr:hover {
-  background-color: #060e57;
-  color: white;
+  background-color: white;
 }
 
 .schedules-null {
@@ -111,7 +110,7 @@
     gap: 30%;
   }
 
-  .schedules-row > :nth-child(2){
+  .schedules-row > :nth-child(2) {
     margin-top: 1rem;
     margin-left: auto;
     margin-right: auto;

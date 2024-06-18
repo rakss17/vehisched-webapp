@@ -115,7 +115,7 @@ export interface AddressInputProps {
 export interface RequestFormProps {
   office?: any;
   purpose?: any;
-  passenger_name: string[];
+  passenger_name?: string[];
   vehicle?: any;
   destination?: any;
   travel_date?: any;
@@ -144,6 +144,7 @@ export interface RequestFormProps {
   driver_name?: any;
   merged_with?: any;
   main_merge?: any;
+  vehicle_model?: any;
 }
 
 export interface RequestFormDetailsProps {
@@ -158,11 +159,22 @@ export interface RequestFormDetailsProps {
   fetchRequestOfficeStaffAPI: any;
   setRequestList: any;
 }
+export interface CheckScheduleProps {
+  travel_date?: any;
+  return_date?: any;
+  travel_time?: any;
+  return_time?: any;
+  type?: any;
+  purpose?: any;
+  passenger_name?: string[];
+  vehicle_capacity?: any;
+}
 
 export interface TimeInputProps {
   onChange: (time: string | null) => void;
   selectedDate?: string | null;
   handleDateChange?: (date: Date | null) => void;
+  timeSelected?: any;
 }
 
 export interface CalendarInputProps {
@@ -191,10 +203,14 @@ export interface ModalProps {
   setIsConfirmationOpenDriverAbsence?: any;
   selectedDriver?: any;
   onProceed?: any;
+  selectedRequest?: RequestFormProps | null;
+  fetchRequestOfficeStaffAPI?: any;
+  setRequestList?: any;
+  travelDateDayGap?: any;
 }
 
 export interface ButtonProps {
-  onClick?: () => void;
+  onClick?: (text: string) => void;
   text?: any;
   primaryStyle?: any;
   secondaryStyle?: any;
@@ -202,6 +218,7 @@ export interface ButtonProps {
   underlinedStyle?: any;
   width?: any;
   height?: any;
+  whiteStyle?: any;
 }
 
 export interface QuestionProps {
@@ -257,4 +274,20 @@ export interface HoverDescriptionProps {
   bottom?: number;
   width?: number;
   height?: number;
+}
+
+export interface SchedulePickerProps {
+  isOpen?: any;
+  selectedVehicleExisitingSchedule?: any;
+  setIsScheduleClick?: any;
+  selectedVehicleCapacity?: any;
+  selectedVehiclePlateNumber?: any;
+  selectedVehicleModel?: any;
+  selectedVehicleDriver?: any;
+  selectedVehicleIsVIP?: any;
+  selectedVehicleVIPAssignedTo?: any;
+  setIsAnotherVehicle?: any;
+  anotherVehicleData?: any;
+  setSelectedAnotherVehicle?: any;
+  isLoadingVehicles?: any;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   faColumns,
   faClipboardList,
@@ -30,18 +30,21 @@ import { NotificationCreatedCancelWebsocket } from "../../../components/api/webs
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingBar from "react-top-loading-bar";
-import { formatDate } from "../../../components/functions/getTimeElapsed";
+import { formatDate } from "../../../components/functions/functions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import HoverDescription from "../../../components/hoverdescription/hoverdescription";
 import CommonButton from "../../../components/button/commonbutton";
 import { useNavigate } from "react-router-dom";
-
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Requests() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [requestList, setRequestList] = useState<RequestFormProps[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    "All"
+  );
   const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
   const [isTravelOrderNoteHovered, setIsTravelOrderNoteHovered] =
     useState(false);
@@ -55,8 +58,10 @@ export default function Requests() {
   const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
     useState(false);
   const requestId = selectedRequest?.request_id;
-  const currentDate = new Date();
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [notifList, setNotifList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
@@ -73,77 +78,77 @@ export default function Requests() {
   ];
 
   NotificationCreatedCancelWebsocket(
-    fetchRequestOfficeStaffAPI,
-    setRequestList,
+    setSelectedCategory,
     fetchNotification,
-    setNotifList
+    setNotifList,
+    setRequestList,
+    setPage,
+    setHasMore
+  );
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRequestElementRef = useCallback(
+    (node: any) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((old) => old + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
   );
 
   useEffect(() => {
-    fetchRequestOfficeStaffAPI(setRequestList);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const newRequests = await fetchRequestOfficeStaffAPI(
+          page,
+          selectedCategory,
+          searchTerm
+        );
 
-    // const intervalId = setInterval(() => {
-    //   fetchRequestOfficeStaffAPI(setRequestList);
-    // }, 60000);
+        if (newRequests.data && newRequests.data.length > 0) {
+          setRequestList((old) => {
+            const newData = newRequests.data.filter(
+              (newItem: any) =>
+                !old.some(
+                  (oldItem) => oldItem.request_id === newItem.request_id
+                )
+            );
+            return [...old, ...newData];
+          });
+          if (!newRequests.next_page) {
+            setHasMore(false);
+          }
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching request list:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // return () => clearInterval(intervalId);
-  }, []);
+    fetchData();
+  }, [page, selectedCategory, searchTerm]);
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
+    setRequestList([]);
+    setPage(1);
+    setHasMore(true);
   };
 
-  const filteredRequestList = requestList.filter((request) => {
-    const isCategoryMatch =
-      selectedCategory === "All" ||
-      request.status === selectedCategory ||
-      request.purpose === selectedCategory ||
-      selectedCategory === "Logs" ||
-      selectedCategory === null;
-
-    if (isCategoryMatch && selectedCategory === "Logs" && request.travel_date) {
-      const [year, month, day] = request.travel_date.split("-");
-      const [hours, minutes] = request.travel_time.split(":");
-      const requestDate = new Date(year, month - 1, day, hours, minutes);
-      return requestDate < currentDate;
-    }
-
-    const isSearchMatch =
-      searchTerm === "" ||
-      request.requester_full_name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      (request.travel_date &&
-        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (request.destination &&
-        request.destination.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (selectedCategory === "Logs" &&
-        (request.requester_full_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-          (request.travel_date &&
-            request.travel_date
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())) ||
-          (request.destination &&
-            request.destination
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())))) ||
-      (selectedCategory !== "Logs" &&
-        request.requester_full_name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())) ||
-      request.request_id.toString().includes(searchTerm.toLowerCase()) ||
-      (request.travel_date &&
-        request.travel_date.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (request.destination &&
-        request.destination.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    return isCategoryMatch && isSearchMatch;
-  });
-
   const handleCategoryChange = (status: string) => {
+    setRequestList([]);
+    setPage(1);
     setSelectedCategory(status);
+    setHasMore(true);
   };
 
   const handleOpenRequestForm = (request: RequestFormProps) => {
@@ -177,12 +182,10 @@ export default function Requests() {
       )
     : [];
 
-  filteredRequestList.reverse();
-
   const navigate = useNavigate();
   const handleCreateRequest = () => {
     navigate("/RequestForm");
- };
+  };
 
   return (
     <>
@@ -197,21 +200,11 @@ export default function Requests() {
         <ToastContainer />
         <div className="margin-top"></div>
         <div className="request-row">
-          <SearchBar onSearchChange={handleSearchChange} />
-          {/* <div className="status-legend">
-            <div className="ontrip-yess-container">
-              <div className="ontrip-yess"></div>
-              <p>On Trip</p>
-            </div>
-            <div className="ontrip-noo-container">
-              <div className="ontrip-noo"></div>
-              <p>Awaiting Trip</p>
-            </div>
-            <div className="ontrip-gray-container">
-              <div className="ontrip-gray"></div>
-              <p>No Awaiting Trip</p>
-            </div>
-          </div> */}
+          <SearchBar
+            onSearchChange={handleSearchChange}
+            placeholder="Search by requester's name or office name or purpose"
+          />
+
           <Dropdown
             status={[
               "All",
@@ -221,13 +214,18 @@ export default function Requests() {
               "Approved - Alterate Vehicle",
               "Canceled",
               "Rejected",
-              "Vehicle Maintenance",
+              "Ongoing Vehicle Maintenance",
               "Driver Absence",
               "Logs",
             ]}
+            selectedLabel={selectedCategory}
             onCategoryChange={handleCategoryChange}
           />
-          <CommonButton onClick={handleCreateRequest} text="Create Request" primaryStyle />
+          <CommonButton
+            onClick={handleCreateRequest}
+            text="Create Request"
+            primaryStyle
+          />
         </div>
         <div className="request-container">
           <table
@@ -238,28 +236,49 @@ export default function Requests() {
           >
             <thead>
               <tr>
-                <th>Request No.</th>
-                <th>Requested by</th>
+                <th>Vehicle</th>
                 <th>Travel Date</th>
+                <th>Destination</th>
                 <th>Status</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {filteredRequestList.length === 0 ? (
-                <tr>
-                  <td colSpan={4}>No request available</td>
-                </tr>
+              {requestList.length === 0 ? (
+                <>
+                  {isLoading ? (
+                    <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
+                      <tr>
+                        <td colSpan={4}>
+                          <Skeleton count={10} height={60} />
+                        </td>
+                      </tr>
+                    </SkeletonTheme>
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>No reservation found.</td>
+                    </tr>
+                  )}
+                </>
               ) : (
-                filteredRequestList.map((request) => (
+                requestList.map((request, index) => (
                   <>
                     <tr
                       key={request.request_id}
+                      ref={
+                        index === requestList.length - 1
+                          ? lastRequestElementRef
+                          : null
+                      }
                       onClick={() => handleOpenRequestForm(request)}
                     >
-                      <td>{request.request_id}</td>
-                      <td>{request.requester_full_name}</td>
+                      <td>{request.vehicle_model}</td>
                       <td>{formatDate(request.travel_date)}</td>
+                      <td style={{ wordWrap: "break-word", maxWidth: "150px" }}>
+                        {request.destination
+                          ? request.destination.split(",")[0].trim()
+                          : "N/A"}
+                      </td>
                       <td>
                         {request.vehicle_driver_status === "On Trip"
                           ? request.vehicle_driver_status
@@ -428,6 +447,11 @@ export default function Requests() {
               )}
             </tbody>
           </table>
+          {isLoading && requestList.length > 0 && (
+            <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
+              <Skeleton count={3} height={60} width={1250} />
+            </SkeletonTheme>
+          )}
         </div>
       </Container>
 

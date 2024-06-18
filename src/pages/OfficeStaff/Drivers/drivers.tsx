@@ -60,9 +60,11 @@ export default function Drivers() {
 
   NotificationCreatedCancelWebsocket(
     () => {},
-    () => {},
     fetchNotification,
-    setNotifList
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
   );
 
   const handleSearchChange = (term: string) => {

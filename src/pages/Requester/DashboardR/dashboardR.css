@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 .margin-top-dashboard {
-  margin-top: 5rem;
+  margin-top: 5vh;
 }
 
 .requester-row-container {
@@ -13,7 +13,7 @@
   align-items: center;
 }
 .requester-row {
-  margin-top: 2vw;
+  margin-top: 15vh;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -29,14 +29,15 @@
   background-color: transparent;
   color: #060e57;
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   text-align: center;
   border: none;
   margin-top: 0vh;
 }
 .requester-row button.active {
-  border-bottom: 5px solid #060e57;
+  border-bottom: 4px solid #060e57;
   border-radius: 0px;
+  outline: none;
 }
 .requester-row button:hover {
   border-top: 0;
@@ -44,19 +45,20 @@
   border-right: 0;
   border-bottom: 5px solid #060e57;
   border-radius: 0px;
+  outline: none;
 }
 .requester-dashboard-container {
   display: flex;
   flex-direction: row;
   overflow-y: auto;
   flex-wrap: wrap;
-  max-height: 70vh;
+  max-height: 80vh;
   padding: 2%;
-  height: 68vh;
+  height: 80vh;
   width: 88vw;
   margin-left: 8vw;
   margin-top: 1vh;
-  border-top: 8px solid #060e57;
+  border-top: 5px solid #060e57;
   border-image: linear-gradient(to right, #e8a51c, #060e57);
   border-image-slice: 1;
   gap: 5%;
@@ -67,8 +69,9 @@
   flex-direction: row;
   flex-wrap: wrap;
   height: 55vh;
-  width: 88vw;
-  gap: 5%;
+  width: 80vw;
+  row-gap: 8%;
+  column-gap: 1%;
   padding-left: 5vh;
 }
 .date-available-range {
@@ -515,11 +518,13 @@
 
 .trip-category {
   margin-top: 1vw;
+  justify-content: center;
   width: 25vw;
   height: 5vh;
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 15%;
 }
 .trip-category div {
   width: 20vw;
@@ -557,7 +562,10 @@
   margin-top: 1vw;
   width: 25vw;
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30%;
+  margin-left: -5px;
 }
 .one-way-sub-category p {
   color: #060e57;
@@ -579,9 +587,11 @@
   margin-top: 2vw;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   width: 25vw;
   height: auto;
+  gap: 28%;
+  margin-left: -5px;
 }
 .date-and-time-container {
   display: flex;
@@ -609,9 +619,11 @@
   margin-top: 2vw;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   width: 25vw;
   height: auto;
+  gap: 20%;
+  margin-left: 5%;
 }
 .date-from-oneway .separate-date {
   display: flex;
@@ -634,10 +646,12 @@
 .date-to {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   margin-top: 2vh;
   width: 25vw;
   height: auto;
+  gap: 32%;
+  margin-left: -20px;
 }
 .date-to .separate-date {
   display: flex;
@@ -665,15 +679,18 @@
   margin-top: 0.5vw;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   width: 25vw;
   height: 5vh;
+  justify-content: center;
+  gap: 10%;
 }
 .trip-destination p {
   color: #060e57;
   font-size: 1rem;
   font-weight: bold;
-  margin-left: -3vw;
+  margin-right: 10%;
+  margin-top: 10px;
+  margin-left: -11px;
 }
 .trip-destination-autocomplete-roundtrip {
   height: 5vh;
@@ -694,12 +711,12 @@
 .number-of-pass {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-
+  justify-content: left;
   margin-top: 2vh;
   width: 25vw;
   height: 5vh;
   padding-right: 0.8vw;
+  gap: 20%;
 }
 .number-of-pass p {
   color: #060e57;
@@ -803,8 +820,9 @@
     height: 5vh;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    margin-left: -1vw;
+    align-items: left;
+    margin-left: 0vw;
+    gap: 10%;
   }
   .trip-category div {
     width: 100%;
@@ -840,10 +858,12 @@
     margin-top: 0.5vw;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: left;
     width: 100%;
     height: 5vh;
-    margin-top: 0.5vh;
+    margin-top: 1vh;
+    margin-left: 0vh;
+    gap: 17px;
   }
   .trip-destination p {
     color: #060e57;
@@ -873,10 +893,11 @@
     margin-top: 6vw;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     width: 50vw;
     height: auto;
-    margin-left: -0.5vw;
+    margin-left: 2vw;
+    gap: 10%;
   }
   .date-and-time-container {
     display: flex;
@@ -905,10 +926,11 @@
     margin-top: 6vw;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     width: 50vw;
     height: auto;
-    margin-left: 0.8vw;
+    margin-left: 4%;
+    gap: 12%;
   }
   .date-from-oneway .separate-date {
     display: flex;
@@ -936,11 +958,12 @@
   .date-to {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     margin-top: 2vh;
     width: 50vw;
     height: auto;
-    margin-left: -1vw;
+    margin-left: 2vw;
+    gap: 10%;
   }
   .date-to .separate-date {
     display: flex;
@@ -964,11 +987,12 @@
   .number-of-pass {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: left;
     margin-top: 2vh;
     width: 100%;
     height: 5vh;
     padding-right: 0.8vw;
+    gap: 5%;
   }
   .number-of-pass p {
     color: #060e57;
@@ -1009,7 +1033,9 @@
     margin-top: 1vw;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: left;
+    gap: 23%;
+    margin-left: 9%;
   }
   .one-way-sub-category p {
     color: #060e57;

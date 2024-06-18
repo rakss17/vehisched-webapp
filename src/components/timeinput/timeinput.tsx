@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TimePicker from "react-time-picker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -10,8 +10,25 @@ const TimeInput: React.FC<TimeInputProps> = ({
   onChange,
   selectedDate,
   handleDateChange,
+  timeSelected,
 }) => {
   const [selectedTime, setSelectedTime] = useState<any>(new Date());
+
+  useEffect(() => {
+    if (timeSelected) {
+      const currentDate = new Date();
+      const formattedMonth =
+        currentDate.getMonth() + 1 < 10
+          ? `0${currentDate.getMonth() + 1}`
+          : currentDate.getMonth() + 1;
+      const dateString = `${currentDate.getFullYear()}-${formattedMonth}-${currentDate.getDate()}T${timeSelected}`;
+      const timeValue = new Date(dateString);
+
+      if (!isNaN(timeValue.getTime())) {
+        setSelectedTime(timeValue);
+      }
+    }
+  }, [timeSelected]);
 
   const handleTimeChange = (time: string | null) => {
     if (time) {
@@ -25,6 +42,7 @@ const TimeInput: React.FC<TimeInputProps> = ({
       console.log("No time selected.");
     }
   };
+
   const handleHourIncrement = () => {
     if (selectedTime) {
       const incrementedTime = new Date(selectedTime);

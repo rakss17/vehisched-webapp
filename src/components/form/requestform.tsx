@@ -1,6 +1,5 @@
 import { useState, ChangeEvent, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import Container from "../container/container";
+import { useLocation } from "react-router-dom";
 import Header from "../header/header";
 import InputField from "../inputfield/inputfield";
 import "./requestform.css";
@@ -12,14 +11,12 @@ import {
 import Confirmation from "../confirmation/confirmation";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import USTPLogo from "../../assets/USTP LOGO.png";
-import DocumentCode from "../../assets/documentcode.jpg";
 import { RequestFormProps } from "../../interfaces/interfaces";
 import {
   checkVehicleAvailability,
   fetchDriversScheduleAPI,
   fetchRequestersAPI,
-  postRequestFromAPI,
+  postRequestFormAPI,
 } from "../api/api";
 import LoadingBar from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
@@ -28,8 +25,8 @@ import CalendarInput from "../calendarinput/calendarinput";
 import TimeInput from "../timeinput/timeinput";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import { format } from "date-fns";
-import { formatDate, formatTime } from "../functions/getTimeElapsed";
-import Dropdown from "../dropdown/dropdown";
+import { formatDate, formatTime } from "../functions/functions";
+import CommonButton from "../button/commonbutton";
 
 export default function RequestForm() {
   const [addressData, setAddressData] = useState<any>({
@@ -70,15 +67,7 @@ export default function RequestForm() {
   const [numPassengers, setNumPassengers] = useState(0);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [exceedsCapacity, setExceedsCapacity] = useState(false);
-  const navigate = useNavigate();
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
-
-  const dropdownVehicles = [
-    "Select Vehicle",
-    ...vehicles.map(
-      (vehicle: any) => `${vehicle.plate_number} ${vehicle.model}`
-    ),
-  ];
 
   const handleFetchVehicles = () => {
     checkVehicleAvailability(
@@ -93,12 +82,14 @@ export default function RequestForm() {
     );
   };
 
-  const handleChooseVehicle = (vehicleName: string) => {
+  const handleChooseVehicle = (event: any, value: any) => {
     const selectedVehicle = vehicles.find((vehicle) => {
       const { plate_number, model } = vehicle;
       const fullName = `${plate_number} ${model}`;
-      return fullName === vehicleName;
+      const fullValueName = `${value.plate_number} ${value.model}`;
+      return fullName === fullValueName;
     });
+    console.log(event);
 
     if (selectedVehicle) {
       setData((prevData: any) => ({
@@ -125,30 +116,21 @@ export default function RequestForm() {
     );
   };
 
-  const dropdownDrivers = [
-    "Select Driver",
-    ...driversData.map(
-      (driver) =>
-        `${driver.first_name} ${driver.middle_name} ${driver.last_name}`
-    ),
-  ];
-
-  const handleChooseDriver = (driverName: string) => {
+  const handleChooseDriver = (event: any, value: any) => {
     const selectedDriver = driversData.find((driver) => {
       const { first_name, middle_name, last_name } = driver;
       const fullName = `${first_name} ${middle_name} ${last_name}`;
-      return fullName === driverName;
+      const fullValueName = `${value.first_name} ${value.middle_name} ${value.last_name}`;
+      return fullName === fullValueName;
     });
-
+    console.log(event);
     if (selectedDriver) {
       setData((prevData: any) => ({
         ...prevData,
         driver_name: selectedDriver.id,
       }));
     }
-    // if (driverName === "Select Driver") {
-    //   setSelectedDriverId(null);
-    // }
+
     const updatedErrors = { ...errorMessages };
     delete updatedErrors[0]?.driverSelectionError;
     setErrorMessages(updatedErrors);
@@ -173,31 +155,6 @@ export default function RequestForm() {
       setIsFifthyKilometers(false);
     }
   }, []);
-
-  useEffect(() => {
-    // Check if data.passenger_name exists before creating a copy
-    const updatedPassengerNames = data.passenger_name
-      ? [...data.passenger_name]
-      : [];
-
-    if (numPassengers > updatedPassengerNames.length) {
-      const additionalPassengers = new Array(
-        numPassengers - updatedPassengerNames.length
-      ).fill("");
-      updatedPassengerNames.push(...additionalPassengers);
-    } else if (numPassengers < updatedPassengerNames.length) {
-      updatedPassengerNames.splice(numPassengers); // Remove excess passengers
-    }
-    const filteredPassengerData = updatedPassengerNames.filter(
-      (name) => name !== ""
-    );
-
-    setData((prevData: any) => ({
-      ...prevData,
-      passenger_name: filteredPassengerData,
-      number_of_passenger: numPassengers,
-    }));
-  }, [numPassengers]);
 
   const handleStartDateChange = (date: Date | null) => {
     const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
@@ -252,7 +209,6 @@ export default function RequestForm() {
         delete updatedErrors[0]?.travelTimeOnewayError;
         setErrorMessages(updatedErrors);
       }
-      // checkAutocompleteDisability();
     } else {
       console.log("No time selected.");
     }
@@ -291,7 +247,7 @@ export default function RequestForm() {
 
   const generatePassengerInputs = () => {
     const inputs = [];
-    for (let i = 0; i < numPassengers; i++) {
+    for (let i = 0; i < data.vehicle_capacity; i++) {
       inputs.push(
         <div key={i} className="passenger-name-column">
           <InputField
@@ -302,13 +258,16 @@ export default function RequestForm() {
             label={`Passenger ${i + 1}`}
             placeholder={`Passenger ${i + 1}`}
             onChange={(event) => {
-              const newPassengerNames = [...data.passenger_name];
+              const newPassengerNames = [...(data.passenger_name || "")];
               newPassengerNames[i] = event.target.value;
+              const countNumberOfPassenger = newPassengerNames.filter(
+                (name) => name !== ""
+              ).length;
               setData((prevData: any) => ({
                 ...prevData,
                 passenger_name: newPassengerNames,
+                number_of_passenger: countNumberOfPassenger,
               }));
-              // Update error messages if any
             }}
           />
         </div>
@@ -338,30 +297,40 @@ export default function RequestForm() {
     console.log(event);
   };
 
+  const handleTravelTypeChange = (event: any, newValue: any) => {
+    setData({
+      ...data,
+      type: newValue ? newValue.value : "",
+    });
+    console.log(event);
+  };
+
+  const travelTypes = [
+    { label: "Round Trip", value: "Round Trip" },
+    { label: "One-way - Drop", value: "One-way - Drop" },
+    { label: "One-way - Fetch", value: "One-way - Fetch" },
+  ];
+
   const handleGoBack = () => {
     window.history.back();
   };
 
   const handleSubmit = () => {
-    console.log(data);
     let validationErrors: { [key: string]: string[] } = {
       all: [],
       purposeError: [],
       numberOfPassengersError: [],
       numberOfPassengersExceedError: [],
     };
-    const allFieldsBlank = !data.purpose && !data.number_of_passenger;
+    const allFieldsBlank = !data.purpose;
     !data.category && !data.destination && !data.distance;
-    const semiFieldsBlank = !data.purpose && !data.number_of_passenger;
+    const semiFieldsBlank = !data.purpose;
 
     if (allFieldsBlank) {
       validationErrors.all = ["Required all fields!"];
     } else if (semiFieldsBlank) {
       validationErrors.all = ["Required all fields!"];
     } else {
-      if (!data.number_of_passenger) {
-        validationErrors.numberOfPassengersError = ["This field is required"];
-      }
       if (!data.purpose) {
         validationErrors.purposeError = ["This field is required"];
       }
@@ -376,7 +345,6 @@ export default function RequestForm() {
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-    console.log(data);
     if (
       validationErrors.numberOfPassengersError.length === 0 &&
       validationErrors.purposeError.length === 0 &&
@@ -385,16 +353,7 @@ export default function RequestForm() {
     ) {
       setLoadingBarProgress(20);
       // setIsModalOpen(true);
-      postRequestFromAPI(
-        data,
-        // () => {
-        //   setIsConfirmationOpen(true);
-        //   setIsModalOpen(true); // Open the modal after the request is successful
-        // },
-        setIsConfirmationOpen,
-        navigate,
-        setLoadingBarProgress
-      );
+      postRequestFormAPI(data, setIsConfirmationOpen, setLoadingBarProgress);
     }
   };
 
@@ -407,32 +366,16 @@ export default function RequestForm() {
       />
       <ToastContainer />
       <Header />
-      <Container>
-        {/* Conditionally render the CSM component as a modal */}
-        {/* {isModalOpen && (
-          <div className="modal-overlay">
-            <Csm />
-          </div>
-        )} */}
-        <div className="request-form-body">
-          <div className="request-form-header">
-            <img src={USTPLogo} alt="USTP Logo" />
-            <h1>Request Form</h1>
-            <img src={DocumentCode} alt="Document Code" />
-          </div>
-          <div className="form-body">
-            <div className="form-body-shadow">
-              <div className="first-row">
-                <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
-                <div className="first-row-column">
-                  <div className="requester-info-name">
-                    <strong>Requester's name:</strong>
-                    {/* <input
-                      className="destination-input"
-                      type="text"
-                      value={requesterName}
-                      onChange={(e) => setRequesterName(e.target.value)}
-                    /> */}
+
+      <div className="request-form-body">
+        <div className="form-body">
+          <div className="form-body-shadow">
+            <div className="first-row">
+              <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
+              <div className="first-row-column">
+                <div className="requester-info-name">
+                  <strong className="strong">Requester's name:</strong>
+                  <div className="new-input-style">
                     <Autocomplete
                       disablePortal
                       id="combo-box-demo"
@@ -447,150 +390,162 @@ export default function RequestForm() {
                       onChange={handleSelectRequester}
                     />
                   </div>
-                  <div className="requester-office">
-                    <strong>Office:</strong>
-                    <p>{data.office}</p>
+                </div>
+                <div className="requester-info-name">
+                  <strong className="strong">Travel Type:</strong>
+                  <div className="new-input-style">
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={travelTypes}
+                      sx={{ width: 300 }}
+                      getOptionLabel={(option) => option.label}
+                      onChange={handleTravelTypeChange}
+                      value={travelTypes.find(
+                        (type) => type.value === data.type
+                      )}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select type" />
+                      )}
+                    />
                   </div>
                 </div>
               </div>
-              <div className="passengers-name-row">
-                <div className="fifth-row">
-                  <div className="travel-type">
-                    <strong>Travel Type:</strong>
-                    <select
-                      className="type-options"
-                      value={data.type}
-                      onChange={(e) => {
-                        setData({
-                          ...data,
-                          type: e.target.value,
-                        });
-                      }}
-                    >
-                      <option value="">Select Type</option>
-                      <option value="Round Trip">Round Trip</option>
-                      <option value="One-way - Drop">One-way - Drop</option>
-                      <option value="One-way - Fetch">One-way - Fetch</option>
-                    </select>
-                  </div>
+              <div className="first-row-column">
+                <div className="requester-info-name">
+                  <strong className="strong">Office:</strong>
+                  <p className="new-input-style">{data.office}</p>
                 </div>
-                <div className="input-passenger-number">
-                  <p className="maximum-capacity-note">
+                <div className="requester-info-name">
+                  <p className="strong">
                     No. of passenger{"("}s{")"}: {capacity}
                   </p>
-                  <InputField
-                    icon={faUsers}
-                    onKeyDown={handleKeyDown}
-                    label="No. of passengers"
-                    value={numPassengers}
-                    onChange={handlePassengerChange}
-                    type="number"
-                  />
-                  <p className="set-trip-text-error">
-                    {errorMessages[0]?.numberOfPassengersError}
-                  </p>
-
-                  {exceedsCapacity && (
-                    <p className="set-trip-text-error">
-                      Exceeds seating capacity of the vehicle
-                    </p>
-                  )}
+                  <div className="new-input-style">
+                    <InputField
+                      icon={faUsers}
+                      onKeyDown={handleKeyDown}
+                      label="No. of passengers"
+                      value={numPassengers}
+                      onChange={handlePassengerChange}
+                      type="number"
+                    />
+                  </div>
                 </div>
               </div>
+            </div>
+            {/* ----------------------------------------------------------------------------------------- */}
+            <div className="first">
               {data.type === "Round Trip" && (
                 <>
-                  <div className="forth-row">
-                    <div className="calendar-containerr">
-                      <strong>Date of Travel:</strong>
-                      <div className="date-and-time">
-                        <CalendarInput
-                          containerClassName="calendar-container"
-                          calendarClassName="calendar-input"
-                          iconClassName="calendar-input-icon"
-                          onChange={handleStartDateChange}
-                          selectedDate={
-                            data.travel_date ? new Date(data.travel_date) : null
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="calendar-containerr">
-                      <strong>Time of Travel:</strong>
-                      <div className="date-and-time">
-                        <TimeInput
-                          onChange={handleStartTimeChange}
-                          selectedDate={data.travel_date}
-                          handleDateChange={handleStartDateChange}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="forth-row">
-                    <div className="calendar-containerr">
-                      <strong>Return Date:</strong>
-                      {data.type === "Round Trip" ? (
-                        <div className="date-and-time">
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Date of Travel:</strong>
+                        <div className="new-input-style">
                           <CalendarInput
                             containerClassName="calendar-container"
                             calendarClassName="calendar-input"
                             iconClassName="calendar-input-icon"
+                            onChange={handleStartDateChange}
                             selectedDate={
-                              data.return_date
-                                ? new Date(data.return_date)
+                              data.travel_date
+                                ? new Date(data.travel_date)
                                 : null
                             }
-                            onChange={handleEndDateChange}
-                            disableDaysBefore={3}
                           />
                         </div>
-                      ) : (
-                        <div>
-                          <p>{formatDate(data.return_date)}</p>
-                        </div>
-                      )}
+                      </div>
                     </div>
-
-                    <div className="calendar-containerr">
-                      <strong>Return Time </strong>
-                      {data.type === "Round Trip" ? (
-                        <div className="date-and-time">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Time of Travel:</strong>
+                        <div className="new-input-style">
                           <TimeInput
-                            onChange={handleEndTimeChange}
-                            selectedDate={data.return_date}
-                            handleDateChange={handleEndDateChange}
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
                           />
                         </div>
-                      ) : (
-                        <div>
-                          <p>{formatTime(data.return_time)}</p>
-                        </div>
-                      )}
+                      </div>
                     </div>
                   </div>
+                  {/* ----------------------------------------------------------------------- */}
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Return Date:</strong>
+                        {data.type === "Round Trip" ? (
+                          <div className="new-input-style">
+                            <CalendarInput
+                              containerClassName="calendar-container"
+                              calendarClassName="calendar-input"
+                              iconClassName="calendar-input-icon"
+                              selectedDate={
+                                data.return_date
+                                  ? new Date(data.return_date)
+                                  : null
+                              }
+                              onChange={handleEndDateChange}
+                            />
+                          </div>
+                        ) : (
+                          <div>
+                            <p>{formatDate(data.return_date)}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Return Time </strong>
+                        {data.type === "Round Trip" ? (
+                          <div className="new-input-style ">
+                            <TimeInput
+                              onChange={handleEndTimeChange}
+                              selectedDate={data.return_date}
+                              handleDateChange={handleEndDateChange}
+                            />
+                          </div>
+                        ) : (
+                          <div>
+                            <p>{formatTime(data.return_time)}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                   {data.travel_date && data.travel_time && (
                     <>
-                      <div className="destinationn-row">
-                        <div className="destination-info">
-                          <strong>Destination: </strong>
-                          <AutoCompleteAddressGoogle
-                            travel_date={data.travel_date}
-                            travel_time={data.travel_time}
-                            setData={setData}
-                            setAddressData={setAddressData}
-                            category={data.type}
-                            removeDestinationError={() =>
-                              setErrorMessages((prev) => ({
-                                ...prev,
-                                destinationError: undefined,
-                              }))
-                            }
-                            className="googledestination"
-                          />
+                      <div className="first-row">
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Destination: </strong>
+                            <div className="new-input-style">
+                              <AutoCompleteAddressGoogle
+                                travel_date={data.travel_date}
+                                travel_time={data.travel_time}
+                                setData={setData}
+                                setAddressData={setAddressData}
+                                category={data.type}
+                                removeDestinationError={() =>
+                                  setErrorMessages((prev) => ({
+                                    ...prev,
+                                    destinationError: undefined,
+                                  }))
+                                }
+                                className="googledestination"
+                              />
+                            </div>
+                          </div>
                         </div>
-
-                        <div className="kilometer-info">
-                          <strong>Distance:</strong>
-                          <p>{distance} km</p>
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Distance:</strong>
+                            <div className="new-input-style">
+                              <p>{distance} km</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </>
@@ -600,56 +555,69 @@ export default function RequestForm() {
               {(data.type === "One-way - Drop" ||
                 data.type === "One-way - Fetch") && (
                 <>
-                  <div className="forth-row">
-                    <div className="calendar-containerr">
-                      <strong>Date of Travel:</strong>
-                      <div className="date-and-time">
-                        <CalendarInput
-                          containerClassName="calendar-container"
-                          calendarClassName="calendar-input"
-                          iconClassName="calendar-input-icon"
-                          onChange={handleStartDateChange}
-                          selectedDate={
-                            data.travel_date ? new Date(data.travel_date) : null
-                          }
-                        />
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong>Date of Travel:</strong>
+                        <div className="new-input-style">
+                          <CalendarInput
+                            containerClassName="calendar-container"
+                            calendarClassName="calendar-input"
+                            iconClassName="calendar-input-icon"
+                            onChange={handleStartDateChange}
+                            selectedDate={
+                              data.travel_date
+                                ? new Date(data.travel_date)
+                                : null
+                            }
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div className="calendar-containerr">
-                      <strong>Time of Travel:</strong>
-                      <div className="date-and-time">
-                        <TimeInput
-                          onChange={handleStartTimeChange}
-                          selectedDate={data.travel_date}
-                          handleDateChange={handleStartDateChange}
-                        />
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Time of Travel:</strong>
+                        <div className="new-input-style">
+                          <TimeInput
+                            onChange={handleStartTimeChange}
+                            selectedDate={data.travel_date}
+                            handleDateChange={handleStartDateChange}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                   {data.travel_date && data.travel_time && (
                     <>
-                      <div className="destinationn-row">
-                        <div className="destination-info">
-                          <strong>Destination: </strong>
-                          <AutoCompleteAddressGoogle
-                            travel_date={data.travel_date}
-                            travel_time={data.travel_time}
-                            setData={setData}
-                            setAddressData={setAddressData}
-                            category={data.type}
-                            removeDestinationError={() =>
-                              setErrorMessages((prev) => ({
-                                ...prev,
-                                destinationError: undefined,
-                              }))
-                            }
-                            className="googledestination"
-                          />
+                      <div className="first-row">
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Destination: </strong>
+                            <div className="new-input-style">
+                              <AutoCompleteAddressGoogle
+                                travel_date={data.travel_date}
+                                travel_time={data.travel_time}
+                                setData={setData}
+                                setAddressData={setAddressData}
+                                category={data.type}
+                                removeDestinationError={() =>
+                                  setErrorMessages((prev) => ({
+                                    ...prev,
+                                    destinationError: undefined,
+                                  }))
+                                }
+                                className="googledestination"
+                              />
+                            </div>
+                          </div>
                         </div>
-
-                        <div className="kilometer-info">
-                          <strong>Distance:</strong>
-                          <p>{distance} km</p>
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">Distance:</strong>
+                            <div className="new-input-style">
+                              <p>{distance} km</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </>
@@ -657,19 +625,23 @@ export default function RequestForm() {
 
                   {data.return_date && data.return_time && (
                     <>
-                      <div className="forth-row">
-                        <div className="calendar-containerr">
-                          <strong>Estimated Return Date:</strong>
-
-                          <div>
-                            <p>{formatDate(data.return_date)}</p>
+                      <div className="first-row">
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong className="strong">
+                              Estimated Return Date:
+                            </strong>
+                            <div className="new-input-style">
+                              <p>{formatDate(data.return_date)}</p>
+                            </div>
                           </div>
                         </div>
-
-                        <div className="calendar-containerr">
-                          <strong>Estimated Return Time </strong>=
-                          <div>
-                            <p>{formatTime(data.return_time)}</p>
+                        <div className="first-row-column-2">
+                          <div className="requester-info-name">
+                            <strong>Estimated Return Time </strong>
+                            <div className="new-input-style">
+                              <p>{formatTime(data.return_time)}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -677,42 +649,65 @@ export default function RequestForm() {
                   )}
                 </>
               )}
-              {data.travel_date &&
-                data.travel_time &&
-                data.return_date &&
-                data.return_time &&
-                data.number_of_passenger && (
-                  <>
-                    <div className="third-row2">
-                      <div className="vehicle-info-name">
-                        <strong>Vehicle:</strong>
-                        <p>
-                          <div className="vehicle-options">
-                            <div onClick={handleFetchVehicles}>
-                              <Dropdown
-                                status={dropdownVehicles}
-                                onCategoryChange={handleChooseVehicle}
-                                dropdownClassName="dropdown-custom"
-                                menuClassName="menu-custom"
-                              />
-                            </div>
-                          </div>
-                        </p>
-                      </div>
-                      <div className="vehicle-info-name">
-                        <strong>Driver:</strong>
-                        <div onClick={handleFetchDrivers}>
-                          <Dropdown
-                            status={dropdownDrivers}
-                            onCategoryChange={handleChooseDriver}
-                            dropdownClassName="dropdown-custom"
-                            menuClassName="menu-custom"
+            </div>
+            {/* -------------------------------------------------------------------------------------------- */}
+            {data.travel_date &&
+              data.travel_time &&
+              data.return_date &&
+              data.return_time && (
+                <>
+                  <div className="first-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Vehicle:</strong>
+                        <div
+                          className="new-input-style"
+                          onClick={handleFetchVehicles}
+                        >
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={vehicles}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select vehicle" />
+                            )}
+                            getOptionLabel={(option) =>
+                              `${option.model} ${option.plate_number} `
+                            }
+                            onChange={handleChooseVehicle}
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="sixth-row">
-                      <div className="purpose-row">
+                    <div className="first-row-column-2">
+                      <div className="requester-info-name">
+                        <strong className="strong">Driver:</strong>
+                        <div
+                          className="new-input-style"
+                          onClick={handleFetchDrivers}
+                        >
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={driversData}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => (
+                              <TextField {...params} label="Select driver" />
+                            )}
+                            getOptionLabel={(option) =>
+                              `${option.first_name} ${option.middle_name} ${option.last_name}`
+                            }
+                            onChange={handleChooseDriver}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* -------------------------------------------------------------------------------------- */}
+                  <div className="first-row">
+                    <div className="second-row">
+                      <div className="first-row-column-3">
                         <InputField
                           className="purpose-width"
                           icon={faClipboard}
@@ -738,37 +733,55 @@ export default function RequestForm() {
                         </p>
                       </div>
                     </div>
-                    <div className="sixth-row">
-                      <div className="requester-info-name">
-                        <strong>Passenger's name(s):</strong>
-                      </div>
+                  </div>
+                  {/* ------------------------------------------------------------------------- */}
+                  <div className="third-row">
+                    <div className="third-row-passenger">
+                      <strong>Passenger's name(s):</strong>
+                    </div>
+                    <div className="passenger-fields-new">
                       <div className="passenger-input-fields">
                         {generatePassengerInputs()}
                       </div>
                     </div>
-                  </>
-                )}
+                  </div>
+                  <div className="note-new-style">
+                    <div className="first-row-column-4">
+                      {isFifthyKilometers && (
+                        <p>
+                          Note: Requesters traveling to destinations exceed 50
+                          kilometers are required to provide a travel order for
+                          the vehicle's fuel and
+                          <br></br>
+                          the driver's per diem.
+                        </p>
+                      )}
 
-              <div className="seventh-row">
-                {isFifthyKilometers && (
-                  <p>
-                    Note: Requesters traveling to destinations exceed 50
-                    kilometers are required to provide a travel order for the
-                    vehicle's fuel and
-                    <br></br>
-                    the driver's per diem.
-                  </p>
-                )}
+                      <div className="button-row-container">
+                        <CommonButton
+                          width={8}
+                          height={6}
+                          secondaryStyle
+                          onClick={handleGoBack}
+                          text={"Go back"}
+                        />
 
-                <div className="button-row-container">
-                  <button onClick={handleGoBack}>Go back</button>
-                  <button onClick={handleSubmit}>Submit</button>
-                </div>
-              </div>
-            </div>
+                        <CommonButton
+                          width={8}
+                          height={6}
+                          primaryStyle
+                          onClick={handleSubmit}
+                          text={"Submit"}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
           </div>
         </div>
-      </Container>
+      </div>
+
       <Confirmation
         isOpen={isConfirmationOpen}
         header="Request Submitted!"

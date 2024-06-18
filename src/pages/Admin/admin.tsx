@@ -243,7 +243,7 @@ export default function Admin() {
       ...prevUserData,
       password: `${userData.last_name.toLowerCase()}@${userData.first_name.toLowerCase()}`,
     }));
-  }, [userData]);
+  }, [userData.last_name && userData.first_name]);
 
   useEffect(() => {
     dispatch(fetchUsersAPI() as any);
@@ -1122,7 +1122,7 @@ export default function Admin() {
         buttonText1="Yes"
         buttonText2="No"
         onRequestClose={handleClose}
-        onRequestDelete={handleDeleteVehicleButton}
+        onProceed={handleDeleteVehicleButton}
       />
       <Confirmation isOpen={isConfirmationOpen} header="User Added!" />
 

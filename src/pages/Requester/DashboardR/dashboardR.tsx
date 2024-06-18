@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import Container from "../../../components/container/container";
 import Header from "../../../components/header/header";
 import Sidebar from "../../../components/sidebar/sidebar";
-import Label from "../../../components/label/label";
 import "./dashboardR.css";
 import { faColumns, faClipboardList } from "@fortawesome/free-solid-svg-icons";
-import CalendarInput from "../../../components/calendarinput/calendarinput";
-import TimeInput from "../../../components/timeinput/timeinput";
 import Countdown from "../../../components/countdown/countdown";
 import { SidebarItem, Vehicle } from "../../../interfaces/interfaces";
 import { ToastContainer } from "react-toastify";
@@ -17,18 +14,16 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import {
   serverSideUrl,
-  fetchNotification,
   fetchSchedule,
   fetchPendingRequestAPI,
-  checkVehicleAvailability,
   acceptVehicleAPI,
   cancelRequestAPI,
   fetchVehicleVIPAPI,
+  fetchEachVehicleSchedule,
+  fetchAnotherVehicle,
 } from "../../../components/api/api";
 import { NotificationApprovalScheduleReminderWebsocket } from "../../../components/api/websocket";
-import { format } from "date-fns";
-import { responsive } from "../../../components/functions/getTimeElapsed";
-import AutoCompleteAddressGoogle from "../../../components/addressinput/googleaddressinput";
+import { responsive } from "../../../components/functions/functions";
 import Guidelines from "../../../components/guidelines/guidelines";
 import CommonButton from "../../../components/button/commonbutton";
 import Carousel from "react-multi-carousel";
@@ -38,36 +33,45 @@ import LoadingBar from "react-top-loading-bar";
 import InitialFormVip from "../../../components/form/initialformvip";
 import PromptDialog from "../../../components/promptdialog/prompdialog";
 import RequesterTripMergingForm from "../../../components/form/requestertripmerging";
+import SchedulePicker from "../../../components/schedulepicker/schedulepicker";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function DashboardR() {
   const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const [vehiclesData, setVehiclesData] = useState<Vehicle[]>([]);
+  const [anotherVehiclesData, setAnotherVehiclesData] = useState<Vehicle[]>([]);
+  const [isAnotherVehicle, setIsAnotherVehicle] = useState(false);
   const [schedule, setSchedule] = useState<any[]>([]);
   const [nextSchedule, setNextSchedule] = useState<any[]>([]);
   const [pendingSchedule, setPendingSchedule] = useState<any[]>([]);
   const [vehicleRecommendation, setVehicleRecommendation] = useState<any[]>([]);
-  const [isTripScheduleClick, setIsTripScheduleClick] = useState(false);
   const [isAvailableVehicleClick, setIsAvailableVehicleClick] = useState(false);
   const [isOngoingScheduleClick, setIsOngoingScheduleClick] = useState(false);
-  const [isOneWayClick, setIsOneWayClick] = useState(false);
-  const [isFetchSelect, setIsFetchSelect] = useState(false);
+  const [isScheduleClick, setIsScheduleClick] = useState(false);
+  const [
+    selectedVehicleExisitingSchedule,
+    setSelectedVehicleExisitingSchedule,
+  ] = useState<any[]>([]);
   const [selectedButton, setSelectedButton] =
-    useState<string>("Set Trip Schedule");
+    useState<string>("Available Vehicle");
   const [selectedVehicleRecommendation, setSelectedVehicleRecommendation] =
     useState<string>("");
   const [selectedTrip, setSelectedTrip] = useState<string>("");
-  const [selectedTripButton, setSelectedTripButton] =
-    useState<string>("Round Trip");
+
   const [isGuidelinesModalOpen, setIsGuidelinesModalOpen] = useState(false);
   const [isInitialFormVIPOpen, setIsInitialFormVIPOpen] = useState(false);
   const [isRequesterTripMergingFormOpen, setIsRequesterTripMergingFormOpen] =
     useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState("");
   const [givenCapacity, setGivenCapacity] = useState(0);
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+  const [anotherVehicleData, setAnotherVehicleData] = useState<Vehicle[]>([]);
+  const [selectedAnotherVehicle, setSelectedAnotherVehicle] = useState("");
+
   const personalInfo = useSelector(
     (state: RootState) => state.personalInfo.data
   );
+  const [isLoading, setIsLoading] = useState(false);
   const [isConfirmationAcceptOpen, setIsConfirmationAcceptOpen] =
     useState(false);
   const [isConfirmationCancelOpen, setIsConfirmationCancelOpen] =
@@ -86,12 +90,19 @@ export default function DashboardR() {
   });
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const userName = personalInfo?.username;
-  const [isTravelDateSelected, setIsTravelDateSelected] = useState(true);
-  const [plateNumber, setSelectedPlateNumber] = useState("");
-  const [vehicleName, setSelectedModel] = useState("");
-  const [capacity, setSelectedCapacity] = useState("");
+  const userID = personalInfo?.id;
+
+  const [plateNumber, setSelectedVehiclePlateNumber] = useState("");
+  const [vehicleName, setSelectedVehicleModel] = useState("");
+  const [isVIP, setSelectedVehicleIsVIP] = useState(false);
+  const [capacity, setSelectedVehicleCapacity] = useState(0);
+  const [assignedDriver, setSelectedVehicleDriver] = useState("");
+  const [selectedVehicleVIPAssignedTo, setSelectedVehicleVIPAssignedTo] =
+    useState("");
   const navigate = useNavigate();
   const [notifList, setNotifList] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     {
@@ -107,14 +118,6 @@ export default function DashboardR() {
     },
   ];
   const role = personalInfo?.role;
-
-  fetchNotification(setNotifList);
-
-  useEffect(() => {
-    if (role === "vip") {
-      fetchVehicleVIPAPI(setVehiclesData, handleButtonClick);
-    }
-  }, []);
 
   useEffect(() => {
     fetchSchedule(
@@ -158,100 +161,6 @@ export default function DashboardR() {
 
   NotificationApprovalScheduleReminderWebsocket(userName);
 
-  const handleSetTripModal = () => {
-    let validationErrors: { [key: string]: string } = {};
-    if (data.category === "Round Trip") {
-      const allFieldsBlank =
-        !data.travel_date &&
-        !data.travel_time &&
-        !data.return_date &&
-        !data.return_time &&
-        !data.capacity &&
-        !addressData.destination;
-
-      if (allFieldsBlank) {
-        validationErrors.all = "Required all fields!";
-      } else {
-        if (!data.travel_date) {
-          validationErrors.travelDateError = "This field is required";
-        }
-        if (!data.travel_time) {
-          validationErrors.travelTimeError = "This field is required";
-        }
-
-        if (!data.return_date) {
-          validationErrors.returnDateError = "This field is required";
-        }
-
-        if (!data.return_time) {
-          validationErrors.returnTimeError = "This field is required";
-        }
-        if (!data.capacity) {
-          validationErrors.capacityError = "This field is required";
-        }
-
-        if (!addressData.destination) {
-          validationErrors.destinationError = "This field is required";
-        }
-      }
-    } else if (
-      data.category === "One-way" ||
-      data.category === "One-way - Fetch" ||
-      data.category === "One-way - Drop"
-    ) {
-      const allFieldsBlank =
-        !data.travel_date &&
-        !data.travel_time &&
-        !data.capacity &&
-        data.category !== "One-way - Fetch" &&
-        data.category !== "One-way - Drop";
-      !data.category && !addressData.destination;
-
-      if (allFieldsBlank) {
-        validationErrors.all = "Required all fields!";
-      } else {
-        if (!data.travel_date) {
-          validationErrors.travelDateOnewayError = "This field is required";
-        }
-        if (!data.travel_time) {
-          validationErrors.travelTimeOnewayError = "This field is required";
-        }
-        if (!data.capacity) {
-          validationErrors.capacityError = "This field is required";
-        }
-
-        if (
-          data.category !== "One-way - Fetch" &&
-          data.category !== "One-way - Drop"
-        ) {
-          validationErrors.categoryError = "This field is required";
-        }
-
-        if (!addressData.destination) {
-          validationErrors.destinationError = "This field is required";
-        }
-      }
-    }
-
-    const errorArray = [validationErrors];
-
-    setErrorMessages(errorArray);
-
-    if (Object.keys(validationErrors).length === 0) {
-      setLoadingBarProgress(20);
-      checkVehicleAvailability(
-        setVehiclesData,
-        data.travel_date,
-        data.travel_time,
-        data.return_date,
-        data.return_time,
-        data.capacity,
-        setLoadingBarProgress,
-        handleButtonClick
-      );
-    }
-  };
-
   const handleOpenRequestFormForVIP = () => {
     navigate("/RequestForm", {
       state: { plateNumber, vehicleName, capacity, data, addressData },
@@ -262,22 +171,6 @@ export default function DashboardR() {
     setIsInitialFormVIPOpen(false);
     setIsDisclaimerOpen(false);
     setIsRequesterTripMergingFormOpen(false);
-  };
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    const key = event.key;
-
-    if (key !== "Backspace" && isNaN(Number(key))) {
-      event.preventDefault();
-    }
-  };
-  const openRequestForm = (
-    plateNumber: string,
-    vehicleName: string,
-    capacity: any
-  ) => {
-    navigate("/RequestForm", {
-      state: { plateNumber, vehicleName, capacity, data, addressData },
-    });
   };
 
   // const availableVehicles = vehiclesData.filter((vehicle) => {
@@ -292,28 +185,150 @@ export default function DashboardR() {
 
   useEffect(() => {
     setData({ ...data, category: "Round Trip" });
-    setSelectedTripButton("Round Trip");
   }, []);
-  const checkAutocompleteDisability = () => {
-    if (data.travel_date !== null && data.travel_time !== null) {
-      setIsTravelDateSelected(false);
+
+  useEffect(() => {
+    fetchAnotherVehicle(setAnotherVehicleData, plateNumber);
+  }, [isAnotherVehicle]);
+
+  useEffect(() => {
+    if (role === "vip" || isAnotherVehicle) {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const vehiclesVIP = await fetchVehicleVIPAPI(
+            isAnotherVehicle,
+            userID,
+            plateNumber
+          );
+          if (vehiclesVIP && vehiclesVIP.data) {
+            if (vehiclesVIP.another_set_of_vehicles === "true") {
+              const updatedData: any = {};
+
+              Object.keys(vehiclesVIP.data).forEach((vehicleKey) => {
+                const vehicleObj = vehiclesVIP.data[vehicleKey];
+                if (vehicleObj) {
+                  updatedData[vehicleKey] = vehicleObj;
+                } else {
+                  console.error(
+                    `Vehicle object for key ${vehicleKey} is undefined.`
+                  );
+                }
+              });
+
+              setAnotherVehiclesData(() => {
+                return updatedData;
+              });
+            } else {
+              const updatedData: any = {};
+
+              Object.keys(vehiclesVIP.data).forEach((vehicleKey) => {
+                const vehicleObj = vehiclesVIP.data[vehicleKey];
+                if (vehicleObj) {
+                  updatedData[vehicleKey] = vehicleObj;
+                } else {
+                  console.error(
+                    `Vehicle object for key ${vehicleKey} is undefined.`
+                  );
+                }
+              });
+              setVehiclesData(() => {
+                return updatedData;
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching vehicles list:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
     }
-  };
+  }, [role === "vip", isAnotherVehicle]);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRequestElementRef = useCallback(
+    (node: any) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((old) => old + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
+
+  useEffect(() => {
+    if (role === "requester") {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const newRequests = await fetchEachVehicleSchedule(page);
+
+          if (newRequests && newRequests.data) {
+            const updatedData: any = {};
+
+            Object.keys(newRequests.data).forEach((vehicleKey) => {
+              const vehicleObj = newRequests.data[vehicleKey];
+              if (vehicleObj) {
+                updatedData[vehicleKey] = vehicleObj;
+              } else {
+                console.error(
+                  `Vehicle object for key ${vehicleKey} is undefined.`
+                );
+              }
+            });
+
+            setVehiclesData((prevData) => {
+              const mergedData = { ...prevData };
+
+              Object.keys(updatedData).forEach((vehicleKey: any) => {
+                const newVehicle = updatedData[vehicleKey];
+                const prevVehicle = prevData[vehicleKey];
+
+                if (
+                  !prevVehicle ||
+                  prevVehicle.plate_number !== newVehicle.plate_number
+                ) {
+                  mergedData[vehicleKey] = newVehicle;
+                }
+              });
+
+              return mergedData;
+            });
+
+            if (!newRequests.next_page) {
+              setHasMore(false);
+            }
+          } else {
+            setHasMore(false);
+          }
+        } catch (error) {
+          console.error("Error fetching vehicles list:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [page, role === "requester"]);
 
   const handleButtonClick = (button: string) => {
     switch (button) {
       case "Set Trip Schedule":
-        setIsTripScheduleClick(true);
         setIsAvailableVehicleClick(false);
         setIsOngoingScheduleClick(false);
         break;
       case "Available Vehicle":
-        setIsTripScheduleClick(false);
         setIsAvailableVehicleClick(true);
         setIsOngoingScheduleClick(false);
         break;
       case "Ongoing Schedule":
-        setIsTripScheduleClick(false);
         setIsAvailableVehicleClick(false);
         setIsOngoingScheduleClick(true);
         break;
@@ -329,7 +344,6 @@ export default function DashboardR() {
 
     switch (button) {
       case "Round Trip":
-        setIsOneWayClick(false);
         delete updatedErrors[0];
         setErrorMessages(updatedErrors);
         setData({
@@ -346,8 +360,6 @@ export default function DashboardR() {
         break;
 
       case "One-way":
-        setIsOneWayClick(true);
-        setIsTravelDateSelected(true);
         delete updatedErrors[0];
         setErrorMessages(updatedErrors);
         setData({
@@ -367,84 +379,33 @@ export default function DashboardR() {
         break;
     }
     setData({ ...data, category: button });
-    setSelectedTripButton(button);
   };
 
   useEffect(() => {
     handleButtonClickTrip("Round Trip");
+    handleButtonClick("Available Vehicle");
   }, []);
+
   useEffect(() => {
-    handleButtonClick("Set Trip Schedule");
-  }, []);
+    if (selectedAnotherVehicle) {
+      const foundVehicle = Object.values(anotherVehiclesData).find(
+        (vehicle) => vehicle.plate_number === selectedAnotherVehicle
+      );
+      if (foundVehicle) {
+        setSelectedVehicleExisitingSchedule(foundVehicle.schedules);
+        setSelectedVehicleCapacity(foundVehicle.capacity);
+        setSelectedVehicleDriver(foundVehicle.driver_assigned_to);
+        setSelectedVehiclePlateNumber(foundVehicle.plate_number);
+        setSelectedVehicleModel(foundVehicle.model);
+        setSelectedVehicleIsVIP(foundVehicle.is_vip);
+        setSelectedVehicleVIPAssignedTo(foundVehicle.vip_assigned_to);
+      }
+    }
+  }, [selectedAnotherVehicle, anotherVehiclesData]);
 
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  };
-
-  const handleStartDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, travel_date: formattedDate });
-    if (data.category === "Round Trip") {
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.travelDateError;
-      setErrorMessages(updatedErrors);
-    } else if (
-      data.category === "One-way" ||
-      data.category === "One-way - Fetch" ||
-      data.category === "One-way - Drop"
-    ) {
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.travelDateOnewayError;
-      setErrorMessages(updatedErrors);
-    }
-
-    checkAutocompleteDisability();
-  };
-  const handleEndDateChange = (date: Date | null) => {
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : null;
-    setData({ ...data, return_date: formattedDate });
-    const updatedErrors = { ...errorMessages };
-    delete updatedErrors[0]?.returnDateError;
-    setErrorMessages(updatedErrors);
-  };
-
-  const handleStartTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, travel_time: time });
-      if (data.category === "Round Trip") {
-        const updatedErrors = { ...errorMessages };
-        delete updatedErrors[0]?.travelTimeError;
-        setErrorMessages(updatedErrors);
-      } else if (
-        data.category === "One-way" ||
-        data.category === "One-way - Fetch" ||
-        data.category === "One-way - Drop"
-      ) {
-        const updatedErrors = { ...errorMessages };
-        delete updatedErrors[0]?.travelTimeOnewayError;
-        setErrorMessages(updatedErrors);
-      }
-      checkAutocompleteDisability();
-    } else {
-      console.log("No time selected.");
-    }
-  };
-  const handleEndTimeChange = (time: string | null) => {
-    if (time) {
-      setData({ ...data, return_time: time });
-      const updatedErrors = { ...errorMessages };
-      delete updatedErrors[0]?.returnTimeError;
-      setErrorMessages(updatedErrors);
-    } else {
-      console.log("No time selected.");
-    }
-  };
-
-  const removeDestinationError = () => {
-    const updatedErrors = [...errorMessages];
-    updatedErrors[0] = { ...updatedErrors[0], destinationError: undefined };
-    setErrorMessages(updatedErrors);
   };
 
   useEffect(() => {
@@ -492,6 +453,8 @@ export default function DashboardR() {
   pendingSchedule.reverse();
   schedule.reverse();
 
+  console.log("vehicle data", vehiclesData);
+
   return (
     <>
       <Modal
@@ -512,22 +475,13 @@ export default function DashboardR() {
       <Sidebar sidebarData={sidebarData} />
       <Container>
         <ToastContainer />
-        <div className="margin-top-dashboard">
-          <Label label="Dashboard" />
-        </div>
         <div className="requester-row-container">
           <div className="requester-row">
-            <button
-              onClick={() => handleButtonClick("Set Trip Schedule")}
-              className={selectedButton === "Set Trip Schedule" ? "active" : ""}
-            >
-              Set Trip Schedule
-            </button>
             <button
               onClick={() => handleButtonClick("Available Vehicle")}
               className={selectedButton === "Available Vehicle" ? "active" : ""}
             >
-              Available Vehicle
+              Vehicles
             </button>
             <button
               onClick={() => handleButtonClick("Ongoing Schedule")}
@@ -538,309 +492,85 @@ export default function DashboardR() {
           </div>
         </div>
         <div className="requester-dashboard-container">
-          {isTripScheduleClick && (
-            <>
-              <div className="modal-set-trip">
-                <div className="modal-set-trip-body">
-                  <h1>Set Trip</h1>
-                  <p className="set-trip-text-error">{errorMessages[0]?.all}</p>
-                  <div className="trip-category">
-                    <p>Category: </p>
-                    <div>
-                      <button
-                        onClick={() => handleButtonClickTrip("Round Trip")}
-                        className={
-                          selectedTripButton === "Round Trip" ? "active" : ""
-                        }
-                      >
-                        Round Trip
-                      </button>
-                      <button
-                        onClick={() => handleButtonClickTrip("One-way")}
-                        className={
-                          selectedTripButton === "One-way" ? "active" : ""
-                        }
-                      >
-                        One-way
-                      </button>
-                    </div>
-                  </div>
-                  {isOneWayClick && (
-                    <>
-                      <div className="one-way-sub-category">
-                        <p>Type: </p>
-                        <div>
-                          <select
-                            value={data.sub_category}
-                            onChange={(event) => {
-                              const selectedValue = event.target.value;
-
-                              setData((prevData: any) => ({
-                                ...prevData,
-                                category:
-                                  selectedValue === "Drop"
-                                    ? "One-way - Drop"
-                                    : selectedValue === "Fetch"
-                                    ? "One-way - Fetch"
-                                    : "One-way",
-                              }));
-                              if (selectedValue === "Fetch") {
-                                setIsFetchSelect(true);
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.categoryError;
-                                setErrorMessages(updatedErrors);
-                              } else if (selectedValue === "Drop") {
-                                setIsFetchSelect(false);
-                                const updatedErrors = { ...errorMessages };
-                                delete updatedErrors[0]?.categoryError;
-                                setErrorMessages(updatedErrors);
-                              } else {
-                                setIsFetchSelect(false);
-                              }
-                            }}
-                          >
-                            <option>--------- Select Type --------</option>
-                            <option value="Drop">Drop</option>
-                            <option value="Fetch">Fetch</option>
-                          </select>
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.categoryError}
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  <div className="trip-destination">
-                    {!isFetchSelect ? (
-                      <p>Destination: </p>
-                    ) : (
-                      <p>Your Location: </p>
-                    )}
-
-                    <div className="trip-destination-autocomplete-oneway">
-                      <AutoCompleteAddressGoogle
-                        travel_date={data.travel_date}
-                        travel_time={data.travel_time}
-                        setData={setData}
-                        setAddressData={setAddressData}
-                        category={data.category}
-                        removeDestinationError={removeDestinationError}
-                      />
-
-                      {isTravelDateSelected ? (
-                        <p>Select travel date and time first</p>
-                      ) : (
-                        <p>{errorMessages[0]?.destinationError}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {selectedTripButton === "Round Trip" ? (
-                    <div className="date-from-roundtrip">
-                      {!isOneWayClick ? (
-                        <p>From: </p>
-                      ) : (
-                        <p className="travel-datee">Travel Date: </p>
-                      )}
-                      <div>
-                        <div className="separate-date">
-                          <CalendarInput
-                            selectedDate={
-                              data.travel_date
-                                ? new Date(data.travel_date)
-                                : null
-                            }
-                            onChange={handleStartDateChange}
-                            disableDaysBefore={3}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelDateError}
-                          </p>
-                        </div>
-
-                        <div className="separate-time">
-                          <TimeInput
-                            onChange={handleStartTimeChange}
-                            selectedDate={data.travel_date}
-                            handleDateChange={handleStartDateChange}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelTimeError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="date-from-oneway">
-                      {!isOneWayClick ? (
-                        <p>From: </p>
-                      ) : (
-                        <p className="travel-datee">Travel Date: </p>
-                      )}
-                      <div>
-                        <div className="separate-date">
-                          <CalendarInput
-                            selectedDate={
-                              data.travel_date
-                                ? new Date(data.travel_date)
-                                : null
-                            }
-                            onChange={handleStartDateChange}
-                            disableDaysBefore={3}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelDateOnewayError}
-                          </p>
-                        </div>
-
-                        <div className="separate-time">
-                          <TimeInput
-                            onChange={handleStartTimeChange}
-                            selectedDate={data.travel_date}
-                            handleDateChange={handleStartDateChange}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.travelTimeOnewayError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {!isOneWayClick && (
-                    <div className="date-to">
-                      <p>To: </p>
-                      <div>
-                        <div className="separate-date">
-                          <CalendarInput
-                            selectedDate={
-                              data.return_date
-                                ? new Date(data.return_date)
-                                : null
-                            }
-                            onChange={handleEndDateChange}
-                            disableDaysBefore={3}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.returnDateError}
-                          </p>
-                        </div>
-
-                        <div className="separate-time">
-                          <TimeInput
-                            onChange={handleEndTimeChange}
-                            selectedDate={data.return_date}
-                            handleDateChange={handleEndDateChange}
-                          />
-                          <p className="set-trip-text-error">
-                            {errorMessages[0]?.returnTimeError}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="number-of-pass">
-                    <p>
-                      Number of Passenger{"("}s{"):"}
-                    </p>
-                    <div>
-                      <input
-                        value={data.capacity}
-                        onChange={(event) => {
-                          setData({ ...data, capacity: event.target.value });
-                          if (event.target.value) {
-                            const updatedErrors = { ...errorMessages };
-                            delete updatedErrors[0]?.capacityError;
-                            setErrorMessages(updatedErrors);
-                          }
-                        }}
-                        type="number"
-                        onKeyDown={handleKeyDown}
-                      />
-                      <p className="set-trip-text-error">
-                        {errorMessages[0]?.capacityError}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="modal-button-container">
-                    <CommonButton
-                      onClick={handleSetTripModal}
-                      text="Set Trip"
-                      primaryStyle
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
           {isAvailableVehicleClick && (
             <>
               {vehiclesData.length === 0 ? (
-                <p className="vehicles-null">
-                  No vehicles available or Please set your trip schedule to
-                  display available vehicles
-                </p>
+                <>
+                  {isLoading ? (
+                    <SkeletonTheme baseColor="#d9d9d9" highlightColor="#f5f5f5">
+                      <Skeleton
+                        count={2}
+                        height={200}
+                        width={500}
+                        containerClassName="vehicle-container"
+                      />
+                    </SkeletonTheme>
+                  ) : (
+                    <p className="vehicles-null">No vehicles found.</p>
+                  )}
+                </>
               ) : (
                 <>
-                  {role === "vip" ? null : (
-                    <p className="date-available-range">
-                      Available vehicles from {data.travel_date},{" "}
-                      {formatTime(data.travel_time)} to {data.return_date},{" "}
-                      {formatTime(data.return_time)}
-                    </p>
-                  )}
-
                   <div className="vehicle-container">
-                    {vehiclesData.map((vehicle) => (
-                      <a
-                        onClick={() => {
-                          {
-                            role === "vip"
-                              ? (setIsInitialFormVIPOpen(true),
-                                setSelectedPlateNumber(vehicle.plate_number),
-                                setSelectedModel(vehicle.model),
-                                setSelectedCapacity(vehicle.capacity))
-                              : vehicle.is_vip === true
-                              ? (setIsDisclaimerOpen(true),
-                                setSelectedPlateNumber(vehicle.plate_number),
-                                setSelectedModel(vehicle.model),
-                                setSelectedCapacity(vehicle.capacity))
-                              : vehicle.merge_trip === true
-                              ? (setIsRequesterTripMergingFormOpen(true),
-                                setSelectedRequestId(vehicle.request_id))
-                              : openRequestForm(
-                                  vehicle.plate_number,
-                                  vehicle.model,
-                                  vehicle.capacity
-                                );
+                    {Object.entries(vehiclesData).map(
+                      ([vehicleId, data], index) => (
+                        <a
+                          onClick={() => {
+                            setIsScheduleClick(true);
+                            setSelectedVehicleExisitingSchedule(data.schedules);
+                            setSelectedVehicleCapacity(data.capacity);
+                            setSelectedVehicleDriver(data.driver_assigned_to);
+                            setSelectedVehiclePlateNumber(data.plate_number);
+                            setSelectedVehicleModel(data.model);
+                            setSelectedVehicleIsVIP(data.is_vip);
+                            setSelectedVehicleVIPAssignedTo(
+                              data.vip_assigned_to
+                            );
+                          }}
+                          className="vehicle-card"
+                          key={vehicleId}
+                          ref={
+                            index === Object.keys(vehiclesData).length - 1
+                              ? lastRequestElementRef
+                              : null
                           }
-                        }}
-                        className="vehicle-card"
-                        key={vehicle.plate_number}
-                      >
-                        <div className="vehicle-row">
-                          <div className="vehicle-column">
-                            <p className="vehicle-name">
-                              {vehicle.plate_number}
-                              <br />
-                              {vehicle.model}
-                            </p>
-                            <p className="vehicle-detail">
-                              Seating Capacity: {vehicle.capacity}
-                            </p>
-                            <p className="vehicle-detail">
-                              Type: {vehicle.type}
-                            </p>
+                        >
+                          <div className="vehicle-row">
+                            <div className="vehicle-column">
+                              <p className="vehicle-name">
+                                {data.plate_number}
+                                <br />
+                                {data.model}
+                              </p>
+                              <p className="vehicle-detail">
+                                Seating Capacity: {data.capacity}
+                              </p>
+                              <p className="vehicle-detail">
+                                Type: {data.type}
+                              </p>
+                            </div>
+                            <img
+                              className="vehicle-image"
+                              src={serverSideUrl + data.image}
+                              alt={data.model}
+                            />
                           </div>
-                          <img
-                            className="vehicle-image"
-                            src={vehicle.image}
-                            alt={vehicle.model}
-                          />
-                        </div>
-                      </a>
-                    ))}
+                        </a>
+                      )
+                    )}
+                    {isLoading && (
+                      <SkeletonTheme
+                        baseColor="#d9d9d9"
+                        highlightColor="#f5f5f5"
+                      >
+                        <Skeleton
+                          count={2}
+                          height={200}
+                          width={550}
+                          containerClassName="vehicle-container"
+                        />
+                      </SkeletonTheme>
+                    )}
                   </div>
                 </>
               )}
@@ -872,7 +602,7 @@ export default function DashboardR() {
                           {recommend.return_date},{" "}
                           {formatTime(recommend.return_time)}
                         </span>{" "}
-                        {recommend.message}
+                        {recommend.message}. Please select a vehicle. Thank you!
                       </p>
                     </div>
                     <Carousel
@@ -1145,7 +875,21 @@ export default function DashboardR() {
         isOpen={isRequesterTripMergingFormOpen}
         onRequestClose={handleClose}
         given_capacity={givenCapacity}
-        requestId={selectedRequestId}
+      />
+      <SchedulePicker
+        isOpen={isScheduleClick}
+        selectedVehicleExisitingSchedule={selectedVehicleExisitingSchedule}
+        setIsScheduleClick={setIsScheduleClick}
+        selectedVehicleCapacity={capacity}
+        selectedVehiclePlateNumber={plateNumber}
+        selectedVehicleModel={vehicleName}
+        selectedVehicleDriver={assignedDriver}
+        selectedVehicleIsVIP={isVIP}
+        selectedVehicleVIPAssignedTo={selectedVehicleVIPAssignedTo}
+        setIsAnotherVehicle={setIsAnotherVehicle}
+        anotherVehicleData={anotherVehicleData}
+        setSelectedAnotherVehicle={setSelectedAnotherVehicle}
+        isLoadingVehicles={isLoading}
       />
     </>
   );

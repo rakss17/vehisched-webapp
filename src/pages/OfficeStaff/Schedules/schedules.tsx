@@ -16,11 +16,18 @@ import SearchBar from "../../../components/searchbar/searchbar";
 import { NotificationCreatedCancelWebsocket } from "../../../components/api/websocket";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SidebarItem } from "../../../interfaces/interfaces";
+import { RequestFormProps, SidebarItem } from "../../../interfaces/interfaces";
 import {
   fetchNotification,
   fetchScheduleOfficeStaff,
+  maintenanceAbsenceCompletedRequestAPI,
 } from "../../../components/api/api";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { formatDate } from "../../../components/functions/functions";
+import RequestFormDetails from "../../../components/form/requestformdetails";
+import LoadingBar from "react-top-loading-bar";
+import Confirmation from "../../../components/confirmation/confirmation";
 
 export default function Schedules() {
   const [schedulesData, setSchedulesData] = useState<any[]>([]);
@@ -28,7 +35,15 @@ export default function Schedules() {
   const [selectedSched, setSelectedSched] = useState<string>("Today");
   const [searchTerm, setSearchTerm] = useState("");
   const [notifList, setNotifList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  const [isRequestFormOpen, setIsRequestFormOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] =
+    useState<RequestFormProps | null>(null);
+  const requestId = selectedRequest?.request_id;
+  const [isConfirmationCompletedOpen, setIsConfirmationCompletedOpen] =
+    useState(false);
+  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
   const sidebarData: SidebarItem[] = [
     { icon: faColumns, text: "Dashboard", path: "/DashboardOS" },
     {
@@ -43,10 +58,17 @@ export default function Schedules() {
     { icon: faUsersCog, text: "Administration", path: "/Admin" },
   ];
 
-  NotificationCreatedCancelWebsocket(()=>{}, () => {}, fetchNotification, setNotifList);
+  NotificationCreatedCancelWebsocket(
+    () => {},
+    fetchNotification,
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
+  );
 
   useEffect(() => {
-    fetchScheduleOfficeStaff(setSchedulesData);
+    fetchScheduleOfficeStaff(setSchedulesData, setIsLoading);
   }, []);
 
   useEffect(() => {
@@ -105,7 +127,23 @@ export default function Schedules() {
     }
     return false;
   });
+  const selectedRequestDetails = selectedRequest
+    ? filteredSchedulesData.filter(
+        (request) => request.request_id === selectedRequest.request_id
+      )
+    : [];
 
+  const handleCompleted = () => {
+    maintenanceAbsenceCompletedRequestAPI(
+      requestId,
+      setIsConfirmationCompletedOpen,
+      setIsRequestFormOpen,
+      setLoadingBarProgress
+    );
+  };
+  const handleCloseRequestForm = () => {
+    setIsRequestFormOpen(false);
+  };
   const formatTime = (timeString: any) => {
     const time = new Date(`1970-01-01T${timeString}`);
     return time.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -113,6 +151,11 @@ export default function Schedules() {
 
   return (
     <>
+      <LoadingBar
+        color="#007bff"
+        progress={loadingBarProgress}
+        onLoaderFinished={() => setLoadingBarProgress(0)}
+      />
       <Header />
       <Sidebar sidebarData={sidebarData} />
       <Container>
@@ -150,23 +193,47 @@ export default function Schedules() {
             >
               <thead>
                 <tr>
-                  <th>Request No.</th>
+                  <th>Destination</th>
                   <th>Requested by</th>
                   <th>Time</th>
                   {selectedSched === "Upcoming" && <th>Date</th>}
                 </tr>
               </thead>
               {filteredSchedulesData.length === 0 ? (
-                <p className="schedules-null">No schedules available</p>
+                <>
+                  {isLoading ? (
+                    <SkeletonTheme baseColor="#ebebeb" highlightColor="#f5f5f5">
+                      <tr>
+                        <td colSpan={4}>
+                          <Skeleton count={10} height={60} />
+                        </td>
+                      </tr>
+                    </SkeletonTheme>
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>No reservation found.</td>
+                    </tr>
+                  )}
+                </>
               ) : (
                 <tbody>
                   {filteredSchedulesData.map((schedule, index) => (
-                    <tr key={index}>
-                      <td>{schedule.request_id}</td>
+                    <tr
+                      key={index}
+                      onClick={() => {
+                        setIsRequestFormOpen(true);
+                        setSelectedRequest(schedule);
+                      }}
+                    >
+                      <td style={{ wordWrap: "break-word", maxWidth: "150px" }}>
+                        {schedule.destination
+                          ? schedule.destination.split(",")[0].trim()
+                          : "N/A"}
+                      </td>
                       <td>{schedule.requester_name}</td>
                       <td>{formatTime(schedule.travel_time)}</td>
                       {selectedSched === "Upcoming" && (
-                        <td>{schedule.travel_date}</td>
+                        <td>{formatDate(schedule.travel_date)}</td>
                       )}
                     </tr>
                   ))}
@@ -176,6 +243,16 @@ export default function Schedules() {
           </div>
         </div>
       </Container>
+      <RequestFormDetails
+        isOpen={isRequestFormOpen}
+        setIsOpen={setIsRequestFormOpen}
+        onRequestClose={handleCloseRequestForm}
+        selectedRequest={selectedRequestDetails[0]}
+        onComplete={handleCompleted}
+        fetchRequestOfficeStaffAPI={fetchScheduleOfficeStaff}
+        setRequestList={setSchedulesData}
+      />
+      <Confirmation isOpen={isConfirmationCompletedOpen} header="Completed!" />
     </>
   );
 }

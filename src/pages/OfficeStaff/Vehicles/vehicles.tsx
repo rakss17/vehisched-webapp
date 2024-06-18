@@ -79,9 +79,11 @@ export default function Vehicles() {
 
   NotificationCreatedCancelWebsocket(
     () => {},
-    () => {},
     fetchNotification,
-    setNotifList
+    setNotifList,
+    () => {},
+    () => {},
+    () => {}
   );
 
   const handleSearchChange = (term: string) => {

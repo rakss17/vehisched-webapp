@@ -16,18 +16,25 @@ import {
   approveRequestAPI,
   cancelRequestAPI,
   changeRequestDriverAPI,
+  downloadPrintedFormAPI,
   downloadTripTicketAPI,
   fetchDriversScheduleAPI,
   fetchRequestersAPI,
-  postRequestFromAPI,
+  postRequestFormAPI,
   rejectRequestAPI,
 } from "../api/api";
 import CommonButton from "../button/commonbutton";
 import LoadingBar from "react-top-loading-bar";
 import Confirmation from "../confirmation/confirmation";
-import { formatDate, formatTime } from "../functions/getTimeElapsed";
+import {
+  calculateDateGap,
+  formatDate,
+  formatTime,
+  removeLastZeroesOfTime,
+} from "../functions/functions";
 import AutoCompleteAddressGoogle from "../addressinput/googleaddressinput";
 import InputField from "../inputfield/inputfield";
+import Reschedule from "../reschedule/reschedule";
 
 const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   isOpen,
@@ -55,12 +62,12 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
   const [isCancelOpen, setIsCancelOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
   const [isChangeDriverOpen, setIsChangeDriverOpen] = useState(false);
-
+  const [travelDateDayGap, setTravelDateDayGap] = useState(0);
   const [errorMessages, setErrorMessages] = useState<any[]>([]);
   const [mergeTripData, setMergeTripData] = useState<RequestFormProps>({
     requester_name: "",
     travel_date: selectedRequest.travel_date,
-    travel_time: selectedRequest.travel_time,
+    travel_time: removeLastZeroesOfTime(selectedRequest.travel_time),
     return_date: "",
     return_time: "",
     destination: "",
@@ -69,7 +76,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     type: "",
     distance: null,
     merge_trip: true,
-    role: null,
+    role: "office staff",
     driver_name: selectedRequest.driver_id,
     passenger_name: [],
     vehicle_capacity: "",
@@ -91,7 +98,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       distance: addressData.distance,
       merged_with: selectedRequest.request_id,
     }));
-  }, [addressData, mergeTripData]);
+  }, [addressData]);
 
   useEffect(() => {
     if (mergeTripData.type === "Round Trip") {
@@ -102,6 +109,40 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       }));
     }
   }, [mergeTripData.type]);
+
+  // useEffect(() => {
+  //   if (
+  //     selectedRequest?.type === "One-way - Drop" ||
+  //     selectedRequest?.type === "One-way - Fetch"
+  //   ) {
+  //     const travelDateTime = `${selectedRequest?.travel_date}T${selectedRequest?.travel_time}`;
+  //     const returnDateTime = `${selectedRequest?.return_date}T${selectedRequest?.return_time}`;
+
+  //     const travelDate = new Date(travelDateTime);
+  //     const returnDate = new Date(returnDateTime);
+
+  //     const differenceInMilliseconds =
+  //       returnDate.getTime() - travelDate.getTime();
+  //     const differenceInSeconds = Math.ceil(differenceInMilliseconds / 1000);
+
+  //     const days = Math.floor(differenceInSeconds / (3600 * 24));
+  //     const hours = Math.floor((differenceInSeconds % (3600 * 24)) / 3600);
+  //     const minutes = Math.floor((differenceInSeconds % 3600) / 60);
+  //     const seconds = differenceInSeconds % 60;
+
+  //     const totalDays =
+  //       days + hours / 24 + minutes / (24 * 60) + seconds / (24 * 60 * 60);
+
+  //     setTravelDateDayGap(totalDays);
+  //   }
+  // }, [
+  //   selectedRequest?.travel_date,
+  //   selectedRequest?.travel_time,
+  //   selectedRequest?.return_date,
+  //   selectedRequest?.return_time,
+  //   selectedRequest?.type === "One-way - Drop",
+  //   selectedRequest?.type === "One-way - Fetch",
+  // ]);
 
   const dropdownDrivers = [
     "Select Driver",
@@ -123,6 +164,10 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     downloadTripTicketAPI(selectedRequest.request_id);
   };
 
+  const handleDownloadPrintedForm = () => {
+    downloadPrintedFormAPI(selectedRequest.request_id);
+  };
+
   const handleConfirmationApprove = (selectedDriverId: any) => {
     let validationErrors: { [key: string]: string } = {};
 
@@ -137,11 +182,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
 
     setErrorMessages(errorArray);
     if (Object.keys(validationErrors).length === 0) {
+      setLoadingBarProgress(20);
       approveRequestAPI(
         selectedRequest.request_id,
         selectedDriverId,
         onRequestClose,
-        setIsConfirmationApprovedOpen
+        setIsConfirmationApprovedOpen,
+        setLoadingBarProgress
       );
     }
   };
@@ -216,22 +263,28 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
         <div key={i} className="passenger-name-column">
           <InputField
             className="passenger_name_width"
-            value={mergeTripData.passenger_name[i]}
+            value={
+              (mergeTripData.passenger_name &&
+                mergeTripData.passenger_name[i]) ||
+              ""
+            }
             key={i}
             icon={faUser}
             label={`Passenger ${i + 1}`}
             placeholder={`Passenger ${i + 1}`}
             onChange={(event) => {
-              const newPassengerNames = [...mergeTripData.passenger_name];
+              const newPassengerNames = [
+                ...(mergeTripData.passenger_name || ""),
+              ];
               newPassengerNames[i] = event.target.value;
-              const numberOfPassenger = newPassengerNames.reduce(
-                (count, name) => (name ? count + 1 : count),
-                0
-              );
+              const countNumberOfPassenger = newPassengerNames.filter(
+                (name) => name !== ""
+              ).length;
               setMergeTripData((prevData: any) => ({
                 ...prevData,
                 passenger_name: newPassengerNames,
-                number_of_passenger: numberOfPassenger,
+                number_of_passenger: countNumberOfPassenger,
+                vehicle_capacity: selectedRequest.number_of_passenger,
               }));
 
               if (newPassengerNames[i]) {
@@ -284,17 +337,18 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
     const errorArray = [validationErrors];
 
     setErrorMessages(errorArray);
-    console.log(mergeTripData);
+    console.log("merge trip", mergeTripData);
+
     if (Object.keys(validationErrors).length === 0) {
       setLoadingBarProgress(20);
-      postRequestFromAPI(
+
+      postRequestFormAPI(
         mergeTripData,
         // () => {
         //   setIsConfirmationOpen(true);
         //   setIsModalOpen(true); // Open the modal after the request is successful
         // },
         setIsConfirmationOpen,
-        () => {},
         setLoadingBarProgress
       );
     }
@@ -381,6 +435,18 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       arrival_time_to_office = arrivalTimeParts[0];
     }
   }
+
+  const [showModal, setShowModal] = useState(false);
+
+  const onChangeTime = () => {
+    setShowModal(!showModal);
+    const travelDateTime = `${selectedRequest?.travel_date}T${selectedRequest?.travel_time}`;
+    const returnDateTime = `${selectedRequest?.return_date}T${selectedRequest?.return_time}`;
+    const gap = calculateDateGap(travelDateTime, returnDateTime);
+    console.log("gap: ", gap.milliseconds);
+    setTravelDateDayGap(gap.milliseconds);
+  };
+
   return (
     <>
       <LoadingBar
@@ -390,16 +456,37 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       />
       <Modal className="modal-request-form" isOpen={isOpen}>
         <div className="request-form-container">
-          <div>
-            <p></p>
+          <div className="request-form-header">
             <h1>Request Form No. {selectedRequest.request_id}</h1>
             <p className="close-icon" onClick={onRequestClose}>
               <FontAwesomeIcon icon={faXmark} />
             </p>
           </div>
-
-          <div>
-            <div>
+          <div className="request-form-downloads">
+            <CommonButton
+              width={10}
+              height={7}
+              underlinedStyle
+              text="Reschedule"
+              onClick={onChangeTime}
+            />
+            <CommonButton
+              width={12}
+              height={6}
+              underlinedStyle
+              text="Download trip ticket"
+              onClick={handleDownloadTripTicket}
+            />
+            <CommonButton
+              width={12}
+              height={6}
+              underlinedStyle
+              text="Download form"
+              onClick={handleDownloadPrintedForm}
+            />
+          </div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>Date reserved:</h2>
               <p>
                 {formatDate(date_reserved)}, {formatTime(time_reserved)}
@@ -407,44 +494,63 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             </div>
           </div>
 
-          <div>
-            <div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>Request's name:</h2>
-              <p>{selectedRequest.requester_full_name}</p>
-            </div>
-            <div>
-              <h2>Office/Dept: </h2> <p>{selectedRequest.office}</p>
+              <p>
+                {selectedRequest.requester_full_name
+                  ? selectedRequest.requester_full_name
+                  : selectedRequest.requester_name}
+              </p>
             </div>
           </div>
-          <div>
-            <h2>Passenger's name: </h2> <p>{selectedRequest.passenger_name}</p>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
+              <h2>Office/Dept: </h2>
+              <p>{selectedRequest.office}</p>
+            </div>
           </div>
-          <div>
-            <div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
+              <h2>Passenger's name: </h2>
+              <p>{selectedRequest.passenger_name}</p>
+            </div>
+          </div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>Vehicle:</h2>
               <p>{selectedRequest.vehicle}</p>
             </div>
-            <div>
+          </div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>No. of Passengers: </h2>{" "}
               <p>{selectedRequest.number_of_passenger}</p>
             </div>
           </div>
-          <div>
-            <div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>Destination:</h2>
               <p>{selectedRequest.destination}</p>
             </div>
-            <div>
-              <h2>Distance: </h2> <p>{selectedRequest.distance} km</p>
+          </div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
+              <h2>Distance: </h2>
+              <p>{selectedRequest.distance} km</p>
             </div>
           </div>
-          <div>
-            <div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>Travel date & time:</h2>
               <p>
                 {formatDate(selectedRequest.travel_date)},{" "}
                 {formatTime(selectedRequest.travel_time)}
               </p>
+            </div>
+          </div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>to:</h2>
               <p>
                 {formatDate(selectedRequest.return_date)},{" "}
@@ -452,13 +558,15 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               </p>
             </div>
           </div>
-          <div>
-            <div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
               <h2>Purpose: </h2>
               <p>{selectedRequest.purpose}</p>
             </div>
-            <div>
-              <h2>Travel type: </h2>
+          </div>
+          <div className="request-form-details">
+            <div className="request-form-each-details">
+              <h2>Travel type:</h2>
               <p>{selectedRequest.type}</p>
             </div>
           </div>
@@ -469,40 +577,44 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.distance < 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
-                  <div>
-                    <h2>Assign a driver: </h2>
-                    <div onClick={handleFetchDrivers}>
-                      <Dropdown
-                        status={dropdownDrivers}
-                        onCategoryChange={handleChooseDriver}
-                        dropdownClassName="dropdown-custom"
-                        menuClassName="menu-custom"
-                      />
+                  <div className="request-form-details">
+                    <div className="request-form-each-details">
+                      <h2>Assign a driver: </h2>
+                      <div onClick={handleFetchDrivers}>
+                        <Dropdown
+                          status={dropdownDrivers}
+                          onCategoryChange={handleChooseDriver}
+                          dropdownClassName="dropdown-custom"
+                          menuClassName="menu-custom"
+                        />
+                      </div>
+                      <p className="set-trip-text-error">
+                        {errorMessages[0]?.driverSelectionError}
+                      </p>
                     </div>
-                    <p className="set-trip-text-error">
-                      {errorMessages[0]?.driverSelectionError}
-                    </p>
                   </div>
                 ) : (
-                  <div>
-                    <h2>Driver:</h2>
-                    <p>{selectedRequest.driver_full_name}</p>
-                    <>
-                      {selectedRequest.purpose === "Driver Absence" ? null : (
-                        <CommonButton
-                          width={10}
-                          height={7}
-                          underlinedStyle
-                          text="Change driver"
-                          onClick={onChangeDriver}
-                        />
-                      )}
-                    </>
+                  <div className="request-form-details-driver">
+                    <div className="request-form-each-details-driver">
+                      <h2>Driver:</h2>
+                      <p>{selectedRequest.driver_full_name}</p>
+                      <>
+                        {selectedRequest.purpose === "Driver Absence" ? null : (
+                          <CommonButton
+                            width={10}
+                            height={7}
+                            underlinedStyle
+                            text="Change driver"
+                            onClick={onChangeDriver}
+                          />
+                        )}
+                      </>
+                    </div>
                   </div>
                 )}
 
-                <div className="departure-arrival-container">
-                  <div>
+                <div className="request-form-details">
+                  <div className="request-form-each-details">
                     <h2>Departure: </h2>
                     <p>
                       {departure_date_from_office && departure_time_from_office
@@ -512,7 +624,9 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                         : "N/A"}
                     </p>
                   </div>
-                  <div>
+                </div>
+                <div className="request-form-details">
+                  <div className="request-form-each-details">
                     <h2>Arrival: </h2>
                     <p>
                       {arrival_date_to_office && arrival_time_to_office
@@ -531,23 +645,27 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
               <>
                 {selectedRequest.driver_full_name === null ? (
                   <>
-                    <div>
-                      <h2>Assign a driver: </h2>
-                      <div onClick={handleFetchDrivers}>
-                        <Dropdown
-                          status={dropdownDrivers}
-                          onCategoryChange={handleChooseDriver}
-                          dropdownClassName="dropdown-custom"
-                          menuClassName="menu-custom"
-                        />
+                    <div className="request-form-details">
+                      <div className="request-form-each-details">
+                        <h2>Assign a driver: </h2>
+                        <div onClick={handleFetchDrivers}>
+                          <Dropdown
+                            status={dropdownDrivers}
+                            onCategoryChange={handleChooseDriver}
+                            dropdownClassName="dropdown-custom"
+                            menuClassName="menu-custom"
+                          />
+                        </div>
+                        <p className="set-trip-text-error">
+                          {errorMessages[0]?.driverSelectionError}
+                        </p>
                       </div>
-                      <p className="set-trip-text-error">
-                        {errorMessages[0]?.driverSelectionError}
-                      </p>
                     </div>
-                    <div className="travel-order-note">
-                      <h2>Note:</h2>
-                      <h3>A travel order is required for this trip</h3>
+                    <div className="request-form-details">
+                      <div className="request-form-each-details">
+                        <h2>Note:</h2>
+                        <p>A travel order is required for this trip</p>
+                      </div>
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -570,24 +688,29 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   </>
                 ) : (
                   <>
-                    <div>
-                      <h2>Driver:</h2>
-                      <p>{selectedRequest.driver_full_name}</p>
-                      <>
-                        {selectedRequest.purpose === "Driver Absence" ? null : (
-                          <CommonButton
-                            width={10}
-                            height={7}
-                            underlinedStyle
-                            text="Change driver"
-                            onClick={onChangeDriver}
-                          />
-                        )}
-                      </>
+                    <div className="request-form-details-driver">
+                      <div className="request-form-each-details-driver">
+                        <h2>Driver:</h2>
+                        <p>{selectedRequest.driver_full_name}</p>
+                        <>
+                          {selectedRequest.purpose ===
+                          "Driver Absence" ? null : (
+                            <CommonButton
+                              width={10}
+                              height={7}
+                              underlinedStyle
+                              text="Change driver"
+                              onClick={onChangeDriver}
+                            />
+                          )}
+                        </>
+                      </div>
                     </div>
-                    <div className="travel-order-note">
-                      <h2>Note:</h2>
-                      <h3>A travel order is required for this trip</h3>
+                    <div className="request-form-details">
+                      <div className="request-form-each-details">
+                        <h2>Note:</h2>
+                        <p>A travel order is required for this trip</p>
+                      </div>
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -618,72 +741,8 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.distance >= 50 && (
               <>
                 {selectedRequest.driver_full_name === null ? (
-                  <div>
-                    <h2>Assign a driver: </h2>
-                    <div onClick={handleFetchDrivers}>
-                      <Dropdown
-                        status={dropdownDrivers}
-                        onCategoryChange={handleChooseDriver}
-                        dropdownClassName="dropdown-custom"
-                        menuClassName="menu-custom"
-                      />
-                    </div>
-                    <p className="set-trip-text-error">
-                      {errorMessages[0]?.driverSelectionError}
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <h2>Driver:</h2>
-                    <p>{selectedRequest.driver_full_name}</p>
-                    <>
-                      {selectedRequest.purpose === "Driver Absence" ? null : (
-                        <CommonButton
-                          width={10}
-                          height={7}
-                          underlinedStyle
-                          text="Change driver"
-                          onClick={onChangeDriver}
-                        />
-                      )}
-                    </>
-                  </div>
-                )}
-
-                <div className="departure-arrival-container">
-                  <div>
-                    <h2>Departure: </h2>
-                    <p>
-                      {departure_date_from_office && departure_time_from_office
-                        ? `${formatDate(
-                            departure_date_from_office
-                          )}, ${formatTime(departure_time_from_office)}`
-                        : "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <h2>Arrival: </h2>
-                    <p>
-                      {arrival_date_to_office && arrival_time_to_office
-                        ? `${formatDate(arrival_date_to_office)}, ${formatTime(
-                            arrival_time_to_office
-                          )}`
-                        : "N/A"}
-                    </p>
-                  </div>
-                </div>
-                <div className="travel-order-note">
-                  <h2>Note:</h2>
-                  <h3>A travel order is required for this trip</h3>
-                </div>
-              </>
-            )}
-          {selectedRequest.status === "Pending" &&
-            selectedRequest.distance < 50 && (
-              <>
-                {selectedRequest.driver_full_name === null ? (
-                  <>
-                    <div>
+                  <div className="request-form-details">
+                    <div className="request-form-each-details">
                       <h2>Assign a driver: </h2>
                       <div onClick={handleFetchDrivers}>
                         <Dropdown
@@ -696,6 +755,80 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                       <p className="set-trip-text-error">
                         {errorMessages[0]?.driverSelectionError}
                       </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="request-form-details-driver">
+                    <div className="request-form-each-details-driver">
+                      <h2>Driver:</h2>
+                      <p>{selectedRequest.driver_full_name}</p>
+                      <>
+                        {selectedRequest.purpose === "Driver Absence" ? null : (
+                          <CommonButton
+                            width={10}
+                            height={7}
+                            underlinedStyle
+                            text="Change driver"
+                            onClick={onChangeDriver}
+                          />
+                        )}
+                      </>
+                    </div>
+                  </div>
+                )}
+
+                <div className="request-form-details">
+                  <div className="request-form-each-details">
+                    <h2>Departure: </h2>
+                    <p>
+                      {departure_date_from_office && departure_time_from_office
+                        ? `${formatDate(
+                            departure_date_from_office
+                          )}, ${formatTime(departure_time_from_office)}`
+                        : "N/A"}
+                    </p>
+                  </div>
+                </div>
+                <div className="request-form-details">
+                  <div className="request-form-each-details">
+                    <h2>Arrival: </h2>
+                    <p>
+                      {arrival_date_to_office && arrival_time_to_office
+                        ? `${formatDate(arrival_date_to_office)}, ${formatTime(
+                            arrival_time_to_office
+                          )}`
+                        : "N/A"}
+                    </p>
+                  </div>
+                </div>
+                <div className="request-form-details">
+                  <div className="request-form-each-details">
+                    <h2>Note:</h2>
+                    <p>A travel order is required for this trip</p>
+                  </div>
+                </div>
+              </>
+            )}
+          {selectedRequest.status === "Pending" &&
+            selectedRequest.distance < 50 && (
+              <>
+                {selectedRequest.driver_full_name === null ? (
+                  <>
+                    <div className="request-form-details">
+                      <div className="request-form-each-details">
+                        <h2>Assign a driver: </h2>
+                        <div onClick={handleFetchDrivers}>
+                          <Dropdown
+                            status={dropdownDrivers}
+                            onCategoryChange={handleChooseDriver}
+                            dropdownClassName="dropdown-custom"
+                            menuClassName="menu-custom"
+                          />
+                        </div>
+                        <p className="set-trip-text-error">
+                          {errorMessages[0]?.driverSelectionError}
+                        </p>
+                      </div>
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -718,20 +851,23 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                   </>
                 ) : (
                   <>
-                    <div>
-                      <h2>Driver:</h2>
-                      <p>{selectedRequest.driver_full_name}</p>
-                      <>
-                        {selectedRequest.purpose === "Driver Absence" ? null : (
-                          <CommonButton
-                            width={10}
-                            height={7}
-                            underlinedStyle
-                            text="Change driver"
-                            onClick={onChangeDriver}
-                          />
-                        )}
-                      </>
+                    <div className="request-form-details-driver">
+                      <div className="request-form-each-details-driver">
+                        <h2>Driver:</h2>
+                        <p>{selectedRequest.driver_full_name}</p>
+                        <>
+                          {selectedRequest.purpose ===
+                          "Driver Absence" ? null : (
+                            <CommonButton
+                              width={10}
+                              height={7}
+                              underlinedStyle
+                              text="Change driver"
+                              onClick={onChangeDriver}
+                            />
+                          )}
+                        </>
+                      </div>
                     </div>
                     <div className="button-details-container">
                       <CommonButton
@@ -765,40 +901,50 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
             selectedRequest.status !== "Canceled" &&
             selectedRequest.status !== "Completed" &&
             selectedRequest.vehicle_driver_status !== "On Trip" && (
-              <div className="button-details-container">
-                <CommonButton
-                  width={8}
-                  height={6}
-                  tertiaryStyle
-                  text="Cancel Trip"
-                  onClick={onCancelTrip}
-                />
-                {!selectedRequest.main_merge && (
+              <>
+                <div className="button-details-container">
                   <CommonButton
-                    width={8}
+                    width={10}
                     height={6}
-                    secondaryStyle
-                    text="Merge trip"
-                    onClick={onMergeTripOpen}
+                    tertiaryStyle
+                    text="Cancel Trip"
+                    onClick={onCancelTrip}
                   />
-                )}
-                <CommonButton
-                  width={12}
-                  height={6}
-                  primaryStyle
-                  text="Download trip ticket"
-                  onClick={handleDownloadTripTicket}
-                />
-              </div>
+
+                  {selectedRequest.main_merge && (
+                    <CommonButton
+                      width={10}
+                      height={6}
+                      secondaryStyle
+                      text="Merge trip"
+                      onClick={onMergeTripOpen}
+                    />
+                  )}
+                  <CommonButton
+                    width={10}
+                    height={6}
+                    primaryStyle
+                    text="Completed"
+                    onClick={onComplete}
+                  />
+                </div>
+              </>
             )}
           {selectedRequest.vehicle_driver_status === "On Trip" && (
             <div>
               <CommonButton
                 width={12}
                 height={6}
-                primaryStyle
+                underlinedStyle
                 text="Download trip ticket"
                 onClick={handleDownloadTripTicket}
+              />
+              <CommonButton
+                width={12}
+                height={6}
+                underlinedStyle
+                text="Download printed form"
+                onClick={handleDownloadPrintedForm}
               />
             </div>
           )}
@@ -809,9 +955,16 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
                 <CommonButton
                   width={12}
                   height={6}
-                  primaryStyle
+                  underlinedStyle
                   text="Download trip ticket"
                   onClick={handleDownloadTripTicket}
+                />
+                <CommonButton
+                  width={12}
+                  height={6}
+                  underlinedStyle
+                  text="Download printed form"
+                  onClick={handleDownloadPrintedForm}
                 />
               </div>
             )}
@@ -861,7 +1014,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
 
           <div className="merge-trip-modal-field-container">
-            <p>Category: </p>
+            <p>Travel type: </p>
             <div className="merge-trip-modal-select-field-container">
               <select
                 value={mergeTripData.type}
@@ -899,11 +1052,13 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div className="merge-trip-modal-field-container">
             <p>Destination:</p>
-            <div className="merge-trip-modal-destination-field-container">
+            <div className="merge-trip-modal-select-field-container">
               <AutoCompleteAddressGoogle
                 className="autocomplete-address-google-custom"
                 travel_date={selectedRequest.travel_date}
-                travel_time={selectedRequest.travel_time}
+                travel_time={removeLastZeroesOfTime(
+                  selectedRequest.travel_time
+                )}
                 setData={setMergeTripData}
                 setAddressData={setAddressData}
                 category={mergeTripData.type}
@@ -916,7 +1071,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           </div>
           <div className="merge-trip-modal-field-container">
             <p>Purpose:</p>
-            <div className="merge-trip-modal-field-container-purpose-container">
+            <div className="merge-trip-modal-select-field-container">
               <InputField
                 className="merge-trip-modal-field-container-purpose"
                 icon={faClipboard}
@@ -944,7 +1099,7 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
           <div className="merge-trip-modal-field-container">
             <p>Passenger's name</p>
           </div>
-          <div className="merge-trip-modal-passenger-container">
+          <div className="merge-trip-modal-passenger-names-container">
             {generatePassengerInputs()}
           </div>
           <div className="merge-trip-modal-button-container">
@@ -1066,6 +1221,15 @@ const RequestFormDetails: React.FC<RequestFormDetailsProps> = ({
       <Confirmation
         isOpen={isConfirmationApprovedOpen}
         header="Request Approved!"
+      />
+      <Reschedule
+        isOpen={showModal}
+        selectedRequest={selectedRequest}
+        header="Reschedule"
+        onRequestClose={onChangeTime}
+        fetchRequestOfficeStaffAPI={fetchRequestOfficeStaffAPI}
+        setRequestList={setRequestList}
+        travelDateDayGap={travelDateDayGap}
       />
     </>
   );

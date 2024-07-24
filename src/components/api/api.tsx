@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import ToastContent from "../toastcontent/toastcontent";
 
-const debug = true;
+const debug = false;
 
 export let serverSideUrl: any;
 export let api: any;

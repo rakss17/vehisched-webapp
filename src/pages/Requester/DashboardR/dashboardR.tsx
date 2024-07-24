@@ -100,10 +100,10 @@ export default function DashboardR() {
   const [selectedVehicleVIPAssignedTo, setSelectedVehicleVIPAssignedTo] =
     useState("");
   const navigate = useNavigate();
-  const [notifList, setNotifList] = useState<any[]>([]);
+  // const [notifList, setNotifList] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const notifLength = notifList.filter((notif) => !notif.read_status).length;
+  // const notifLength = notifList.filter((notif) => !notif.read_status).length;
   const sidebarData: SidebarItem[] = [
     {
       icon: faColumns,
@@ -114,7 +114,8 @@ export default function DashboardR() {
       icon: faClipboardList,
       text: "Request",
       path: "/Request",
-      notification: notifLength >= 1 ? notifLength : undefined,
+      notification: undefined,
+      // notification: notifLength >= 1 ? notifLength : undefined,
     },
   ];
   const role = personalInfo?.role;

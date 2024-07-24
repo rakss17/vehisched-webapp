@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import ToastContent from "../toastcontent/toastcontent";
 
-const debug = true;
+const debug = false;
 
 let serverSideUrl: any;
 
